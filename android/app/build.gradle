@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+def hasKeystoreProperties = keystorePropertiesFile.exists()
+if (hasKeystoreProperties) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "au.ecodia.roam"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,7 +14,7 @@ android {
         applicationId "au.ecodia.roam"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -16,10 +23,28 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (hasKeystoreProperties) {
+                storeFile rootProject.file(keystoreProperties['storeFile'] ?: '../roam-release.keystore')
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            } else if (System.getenv('ROAM_KEYSTORE_PASSWORD')) {
+                storeFile rootProject.file(System.getenv('ROAM_KEYSTORE_FILE') ?: '../roam-release.keystore')
+                storePassword System.getenv('ROAM_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ROAM_KEY_ALIAS')
+                keyPassword System.getenv('ROAM_KEY_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasKeystoreProperties || System.getenv('ROAM_KEYSTORE_PASSWORD')) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
