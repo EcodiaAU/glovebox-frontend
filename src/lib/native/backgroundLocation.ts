@@ -23,9 +23,32 @@ import type { RoamPosition } from "./geolocation";
 
 let watchId: string | null = null;
 let lastPosition: RoamPosition | null = null;
+let currentMode: BackgroundLocationMode = "nav";
+let currentCallbacks: { onPosition?: PositionCallback; onError?: ErrorCallback } = {};
 
 export type PositionCallback = (pos: RoamPosition) => void;
 export type ErrorCallback = (err: unknown) => void;
+
+// Battery-adaptive GPS mode. Caller flips between these based on nav state.
+//   coarse: low-power, no active TBT (e.g. user parked, lunch stop).
+//           enableHighAccuracy=false, ~30s freshness window, ~30s interval.
+//   nav:    standard turn-by-turn at highway speeds.
+//           enableHighAccuracy=true, 2s freshness, 1-2s interval.
+//   hazard: high-precision near a hazard, fuel station, or turn instruction.
+//           enableHighAccuracy=true, 0s freshness, 1s interval.
+export type BackgroundLocationMode = "coarse" | "nav" | "hazard";
+
+function watchOptionsForMode(mode: BackgroundLocationMode) {
+  switch (mode) {
+    case "coarse":
+      return { enableHighAccuracy: false, maximumAge: 30000, timeout: 30000 };
+    case "hazard":
+      return { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 };
+    case "nav":
+    default:
+      return { enableHighAccuracy: true, maximumAge: 2000, timeout: 15000 };
+  }
+}
 
 /**
  * Start continuous background-capable GPS tracking.
@@ -39,8 +62,12 @@ export type ErrorCallback = (err: unknown) => void;
 export async function startBackgroundTracking(
   onPosition: PositionCallback,
   onError?: ErrorCallback,
+  mode: BackgroundLocationMode = "nav",
 ): Promise<void> {
   if (watchId !== null) return; // already tracking
+
+  currentMode = mode;
+  currentCallbacks = { onPosition, onError };
 
   // Check permissions first
   try {
@@ -59,13 +86,7 @@ export async function startBackgroundTracking(
 
   try {
     watchId = await Geolocation.watchPosition(
-      {
-        enableHighAccuracy: true,
-        // Always request fresh GPS - no cached positions
-        maximumAge: 0,
-        // Timeout per fix - increase so weak signal areas don't fail immediately
-        timeout: 15000,
-      },
+      watchOptionsForMode(mode),
       (position, err) => {
         if (err) {
           onError?.(err);
@@ -91,6 +112,24 @@ export async function startBackgroundTracking(
   } catch (e) {
     onError?.(e);
   }
+}
+
+// Flip GPS power profile mid-flight (e.g. nav engine detected proximity to a
+// hazard, or user came off the highway and parked). Restarts the underlying
+// watch with the new options. Safe to call when not tracking (no-op).
+export async function setBackgroundLocationMode(
+  mode: BackgroundLocationMode,
+): Promise<void> {
+  if (mode === currentMode) return;
+  currentMode = mode;
+  if (watchId === null || !currentCallbacks.onPosition) return;
+  const { onPosition, onError } = currentCallbacks;
+  await stopBackgroundTracking();
+  await startBackgroundTracking(onPosition, onError, mode);
+}
+
+export function getBackgroundLocationMode(): BackgroundLocationMode {
+  return currentMode;
 }
 
 /**

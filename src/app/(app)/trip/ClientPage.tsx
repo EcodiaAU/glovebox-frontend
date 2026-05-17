@@ -97,8 +97,11 @@ import { captureMapSnapshot } from "@/lib/share/captureMapSnapshot";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 
-/** Poll overlays every 90 seconds */
-const OVERLAY_POLL_INTERVAL_MS = 90_000;
+// Poll overlays every 5 minutes. Was 90s; bumped 2026-05-17 because hot polling
+// at 90s woke the modem + CPU 40 times an hour for marginal data freshness on a
+// long road trip. 300s steady-state with the existing backend cache (also
+// bumped to 300s below) cuts background-data spend and battery drain.
+const OVERLAY_POLL_INTERVAL_MS = 300_000;
 
 /* ── Boot phases ──────────────────────────────────────────────────────── */
 
@@ -954,8 +957,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
     try {
       const [trafficRes, hazardsRes] = await Promise.allSettled([
-        navApi.trafficPoll({ bbox, cache_seconds: 90 }),
-        navApi.hazardsPoll({ bbox, cache_seconds: 90 }),
+        navApi.trafficPoll({ bbox, cache_seconds: 300 }),
+        navApi.hazardsPoll({ bbox, cache_seconds: 300 }),
       ]);
 
       if (trafficRes.status === "fulfilled") {
@@ -1200,8 +1203,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     if (result?.primary?.bbox) {
       try {
         const [t, h] = await Promise.allSettled([
-          navApi.trafficPoll({ bbox: result.primary.bbox, cache_seconds: 90 }),
-          navApi.hazardsPoll({ bbox: result.primary.bbox, cache_seconds: 90 }),
+          navApi.trafficPoll({ bbox: result.primary.bbox, cache_seconds: 300 }),
+          navApi.hazardsPoll({ bbox: result.primary.bbox, cache_seconds: 300 }),
         ]);
         if (t.status === "fulfilled") {
           setTraffic(t.value);

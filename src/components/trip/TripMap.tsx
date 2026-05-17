@@ -1488,6 +1488,20 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       // Disabled by default to save GPU memory; captureMapSnapshot re-renders
       // to an offscreen canvas when a snapshot is needed.
       canvasContextAttributes: { preserveDrawingBuffer: false },
+      // Perf wins for v1.0.1 (2026-05-17):
+      //  - fadeDuration: 0 disables layer crossfade animations, which were
+      //    forcing the renderer to draw additional frames during zoom + layer
+      //    visibility changes.
+      //  - maxTileCacheSize: 50 caps tile retention (default ~250). On long
+      //    outback trips the cache was holding hundreds of tiles in GPU
+      //    memory that the viewport had moved away from; the lower cap
+      //    pushes them out faster.
+      //  - pixelRatio: capped at 1.5 to cut GPU load on Retina iPhones (where
+      //    devicePixelRatio is 3). Visually imperceptible for a nav map
+      //    while halving fragment shader work.
+      fadeDuration: 0,
+      maxTileCacheSize: 50,
+      pixelRatio: Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 1.5),
       transformRequest: (url) => {
         if (typeof url === "string" && url.startsWith("pmtiles://")) return { url: normalizePmtilesUrl(url, origin) };
         return { url };

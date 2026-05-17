@@ -16,8 +16,14 @@ import { presenceApi } from "@/lib/api/presence";
 import { networkMonitor } from "@/lib/offline/networkMonitor";
 import { getCurrentPosition, type RoamPosition } from "@/lib/native/geolocation";
 
-const PING_INTERVAL_MS = 30_000; // 30 seconds default
-const PING_INTERVAL_SHARED_MS = 15_000; // 15 seconds on shared trips
+// Bumped 2026-05-17 from 30s / 15s. The previous values pinged the backend
+// 2-4 times a minute, waking the GPS and modem on a battery-locked phone for
+// state that does not need sub-minute freshness even on shared trips. The
+// network-monitor pause-on-offline path already gates this; the bump is just
+// the steady-state cadence. v1.1 will add a position-delta debounce (skip
+// ping if moved <100m AND <60s elapsed).
+const PING_INTERVAL_MS = 60_000; // 60 seconds default
+const PING_INTERVAL_SHARED_MS = 30_000; // 30 seconds on shared trips
 
 class PresenceBeaconImpl {
   private _timer: ReturnType<typeof setInterval> | null = null;
