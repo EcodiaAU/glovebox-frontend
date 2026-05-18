@@ -141,6 +141,9 @@ function BoolRow({ Icon, label, value }: { Icon: LucideIcon; label: string; valu
 }
 
 function FacilityChip({ label, active }: { label: string; active: boolean }) {
+  // Single visual treatment: the colour tint + colour-coded text + small check
+  // ARE the "active" affordance. A 2px ring on top of the tint was double-counting
+  // — drops visual weight without losing recognition.
   return (
     <span style={{
       display: "inline-flex",
@@ -152,7 +155,7 @@ function FacilityChip({ label, active }: { label: string; active: boolean }) {
       fontWeight: 700,
       background: active ? "var(--accent-tint)" : "var(--roam-surface-hover)",
       color: active ? "var(--brand-eucalypt)" : "var(--roam-text-muted)",
-      border: active ? "2px solid var(--roam-success)" : "2px solid var(--roam-border)",
+      border: "1px solid var(--roam-border)",
     }}>
       {active && <CheckCircle2 size={11} />}
       {label}
@@ -179,23 +182,28 @@ function ActionBtn({
       alignItems: "center",
       gap: 6,
       flex: 1,
+      minWidth: 0,
     }}>
       <div style={{
-        width: 48,
-        height: 48,
+        width: 44,
+        height: 44,
         borderRadius: "var(--r-card)",
         background: `${color}18`,
         color: color,
         display: "grid",
         placeItems: "center",
       }}>
-        <Icon size={20} strokeWidth={2} fill={filled ? "currentColor" : "none"} />
+        <Icon size={18} strokeWidth={2} fill={filled ? "currentColor" : "none"} />
       </div>
       <span style={{
         fontSize: "var(--font-xxs)",
         fontWeight: 700,
         color: "var(--roam-text-muted)",
         letterSpacing: "0.2px",
+        textAlign: "center",
+        lineHeight: 1.2,
+        maxWidth: "100%",
+        wordBreak: "break-word",
       }}>
         {label}
       </span>
@@ -205,13 +213,15 @@ function ActionBtn({
   const baseStyle: React.CSSProperties = {
     background: "transparent",
     border: "none",
-    padding: 0,
+    padding: "8px 4px",
     cursor: "pointer",
     WebkitTapHighlightColor: "transparent",
     touchAction: "manipulation",
     display: "flex",
     flex: 1,
     justifyContent: "center",
+    minWidth: 0,
+    borderRadius: "var(--r-card)",
   };
 
   if (href) {
@@ -613,13 +623,17 @@ export function PlaceDetailSheet({
                 </span>
               </div>
 
-              <h1 style={{
-                fontSize: "var(--font-h2)",
-                fontWeight: 800,
-                color: "var(--roam-text)",
-                lineHeight: 1.2,
-                margin: 0,
-              }}>
+              <h1
+                className="roam-wrap-2"
+                style={{
+                  fontSize: "var(--font-h1)",
+                  fontWeight: 800,
+                  color: "var(--roam-text)",
+                  lineHeight: 1.2,
+                  margin: 0,
+                  letterSpacing: "-0.3px",
+                }}
+              >
                 {place.name}
               </h1>
 
@@ -641,8 +655,11 @@ export function PlaceDetailSheet({
               )}
             </div>
 
-            {/* Distance + hours */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            {/* Stat row — distance, km-from-start, open/closed. Flex-wraps cleanly
+                instead of the previous inline " · " separator (which broke awkwardly
+                when the third element wrapped to a new line). The open/closed status
+                is intentionally a pill — it's a state, not a stat. */}
+            <div className="roam-stat-row" style={{ marginTop: 6 }}>
               {dist && (
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: 4,
@@ -655,10 +672,12 @@ export function PlaceDetailSheet({
               )}
               {kmFromStart != null && (
                 <span style={{
+                  display: "inline-flex", alignItems: "center", gap: 4,
                   fontSize: "var(--font-sm)", fontWeight: 600,
                   color: "var(--roam-text-muted)",
                 }}>
-                  · {kmFromStart.toFixed(0)} km from start
+                  <Flag size={11} strokeWidth={2.5} />
+                  {kmFromStart.toFixed(0)} km from start
                 </span>
               )}
               {ohStatus && (
@@ -706,7 +725,7 @@ export function PlaceDetailSheet({
             </div>
           )}
 
-          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 16 }}>
 
             {/* ── AI DESCRIPTION ─────────────────────────── */}
             {guideDesc && (
@@ -723,11 +742,8 @@ export function PlaceDetailSheet({
                   letterSpacing: "0.6px",
                   color: cc.fg,
                   marginBottom: 6,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
                 }}>
-                  ✦ Guide note
+                  Guide note
                 </div>
                 <p style={{
                   margin: 0,
@@ -755,54 +771,51 @@ export function PlaceDetailSheet({
             )}
 
             {/* ── QUICK ACTIONS ───────────────────────────── */}
-            <div>
-              <SectionHeader title="Actions" />
-              <div style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 8,
-                padding: "12px 8px",
-                borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
-              }}>
-                {(onNavigate ?? contextNavigate) && (
-                  stopPlaceIds.has(p.id) ? (
-                    <div style={{ opacity: 0.45, pointerEvents: "none", flex: 1, display: "flex", justifyContent: "center" }}>
-                      <ActionBtn
-                        Icon={Plus}
-                        label="In trip"
-                        color="var(--roam-text-muted)"
-                      />
-                    </div>
-                  ) : (
+            {/* No section header + no surface-hover frame — the grid IS the section.
+                Even-width columns instead of flex-wrap, so 5 actions read as one
+                consistent control bar rather than 4 + 1 orphan on a new row. */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(64px, 1fr))",
+              gap: 4,
+            }}>
+              {(onNavigate ?? contextNavigate) && (
+                stopPlaceIds.has(p.id) ? (
+                  <div style={{ opacity: 0.45, pointerEvents: "none", display: "flex" }}>
                     <ActionBtn
                       Icon={Plus}
-                      label="Add to trip"
-                      color="var(--brand-eucalypt)"
-                      onClick={handleNavigate}
+                      label="In trip"
+                      color="var(--roam-text-muted)"
                     />
-                  )
-                )}
-                {phone && (
-                  <ActionBtn Icon={Phone} label="Call" color="var(--brand-sky)" href={`tel:${phone}`} />
-                )}
-                {website && isOnline && (
-                  <ActionBtn Icon={Globe} label="Website" color="var(--brand-sky)" onClick={() => safeOpen(website)} />
-                )}
-                {contextShowOnMap && (
-                  <ActionBtn Icon={MapIcon} label="Map" color="var(--brand-sky)" onClick={handleShowOnMap} />
-                )}
-                <ActionBtn Icon={Share2} label="Share" color="var(--roam-text-muted)" onClick={handleShare} />
-                {contextSave && (
+                  </div>
+                ) : (
                   <ActionBtn
-                    Icon={Bookmark}
-                    label={isSaved ? "Saved" : "Save"}
-                    color={isSaved ? "var(--brand-eucalypt)" : "var(--brand-amber)"}
-                    filled={isSaved}
-                    onClick={handleSave}
+                    Icon={Plus}
+                    label="Add to trip"
+                    color="var(--brand-eucalypt)"
+                    onClick={handleNavigate}
                   />
-                )}
-              </div>
+                )
+              )}
+              {phone && (
+                <ActionBtn Icon={Phone} label="Call" color="var(--brand-sky)" href={`tel:${phone}`} />
+              )}
+              {website && isOnline && (
+                <ActionBtn Icon={Globe} label="Website" color="var(--brand-sky)" onClick={() => safeOpen(website)} />
+              )}
+              {contextShowOnMap && (
+                <ActionBtn Icon={MapIcon} label="Map" color="var(--brand-sky)" onClick={handleShowOnMap} />
+              )}
+              <ActionBtn Icon={Share2} label="Share" color="var(--roam-text-muted)" onClick={handleShare} />
+              {contextSave && (
+                <ActionBtn
+                  Icon={Bookmark}
+                  label={isSaved ? "Saved" : "Save"}
+                  color={isSaved ? "var(--brand-eucalypt)" : "var(--brand-amber)"}
+                  filled={isSaved}
+                  onClick={handleSave}
+                />
+              )}
             </div>
 
             {/* ── CONTACT ─────────────────────────────────── */}
@@ -1236,11 +1249,10 @@ export function PlaceDetailSheet({
               textAlign: "center",
               fontSize: "var(--font-xxs)",
               color: "var(--roam-text-muted)",
-              opacity: 0.5,
-              paddingTop: 4,
+              opacity: 0.7,
+              paddingTop: 8,
             }}>
               Data from OpenStreetMap
-              {extra.osm_id && <> · OSM {extra.osm_type ?? "node"}/{String(extra.osm_id)}</>}
             </div>
 
           </div>{/* /padding wrapper */}

@@ -102,12 +102,16 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
           alignItems: "center",
           minWidth: 0,
         }}>
-          {/* Distance + divider + time - grouped left */}
+          {/* Distance + time - grouped left. The size + colour drop between primary
+              (distance, ~250-cd/m² bright) and secondary (duration, dimmed muted)
+              IS the visual hierarchy — no decorative divider needed. Generous gap
+              + colour shift reads as one unit at a glance. */}
           <div style={{
             display: "flex",
-            alignItems: "center",
-            gap: simple ? 12 : 10,
+            alignItems: "baseline",
+            gap: simple ? 14 : 12,
             marginLeft: simple ? 16 : 14,
+            minWidth: 0,
           }}>
             <span style={{
               fontSize: simple ? 22 : 18,
@@ -121,19 +125,10 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
               {primaryDist}
             </span>
 
-            {/* Vertical divider */}
-            <div style={{
-              width: 1.5,
-              height: simple ? 20 : 16,
-              borderRadius: 1,
-              background: "rgba(250,246,239,0.15)",
-              flexShrink: 0,
-            }} />
-
             <span style={{
-              fontSize: simple ? 22 : 18,
-              fontWeight: 950,
-              letterSpacing: "-0.6px",
+              fontSize: simple ? 18 : 15,
+              fontWeight: 800,
+              letterSpacing: "-0.4px",
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
               color: "rgba(250,246,239,0.5)",
@@ -199,42 +194,42 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
           placeItems: "center",
           color: "var(--on-color, #faf6ef)",
         }}>
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: "center", lineHeight: 1 }}>
             {speedKmh ? (
               <>
                 <div style={{
-                  fontSize: 7, fontWeight: 800,
-                  textTransform: "uppercase", letterSpacing: "0.5px",
-                  opacity: 0.6,
-                }}>speed</div>
+                  fontSize: 9, fontWeight: 800,
+                  textTransform: "uppercase", letterSpacing: "0.6px",
+                  opacity: 0.55,
+                }}>SPEED</div>
                 <div style={{
                   fontSize: simple ? 24 : 21, fontWeight: 950, lineHeight: 1,
                   letterSpacing: "-0.5px", fontVariantNumeric: "tabular-nums",
-                  marginTop: 1,
+                  marginTop: 2,
                 }}>{speedKmh}</div>
                 <div style={{
-                  fontSize: 7, fontWeight: 800,
-                  textTransform: "uppercase", letterSpacing: "0.3px",
-                  opacity: 0.6, marginTop: 1,
-                }}>km/h</div>
+                  fontSize: 9, fontWeight: 800,
+                  textTransform: "uppercase", letterSpacing: "0.4px",
+                  opacity: 0.55, marginTop: 2,
+                }}>KM/H</div>
               </>
             ) : (
               <>
                 <div style={{
-                  fontSize: 7, fontWeight: 800,
-                  textTransform: "uppercase", letterSpacing: "0.5px",
-                  opacity: 0.6,
+                  fontSize: 9, fontWeight: 800,
+                  textTransform: "uppercase", letterSpacing: "0.6px",
+                  opacity: 0.55,
                 }}>ETA</div>
                 <div style={{
                   fontSize: simple ? 22 : 19, fontWeight: 950, lineHeight: 1,
                   letterSpacing: "-0.5px", fontVariantNumeric: "tabular-nums",
-                  marginTop: 1,
+                  marginTop: 2,
                 }}>{etaTime}</div>
                 {etaAmpm && (
                   <div style={{
-                    fontSize: 8, fontWeight: 800,
-                    textTransform: "uppercase", letterSpacing: "0.3px",
-                    opacity: 0.6, marginTop: 1,
+                    fontSize: 9, fontWeight: 800,
+                    textTransform: "uppercase", letterSpacing: "0.4px",
+                    opacity: 0.55, marginTop: 2,
                   }}>{etaAmpm}</div>
                 )}
               </>

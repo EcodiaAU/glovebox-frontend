@@ -619,13 +619,37 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
 
 /* ── Stop Row helpers ─────────────────────────────────────────────────── */
 
-function badgeForType(type?: string) {
-  switch (type) {
-    case "start": return "Start";
-    case "end":   return "End";
-    case "via":   return "Via";
-    default:      return "Stop";
-  }
+/**
+ * Route-marker node: a small circular marker that sits at the start of each
+ * stop row, visually anchoring it to a vertical timeline. Color-coded by type
+ * (green=start, ochre=end, neutral=via/stop). Replaces the old wide "START"
+ * pill that floated in a 50px column next to a 44px input - too much dead
+ * horizontal space, and the pill competed with the search input for attention.
+ */
+function StopMarker({ type, idx }: { type?: string; idx?: number }) {
+  const palette = (() => {
+    if (type === "start") return { bg: "var(--brand-eucalypt)", fg: "var(--on-color)", label: "S" };
+    if (type === "end")   return { bg: "var(--brand-ochre)",    fg: "var(--on-color)", label: "E" };
+    return { bg: "var(--roam-surface-hover)", fg: "var(--roam-text)", label: idx != null ? String(idx) : "·" };
+  })();
+  return (
+    <div
+      aria-hidden
+      style={{
+        width: 28, height: 28, flexShrink: 0,
+        borderRadius: "50%",
+        background: palette.bg,
+        color: palette.fg,
+        display: "grid", placeItems: "center",
+        fontSize: 12, fontWeight: 900, lineHeight: 1,
+        letterSpacing: "-0.2px",
+        marginTop: 8,
+        border: type === "start" || type === "end" ? "none" : "1px solid var(--roam-border)",
+      }}
+    >
+      {palette.label}
+    </div>
+  );
 }
 
 function getDisplayValue(name?: string | null, type?: string) {
@@ -727,31 +751,31 @@ export function StopRow(props: {
 
   const hasTimes = !!(s.arrive_at || s.depart_at);
 
+  // Step number for via/poi stops in the route. Excludes start/end.
+  const viaIdx = (() => {
+    if (s.type === "start" || s.type === "end") return undefined;
+    // The badge for non-endpoint rows reads as the position in the route
+    // (1, 2, 3...). idx is the array position; subtract 1 because the start
+    // row is always at array index 0.
+    return Math.max(1, props.idx);
+  })();
+
   return (
     <div
       ref={wrapperRef}
       style={{
         display: "flex",
         gap: 10,
-        padding: "14px 0",
+        padding: "12px 0",
         borderBottom: "1px solid var(--roam-border)",
         alignItems: "flex-start",
         position: "relative",
       }}
     >
-      {/* Type badge */}
-      <div style={{ paddingTop: 10, flexShrink: 0, width: 50 }}>
-        <div
-          className="trip-badge"
-          style={{
-            width: "100%", textAlign: "center", justifyContent: "center", paddingInline: 6,
-            background: "var(--roam-surface)", color: "var(--roam-text)",
-            border: "1px solid var(--roam-border)",
-          }}
-        >
-          {badgeForType(s.type)}
-        </div>
-      </div>
+      {/* Route-marker node - replaces the wide pill badge column. Sits at the
+          start of each row like a vertical timeline marker; color-coded
+          start (green) / end (ochre) / via (neutral with step number). */}
+      <StopMarker type={s.type} idx={viaIdx} />
 
       {/* Main content */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>

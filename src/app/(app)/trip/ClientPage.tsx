@@ -97,8 +97,11 @@ import { captureMapSnapshot } from "@/lib/share/captureMapSnapshot";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 
-/** Poll overlays every 90 seconds */
-const OVERLAY_POLL_INTERVAL_MS = 90_000;
+// Poll overlays every 5 minutes. Was 90s; bumped 2026-05-17 because hot polling
+// at 90s woke the modem + CPU 40 times an hour for marginal data freshness on a
+// long road trip. 300s steady-state with the existing backend cache (also
+// bumped to 300s below) cuts background-data spend and battery drain.
+const OVERLAY_POLL_INTERVAL_MS = 300_000;
 
 /* ── Boot phases ──────────────────────────────────────────────────────── */
 
@@ -954,8 +957,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
     try {
       const [trafficRes, hazardsRes] = await Promise.allSettled([
-        navApi.trafficPoll({ bbox, cache_seconds: 90 }),
-        navApi.hazardsPoll({ bbox, cache_seconds: 90 }),
+        navApi.trafficPoll({ bbox, cache_seconds: 300 }),
+        navApi.hazardsPoll({ bbox, cache_seconds: 300 }),
       ]);
 
       if (trafficRes.status === "fulfilled") {
@@ -1200,8 +1203,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     if (result?.primary?.bbox) {
       try {
         const [t, h] = await Promise.allSettled([
-          navApi.trafficPoll({ bbox: result.primary.bbox, cache_seconds: 90 }),
-          navApi.hazardsPoll({ bbox: result.primary.bbox, cache_seconds: 90 }),
+          navApi.trafficPoll({ bbox: result.primary.bbox, cache_seconds: 300 }),
+          navApi.hazardsPoll({ bbox: result.primary.bbox, cache_seconds: 300 }),
         ]);
         if (t.status === "fulfilled") {
           setTraffic(t.value);
@@ -2340,73 +2343,71 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
             <div style={{ minWidth: 0, flex: 1 }}>
               <div
+                className="roam-wrap-2"
                 style={{
                   fontSize: 18, fontWeight: 800, margin: 0,
                   color: "var(--roam-text)", letterSpacing: "-0.3px",
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  lineHeight: 1.25,
                 }}
               >
-                {plan.label ?? "Trip Plan"}
+                {plan.label?.trim() || (() => {
+                  // Derive a route label from start → end when the user hasn't
+                  // named the trip. Beats the generic "Trip Plan" placeholder
+                  // by giving each unnamed trip a distinct, recognisable title.
+                  const stops = plan.preview?.stops ?? [];
+                  const start = stops.find((s) => s.type === "start");
+                  const end = stops.find((s) => s.type === "end");
+                  const startName = start?.name?.replace(/^My location$/i, "Current location") || null;
+                  const endName = end?.name || null;
+                  if (startName && endName && startName !== endName) {
+                    return `${startName} → ${endName}`;
+                  }
+                  return startName || endName || "Untitled trip";
+                })()}
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-              <button
-                type="button"
-                className="trip-interactive"
-                aria-label="Plans"
-                onClick={() => { haptic.selection(); setPlansDot(false); setDrawOpen(true); }}
-                style={{
-                  borderRadius: "var(--r-card)",
-                  height: 40,
-                  width: 40, display: "grid", placeItems: "center",
-                  background: "var(--roam-text, #1a1613)",
-                  color: "var(--roam-surface, #f4efe6)",
-                  border: "none",
-                  position: "relative",
-                }}
-              >
-                <Library size={16} strokeWidth={1.8} />
-                {plansDot && (
-                  <span
-                    aria-label="New plan available"
-                    style={{
-                      position: "absolute",
-                      top: 4,
-                      right: 4,
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "var(--roam-accent, #b5452e)",
-                      border: "2px solid var(--roam-text, #1a1613)",
-                      pointerEvents: "none",
-                    }}
-                  />
-                )}
-              </button>
+            {/* Trip-management action cluster: Plans / Invite / Share — three
+                related actions grouped in one capsule so they read as a single
+                control bar. Upgrade stays outside as a commercial CTA. */}
+            <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
+              <div className="roam-action-cluster">
+                <button
+                  type="button"
+                  aria-label="Plans"
+                  onClick={() => { haptic.selection(); setPlansDot(false); setDrawOpen(true); }}
+                >
+                  <Library size={16} strokeWidth={2} />
+                  {plansDot && (
+                    <span
+                      aria-label="New plan available"
+                      style={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "var(--roam-accent, #b5452e)",
+                        border: "2px solid var(--roam-surface-hover)",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  )}
+                </button>
 
-              {/* Invite */}
-              <button
-                type="button"
-                className="trip-interactive"
-                aria-label="Invite"
-                onClick={() => { haptic.selection(); setInviteMode("create"); setInviteOpen(true); }}
-                style={{
-                  borderRadius: "var(--r-card)", width: 40, height: 40,
-                  display: "grid", placeItems: "center",
-                  background: "var(--roam-text, #1a1613)", color: "var(--roam-surface, #f4efe6)",
-                  border: "none",
-                }}
-              >
-                <UserPlus size={16} strokeWidth={1.8} />
-              </button>
+                <button
+                  type="button"
+                  aria-label="Invite"
+                  onClick={() => { haptic.selection(); setInviteMode("create"); setInviteOpen(true); }}
+                >
+                  <UserPlus size={16} strokeWidth={2} />
+                </button>
 
-              {/* Share */}
-              <button
-                type="button"
-                className="trip-interactive"
-                aria-label="Share trip card"
-                onClick={() => {
+                <button
+                  type="button"
+                  aria-label="Share trip card"
+                  onClick={() => {
                     haptic.selection();
                     const preview = plan?.preview;
                     if (!preview) return;
@@ -2422,20 +2423,14 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                       const e = preview.stops.find((x) => x.type === "end");
                       return `${s?.name || "Start"} → ${e?.name || "End"}`;
                     })();
-                    // Capture map snapshot then invoke OS share sheet (native or Web Share API)
                     captureMapSnapshot(preview.bbox).then((mapImageUrl) => {
                       setNativeSharePayload({ data: cardData, mapImageUrl, label });
                     });
                   }}
-                  style={{
-                    borderRadius: "var(--r-card)", width: 40, height: 40,
-                    display: "grid", placeItems: "center",
-                    background: "var(--roam-text, #1a1613)", color: "var(--roam-surface, #f4efe6)",
-                    border: "none",
-                  }}
                 >
-                  <ImageIcon size={16} strokeWidth={1.8} />
-              </button>
+                  <ImageIcon size={16} strokeWidth={2} />
+                </button>
+              </div>
 
               {/* Upgrade - show when NOT unlocked; hide Untethered badge when already unlocked */}
               {unlocked ? null : unlocked === false ? (

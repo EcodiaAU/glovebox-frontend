@@ -1569,6 +1569,116 @@ input[type="range"]::-moz-range-thumb {
   text-overflow: ellipsis;
 }
 
+/* Wrap-2: prefer wrapping over truncation. Breaks long single words at any
+   point so a long place name like "Yulara/Uluru-Kata Tjuta National Park"
+   collapses to 2 lines instead of dropping its tail behind an ellipsis.
+   Use on titles, place names, alert messages, anything where the END of the
+   string matters as much as the start. */
+.roam-wrap-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+.roam-wrap-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+.roam-wrap-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* Tight inline stat row: distance · time · stops style. Wraps gracefully on
+   narrow screens instead of overflowing or hiding the third stat. */
+.roam-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  min-width: 0;
+}
+.roam-stat-row > * { min-width: 0; }
+
+/* Map-overlay control group: a single visual container for stacked
+   circular HUD buttons so they read as one unit instead of N floating
+   icons. Used by NavigationControls. */
+.roam-control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--surface-card);
+  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--roam-border);
+}
+
+/* Horizontal action cluster: groups secondary icon buttons in sheet
+   headers (Plans / Invite / Share / AI) into one unified surface so
+   they read as a single control bar rather than N orphan circles.
+   The capsule provides the background; individual buttons go transparent.
+   Used by /new StopsEditor and /trip ClientPage sheet headers. */
+.roam-action-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--r-card);
+  background: var(--roam-surface-hover);
+  border: 1px solid var(--roam-border);
+  flex-shrink: 0;
+}
+.roam-action-cluster > button,
+.roam-action-cluster > a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: calc(var(--r-card) - 2px);
+  border: none;
+  background: transparent;
+  color: var(--roam-text);
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.roam-action-cluster > button:hover,
+.roam-action-cluster > a:hover {
+  background: color-mix(in srgb, var(--roam-text) 8%, transparent);
+}
+.roam-action-cluster > button[data-accent="sky"],
+.roam-action-cluster > a[data-accent="sky"] {
+  color: var(--brand-sky);
+}
+.roam-action-cluster > button[data-accent="ochre"],
+.roam-action-cluster > a[data-accent="ochre"] {
+  color: var(--brand-ochre);
+}
+.roam-action-cluster > button[data-accent="eucalypt"],
+.roam-action-cluster > a[data-accent="eucalypt"] {
+  color: var(--brand-eucalypt);
+}
+
 
 /* ── Fixed tab bar (glass morphism, pins to viewport bottom) ────────── */
 .roam-tabs-wrap {

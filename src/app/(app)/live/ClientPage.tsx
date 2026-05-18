@@ -34,7 +34,8 @@ import { Radio } from "lucide-react";
 /* ── Constants ────────────────────────────────────────────────────────── */
 
 const LIVE_NAVPACK_KEY = "roam_live_navpack";
-const OVERLAY_POLL_INTERVAL_MS = 90_000;
+// Poll overlays every 5 minutes (see trip/ClientPage.tsx for the same bump rationale).
+const OVERLAY_POLL_INTERVAL_MS = 300_000;
 
 /* ── Session helpers ─────────────────────────────────────────────────── */
 
@@ -132,8 +133,8 @@ export default function LiveTripClientPage() {
     const bbox = navpack.primary.bbox;
     try {
       const [t, h] = await Promise.allSettled([
-        navApi.trafficPoll({ bbox, cache_seconds: 90 }),
-        navApi.hazardsPoll({ bbox, cache_seconds: 90 }),
+        navApi.trafficPoll({ bbox, cache_seconds: 300 }),
+        navApi.hazardsPoll({ bbox, cache_seconds: 300 }),
       ]);
       if (t.status === "fulfilled") setTraffic(t.value);
       if (h.status === "fulfilled") setHazards(h.value);

@@ -1130,11 +1130,13 @@ export function AlertCard({
             {/* Left column: headline, badges, metadata */}
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                <span style={{
-                  fontSize: compact ? 12 : 13, fontWeight: 950, color: "var(--roam-text)",
-                  lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis",
-                  whiteSpace: compact ? "nowrap" : undefined,
-                }}>
+                <span
+                  className={compact ? "roam-wrap-1" : "roam-wrap-2"}
+                  style={{
+                    fontSize: compact ? 12 : 13, fontWeight: 950, color: "var(--roam-text)",
+                    lineHeight: 1.3,
+                  }}
+                >
                   {alert.headline}
                 </span>
                 {!compact && (

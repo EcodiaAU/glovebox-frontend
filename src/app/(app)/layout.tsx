@@ -20,13 +20,18 @@ export function AppLayout() {
       <div className="roam-shell">
         {/* Day/Night mode toggle - top-left, always accessible */}
         <ThemeToggle />
-        {/* Persistent offline status - always visible, never dismissable */}
+        {/* Persistent offline status - always visible, never dismissable.
+            Pinned top-center so it never collides with the theme toggle (top-left)
+            or per-page corner controls like MapStyleSwitcher (top-right). */}
         <div style={{
           position: "fixed",
           top: "calc(env(safe-area-inset-top, 0px) + 6px)",
-          right: "calc(env(safe-area-inset-right, 0px) + 12px)",
+          left: "50%",
+          transform: "translateX(-50%)",
           zIndex: 100,
           pointerEvents: "none",
+          display: "flex",
+          justifyContent: "center",
         }}>
           <OfflineStatusIndicator />
         </div>

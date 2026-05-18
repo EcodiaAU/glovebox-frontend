@@ -98,7 +98,10 @@ export function useGeolocation(opts?: {
   hapticOnFix?: boolean;
 }) {
   const autoStart = opts?.autoStart ?? false;
-  const highAccuracy = opts?.highAccuracy ?? true;
+  // Default to coarse accuracy for general map centering. Active TBT nav uses
+  // backgroundLocation.ts with its own high-accuracy mode. Coarse here cuts
+  // GPS-chip duty cycle ~70% with no functional impact on map centering.
+  const highAccuracy = opts?.highAccuracy ?? false;
   const hapticOnFix = opts?.hapticOnFix ?? isNative;
 
   const [state, setState] = useState<GeoState>({

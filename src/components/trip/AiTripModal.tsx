@@ -144,14 +144,13 @@ function StopPreviewRow({
           {label}
         </div>
         <div
+          className="roam-wrap-2"
           style={{
             fontSize: 14,
             fontWeight: 750,
             color: "var(--roam-text)",
             marginBottom: reason ? 3 : 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            lineHeight: 1.25,
           }}
         >
           {stop.name}

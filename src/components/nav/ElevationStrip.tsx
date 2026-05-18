@@ -227,20 +227,29 @@ export const ElevationStrip = memo(function ElevationStrip({
           WebkitTapHighlightColor: "transparent",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Mountain size={16} strokeWidth={2.2} style={{ opacity: 0.6 }} />
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.03em" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <Mountain size={16} strokeWidth={2.2} style={{ opacity: 0.65, flexShrink: 0 }} />
+          <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.04em", flexShrink: 0 }}>
             ELEVATION
           </span>
-          <span style={{ fontSize: 10, fontWeight: 600, color: "var(--roam-text-muted)" }}>
-            {Math.round(minElev)}m – {Math.round(maxElev)}m
+          <span style={{
+            fontSize: 11, fontWeight: 600, color: "var(--roam-text-muted)",
+            fontVariantNumeric: "tabular-nums",
+          }}>
+            {Math.round(minElev)}–{Math.round(maxElev)}m
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color: "var(--brand-eucalypt)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <span style={{
+            fontSize: 11, fontWeight: 700, color: "var(--brand-eucalypt)",
+            fontVariantNumeric: "tabular-nums",
+          }}>
             ↑{Math.round(profile.total_ascent_m)}m
           </span>
-          <span style={{ fontSize: 10, fontWeight: 700, color: "var(--roam-danger)" }}>
+          <span style={{
+            fontSize: 11, fontWeight: 700, color: "var(--roam-danger)",
+            fontVariantNumeric: "tabular-nums",
+          }}>
             ↓{Math.round(profile.total_descent_m)}m
           </span>
           {isCollapsed
