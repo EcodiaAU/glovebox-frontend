@@ -1066,8 +1066,8 @@ export function PlaceSearchPanel({
                   <CatIcon size={15} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trip-title trip-truncate">{p.name}</div>
-                  <div className="trip-muted-small trip-truncate trip-mt-xs">{subtitle}</div>
+                  <div className="trip-title roam-wrap-2">{p.name}</div>
+                  <div className="trip-muted-small roam-wrap-1 trip-mt-xs">{subtitle}</div>
                 </div>
                 <button
                   type="button"

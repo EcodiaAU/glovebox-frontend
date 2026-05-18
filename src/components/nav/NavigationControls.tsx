@@ -45,8 +45,8 @@ function NavBtn({
       className={animClass}
       onClick={() => { haptic.selection(); onClick(); }}
       style={{
-        width: 48,
-        height: 48,
+        width: 44,
+        height: 44,
         borderRadius: "50%",
         border: "none",
         cursor: "pointer",
@@ -56,15 +56,15 @@ function NavBtn({
           ? "var(--brand-ochre)"
           : isActive
           ? "var(--brand-eucalypt)"
-          : "var(--nav-card-bg, #f0e9dc)",
+          : "transparent",
         color: isDefault
           ? "var(--roam-text, #1a1613)"
           : "var(--on-color, #faf6ef)",
         boxShadow: isDanger
-          ? "0 0 16px rgba(181,69,46,0.35), 0 4px 12px rgba(181,69,46,0.2)"
+          ? "0 2px 8px rgba(181,69,46,0.30)"
           : isActive
-          ? "0 0 16px rgba(45,110,64,0.35), 0 4px 12px rgba(45,110,64,0.2)"
-          : "0 4px 14px rgba(40,32,20,0.10), 0 1px 3px rgba(0,0,0,0.06)",
+          ? "0 2px 8px rgba(45,110,64,0.30)"
+          : "none",
         transition: "transform 0.12s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease, box-shadow 0.2s ease",
         touchAction: "manipulation",
         WebkitTapHighlightColor: "transparent",
@@ -104,8 +104,12 @@ export function NavigationControls({
 
   let idx = 0;
 
-  // Position: sits below the HUD card, right-aligned
-  // HUD card is ~82-90px from top, so controls start below that
+  // Position: sits below the HUD card, right-aligned.
+  // The four non-destructive controls (layers, mute, overview, recenter, report)
+  // group inside a single roam-control-group capsule so they read as one
+  // control surface — not 4-6 disconnected circles floating on the map.
+  // The End-nav button sits OUTSIDE the group as a danger primary so the
+  // visual weight matches its destructive intent.
   return (
     <div className="roam-nav-controls" style={{
       position: "absolute",
@@ -116,55 +120,57 @@ export function NavigationControls({
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      gap: 8,
+      gap: 12,
     }}>
-      {onLayerToggle && (
+      <div className="roam-control-group">
+        {onLayerToggle && (
+          <NavBtn
+            animClass={`nav-ctrl-enter-${++idx}`}
+            icon={<Layers size={17} strokeWidth={2.2} />}
+            label="Map layers"
+            onClick={onLayerToggle}
+            variant={layerFilterActive ? "active" : "default"}
+          />
+        )}
+
         <NavBtn
           animClass={`nav-ctrl-enter-${++idx}`}
-          icon={<Layers size={17} strokeWidth={2.2} />}
-          label="Map layers"
-          onClick={onLayerToggle}
-          variant={layerFilterActive ? "active" : "default"}
+          icon={isMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
+          label={isMuted ? "Unmute voice" : "Mute voice"}
+          onClick={onToggleMute}
+          variant={!isMuted ? "active" : "default"}
         />
-      )}
 
-      <NavBtn
-        animClass={`nav-ctrl-enter-${++idx}`}
-        icon={isMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
-        label={isMuted ? "Unmute voice" : "Mute voice"}
-        onClick={onToggleMute}
-        variant={!isMuted ? "active" : "default"}
-      />
+        <NavBtn
+          animClass={`nav-ctrl-enter-${++idx}`}
+          icon={<Maximize2 size={17} />}
+          label="Route overview"
+          onClick={onOverview}
+        />
 
-      <NavBtn
-        animClass={`nav-ctrl-enter-${++idx}`}
-        icon={<Maximize2 size={17} />}
-        label="Route overview"
-        onClick={onOverview}
-      />
+        <NavBtn
+          animClass={`nav-ctrl-enter-${++idx}`}
+          icon={<Crosshair size={17} />}
+          label="Recenter"
+          onClick={onRecenter}
+        />
 
-      <NavBtn
-        animClass={`nav-ctrl-enter-${++idx}`}
-        icon={<Crosshair size={17} />}
-        label="Recenter"
-        onClick={onRecenter}
-      />
-
-      {!simple && onReport && (
-        <div style={{ position: "relative" }} className={`nav-ctrl-enter-${++idx}`}>
-          <NavBtn
-            icon={reportOpen ? <X size={17} /> : <Megaphone size={17} />}
-            label="Report road condition"
-            onClick={onReport}
-            variant={reportOpen ? "active" : "default"}
-          />
-          {reportTray && (
-            <div style={{ position: "absolute", top: 0, right: 50, zIndex: 50 }}>
-              {reportTray}
-            </div>
-          )}
-        </div>
-      )}
+        {!simple && onReport && (
+          <div style={{ position: "relative" }} className={`nav-ctrl-enter-${++idx}`}>
+            <NavBtn
+              icon={reportOpen ? <X size={17} /> : <Megaphone size={17} />}
+              label="Report road condition"
+              onClick={onReport}
+              variant={reportOpen ? "active" : "default"}
+            />
+            {reportTray && (
+              <div style={{ position: "absolute", top: 0, right: 56, zIndex: 50 }}>
+                {reportTray}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       <div style={{ position: "relative" }} className={`nav-ctrl-enter-${++idx}`}>
         <NavBtn

@@ -534,61 +534,41 @@ export function StopsEditor(props: {
         >
           <div className="trip-drag-handle" />
 
-          <div className="trip-row-between">
-            <div>
-              <h1 className="trip-h1">{isBuilding ? "Building Trip" : "Plan Trip"}</h1>
-              <div className="trip-muted-small" style={{ marginTop: 2 }}>
+          <div className="trip-row-between" style={{ alignItems: "center" }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <h1 className="trip-h1 roam-wrap-1">{isBuilding ? "Building Trip" : "Plan Trip"}</h1>
+              <div className="trip-muted-small roam-wrap-1" style={{ marginTop: 2 }}>
                 {isBuilding ? "Getting your trip ready for the road" : "Add stops. Tap save. Done."}
               </div>
             </div>
 
-            {/* Action Buttons (Plans + Join + User) */}
-            <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-              <button
-                type="button"
-                className="trip-interactive"
-                aria-label="Plans"
-                title="Plans"
+            {/* Secondary action cluster: Plans + AI grouped in one capsule
+                with consistent visual weight. Plans was previously dark-on-dark
+                (invisible). Upgrade stays outside the cluster as a different intent
+                — it's a commercial CTA, not a routine action. */}
+            <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
+              <div
+                className="roam-action-cluster"
                 onPointerDown={(e) => e.stopPropagation()}
-                onClick={() => {
-                  haptic.selection();
-                  props.onPlans();
-                }}
-                style={{
-                  borderRadius: 999,
-                  height: 44,
-                  width: 44, display: "grid", placeItems: "center",
-                  background: "var(--roam-text, #1a1613)",
-                  color: "var(--roam-surface, #f4efe6)",
-                  border: "none",
-                  WebkitTapHighlightColor: "transparent",
-                }}
               >
-                <Library size={15} />
-              </button>
-
-              <button
-                type="button"
-                className="trip-interactive"
-                aria-label="AI Trip Planner"
-                title="AI Trip Planner"
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={() => {
-                  haptic.light();
-                  props.onAiTrip();
-                }}
-                style={{
-                  borderRadius: 999,
-                  height: 44,
-                  width: 44, display: "grid", placeItems: "center",
-                  background: "rgba(56,189,248,0.12)",
-                  color: "var(--brand-sky, #38bdf8)",
-                  border: "1px solid var(--roam-info)",
-                  WebkitTapHighlightColor: "transparent",
-                }}
-              >
-                <Sparkles size={15} />
-              </button>
+                <button
+                  type="button"
+                  aria-label="Plans"
+                  title="Plans"
+                  onClick={() => { haptic.selection(); props.onPlans(); }}
+                >
+                  <Library size={16} strokeWidth={2} />
+                </button>
+                <button
+                  type="button"
+                  data-accent="sky"
+                  aria-label="AI Trip Planner"
+                  title="AI Trip Planner"
+                  onClick={() => { haptic.light(); props.onAiTrip(); }}
+                >
+                  <Sparkles size={16} strokeWidth={2} />
+                </button>
+              </div>
 
               {props.unlocked === false ? (
                 <button
@@ -601,7 +581,7 @@ export function StopsEditor(props: {
                     position: "relative",
                     display: "flex", alignItems: "center", gap: 5,
                     background: "linear-gradient(135deg, #122d1e 0%, var(--brand-eucalypt-dark, #1f5236) 40%, var(--brand-eucalypt, #2d6e40) 80%, #3d8f54 100%)",
-                    borderRadius: 999, padding: "0 12px",
+                    borderRadius: "var(--r-card)", padding: "0 12px",
                     height: 44, border: "1px solid var(--roam-border)", cursor: "pointer",
                     boxShadow: "0 2px 12px rgba(31,82,54,0.45), 0 1px 3px rgba(31,82,54,0.20), inset 0 1px 0 rgba(255,255,255,0.10)",
                     overflow: "hidden",
@@ -755,18 +735,16 @@ export function StopsEditor(props: {
                     background: "linear-gradient(105deg, transparent 25%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.08) 55%, transparent 75%)",
                     borderRadius: "inherit", pointerEvents: "none",
                   }} />
-                  <Compass size={17} style={{ position: "relative", flexShrink: 0 }} />
-                  <span style={{ position: "relative" }}>Save & Go</span>
+                  <Compass size={18} style={{ position: "relative", flexShrink: 0 }} />
+                  <span style={{ position: "relative" }}>Save &amp; Go</span>
                   <span style={{
                     position: "relative",
                     fontSize: 10,
-                    fontWeight: 800,
-                    letterSpacing: "0.04em",
+                    fontWeight: 700,
+                    letterSpacing: "0.05em",
                     textTransform: "uppercase",
-                    background: "rgba(255,255,255,0.18)",
-                    borderRadius: "var(--r-btn)",
-                    padding: "2px 6px",
-                    marginLeft: 2,
+                    opacity: 0.75,
+                    marginLeft: 4,
                   }}>offline ready</span>
                 </button>
 

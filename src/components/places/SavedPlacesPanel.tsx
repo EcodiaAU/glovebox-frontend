@@ -183,13 +183,12 @@ function SavedRow({
         {/* Text */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
+            className="roam-wrap-2"
             style={{
               fontSize: 14,
               fontWeight: 700,
               color: "var(--roam-text)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              lineHeight: 1.25,
             }}
           >
             {place.name}

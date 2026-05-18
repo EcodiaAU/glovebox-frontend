@@ -132,7 +132,7 @@ export function PlaceSearchModal(props: {
             return (
               <button key={it.id} type="button" className="trip-interactive trip-list-row" onClick={() => handlePick(it)}>
                 <div className="trip-h2">{it.name}</div>
-                <div className="trip-muted-small trip-truncate" style={{ marginTop: 6 }}>
+                <div className="trip-muted-small roam-wrap-2" style={{ marginTop: 6 }}>
                   {subtitle}
                 </div>
               </button>

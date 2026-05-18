@@ -116,19 +116,19 @@ function InlineRename({
           all: "unset",
           cursor: "pointer",
           display: "inline-flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           gap: 6,
-          maxWidth: "100%",
+          width: "100%",
         }}
       >
         <span
+          className="roam-wrap-2"
           style={{
             fontSize: 14,
             fontWeight: 700,
             color: "var(--roam-text)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            lineHeight: 1.25,
+            textAlign: "left",
           }}
         >
           {currentLabel?.trim() || fallback}
@@ -139,6 +139,7 @@ function InlineRename({
             flexShrink: 0,
             color: "var(--roam-text-muted)",
             opacity: 0.5,
+            marginTop: 2,
           }}
         />
       </button>

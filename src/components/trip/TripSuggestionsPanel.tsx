@@ -443,8 +443,8 @@ export function TripSuggestionsPanel(props: {
                     <CatIcon size={15} />
                   </div>
                   <div className="trip-list-row-content" style={{ minWidth: 0 }}>
-                    <div className="trip-title trip-truncate">{p.name}</div>
-                    <div className="trip-muted-small trip-truncate trip-mt-xs">
+                    <div className="trip-title roam-wrap-2">{p.name}</div>
+                    <div className="trip-muted-small roam-wrap-1 trip-mt-xs">
                       {fmtCat(p.category)}
                       {suburb
                         ? ` · ${typeof suburb === "string" ? suburb.split(",")[0] : suburb}`

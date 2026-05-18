@@ -171,7 +171,7 @@ function ActionPill({
   const baseStyle: React.CSSProperties = {
     borderRadius: "var(--r-card)",
     minHeight: 44,
-    padding: "0 14px",
+    padding: "8px 14px",
     fontWeight: 700,
     fontSize: 13,
     border: `1px solid ${muted ? "var(--roam-border)" : accentColor + "30"}`,
@@ -185,13 +185,26 @@ function ActionPill({
     userSelect: "none",
     WebkitTapHighlightColor: "transparent",
     transition: "all 0.15s ease",
+    minWidth: 0,
   };
+
+  // Pill labels wrap to 2 lines instead of truncating with ellipsis — a
+  // POI name like "Pet Friendly Campground" should be readable in full, not
+  // collapse to "Pet Friendly...". The pill height grows to accommodate.
+  const labelSpan = (
+    <span
+      className="roam-wrap-2"
+      style={{ maxWidth: 220, textAlign: "left", lineHeight: 1.2 }}
+    >
+      {label}
+    </span>
+  );
 
   if (href) {
     return (
       <a href={href} style={baseStyle} onPointerDown={stopEvent} onTouchStart={stopEvent} onClick={stopEvent}>
-        <Icon size={13} />
-        <span style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
+        <Icon size={13} style={{ flexShrink: 0 }} />
+        {labelSpan}
       </a>
     );
   }
@@ -204,8 +217,8 @@ function ActionPill({
       onTouchStart={stopEvent}
       onClick={(e) => { stopEvent(e); onClick?.(); }}
     >
-      <Icon size={13} />
-      <span style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
+      <Icon size={13} style={{ flexShrink: 0 }} />
+      {labelSpan}
     </button>
   );
 }
@@ -826,8 +839,11 @@ function PlaceCard({
           </div>
 
           <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+              <div
+                className="roam-wrap-2"
+                style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text)", flex: 1, lineHeight: 1.25 }}
+              >
                 {place.name}
               </div>
               <div style={{ display: "flex", gap: 5, flexShrink: 0 }} onPointerDown={stop} onTouchStart={stop}>

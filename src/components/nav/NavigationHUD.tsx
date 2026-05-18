@@ -153,32 +153,36 @@ export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple 
         </svg>
 
         {/* Primary direction word + current road name (demoted secondary) */}
-        <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
-          {/* Direction verb - what to do at the upcoming maneuver. Large, bright. */}
-          <div style={{
-            fontSize: simple ? 24 : 20,
-            fontWeight: 950,
-            color: "#f0ece6",
-            lineHeight: 1.15,
-            letterSpacing: "-0.3px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Direction verb - what to do at the upcoming maneuver. Large, bright.
+              Wrap to 2 lines instead of ellipsing so long street names like
+              "Great Northern Highway" remain readable. */}
+          <div
+            className="roam-wrap-2"
+            style={{
+              fontSize: simple ? 22 : 18,
+              fontWeight: 950,
+              color: "#f0ece6",
+              lineHeight: 1.15,
+              letterSpacing: "-0.3px",
+            }}
+          >
             {formatShort(displayStep)}
           </div>
 
-          {/* Current road - smaller, muted. Tells driver what street they're on now. */}
+          {/* Current road - smaller, muted. Tells driver what street they're on now.
+              Single line is acceptable here because the direction verb above already
+              named the upcoming road. */}
           {streetText && (
-            <div style={{
-              marginTop: 3,
-              fontSize: simple ? 13 : 12,
-              fontWeight: 700,
-              color: "rgba(240, 236, 230, 0.55)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}>
+            <div
+              className="roam-wrap-1"
+              style={{
+                marginTop: 3,
+                fontSize: simple ? 13 : 12,
+                fontWeight: 700,
+                color: "rgba(240, 236, 230, 0.55)",
+              }}
+            >
               {streetText}
             </div>
           )}
