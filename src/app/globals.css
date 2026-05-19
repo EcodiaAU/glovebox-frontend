@@ -2664,30 +2664,28 @@ input[type="range"]::-moz-range-thumb {
     background: var(--roam-surface-hover);
   }
 
-  /* ── Action bar (Stops + Start navigation) is panel-width on desktop ──
-     On mobile this bar spans the viewport (left:0,right:0) which is right.
-     On desktop the bar must stay inside the left-side panel so the map
-     surface to the right of the panel stays clear. */
+  /* ── Action bar (Stops + Start navigation) sits flush at the bottom of the
+       desktop panel, NOT spanning the map. The sheet is rendered fixed at
+       viewport left: var(--desktop-rail-w); the bar must match that anchor
+       exactly. The bar's natural position is absolute inside the trip
+       container which is double-offset, so override to fixed-to-viewport. */
   .trip-action-bar {
-    /* Sheet panel occupies x: 0 .. var(--desktop-panel-w) inside .roam-main
-       (which already starts past the rail). Setting right:auto and a
-       fixed width pins the bar inside that column. When the panel is
-       collapsed, --desktop-panel-visible becomes 0 and the bar also
-       collapses out of view, which is desirable. */
+    position: fixed !important;
+    left: var(--desktop-rail-w) !important;
     right: auto !important;
+    bottom: 0 !important;
     width: var(--desktop-panel-visible) !important;
-    transition: width 0.28s cubic-bezier(0.34, 1.12, 0.64, 1),
-                transform var(--dur-normal) ease,
+    /* No mobile tab bar on desktop; lock the snap-state translateY override. */
+    transform: translateY(0) !important;
+    transition: left 0.28s cubic-bezier(0.34, 1.12, 0.64, 1),
+                width 0.28s cubic-bezier(0.34, 1.12, 0.64, 1),
                 opacity var(--dur-fast) ease !important;
+    z-index: 51 !important; /* above the desktop sheet panel (50) */
   }
   html[data-desktop-panel-open="false"] .trip-action-bar {
-    transform: translateX(-100%) !important;
+    width: 0 !important;
+    opacity: 0 !important;
     pointer-events: none !important;
-  }
-  /* Don't push the action bar up by --roam-tab-h on desktop — there's no
-     mobile tab bar to make room for. */
-  .trip-action-bar {
-    transform: translateY(0) !important;
   }
 
   /* ── Place detail sheet → right-side panel ──────────────── */
