@@ -2228,7 +2228,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       {/* Navigation overlays are rendered at the end of the tree (after bottom sheet)
          so they paint above all other layers. See below. */}
 
-      {!activeNav.isActive && <FuelPressureIndicator tracking={fuelTracking} />}
+      {!activeNav.isActive && sheetSnap === "peek" && <FuelPressureIndicator tracking={fuelTracking} />}
       <FuelLastChanceToast tracking={fuelTracking} currentKm={currentKm} />
 
       <VehicleFuelSettings
@@ -2422,29 +2422,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         >
           {/* Drag handle (prototype style) */}
           <div style={{
-            width: 40, height: 4, borderRadius: 4,
+            width: 36, height: 4, borderRadius: 4,
             background: "var(--c-border-strong)",
           }}/>
-          {/* Snap dots */}
-          <div style={{ display: "flex", gap: 5 }}>
-            {(["peek", "expanded"] as const).map((s) => {
-              const active = sheetSnap === s;
-              return (
-                <button
-                  key={s}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onClick={(e) => { e.stopPropagation(); haptic.selection(); setSheetSnap(s); }}
-                  aria-label={`Snap ${s}`}
-                  style={{
-                    width: active ? 18 : 6, height: 6, borderRadius: 999,
-                    background: active ? "var(--c-accent)" : "var(--c-border-strong)",
-                    transition: "width 0.18s ease, background 0.18s ease",
-                    border: 0, padding: 0, cursor: "pointer",
-                  }}
-                />
-              );
-            })}
-          </div>
         </div>
 
         {/* Header (prototype CardHeader: star + title + subtitle + 2nd-row actions) */}
@@ -2751,7 +2731,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             position: "absolute",
             left: 0, right: 0,
             bottom: 300, // sheet has bottom:-300 so this sits at visible-bottom of sheet
-            padding: "10px 16px calc(8px + var(--bottom-nav-height))",
+            padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
             display: "flex", gap: 8, alignItems: "center",
             borderTop: "1px solid var(--c-border)",
             background: "var(--c-surface)",
