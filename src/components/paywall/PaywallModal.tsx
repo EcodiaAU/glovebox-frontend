@@ -308,17 +308,17 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               <div
                 key={f.label}
                 style={{
-                  display: "flex", alignItems: "flex-start", gap: 14,
-                  padding: "10px 0",
-                  borderBottom: "1px solid var(--roam-border)",
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                  padding: "12px 0",
+                  // Prototype style: no per-row dividers; clean column with breathing room
                 }}
               >
                 <div style={{
                   width: 36, height: 36, flexShrink: 0,
-                  borderRadius: "var(--r-card)",
-                  background: "rgba(181, 69, 46, 0.08)",
+                  borderRadius: 10,
+                  background: "var(--c-accent-tint, rgba(181, 69, 46, 0.08))",
+                  color: "var(--c-accent, var(--brand-ochre, #b5452e))",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 16, color: "var(--brand-ochre, #b5452e)",
                 }}>
                   <f.Icon size={18} />
                 </div>

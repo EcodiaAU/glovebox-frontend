@@ -276,21 +276,44 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
         {mode === "create" ? (
           <>
             {generatedCode ? (
-              <div style={{ textAlign: "center", padding: "16px 0" }}>
-                <div style={{ fontSize: 13, color: "var(--roam-text-muted)", marginBottom: 12 }}>
-                  Share this code with your travel partner
+              <div style={{ padding: "4px 0 8px" }}>
+                {/* Prototype: t-mono uppercase label above accent-tint code chip. */}
+                <div
+                  className="t-mono"
+                  style={{
+                    fontSize: 11, color: "var(--c-text-muted, var(--roam-text-muted))",
+                    textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8,
+                  }}
+                >
+                  Your code
                 </div>
                 <div
                   style={{
-                    fontSize: 32,
-                    fontWeight: 700,
-                    letterSpacing: "0.2em",
-                    fontFamily: "var(--ff-mono)",
-                    padding: "12px 0",
-                    color: "var(--brand-sky, #3b82f6)",
+                    padding: "22px 24px", borderRadius: 18,
+                    background: "var(--c-accent-tint, rgba(26,111,166,0.12))",
+                    textAlign: "center", marginBottom: 16,
                   }}
                 >
-                  {generatedCode}
+                  <div
+                    className="t-display"
+                    style={{
+                      fontWeight: 700, fontSize: 36,
+                      letterSpacing: 6,
+                      color: "var(--c-accent, var(--brand-sky, #3b82f6))",
+                      fontFamily: "var(--ff-mono, var(--font-mono))",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {generatedCode}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12, marginTop: 8,
+                      color: "var(--c-text-muted, var(--roam-text-muted))",
+                    }}
+                  >
+                    Share this code to add roamers to your plan
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -299,7 +322,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                     width: "100%",
                     minHeight: 48,
                     padding: "12px",
-                    borderRadius: "var(--r-card)",
+                    borderRadius: 14,
                     border: copied
                       ? "1px solid var(--brand-eucalypt, #2d6e40)"
                       : "1px solid var(--roam-border)",
