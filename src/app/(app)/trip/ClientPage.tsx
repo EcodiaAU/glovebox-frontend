@@ -2414,40 +2414,76 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           style={{
-            padding: elevation?.profile ? "8px 20px 6px" : "16px 20px 6px",
+            padding: elevation?.profile ? "8px 20px 6px" : "10px 20px 6px",
             touchAction: "none",
             cursor: "grab",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
           }}
         >
-          <div className="trip-drag-handle" />
+          {/* Drag handle (prototype style) */}
+          <div style={{
+            width: 40, height: 4, borderRadius: 4,
+            background: "var(--c-border-strong)",
+          }}/>
+          {/* Snap dots */}
+          <div style={{ display: "flex", gap: 5 }}>
+            {(["peek", "expanded"] as const).map((s) => {
+              const active = sheetSnap === s;
+              return (
+                <button
+                  key={s}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => { e.stopPropagation(); haptic.selection(); setSheetSnap(s); }}
+                  aria-label={`Snap ${s}`}
+                  style={{
+                    width: active ? 18 : 6, height: 6, borderRadius: 999,
+                    background: active ? "var(--c-accent)" : "var(--c-border-strong)",
+                    transition: "width 0.18s ease, background 0.18s ease",
+                    border: 0, padding: 0, cursor: "pointer",
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
 
-        {/* Header (prototype layout: title row above + action row below) */}
-        <div style={{ padding: "0 20px 12px" }}>
-          {/* Row 1: title gets full width — no more cramping */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--c-accent)" style={{ flexShrink: 0 }}>
+        {/* Header (prototype CardHeader: star + title + subtitle + 2nd-row actions) */}
+        <div style={{ padding: "2px 20px 12px" }}>
+          {/* Row 1: star icon + title + subtitle */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--c-accent)" style={{ flexShrink: 0, marginTop: 2 }}>
               <path d="M12 3l2.7 5.5L21 9.4l-4.5 4.4 1 6.2L12 17l-5.5 3 1-6.2L3 9.4l6.3-.9L12 3z"/>
             </svg>
-            <div
-              className="t-display"
-              style={{
-                flex: 1, minWidth: 0,
-                fontSize: 18, fontWeight: 700, margin: 0,
-                color: "var(--c-text)", letterSpacing: "-0.3px",
-                lineHeight: 1.25,
-                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-              }}
-            >
-              {plan.label?.trim() || (() => {
-                const stops = plan.preview?.stops ?? [];
-                const start = stops.find((s) => s.type === "start");
-                const end = stops.find((s) => s.type === "end");
-                const startName = start?.name?.replace(/^My location$/i, "Current location") || null;
-                const endName = end?.name || null;
-                if (startName && endName && startName !== endName) return `${startName} → ${endName}`;
-                return startName || endName || "Untitled trip";
-              })()}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                className="t-display"
+                style={{
+                  fontSize: 18, fontWeight: 700, margin: 0,
+                  color: "var(--c-text)", letterSpacing: "-0.3px",
+                  lineHeight: 1.25,
+                  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                }}
+              >
+                {plan.label?.trim() || (() => {
+                  const stops = plan.preview?.stops ?? [];
+                  const start = stops.find((s) => s.type === "start");
+                  const end = stops.find((s) => s.type === "end");
+                  const startName = start?.name?.replace(/^My location$/i, "Current location") || null;
+                  const endName = end?.name || null;
+                  if (startName && endName && startName !== endName) return `${startName} → ${endName}`;
+                  return startName || endName || "Untitled trip";
+                })()}
+              </div>
+              <div className="t-muted" style={{ fontSize: 11, marginTop: 2 }}>
+                {(() => {
+                  const stops = plan.preview?.stops ?? [];
+                  const stopCount = stops.length;
+                  const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
+                  return distKm
+                    ? <><strong style={{ color: "var(--c-text)" }}>{distKm} km</strong> · {stopCount} stops</>
+                    : <>{stopCount} stops</>;
+                })()}
+              </div>
             </div>
           </div>
 
@@ -2557,6 +2593,67 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           </div>
         </div>
 
+        {/* StatRow (prototype: 3 chips below header — km / drive / surface) */}
+        {(() => {
+          const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
+          const durSec = navpack?.primary?.duration_s ?? null;
+          const drive = durSec ? (() => {
+            const h = Math.floor(durSec / 3600);
+            const m = Math.round((durSec % 3600) / 60);
+            return h > 0 ? `${h}h ${m.toString().padStart(2, "0")}` : `${m}m`;
+          })() : null;
+          const stopCount = (plan.preview?.stops ?? []).length;
+          if (distKm == null && drive == null) return null;
+          return (
+            <div style={{
+              padding: "0 20px 12px", display: "flex", gap: 8,
+              borderBottom: "1px solid var(--c-border)",
+            }}>
+              {distKm != null && (
+                <div style={{
+                  flex: 1, padding: "8px 10px", borderRadius: 10,
+                  background: "var(--c-surface-muted)",
+                  display: "flex", alignItems: "center", gap: 6,
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/>
+                    <path d="M9 17l2-2a3 3 0 014 0l2 2M6 15V9a3 3 0 013-3h0a3 3 0 013 3v6"/>
+                  </svg>
+                  <div className="t-display" style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.1, color: "var(--c-text)" }}>
+                    {distKm}<span style={{ color: "var(--c-text-muted)", fontWeight: 500, fontSize: 10, marginLeft: 2 }}>km</span>
+                  </div>
+                </div>
+              )}
+              {drive != null && (
+                <div style={{
+                  flex: 1, padding: "8px 10px", borderRadius: 10,
+                  background: "var(--c-surface-muted)",
+                  display: "flex", alignItems: "center", gap: 6,
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+                  </svg>
+                  <div className="t-display" style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.1, color: "var(--c-text)" }}>
+                    {drive}
+                  </div>
+                </div>
+              )}
+              <div style={{
+                flex: 1, padding: "8px 10px", borderRadius: 10,
+                background: "var(--c-surface-muted)",
+                display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 20l6-10 4 6 3-4 5 8H3z"/>
+                </svg>
+                <div className="t-mono" style={{ fontWeight: 700, fontSize: 11, lineHeight: 1.1, color: "var(--c-text)" }}>
+                  {stopCount} stops
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Scrollable content */}
         <div style={{ flex: 1, overflow: "hidden", touchAction: "pan-y" }}>
           <div
@@ -2564,24 +2661,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             style={{
               height: "100%",
               overflowY: "auto",
-              padding: "0 20px calc(var(--bottom-nav-height) + 320px)",
+              padding: "12px 20px calc(var(--bottom-nav-height) + 320px)",
             }}
           >
-            {/* ── Start Navigation button (shown when NOT actively navigating) ── */}
-            {!activeNav.isActive && navpack && (
-              <div style={{ marginBottom: 16 }}>
-                <StartNavigationButton
-                  onStart={handleStartNavigation}
-                  disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
-                />
-                {!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0) && (
-                  <div style={{ marginTop: 4, fontSize: 11, fontWeight: 600, color: "var(--roam-text-muted)", textAlign: "center" }}>
-                    Rebuild route to enable turn-by-turn
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* ── Flood route warning banner ── */}
             {flood?.route_passes_through_warning && (
               <div style={{
@@ -2659,6 +2741,67 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             />
           </div>
         </div>
+
+        {/* Persistent action bar (prototype: stops button + Start nav) — pinned to the
+             bottom of the sheet so it's always reachable regardless of scroll position.
+             Only shown when not actively navigating; the sheet itself collapses to peek
+             during turn-by-turn. */}
+        {!activeNav.isActive && (
+          <div style={{
+            position: "absolute",
+            left: 0, right: 0,
+            bottom: 300, // sheet has bottom:-300 so this sits at visible-bottom of sheet
+            padding: "10px 16px calc(8px + var(--bottom-nav-height))",
+            display: "flex", gap: 8, alignItems: "center",
+            borderTop: "1px solid var(--c-border)",
+            background: "var(--c-surface)",
+            zIndex: 2,
+          }}>
+            <button
+              type="button"
+              aria-label="Add stops"
+              onClick={() => { haptic.selection(); setSheetSnap("expanded"); }}
+              style={{
+                flex: "0 0 auto", height: 48, padding: "0 14px",
+                borderRadius: 14,
+                background: "var(--c-accent-tint)", color: "var(--c-accent)",
+                border: 0,
+                fontWeight: 700, fontSize: 13,
+                display: "inline-flex", alignItems: "center", gap: 6,
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Stops
+            </button>
+            {navpack && (
+              <button
+                type="button"
+                aria-label="Start navigation"
+                onClick={handleStartNavigation}
+                disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
+                style={{
+                  flex: 1, minHeight: 56,
+                  padding: "0 22px",
+                  borderRadius: 14,
+                  background: "var(--grad-cta)", color: "white",
+                  border: 0,
+                  fontWeight: 700, fontSize: 16,
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  boxShadow: "var(--sh-card)",
+                  letterSpacing: 0.2,
+                  opacity: navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0) ? 1 : 0.55,
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 11l18-7-7 18-2-8-9-3z"/>
+                </svg>
+                Start navigation
+              </button>
+            )}
+          </div>
+        )}
       </div>{/* end trip-bottom-sheet */}
 
       {/* Desktop-only panel toggle. Visible via CSS only at ≥900px;
