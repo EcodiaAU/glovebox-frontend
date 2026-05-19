@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- Transparent background. Mark scaled to 60% of canvas to live inside Android adaptive safe zone (66%). -->
-  <g transform="translate(307, 307) scale(0.6)">
-    <circle cx="512" cy="450" r="133" fill="#E8DFC9"/>
-    <line x1="205" y1="635" x2="819" y2="635" stroke="#E8DFC9" stroke-width="46" stroke-linecap="round"/>
-  </g>
+  <!-- Transparent background. Mark at natural coords already fits inside Android adaptive safe zone (inner 66%, x: 174..850, y: 174..850). Sun top at y=317, horizon at y=635, horizon x: 205..819. All inside. -->
+  <circle cx="512" cy="450" r="133" fill="#E8DFC9"/>
+  <line x1="205" y1="635" x2="819" y2="635" stroke="#E8DFC9" stroke-width="46" stroke-linecap="round"/>
 </svg>

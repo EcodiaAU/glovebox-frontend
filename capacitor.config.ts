@@ -24,7 +24,7 @@ const config: CapacitorConfig = {
       // permanent black screen.
       launchAutoHide: true,
       launchShowDuration: 3000,
-      backgroundColor: "#0a0a0a",
+      backgroundColor: "#A8431F",
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true,
@@ -48,14 +48,14 @@ const config: CapacitorConfig = {
 
   ios: {
     contentInset: "never",
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#A8431F",
     preferredContentMode: "recommended",
     allowsLinkPreview: false,
     scrollEnabled: true,
   },
 
   android: {
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#A8431F",
     allowMixedContent: false,
   },
 };

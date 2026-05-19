@@ -2459,17 +2459,18 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             </div>
           </div>
 
-          {/* Row 2: action row — Plans / Invite / Share live here with breathing room. Upgrade pinned right. */}
+          {/* Row 2: action row — each pill takes flex:1 so the row stretches edge-to-edge,
+               matching the StatRow chips below visually. Upgrade pinned right when shown. */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", gap: 6, flex: 1 }}>
+            <div style={{ display: "flex", gap: 8, flex: 1 }}>
               <button
                 type="button"
                 aria-label="Plans"
                 onClick={() => { haptic.selection(); setPlansDot(false); setDrawOpen(true); }}
                 style={{
-                  position: "relative",
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  height: 36, padding: "0 12px",
+                  position: "relative", flex: 1,
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                  height: 36,
                   borderRadius: 999,
                   background: "var(--c-surface-muted)", color: "var(--c-text)",
                   border: "1px solid var(--c-border)",
@@ -2491,8 +2492,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                 aria-label="Invite"
                 onClick={() => { haptic.selection(); setInviteMode("create"); setInviteOpen(true); }}
                 style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  height: 36, padding: "0 12px",
+                  flex: 1,
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                  height: 36,
                   borderRadius: 999,
                   background: "var(--c-surface-muted)", color: "var(--c-text)",
                   border: "1px solid var(--c-border)",
@@ -2527,8 +2529,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                   });
                 }}
                 style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  height: 36, padding: "0 12px",
+                  flex: 1,
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                  height: 36,
                   borderRadius: 999,
                   background: "var(--c-surface-muted)", color: "var(--c-text)",
                   border: "1px solid var(--c-border)",
@@ -2716,24 +2719,26 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
       </div>{/* end trip-bottom-sheet */}
 
-      {/* Persistent action bar — outside the sheet, above the bottom tab bar.
-           Stays visible whether the sheet is peek, expanded, or full so the
-           Start nav CTA is always reachable. Hidden during T-b-T (the sheet
-           collapses; nav HUD takes over). Slides out with the tab bar at full
-           snap (body[data-trip-sheet="full"]) so the sheet fully covers the
-           screen. */}
+      {/* Persistent action bar — outside the sheet, anchored to the very bottom of
+           the trip-app-container. At peek the bottom tab bar is visible so we lift
+           the action bar above it via translateY(-tab-h). At expanded the tab bar
+           slides out, so the action bar drops down to 0 to take the freed space.
+           At full both slide out together so the sheet fully covers the screen. */}
       {!activeNav.isActive && (
         <div style={{
           position: "absolute",
           left: 0, right: 0,
-          bottom: "var(--roam-tab-h, 80px)", // sits just above the bottom tab bar
-          padding: "10px 16px",
+          bottom: 0,
+          padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
           display: "flex", gap: 8, alignItems: "center",
           background: "var(--c-surface)",
           borderTop: "1px solid var(--c-border)",
           zIndex: 22, // above sheet (20) but below modals
           transition: "transform var(--dur-normal) ease, opacity var(--dur-fast) ease",
-          transform: sheetSnap === "full" ? "translateY(calc(100% + var(--roam-tab-h, 80px)))" : "translateY(0)",
+          transform:
+            sheetSnap === "full"     ? "translateY(calc(100% + var(--roam-tab-h, 80px)))" :
+            sheetSnap === "expanded" ? "translateY(0)" :
+                                       "translateY(calc(-1 * var(--roam-tab-h, 80px)))",
           opacity: sheetSnap === "full" ? 0 : 1,
           pointerEvents: sheetSnap === "full" ? "none" : "auto",
         }}>
