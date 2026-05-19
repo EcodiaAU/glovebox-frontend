@@ -1915,14 +1915,17 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   // so peek/nav snaps add 300px to compensate.
   //   full:      calc(safe-top - 80) — sheet pulled up by the 80px top-gap so it covers screen
   //   expanded:  0px (sheet fills from 80px down)
-  //   peek:      calc(100% - 520px - safe-bottom)   [220px visible + 300px offset]
+  //   peek:      calc(100% - 660px - safe-bottom)   shows ~280px of sheet content above
+  //              the persistent action bar (which sits at bottom: tab-h).
+  //              That's enough room for drag handle + CardHeader + action row +
+  //              StatRow without overlapping the action bar.
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
       case "full":      return "calc(var(--roam-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       case "peek":
-      default:          return `calc(100% - 520px - var(--roam-safe-bottom, 0px))`;
+      default:          return `calc(100% - 660px - var(--roam-safe-bottom, 0px))`;
     }
   })();
   const sheetTransform = isDraggingState
