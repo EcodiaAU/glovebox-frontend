@@ -102,14 +102,19 @@
   opacity: 1;
   transform: translateY(0) scale(1);
 }
-/* Nav mode: dropdown opens below the button instead of to the left */
+/* Nav mode: dropdown opens to the LEFT of the NavRail (matches prototype).
+   The rail sits flush on the right edge, so a left-opening menu reads as a
+   slide-out drawer rather than dropping over the map content below. */
 .layer-menu-dropdown--nav {
-  top: calc(100% + 8px);
-  right: 0;
+  top: 0;
+  right: calc(100% + 12px);
   transform-origin: top right;
 }
 .layer-menu-dropdown--nav:not(.layer-menu-dropdown--open) {
-  transform: translateY(-8px) scale(0.96);
+  transform: translateX(8px) scale(0.96);
+}
+.layer-menu-dropdown--nav.layer-menu-dropdown--open {
+  transform: translateX(0) scale(1);
 }
 .layer-menu-dropdown > div:first-child {
   mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent 100%);
