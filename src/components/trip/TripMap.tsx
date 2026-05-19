@@ -1951,7 +1951,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           filter: ["has", "point_count"],
           paint: {
             "circle-color": ["step", ["get", "point_count"], "#22804a", 10, "#1e7342", 30, "#186338", 80, "#145530"],
-            "circle-radius": ["step", ["get", "point_count"], 18, 10, 22, 30, 26, 80, 32],
+            "circle-radius": ["step", ["get", "point_count"], 12, 10, 14, 30, 16, 80, 20],
             "circle-stroke-color": "rgba(255,255,255,0.55)",
             "circle-stroke-width": 2.5,
             "circle-opacity": 0.95,
@@ -2320,7 +2320,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           filter: ["has", "point_count"],
           paint: {
             "circle-color": ["step", ["get", "point_count"], "#b8872a", 10, "#a87824", 30, "#916520", 80, "#7a551a"],
-            "circle-radius": ["step", ["get", "point_count"], 18, 10, 22, 30, 26, 80, 32],
+            "circle-radius": ["step", ["get", "point_count"], 12, 10, 14, 30, 16, 80, 20],
             "circle-stroke-color": "rgba(255,255,255,0.55)",
             "circle-stroke-width": 2.5,
             "circle-opacity": 0.95,
