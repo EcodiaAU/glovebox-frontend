@@ -14,7 +14,6 @@ import { saveEmergencyContactLocalFirst, deleteEmergencyContactLocalFirst } from
 import type { EmergencyContactLocal } from "@/lib/types/emergency";
 import { PhoneCall, MessageSquareText, Plus, Pencil, Trash2, Satellite, RefreshCw } from "lucide-react";
 import { Icon, NetworkPill, PrimaryBtn, GhostBtn } from "@/components/roam-ui-v2/shared";
-import { FauxMap } from "@/components/roam-ui-v2/faux-map";
 
 function nowIso() {
   return new Date().toISOString();
@@ -520,77 +519,84 @@ export default function EmergencyClientPage() {
           <NetworkPill state={isOnline ? "online" : "offline"} compact />
         </div>
 
-        {/* LOCATION CARD */}
+        {/* LOCATION CARD (real coords, no fake map) */}
         <div style={{
           borderRadius: 18, overflow: "hidden",
           border: "1px solid var(--c-border)",
           background: "var(--c-surface)",
           boxShadow: "var(--sh-card)",
+          padding: "14px 16px",
         }}>
-          <div style={{ position: "relative", height: 130 }}>
-            <FauxMap width={370} height={130} style="satellite" clusterSize="small"/>
-            <div style={{
-              position: "absolute", inset: 0, display: "flex",
-              alignItems: "center", justifyContent: "center",
-            }}>
-              <div style={{ position: "relative", width: 40, height: 40 }}>
-                <div style={{
-                  position: "absolute", inset: 0, borderRadius: 999,
-                  background: "rgba(77,184,240,0.25)", animation: "ping-ring 2s ease-out infinite",
-                }}/>
-                <div style={{
-                  position: "absolute", inset: 12, borderRadius: 999,
-                  background: "var(--c-info)", border: "3px solid white",
-                }}/>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+            <div style={{ position: "relative", width: 44, height: 44, flexShrink: 0 }}>
+              <div style={{
+                position: "absolute", inset: 0, borderRadius: 999,
+                background: lat != null && lon != null ? "rgba(77,184,240,0.18)" : "rgba(0,0,0,0.04)",
+                animation: lat != null && lon != null ? "ping-ring 2s ease-out infinite" : "none",
+              }}/>
+              <div style={{
+                position: "absolute", inset: 12, borderRadius: 999,
+                background: lat != null && lon != null ? "var(--c-info)" : "var(--c-text-muted)",
+                border: "3px solid var(--c-surface)",
+              }}/>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div className="t-mono" style={{
+                fontSize: 10, color: "var(--c-text-muted)",
+                textTransform: "uppercase", letterSpacing: 0.5,
+              }}>Current location</div>
+              <div className="t-mono" style={{
+                fontSize: 20, fontWeight: 700, color: "var(--c-text)",
+                marginTop: 2, letterSpacing: -0.3, lineHeight: 1.1,
+                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              }}>
+                {lat != null && lon != null ? `${fmt5(lat)}, ${fmt5(lon)}` : (isLocating ? "Locating..." : "Location unavailable")}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4 }}>
+                {accuracyM != null && (
+                  <span className="t-mono" style={{ fontSize: 12, color: "var(--c-success)", fontWeight: 600 }}>
+                    ± {Math.round(accuracyM)} m
+                  </span>
+                )}
+                {isLocating && (
+                  <span className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
+                    {String(Math.floor(gpsSecondsLeft / 60)).padStart(2, "0")}:{String(gpsSecondsLeft % 60).padStart(2, "0")}
+                  </span>
+                )}
+                {!isLocating && lat != null && lon != null && (
+                  <span className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
+                    Last fix just now
+                  </span>
+                )}
               </div>
             </div>
-            <div style={{
-              position: "absolute", left: 10, bottom: 10,
-              padding: "4px 10px", borderRadius: 999, background: "rgba(0,0,0,0.6)", color: "white",
-              fontSize: 11, fontWeight: 700,
-            }}>
-              {isLocating ? `Locating · ${String(Math.floor(gpsSecondsLeft / 60)).padStart(2, "0")}:${String(gpsSecondsLeft % 60).padStart(2, "0")}` : (lat == null || lon == null ? "No fix yet" : `Last fix · just now`)}
-            </div>
           </div>
 
-          <div style={{ padding: "12px 14px" }}>
+          <div style={{ display: "flex", gap: 8 }}>
+            <PrimaryBtn
+              style={{ flex: 1 }}
+              onClick={() => { haptic.medium(); fetchLocationAuto(true); }}
+            >
+              <Icon name="target" size={16} stroke={2.2}/> Get new fix
+            </PrimaryBtn>
+            {lat != null && lon != null && (
+              <GhostBtn onClick={() => window.open(mapsLink(lat, lon), "_blank")}>
+                <Icon name="map" size={16}/> Maps
+              </GhostBtn>
+            )}
+          </div>
+
+          {isLocating && (
             <div className="t-mono" style={{
+              marginTop: 10, padding: "8px 10px", borderRadius: 10,
+              background: "var(--c-surface-muted)",
               fontSize: 11, color: "var(--c-text-muted)",
-              textTransform: "uppercase", letterSpacing: 0.4,
-            }}>Current location</div>
-            <div className="t-mono" style={{
-              fontSize: 18, fontWeight: 700, color: "var(--c-text)",
-              marginTop: 4, letterSpacing: -0.2,
+              display: "flex", alignItems: "center", gap: 6,
             }}>
-              {lat != null && lon != null ? `${fmt5(lat)}, ${fmt5(lon)}` : (isLocating ? waitMessage : "Location unavailable")}
+              <Icon name="sync" size={12} stroke={2} style={{ animation: "spin-360 1.4s linear infinite" }}/>
+              {waitMessage}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
-              {accuracyM != null && (
-                <div className="t-mono" style={{ fontSize: 12, color: "var(--c-success)" }}>
-                  ± {Math.round(accuracyM)} m
-                </div>
-              )}
-              {lat != null && lon != null && (
-                <div className="t-mono" style={{ fontSize: 12, color: "var(--c-text-muted)" }}>
-                  GPS fix
-                </div>
-              )}
-            </div>
-
-            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-              <PrimaryBtn
-                style={{ flex: 1 }}
-                onClick={() => { haptic.medium(); fetchLocationAuto(true); }}
-              >
-                <Icon name="target" size={16} stroke={2.2}/> Get new fix
-              </PrimaryBtn>
-              {lat != null && lon != null && (
-                <GhostBtn onClick={() => window.open(mapsLink(lat, lon), "_blank")}>
-                  <Icon name="map" size={16}/> Open in Maps
-                </GhostBtn>
-              )}
-            </div>
-          </div>
+          )}
         </div>
 
         {/* 000 + MESSAGE-CONTACTS row */}

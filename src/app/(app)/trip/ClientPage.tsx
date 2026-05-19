@@ -2422,132 +2422,138 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           <div className="trip-drag-handle" />
         </div>
 
-        {/* Header */}
-        <div style={{ padding: "0 20px 14px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div
-                className="roam-wrap-2"
+        {/* Header (prototype layout: title row above + action row below) */}
+        <div style={{ padding: "0 20px 12px" }}>
+          {/* Row 1: title gets full width — no more cramping */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--c-accent)" style={{ flexShrink: 0 }}>
+              <path d="M12 3l2.7 5.5L21 9.4l-4.5 4.4 1 6.2L12 17l-5.5 3 1-6.2L3 9.4l6.3-.9L12 3z"/>
+            </svg>
+            <div
+              className="t-display"
+              style={{
+                flex: 1, minWidth: 0,
+                fontSize: 18, fontWeight: 700, margin: 0,
+                color: "var(--c-text)", letterSpacing: "-0.3px",
+                lineHeight: 1.25,
+                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              }}
+            >
+              {plan.label?.trim() || (() => {
+                const stops = plan.preview?.stops ?? [];
+                const start = stops.find((s) => s.type === "start");
+                const end = stops.find((s) => s.type === "end");
+                const startName = start?.name?.replace(/^My location$/i, "Current location") || null;
+                const endName = end?.name || null;
+                if (startName && endName && startName !== endName) return `${startName} → ${endName}`;
+                return startName || endName || "Untitled trip";
+              })()}
+            </div>
+          </div>
+
+          {/* Row 2: action row — Plans / Invite / Share live here with breathing room. Upgrade pinned right. */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", gap: 6, flex: 1 }}>
+              <button
+                type="button"
+                aria-label="Plans"
+                onClick={() => { haptic.selection(); setPlansDot(false); setDrawOpen(true); }}
                 style={{
-                  fontSize: 18, fontWeight: 800, margin: 0,
-                  color: "var(--roam-text)", letterSpacing: "-0.3px",
-                  lineHeight: 1.25,
+                  position: "relative",
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  height: 36, padding: "0 12px",
+                  borderRadius: 999,
+                  background: "var(--c-surface-muted)", color: "var(--c-text)",
+                  border: "1px solid var(--c-border)",
+                  fontSize: 12, fontWeight: 700,
                 }}
               >
-                {plan.label?.trim() || (() => {
-                  // Derive a route label from start → end when the user hasn't
-                  // named the trip. Beats the generic "Trip Plan" placeholder
-                  // by giving each unnamed trip a distinct, recognisable title.
-                  const stops = plan.preview?.stops ?? [];
-                  const start = stops.find((s) => s.type === "start");
-                  const end = stops.find((s) => s.type === "end");
-                  const startName = start?.name?.replace(/^My location$/i, "Current location") || null;
-                  const endName = end?.name || null;
-                  if (startName && endName && startName !== endName) {
-                    return `${startName} → ${endName}`;
-                  }
-                  return startName || endName || "Untitled trip";
-                })()}
-              </div>
+                <Library size={14} strokeWidth={2.2} />
+                Plans
+                {plansDot && (
+                  <span aria-label="New plan available" style={{
+                    width: 6, height: 6, borderRadius: 999,
+                    background: "var(--c-accent)",
+                  }}/>
+                )}
+              </button>
+
+              <button
+                type="button"
+                aria-label="Invite"
+                onClick={() => { haptic.selection(); setInviteMode("create"); setInviteOpen(true); }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  height: 36, padding: "0 12px",
+                  borderRadius: 999,
+                  background: "var(--c-surface-muted)", color: "var(--c-text)",
+                  border: "1px solid var(--c-border)",
+                  fontSize: 12, fontWeight: 700,
+                }}
+              >
+                <UserPlus size={14} strokeWidth={2.2} />
+                Invite
+              </button>
+
+              <button
+                type="button"
+                aria-label="Share trip card"
+                onClick={() => {
+                  haptic.selection();
+                  const preview = plan?.preview;
+                  if (!preview) return;
+                  const cardData: ShareCardData = {
+                    stops: preview.stops,
+                    geometry: preview.geometry,
+                    distance_m: preview.distance_m,
+                    duration_s: preview.duration_s,
+                    label: plan?.label ?? null,
+                  };
+                  const label = plan?.label?.trim() || (() => {
+                    const s = preview.stops.find((x) => x.type === "start");
+                    const e = preview.stops.find((x) => x.type === "end");
+                    return `${s?.name || "Start"} → ${e?.name || "End"}`;
+                  })();
+                  captureMapSnapshot(preview.bbox).then((mapImageUrl) => {
+                    setNativeSharePayload({ data: cardData, mapImageUrl, label });
+                  });
+                }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  height: 36, padding: "0 12px",
+                  borderRadius: 999,
+                  background: "var(--c-surface-muted)", color: "var(--c-text)",
+                  border: "1px solid var(--c-border)",
+                  fontSize: 12, fontWeight: 700,
+                }}
+              >
+                <ImageIcon size={14} strokeWidth={2.2} />
+                Share
+              </button>
             </div>
 
-            {/* Trip-management action cluster: Plans / Invite / Share — three
-                related actions grouped in one capsule so they read as a single
-                control bar. Upgrade stays outside as a commercial CTA. */}
-            <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
-              <div className="roam-action-cluster">
-                <button
-                  type="button"
-                  aria-label="Plans"
-                  onClick={() => { haptic.selection(); setPlansDot(false); setDrawOpen(true); }}
-                >
-                  <Library size={16} strokeWidth={2} />
-                  {plansDot && (
-                    <span
-                      aria-label="New plan available"
-                      style={{
-                        position: "absolute",
-                        top: 4,
-                        right: 4,
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        background: "var(--roam-accent, #b5452e)",
-                        border: "2px solid var(--roam-surface-hover)",
-                        pointerEvents: "none",
-                      }}
-                    />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Invite"
-                  onClick={() => { haptic.selection(); setInviteMode("create"); setInviteOpen(true); }}
-                >
-                  <UserPlus size={16} strokeWidth={2} />
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Share trip card"
-                  onClick={() => {
-                    haptic.selection();
-                    const preview = plan?.preview;
-                    if (!preview) return;
-                    const cardData: ShareCardData = {
-                      stops: preview.stops,
-                      geometry: preview.geometry,
-                      distance_m: preview.distance_m,
-                      duration_s: preview.duration_s,
-                      label: plan?.label ?? null,
-                    };
-                    const label = plan?.label?.trim() || (() => {
-                      const s = preview.stops.find((x) => x.type === "start");
-                      const e = preview.stops.find((x) => x.type === "end");
-                      return `${s?.name || "Start"} → ${e?.name || "End"}`;
-                    })();
-                    captureMapSnapshot(preview.bbox).then((mapImageUrl) => {
-                      setNativeSharePayload({ data: cardData, mapImageUrl, label });
-                    });
-                  }}
-                >
-                  <ImageIcon size={16} strokeWidth={2} />
-                </button>
-              </div>
-
-              {/* Upgrade - show when NOT unlocked; hide Untethered badge when already unlocked */}
-              {unlocked ? null : unlocked === false ? (
-                <button
-                  type="button"
-                  className="trip-interactive"
-                  aria-label="Upgrade to Roam Untethered"
-                  onClick={() => { haptic.selection(); setPaywallVariant("upgrade"); setPaywallOpen(true); }}
-                  style={{
-                    position: "relative",
-                    display: "flex", alignItems: "center", gap: 4,
-                    background: "linear-gradient(135deg, #122d1e 0%, var(--brand-eucalypt-dark, #1f5236) 40%, var(--brand-eucalypt, #2d6e40) 80%, #3d8f54 100%)",
-                    borderRadius: "var(--r-card)", padding: "0 12px",
-                    height: 40, border: "1px solid var(--roam-border)", cursor: "pointer",
-                    boxShadow: "var(--shadow-medium)",
-                    overflow: "hidden",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  <div style={{
-                    position: "absolute", inset: 0,
-                    background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.10) 50%, transparent 70%)",
-                    borderRadius: "inherit", pointerEvents: "none",
-                  }} />
-                  <span style={{ fontSize: 10, fontWeight: 800, color: "var(--on-color)", letterSpacing: "0.06em", textTransform: "uppercase", position: "relative" }}>
-                    Upgrade
-                  </span>
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0, position: "relative" }}>
-                    <path d="M2 5h6M5.5 2.5L8 5l-2.5 2.5" stroke="rgba(255,255,255,0.85)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-              ) : null}
-            </div>
+            {/* Upgrade pinned to the right with prototype gradient CTA styling */}
+            {unlocked === false && (
+              <button
+                type="button"
+                aria-label="Upgrade to Roam Untethered"
+                onClick={() => { haptic.selection(); setPaywallVariant("upgrade"); setPaywallOpen(true); }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  height: 36, padding: "0 12px",
+                  borderRadius: 999,
+                  background: "var(--grad-cta)", color: "white",
+                  border: "none",
+                  fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
+                  flexShrink: 0,
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 18h18l-2-10-4 4-4-7-4 7-4-4-2 10z"/>
+                </svg>
+                Pro
+              </button>
+            )}
           </div>
         </div>
 

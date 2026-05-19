@@ -35,7 +35,6 @@ import { GuideView, type GuideTabBarProps } from "@/components/trip/GuideView";
 
 import { Sparkles, MapPin, Wifi, WifiOff, Satellite, AlertTriangle, UserCircle } from "lucide-react";
 import { Icon, NetworkPill, AccountBtn } from "@/components/roam-ui-v2/shared";
-import { FauxMap } from "@/components/roam-ui-v2/faux-map";
 import { WatermarkCard } from "@/components/ui/WatermarkCard";
 import { GuideSkeleton } from "./GuideSkeleton";
 
@@ -575,66 +574,100 @@ export default function GuideClientPage(props: {
         )}
       </div>
 
-      {/* ── MAP STRIP (real trip progress + GPS + error inline) ── */}
-      <div style={{
-        position: "relative", height: 168, margin: "0 16px",
-        borderRadius: 18, overflow: "hidden",
-        border: "1px solid var(--c-border)",
-        boxShadow: "var(--sh-card)",
-        flexShrink: 0,
-      }}>
-        <FauxMap
-          width={370} height={168} style="terrain"
-          progress={tripProgress && tripProgress.total_km > 0 ? Math.min(1, tripProgress.km_from_start / tripProgress.total_km) : 0}
-          showProgress
-          showCar={!!geo.position}
-          clusterSize="small"
-        />
-        <div style={{ position: "absolute", left: 10, top: 10, display: "flex", gap: 8 }}>
+      {/* ── PROGRESS BAR (real trip progress, no fake map) ── */}
+      {tripProgress && tripProgress.total_km > 0 && (
+        <div style={{
+          margin: "8px 16px 0",
+          padding: "12px 14px",
+          borderRadius: 14,
+          background: "var(--c-surface)",
+          border: "1px solid var(--c-border)",
+          boxShadow: "var(--sh-card)",
+          flexShrink: 0,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+            <div className="t-mono" style={{
+              fontSize: 10, color: "var(--c-text-muted)",
+              textTransform: "uppercase", letterSpacing: 0.4,
+            }}>Trip progress</div>
+            <div className="t-mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--c-accent)" }}>
+              {Math.round((tripProgress.km_from_start / tripProgress.total_km) * 100)}%
+            </div>
+          </div>
+          <div style={{ position: "relative", height: 8, borderRadius: 4, background: "var(--c-surface-muted)", overflow: "hidden" }}>
+            <div style={{
+              position: "absolute", left: 0, top: 0, bottom: 0,
+              width: `${Math.min(100, (tripProgress.km_from_start / tripProgress.total_km) * 100)}%`,
+              background: "linear-gradient(90deg, var(--c-accent), var(--c-success))",
+              transition: "width 0.5s ease-out",
+            }}/>
+            {(() => {
+              const stops = (navpack?.req?.stops ?? plan.preview?.stops ?? []) as TripStop[];
+              const legs = navpack?.primary?.legs ?? [];
+              if (stops.length < 2 || legs.length === 0) return null;
+              let cumKm = 0;
+              const markers: { pct: number; visited: boolean; name: string }[] = [];
+              markers.push({
+                pct: 0,
+                visited: tripProgress.visited_stop_ids.includes(stops[0]?.id ?? ""),
+                name: stops[0]?.name ?? "",
+              });
+              for (let i = 0; i < legs.length; i++) {
+                cumKm += legs[i].distance_m / 1000;
+                const stop = stops[i + 1];
+                if (stop) markers.push({
+                  pct: (cumKm / tripProgress.total_km) * 100,
+                  visited: tripProgress.visited_stop_ids.includes(stop.id ?? ""),
+                  name: stop.name ?? "",
+                });
+              }
+              return markers.map((m, idx) => (
+                <div key={idx} title={m.name} style={{
+                  position: "absolute",
+                  left: `${Math.min(100, m.pct)}%`, top: -1,
+                  width: 10, height: 10, borderRadius: 999,
+                  background: m.visited ? "var(--c-accent)" : "var(--c-surface)",
+                  border: "2px solid var(--c-border-strong)",
+                  transform: "translateX(-50%)", zIndex: 2,
+                }}/>
+              ));
+            })()}
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+            <div className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
+              {Math.round(tripProgress.km_from_start)} km done
+            </div>
+            <div className="t-mono" style={{ fontSize: 11, fontWeight: 700, color: "var(--c-text)" }}>
+              {Math.round(tripProgress.km_remaining)} km left
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GPS status pill */}
+      {(geo.loading || geo.error) && (
+        <div style={{ margin: "8px 16px 0", flexShrink: 0 }}>
           {geo.loading ? (
             <div style={{
               display: "inline-flex", alignItems: "center", gap: 6,
               padding: "6px 10px", borderRadius: 999,
               background: "var(--c-surface)", border: "1px solid var(--c-border)",
-              boxShadow: "var(--sh-card)",
               color: "var(--c-text-muted)", fontSize: 12, fontWeight: 700,
             }}>
-              <Satellite size={14}/> GPS…
+              <Satellite size={14}/> Getting GPS fix…
             </div>
-          ) : geo.error ? (
+          ) : (
             <div style={{
               display: "inline-flex", alignItems: "center", gap: 6,
               padding: "6px 10px", borderRadius: 999,
               background: "var(--c-warn-bg)", color: "var(--c-warn-text)",
               fontSize: 12, fontWeight: 700,
             }}>
-              <AlertTriangle size={14}/> No GPS
+              <AlertTriangle size={14}/> {geo.error}
             </div>
-          ) : null}
+          )}
         </div>
-        {tripProgress && tripProgress.total_km > 0 && (
-          <div style={{ position: "absolute", left: 10, right: 10, bottom: 10 }}>
-            <div style={{
-              display: "flex", alignItems: "center", gap: 8,
-              padding: "6px 10px", borderRadius: 12,
-              background: "rgba(0,0,0,0.55)", color: "white",
-            }}>
-              <div className="t-mono" style={{ fontSize: 11, fontWeight: 700, minWidth: 36 }}>
-                {Math.round((tripProgress.km_from_start / tripProgress.total_km) * 100)}%
-              </div>
-              <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.25)", overflow: "hidden" }}>
-                <div style={{
-                  width: `${Math.min(100, (tripProgress.km_from_start / tripProgress.total_km) * 100)}%`,
-                  height: "100%", background: "var(--c-accent)",
-                }}/>
-              </div>
-              <div className="t-mono" style={{ fontSize: 11, fontWeight: 700 }}>
-                {Math.round(tripProgress.km_remaining)} km left
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       {err ? (
         <div style={{
