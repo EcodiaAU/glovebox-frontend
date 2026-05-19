@@ -33,18 +33,9 @@ const ARROW_SVGS: Record<string, string> = {
   "depart":            "M4 2v20M4 2l12 7-12 7",
 };
 
-// Dark, high-contrast background: readable in direct sunlight on day and night themes.
-const NAV_CARD_BG = "rgba(18, 14, 10, 0.93)";
-
 export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple }: Props) {
-  const currentStep = nav.currentStep;  // step currently being traversed (road name source)
-  const nextStep    = nav.nextStep;     // upcoming maneuver point
-
-  // Bug 1 fix: the HUD must show the UPCOMING maneuver instruction (nextStep), not
-  // the already-executed one (currentStep). Each step's maneuver point is at its START,
-  // so currentStep's maneuver is already behind the driver. nextStep's maneuver is what
-  // the driver needs to do next. Falls back to currentStep only on the final arrival
-  // segment when nextStep is null.
+  const currentStep = nav.currentStep;
+  const nextStep    = nav.nextStep;
   const displayStep = nextStep ?? currentStep;
 
   const maneuverType     = displayStep?.maneuver?.type;
@@ -55,151 +46,136 @@ export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple 
     [maneuverType, maneuverModifier],
   );
 
-  const isImminent    = nav.distToNextManeuver_m < 100;
-  const isApproaching = nav.distToNextManeuver_m < 500;
+  const isImminent = nav.distToNextManeuver_m < 100;
 
   if (!visible || !displayStep) return null;
 
-  const cs  = simple ? 72 : 66;
-  const pad = simple ? 8  : 7;
+  // Prototype: 64x64 rounded-square accent-tint icon plate (was: full circle on dark).
+  // Tile sizes scale slightly in simple mode for accessibility.
+  const tile = simple ? 72 : 64;
+  // The maneuver arrow always renders in the accent colour for legibility against
+  // the accent-tint background, with an imminent override to ochre.
+  const accentColor = isImminent
+    ? "var(--brand-ochre, var(--c-cat-solar, #d97706))"
+    : "var(--c-accent, var(--brand-sky, #1a6fa6))";
+  const tilebg = isImminent
+    ? "var(--c-warn-bg, rgba(217,119,6,0.14))"
+    : "var(--c-accent-tint, rgba(26,111,166,0.12))";
 
-  const circleColor = isImminent
-    ? "var(--brand-ochre)"
-    : isApproaching
-    ? "var(--brand-sky-dark, #145a88)"
-    : "var(--brand-eucalypt-dark, #1f5236)";
-
-  // Distance text colour: state-coded on dark background.
-  const distColor = isImminent
-    ? "var(--brand-ochre)"
-    : isApproaching
-    ? "#4DB8F0"
-    : "#f0ece6";
-
-  // Current road name - the street the driver is on right now.
+  // Current road name — secondary descriptor.
   const streetText = currentStep?.name
     ? (currentStep.ref && !simple
         ? `${currentStep.name} · ${currentStep.ref}`
         : currentStep.name)
     : null;
 
-  // CLS Site 1 fix: lock outer wrapper to the card height so the absolutely-positioned
-  // container never collapses between nav states (approaching / long-stretch / re-entering).
-  // The inner nav-hud-unroll already has height: cs + pad * 2; the minHeight on the outer
-  // wrapper guarantees the space is reserved even during the entrance animation's scale(0) phase.
   return (
     <div className="roam-nav-hud" style={{
       position: "absolute",
-      top: "calc(env(safe-area-inset-top, 0px) + 28px)",
+      top: "calc(env(safe-area-inset-top, 0px) + 12px)",
       left: 12,
       right: 12,
       zIndex: 30,
       pointerEvents: "none",
-      minHeight: cs + pad * 2,
     }}>
       <div
         className="nav-hud-unroll"
         style={{
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ["--nav-circle-clip" as any]: `calc(100% - ${cs + pad * 2}px)`,
           display: "flex",
           alignItems: "center",
-          gap: 12,
-          height: cs + pad * 2,
-          padding: `${pad}px 20px ${pad}px ${pad}px`,
-          borderRadius: (cs + pad * 2) / 2,
-          background: NAV_CARD_BG,
-          boxShadow: "0 4px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.3)",
+          gap: 14,
+          padding: 14,
+          borderRadius: 18,
+          /* Theme-aware: white in bright mode, near-black in tactical-night.
+             Was hardcoded rgba(18,14,10,0.93) which never changed. */
+          background: "var(--c-nav-card, var(--roam-surface, #fff))",
+          border: "1px solid var(--c-border, var(--roam-border))",
+          boxShadow: "var(--sh-floating, 0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10))",
           pointerEvents: "auto",
         }}
       >
-        {/* Maneuver icon circle - coloured by urgency state */}
-        <svg
+        {/* Maneuver icon tile (prototype: rounded-square accent-tint, NOT a solid circle) */}
+        <div
           className={isImminent ? "hud-imminent" : undefined}
-          width={cs}
-          height={cs}
-          viewBox={`0 0 ${cs} ${cs}`}
           style={{
             flexShrink: 0,
-            display: "block",
-            width: cs,
-            height: cs,
-            maxWidth: "none",
-            maxHeight: "none",
-            transition: "filter 0.4s ease",
-            overflow: "visible",
+            width: tile,
+            height: tile,
+            borderRadius: 16,
+            background: tilebg,
+            color: accentColor,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background 0.3s ease, color 0.3s ease",
           }}
         >
-          <circle cx={cs / 2} cy={cs / 2} r={cs / 2} fill={circleColor} style={{ transition: "fill 0.4s ease" }} />
-          {(() => {
-            const iconSize = simple ? 36 : 32;
-            const scale    = iconSize / 24;
-            const offset   = (cs - iconSize) / 2;
-            const pathD    = ARROW_SVGS[iconName] ?? ARROW_SVGS["arrow-up"];
-            const isArrive = iconName === "arrive" || iconName === "depart";
-            return (
-              <g transform={`translate(${offset}, ${offset}) scale(${scale})`}>
+          <svg
+            width={simple ? 38 : 34}
+            height={simple ? 38 : 34}
+            viewBox="0 0 24 24"
+            style={{ overflow: "visible" }}
+          >
+            {(() => {
+              const pathD    = ARROW_SVGS[iconName] ?? ARROW_SVGS["arrow-up"];
+              const isArrive = iconName === "arrive" || iconName === "depart";
+              return (
                 <path
                   d={pathD}
-                  fill={isArrive ? "var(--on-color, #faf6ef)" : "none"}
-                  stroke={isArrive ? "none" : "var(--on-color, #faf6ef)"}
-                  strokeWidth={2.5}
+                  fill={isArrive ? "currentColor" : "none"}
+                  stroke={isArrive ? "none" : "currentColor"}
+                  strokeWidth={2.4}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-              </g>
-            );
-          })()}
-        </svg>
+              );
+            })()}
+          </svg>
+        </div>
 
-        {/* Primary direction word + current road name (demoted secondary) */}
+        {/* Middle column: distance (big, accent) + short detail + current road name */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          {/* Direction verb - what to do at the upcoming maneuver. Large, bright.
-              Wrap to 2 lines instead of ellipsing so long street names like
-              "Great Northern Highway" remain readable. */}
           <div
-            className="roam-wrap-2"
+            className="t-display roam-wrap-1"
             style={{
-              fontSize: simple ? 22 : 18,
-              fontWeight: 950,
-              color: "#f0ece6",
-              lineHeight: 1.15,
-              letterSpacing: "-0.3px",
+              fontWeight: 800,
+              fontSize: simple ? 32 : 28,
+              lineHeight: 1,
+              letterSpacing: "-0.6px",
+              color: accentColor,
+              fontVariantNumeric: "tabular-nums",
+              transition: "color 0.3s ease",
+            }}
+          >
+            {formatDistance(nav.distToNextManeuver_m)}
+          </div>
+          <div
+            className="roam-wrap-1"
+            style={{
+              marginTop: 3,
+              fontSize: simple ? 13 : 12,
+              fontWeight: 500,
+              color: "var(--c-text-muted, var(--roam-text-muted))",
             }}
           >
             {formatShort(displayStep)}
           </div>
-
-          {/* Current road - smaller, muted. Tells driver what street they're on now.
-              Single line is acceptable here because the direction verb above already
-              named the upcoming road. */}
           {streetText && (
             <div
               className="roam-wrap-1"
               style={{
-                marginTop: 3,
-                fontSize: simple ? 13 : 12,
+                marginTop: 2,
+                fontSize: simple ? 16 : 15,
                 fontWeight: 700,
-                color: "rgba(240, 236, 230, 0.55)",
+                color: "var(--c-text, var(--roam-text))",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
               {streetText}
             </div>
           )}
-        </div>
-
-        {/* Distance to next maneuver - very large, tabular nums */}
-        <div style={{
-          fontSize: simple ? 40 : 34,
-          fontWeight: 950,
-          color: distColor,
-          letterSpacing: "-1.5px",
-          lineHeight: 1,
-          transition: "color 0.3s ease",
-          fontVariantNumeric: "tabular-nums",
-          flexShrink: 0,
-        }}>
-          {formatDistance(nav.distToNextManeuver_m)}
         </div>
       </div>
     </div>

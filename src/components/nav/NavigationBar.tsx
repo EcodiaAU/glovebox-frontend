@@ -16,14 +16,13 @@ type Props = {
   onFuelStopTap?: () => void;
 };
 
-const BAR_BG = "#242220";
-// The nav bar is intentionally always dark for sunlight readability while
-// driving (matches NavigationHUD's NAV_CARD_BG comment). Text colours must
-// therefore be light-on-dark in BOTH themes — don't bind to var(--roam-text),
-// which flips dark in day mode and renders the distance numeral invisible
-// on the bar's #242220 background.
-const BAR_FG_PRIMARY = "#f0ece6";
-const BAR_FG_MUTED = "rgba(250,246,239,0.5)";
+// Theme-aware: NavigationBar now uses the same theme-swapped surface as the
+// HUD/PlanSheet (var(--c-nav-card)). Was previously hardcoded #242220, which
+// stayed dark even when the app was set to bright mode.
+const BAR_BG = "var(--c-nav-card, var(--roam-surface, #fff))";
+const BAR_FG_PRIMARY = "var(--c-text, var(--roam-text))";
+const BAR_FG_MUTED = "var(--c-text-muted, var(--roam-text-muted))";
+const BAR_BORDER = "var(--c-border, var(--roam-border))";
 
 /** Split "2:45 PM" → { time: "2:45", ampm: "PM" } */
 function splitEta(eta: string): { time: string; ampm: string } {
@@ -77,7 +76,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
       className="roam-nav-bar"
       style={{
         position: "absolute",
-        bottom: "calc(env(safe-area-inset-bottom, 0px) + var(--roam-tab-h, 64px) + 18px)",
+        bottom: "calc(env(safe-area-inset-bottom, 0px) + var(--roam-tab-h, 64px) + 14px)",
         left: 12,
         right: 12,
         zIndex: 30,
@@ -87,69 +86,118 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
       role="status"
       aria-label="Navigation summary"
     >
+      {/* Prototype ProgressCard: rounded card with a 4-stat quad row
+           (ETA / KM LEFT / DURATION / SPEED) and a fuel pill below.
+           Theme-aware via var(--c-nav-card) so it lightens in bright mode. */}
       <div
-        className="nav-bar-unroll"
+        className="nav-bar-progress"
         style={{
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ["--nav-circle-clip" as any]: `calc(100% - ${h}px)`,
-          display: "flex",
-          alignItems: "center",
-          height: h,
-          paddingLeft: 20,
-          paddingRight: pad,
-          borderRadius: h / 2,
           background: BAR_BG,
-          boxShadow: "var(--shadow-heavy)",
+          border: `1px solid ${BAR_BORDER}`,
+          borderRadius: 18,
+          padding: "12px 14px 10px",
+          boxShadow: "var(--sh-floating, var(--shadow-heavy))",
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
         }}
       >
-        {/* Left content */}
+        {/* Quad row: ETA · KM LEFT · DURATION · SPEED */}
         <div style={{
-          flex: 1,
           display: "flex",
-          alignItems: "center",
-          minWidth: 0,
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          gap: 8,
         }}>
-          {/* Distance + time - grouped left. The size + colour drop between primary
-              (distance, ~250-cd/m² bright) and secondary (duration, dimmed muted)
-              IS the visual hierarchy — no decorative divider needed. Generous gap
-              + colour shift reads as one unit at a glance. */}
-          <div style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: simple ? 14 : 12,
-            marginLeft: simple ? 16 : 14,
-            minWidth: 0,
-          }}>
-            <span style={{
-              fontSize: simple ? 22 : 18,
-              fontWeight: 950,
-              letterSpacing: "-0.6px",
-              lineHeight: 1,
-              fontVariantNumeric: "tabular-nums",
-              color: BAR_FG_PRIMARY,
-              flexShrink: 0,
-            }}>
-              {primaryDist}
-            </span>
-
-            <span style={{
-              fontSize: simple ? 18 : 15,
+          {/* ETA — accented success color, like the prototype's green ETA */}
+          <div>
+            <div className="t-display t-num" style={{
+              fontSize: simple ? 26 : 24,
               fontWeight: 800,
-              letterSpacing: "-0.4px",
+              color: "var(--c-success, var(--brand-eucalypt, #2d6e40))",
               lineHeight: 1,
+              letterSpacing: "-0.4px",
               fontVariantNumeric: "tabular-nums",
-              color: BAR_FG_MUTED,
-              flexShrink: 0,
             }}>
-              {primaryDur}
-            </span>
+              {etaTime}{etaAmpm && <span style={{ fontSize: 11, marginLeft: 2, color: BAR_FG_MUTED }}>{etaAmpm}</span>}
+            </div>
+            <div className="t-mono" style={{
+              fontSize: 10, fontWeight: 700,
+              color: BAR_FG_MUTED,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+              marginTop: 3,
+            }}>ARRIVE</div>
           </div>
 
-          {/* Spacer pushes fuel button to the right */}
-          <div style={{ flex: 1 }} />
+          {/* KM LEFT */}
+          <div style={{ textAlign: "center" }}>
+            <div className="t-display t-num" style={{
+              fontSize: simple ? 20 : 18,
+              fontWeight: 800,
+              color: BAR_FG_PRIMARY,
+              lineHeight: 1,
+              letterSpacing: "-0.3px",
+              fontVariantNumeric: "tabular-nums",
+            }}>
+              {primaryDist}
+            </div>
+            <div className="t-mono" style={{
+              fontSize: 10, fontWeight: 700,
+              color: BAR_FG_MUTED,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+              marginTop: 3,
+            }}>LEFT</div>
+          </div>
 
-          {/* Fuel - tappable pill to detour to nearest servo */}
-          {fuelText && (
+          {/* DURATION */}
+          <div style={{ textAlign: "center" }}>
+            <div className="t-display t-num" style={{
+              fontSize: simple ? 20 : 18,
+              fontWeight: 800,
+              color: BAR_FG_PRIMARY,
+              lineHeight: 1,
+              letterSpacing: "-0.3px",
+              fontVariantNumeric: "tabular-nums",
+            }}>
+              {primaryDur}
+            </div>
+            <div className="t-mono" style={{
+              fontSize: 10, fontWeight: 700,
+              color: BAR_FG_MUTED,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+              marginTop: 3,
+            }}>DURATION</div>
+          </div>
+
+          {/* SPEED — shown when moving; falls back to a placeholder dash */}
+          <div style={{ textAlign: "right" }}>
+            <div className="t-display t-num" style={{
+              fontSize: simple ? 26 : 24,
+              fontWeight: 800,
+              color: BAR_FG_PRIMARY,
+              lineHeight: 1,
+              letterSpacing: "-0.4px",
+              fontVariantNumeric: "tabular-nums",
+            }}>
+              {speedKmh ?? "—"}
+            </div>
+            <div className="t-mono" style={{
+              fontSize: 10, fontWeight: 700,
+              color: BAR_FG_MUTED,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+              marginTop: 3,
+            }}>KM/H</div>
+          </div>
+        </div>
+
+        {/* Fuel pill row — prototype's "To next fuel · 184 km" pill (accent-tint).
+             Only rendered when we have a fuel-tracking distance. */}
+        {fuelText && (
+          <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <button
               type="button"
               aria-label="Detour to nearest fuel station"
@@ -159,90 +207,35 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
                 onFuelStopTap?.();
               }}
               style={{
-                display: "inline-flex", alignItems: "center", gap: 5, flexShrink: 0, marginRight: 28,
-                background: fuelUrgent
-                  ? "rgba(181,69,46,0.25)"
-                  : "rgba(250,246,239,0.08)",
-                border: `1.5px solid ${fuelUrgent ? "rgba(181,69,46,0.4)" : "rgba(250,246,239,0.12)"}`,
-                padding: simple ? "6px 12px" : "5px 10px",
+                display: "inline-flex", alignItems: "center", gap: 6,
+                height: 34, padding: "0 12px",
                 borderRadius: 999,
+                background: fuelUrgent
+                  ? "var(--c-error-bg, rgba(181,69,46,0.18))"
+                  : "var(--c-accent-tint, rgba(26,111,166,0.10))",
+                color: fuelUrgent
+                  ? "var(--c-error-text, var(--brand-ochre, #b5452e))"
+                  : "var(--c-accent, var(--brand-sky, #1a6fa6))",
+                border: 0,
+                fontSize: simple ? 13 : 12,
+                fontWeight: 700,
                 cursor: "pointer",
                 touchAction: "manipulation",
                 WebkitTapHighlightColor: "transparent",
-                transition: "background 0.15s, border-color 0.15s, box-shadow 0.15s",
-                boxShadow: fuelUrgent
-                  ? "0 0 8px 1px rgba(181,69,46,0.35), inset 0 0 6px rgba(181,69,46,0.15)"
-                  : "0 0 4px 1px rgba(250,246,239,0.38), inset 0 0 2px rgba(250,246,239,0.18)",
+                transition: "background 0.15s, color 0.15s",
               }}
             >
-              <Fuel size={simple ? 14 : 12} color={fuelUrgent ? "var(--brand-ochre)" : "rgba(250,246,239,0.45)"} className={fuelUrgent ? "nav-fuel-blink" : undefined} />
+              <Fuel size={14} strokeWidth={2.2} className={fuelUrgent ? "nav-fuel-blink" : undefined} />
               <span style={{
-                fontSize: simple ? 14 : 12,
-                fontWeight: 800,
-                color: fuelUrgent ? "var(--brand-ochre)" : "rgba(250,246,239,0.5)",
                 fontVariantNumeric: "tabular-nums",
-                letterSpacing: "0.2px",
+                letterSpacing: 0.2,
                 whiteSpace: "nowrap",
               }}>
-                {simple ? "Next servo" : fuelText}
+                {simple ? "Next servo" : `To next fuel · ${fuelText}`}
               </span>
             </button>
-          )}
-        </div>
-
-        {/* Circle - ETA stacked: label / time / ampm */}
-        <div style={{
-          flexShrink: 0,
-          width: cs,
-          height: cs,
-          borderRadius: "50%",
-          background: "var(--brand-eucalypt-dark, #1f5236)",
-          display: "grid",
-          placeItems: "center",
-          color: "var(--on-color, #faf6ef)",
-        }}>
-          <div style={{ textAlign: "center", lineHeight: 1 }}>
-            {speedKmh ? (
-              <>
-                <div style={{
-                  fontSize: 9, fontWeight: 800,
-                  textTransform: "uppercase", letterSpacing: "0.6px",
-                  opacity: 0.55,
-                }}>SPEED</div>
-                <div style={{
-                  fontSize: simple ? 24 : 21, fontWeight: 950, lineHeight: 1,
-                  letterSpacing: "-0.5px", fontVariantNumeric: "tabular-nums",
-                  marginTop: 2,
-                }}>{speedKmh}</div>
-                <div style={{
-                  fontSize: 9, fontWeight: 800,
-                  textTransform: "uppercase", letterSpacing: "0.4px",
-                  opacity: 0.55, marginTop: 2,
-                }}>KM/H</div>
-              </>
-            ) : (
-              <>
-                <div style={{
-                  fontSize: 9, fontWeight: 800,
-                  textTransform: "uppercase", letterSpacing: "0.6px",
-                  opacity: 0.55,
-                }}>ETA</div>
-                <div style={{
-                  fontSize: simple ? 22 : 19, fontWeight: 950, lineHeight: 1,
-                  letterSpacing: "-0.5px", fontVariantNumeric: "tabular-nums",
-                  marginTop: 2,
-                }}>{etaTime}</div>
-                {etaAmpm && (
-                  <div style={{
-                    fontSize: 9, fontWeight: 800,
-                    textTransform: "uppercase", letterSpacing: "0.4px",
-                    opacity: 0.55, marginTop: 2,
-                  }}>{etaAmpm}</div>
-                )}
-              </>
-            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
