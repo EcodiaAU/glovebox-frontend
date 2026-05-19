@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Download, Share2, Image as ImageIcon, Map as MapIcon, Loader2 } from "lucide-react";
+import { X, Download, Share2, Image as ImageIcon, Map as MapIcon, Loader2, MessageSquare, Phone, Copy, ExternalLink } from "lucide-react";
 import { TripShareCard, CARD_W, CARD_H, type ShareCardData, type ShareTheme } from "./TripShareCard";
 import { haptic } from "@/lib/native/haptics";
 import { toErrorMessage } from "@/lib/utils/errors";
@@ -170,6 +170,53 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
             WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
           <X size={18} />
         </button>
+      </div>
+
+      {/* ── Quick-share grid (prototype): 4 fast paths above the export tabs ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8,
+        padding: "0 20px 14px", width: "100%", maxWidth: 420, boxSizing: "border-box", flexShrink: 0 }}>
+        {[
+          { Icon: MessageSquare, label: "Message", onClick: () => { haptic.selection(); handleExport("share"); } },
+          { Icon: Phone, label: "SMS", onClick: () => {
+              haptic.selection();
+              const txt = encodeURIComponent(`Roam trip: ${tripLabel} — ${typeof window !== "undefined" ? window.location.href : ""}`);
+              if (typeof window !== "undefined") window.location.href = `sms:?body=${txt}`;
+            } },
+          { Icon: Copy, label: "Copy link", onClick: () => {
+              haptic.selection();
+              try {
+                navigator.clipboard?.writeText(typeof window !== "undefined" ? window.location.href : "");
+              } catch { /* swallow */ }
+            } },
+          { Icon: ExternalLink, label: "Open", onClick: () => { haptic.selection(); handleExport("save"); } },
+        ].map((q) => (
+          <button
+            key={q.label}
+            type="button"
+            onClick={q.onClick}
+            aria-label={q.label}
+            style={{
+              all: "unset",
+              cursor: "pointer",
+              height: 60,
+              borderRadius: 14,
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid var(--roam-border)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              color: "rgba(255,255,255,0.78)",
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
+              transition: "background 140ms ease, transform 100ms ease",
+            }}
+          >
+            <q.Icon size={18} />
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.2 }}>{q.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* ── Mode tabs ── */}
