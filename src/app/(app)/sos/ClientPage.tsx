@@ -494,8 +494,8 @@ export default function EmergencyClientPage() {
   if (elapsedWait > 15) waitMessage = "Offline GPS cold lock (can take up to 2 mins)...";
 
   return (
-    <div className="page" style={{ background: "var(--c-bg)", position: "relative", height: "100%" }}>
-      <div className="scroll-y" style={{ flex: 1, padding: "50px 16px 110px", height: "100%" }}>
+    <div className="page sos-page" style={{ background: "var(--c-bg)", position: "relative", height: "100%" }}>
+      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "50px 16px 110px", height: "100%" }}>
         {err ? (
           <div style={{
             background: "var(--c-error-bg)", color: "var(--c-error-text)",

@@ -1482,9 +1482,11 @@ export function GuideView({
             </div>
           ) : null}
 
-          {/* Thread - chat messages */}
+          {/* Thread - chat messages.
+               Desktop max-width applied via .guide-chat-thread CSS so the
+               reading column stays comfortable on wide screens. */}
           {(thread.length > 0 || pendingUserMsg) ? (
-            <div style={{
+            <div className="guide-chat-thread" style={{
               display: "flex", flexDirection: "column", gap: 8,
               // Deduct: sticky header (~120px incl. progress bar) + tab switcher (42px) +
               // input bar (50px) + gaps (36px) + bottom nav + safe-area notch

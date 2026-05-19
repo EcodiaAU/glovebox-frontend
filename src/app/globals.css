@@ -2852,3 +2852,44 @@ input[type="range"]::-moz-range-thumb {
     --desktop-panel-w: 480px;
   }
 }
+
+/* ── Guide chat: constrain reading column on laptop/desktop so messages
+     don't span the full viewport width (looks bad on 1440+ screens). */
+@media (min-width: 900px) {
+  .guide-chat-thread {
+    max-width: 760px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* Input bar and tab switcher in /guide also need a max-width to match
+     so they don't look orphaned beneath the chat column. */
+  .guide-input-row,
+  .guide-tab-switcher {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ── Trip sheet header — give the chip rows breathing room on desktop.
+     The Plans/Invite/Share row and the stat-chip row both share the same
+     flex container; let them wrap before they crowd on the 480px panel. */
+@media (min-width: 900px) {
+  .roam-action-cluster { flex-wrap: wrap; }
+}
+
+/* ── SOS page reading column on desktop — cards previously stretched
+     edge-to-edge of a 1440 viewport which made the layout feel like a
+     mobile mockup zoomed in. Centre the column at a sensible reading
+     width. */
+@media (min-width: 900px) {
+  .sos-scroll > * {
+    max-width: 820px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .sos-scroll {
+    padding-top: 32px !important;
+  }
+}
