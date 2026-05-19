@@ -2165,11 +2165,13 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         onClose={() => setMapQuickMenu(null)}
       />
 
-      {/* ── Report FAB ── */}
-      {!activeNav.isActive && (
+      {/* ── Report FAB ── only shown at peek; tucked above the sheet's visible top
+           so it never sits on top of the sheet content. Hidden at expanded/full
+           where the sheet covers the map and the action bar handles primary actions. */}
+      {!activeNav.isActive && sheetSnap === "peek" && (
         <div className="trip-report-fab" style={{
           position: "absolute",
-          bottom: "calc(220px + var(--roam-safe-bottom, 0px) + 24px)",
+          bottom: "calc(var(--roam-tab-h, 80px) + var(--roam-safe-bottom, 0px) + 360px)",
           right: 12,
           zIndex: 18,
           display: "flex",
