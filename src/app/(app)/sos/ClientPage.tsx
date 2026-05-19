@@ -13,9 +13,8 @@ import { saveEmergencyContactLocalFirst, deleteEmergencyContactLocalFirst } from
 
 import type { EmergencyContactLocal } from "@/lib/types/emergency";
 import { PhoneCall, MessageSquareText, Plus, Pencil, Trash2, Satellite, RefreshCw } from "lucide-react";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { CoordinateDisplay } from "@/components/ui/CoordinateDisplay";
-import { WatermarkCard } from "@/components/ui/WatermarkCard";
+import { Icon, NetworkPill, PrimaryBtn, GhostBtn } from "@/components/roam-ui-v2/shared";
+import { FauxMap } from "@/components/roam-ui-v2/faux-map";
 
 function nowIso() {
   return new Date().toISOString();
@@ -496,270 +495,344 @@ export default function EmergencyClientPage() {
   if (elapsedWait > 15) waitMessage = "Offline GPS cold lock (can take up to 2 mins)...";
 
   return (
-    <div className="sos-page roam-scroll">
-      {err ? <div className="trip-err-box">{err}</div> : null}
+    <div className="page" style={{ background: "var(--c-bg)", position: "relative", height: "100%" }}>
+      <div className="scroll-y" style={{ flex: 1, padding: "50px 16px 110px", height: "100%" }}>
+        {err ? (
+          <div style={{
+            background: "var(--c-error-bg)", color: "var(--c-error-text)",
+            padding: "10px 12px", borderRadius: 12, marginBottom: 12, fontSize: 13,
+          }}>{err}</div>
+        ) : null}
 
-      {/* 1) EMERGENCY - WatermarkCard with CALL 000 + location */}
-      <WatermarkCard
-        icon="sos"
-        title="Emergency"
-        subtitle="Triple Zero - Police, Fire, Ambulance"
-        accentLabel="SOS"
-        footer={
-          <div className="sos-footer-loc">
-            {isLocating ? (
-              <>
-                <div className="sos-footer-countdown">
-                  <Satellite size={22} className="animate-pulse" />
-                  <span className="sos-loc-wait">
-                    {String(Math.floor(gpsSecondsLeft / 60)).padStart(2, "0")}:{String(gpsSecondsLeft % 60).padStart(2, "0")}
-                  </span>
-                </div>
-                <div className="sos-footer-hint">{waitMessage}</div>
-              </>
-            ) : lat == null || lon == null ? (
-              <>
-                <div className="sos-footer-hint">Location unavailable</div>
-                <button
-                  type="button"
-                  className="trip-interactive sos-retry-loc-btn sos-retry-loc-btn--dark"
-                  onClick={() => {
-                    haptic.medium();
-                    fetchLocationAuto(true);
-                  }}
-                >
-                  <RefreshCw size={16} />
-                  Retry location
-                </button>
-              </>
-            ) : (
-              <div className="sos-footer-coords">
-                <CoordinateDisplay
-                  lat={lat}
-                  lng={lon}
-                  label="YOUR LOCATION"
-                  variant="expanded"
-                  dark
-                  style={{ background: "rgba(255,255,255,0.08)" }}
-                />
-                <div className="sos-footer-accuracy">
-                  {accuracyM != null && (
-                    <span className="sos-accuracy-badge">±{Math.round(accuracyM)}m</span>
-                  )}
-                  <button
-                    type="button"
-                    className="trip-interactive sos-retry-loc-btn sos-retry-loc-btn--dark"
-                    onClick={() => {
-                      haptic.light();
-                      fetchLocationAuto(true);
-                    }}
-                    title="Refresh location"
-                  >
-                    <RefreshCw size={16} />
-                  </button>
-                </div>
-              </div>
-            )}
+        {/* HEADER */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14,
+        }}>
+          <div>
+            <div className="t-mono" style={{
+              fontSize: 11, color: "var(--c-danger)", fontWeight: 700,
+              letterSpacing: 1, textTransform: "uppercase",
+            }}>SOS</div>
+            <div className="t-display" style={{
+              fontWeight: 700, fontSize: 28, letterSpacing: -0.4, whiteSpace: "nowrap",
+            }}>Help & location</div>
           </div>
-        }
-      >
-        <button type="button" className="sos-call-000" onClick={callEmergency}>
-          <PhoneCall size={40} />
-          CALL 000
-        </button>
-      </WatermarkCard>
-
-      {/* 3) BIG SECOND ACTION */}
-      <button
-        type="button"
-        className="sos-msg-btn"
-        onClick={sendLocationToSelected}
-        disabled={items.length === 0}
-        title={items.length === 0 ? "Add a contact first" : "Send location by SMS"}
-      >
-        <MessageSquareText size={28} />
-        {selectedCount > 0 ? `MESSAGE ${selectedCount} CONTACT${selectedCount === 1 ? "" : "S"}` : "SELECT CONTACTS BELOW"}
-      </button>
-
-      {/* CONTACTS (SECONDARY) */}
-      <SectionHeader
-        label="Emergency"
-        heading="Contacts"
-        variant="muted"
-        style={{ padding: "0 16px", marginTop: 16, marginBottom: 8 }}
-      />
-
-      <button type="button" className="trip-interactive sos-add-btn" onClick={startNew}>
-        <Plus size={22} />
-        Add Contact
-      </button>
-
-      {editingId ? (
-        <div className="sos-editor">
-          <div style={{ fontWeight: 800, fontSize: 20 }}>
-            {editingId === "__new__" ? "Add contact" : "Edit contact"}
-          </div>
-
-          <label style={{ display: "grid", gap: 6 }}>
-            <div className="sos-label">Name</div>
-            <input className="sos-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Mum" />
-          </label>
-
-          <label style={{ display: "grid", gap: 6 }}>
-            <div className="sos-label">Phone</div>
-            <input
-              className="sos-input"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="04xx xxx xxx"
-              inputMode="tel"
-            />
-          </label>
-
-          <label style={{ display: "grid", gap: 6 }}>
-            <div className="sos-label">Relationship (optional)</div>
-            <input
-              className="sos-input"
-              value={relationship}
-              onChange={(e) => setRelationship(e.target.value)}
-              placeholder="Partner / Friend"
-            />
-          </label>
-
-          <label style={{ display: "grid", gap: 6 }}>
-            <div className="sos-label">Notes (optional)</div>
-            <textarea
-              className="sos-textarea"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              placeholder="Any instructions..."
-            />
-          </label>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 8 }}>
-            <button
-              type="button"
-              className="trip-btn trip-btn-primary"
-              onClick={save}
-              disabled={busy === "save" || !name.trim() || !phone.trim()}
-            >
-              Save
-            </button>
-            <button type="button" className="trip-btn trip-btn-secondary" onClick={cancelEdit}>
-              Cancel
-            </button>
-          </div>
+          <NetworkPill state={isOnline ? "online" : "offline"} compact />
         </div>
-      ) : null}
 
-      {items.length === 0 ? (
-        <div className="trip-muted" style={{ textAlign: "center", padding: "20px 0", fontSize: 16 }}>
-          No contacts saved.
-        </div>
-      ) : (
-        items.map((c) => {
-          const sel = !!selectedIds[c.id];
-          return (
-            <div key={c.id} className="sos-contact-card">
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <button
-                  type="button"
-                  className="trip-interactive sos-select-circle"
-                  onClick={() => toggleSelected(c.id)}
-                  data-selected={sel ? "true" : "false"}
-                  aria-pressed={sel}
-                  title={sel ? "Selected" : "Tap to select"}
-                >
-                  {sel ? (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path d="M4 10.5l4 4 8-8.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : null}
-                </button>
-
-                <div style={{ minWidth: 0, flex: 1, overflow: "hidden" }}>
-                  <div style={{ fontWeight: 800, fontSize: 20, letterSpacing: "-0.3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
-                  <div className="trip-muted" style={{ marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {c.phone}
-                    {c.relationship ? ` · ${c.relationship}` : ""}
-                    {c.notes ? ` · ${c.notes}` : ""}
-                  </div>
-                </div>
-              </div>
-
-              <div className="sos-action-grid">
-                <a
-                  href={telHref(c.phone)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (!confirm(`Call ${c.name} (${c.phone})?`)) return;
-                    haptic.heavy();
-                    window.location.href = telHref(c.phone);
-                  }}
-                  className="trip-interactive sos-action-btn"
-                  style={{ background: "var(--roam-accent)", color: "var(--on-color)" }}
-                >
-                  <PhoneCall size={18} />
-                  Call
-                </a>
-
-                <button
-                  type="button"
-                  className="trip-interactive sos-action-btn"
-                  onClick={() => {
-                    if (lat == null || lon == null) {
-                      setErr("Location unavailable right now.");
-                      haptic.error();
-                      return;
-                    }
-                    const coords = `${fmt5(lat)}, ${fmt5(lon)}${accuracyM ? ` (±${Math.round(accuracyM)}m)` : ""}`;
-                    const link = mapsLink(lat, lon);
-                    const time = new Date().toLocaleString();
-
-                    const msg =
-                      `ROAM SAFETY: I need help.\n` +
-                      `Your coordinates are: ${coords}\n` +
-                      `Map: ${link}\n` +
-                      `Time: ${time}`;
-
-                    haptic.heavy();
-                    window.location.href = smsHref([c.phone], msg);
-                  }}
-                  style={{ background: "var(--roam-info)", color: "var(--on-color)" }}
-                >
-                  <MessageSquareText size={18} />
-                  Text
-                </button>
-
-                <button
-                  type="button"
-                  className="trip-interactive sos-action-btn"
-                  onClick={() => {
-                    haptic.selection();
-                    setEditingId(c.id);
-                  }}
-                  style={{ background: "var(--roam-surface-hover)", color: "var(--roam-text)" }}
-                >
-                  <Pencil size={16} />
-                  Edit
-                </button>
-
-                <button
-                  type="button"
-                  className="trip-interactive sos-action-btn"
-                  onClick={() => remove(c.id)}
-                  disabled={busy === "delete"}
-                  style={{ background: "var(--bg-error)", color: "var(--text-error)" }}
-                >
-                  <Trash2 size={16} />
-                  Delete
-                </button>
+        {/* LOCATION CARD */}
+        <div style={{
+          borderRadius: 18, overflow: "hidden",
+          border: "1px solid var(--c-border)",
+          background: "var(--c-surface)",
+          boxShadow: "var(--sh-card)",
+        }}>
+          <div style={{ position: "relative", height: 130 }}>
+            <FauxMap width={370} height={130} style="satellite" clusterSize="small"/>
+            <div style={{
+              position: "absolute", inset: 0, display: "flex",
+              alignItems: "center", justifyContent: "center",
+            }}>
+              <div style={{ position: "relative", width: 40, height: 40 }}>
+                <div style={{
+                  position: "absolute", inset: 0, borderRadius: 999,
+                  background: "rgba(77,184,240,0.25)", animation: "ping-ring 2s ease-out infinite",
+                }}/>
+                <div style={{
+                  position: "absolute", inset: 12, borderRadius: 999,
+                  background: "var(--c-info)", border: "3px solid white",
+                }}/>
               </div>
             </div>
-          );
-        })
-      )}
+            <div style={{
+              position: "absolute", left: 10, bottom: 10,
+              padding: "4px 10px", borderRadius: 999, background: "rgba(0,0,0,0.6)", color: "white",
+              fontSize: 11, fontWeight: 700,
+            }}>
+              {isLocating ? `Locating · ${String(Math.floor(gpsSecondsLeft / 60)).padStart(2, "0")}:${String(gpsSecondsLeft % 60).padStart(2, "0")}` : (lat == null || lon == null ? "No fix yet" : `Last fix · just now`)}
+            </div>
+          </div>
+
+          <div style={{ padding: "12px 14px" }}>
+            <div className="t-mono" style={{
+              fontSize: 11, color: "var(--c-text-muted)",
+              textTransform: "uppercase", letterSpacing: 0.4,
+            }}>Current location</div>
+            <div className="t-mono" style={{
+              fontSize: 18, fontWeight: 700, color: "var(--c-text)",
+              marginTop: 4, letterSpacing: -0.2,
+            }}>
+              {lat != null && lon != null ? `${fmt5(lat)}, ${fmt5(lon)}` : (isLocating ? waitMessage : "Location unavailable")}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
+              {accuracyM != null && (
+                <div className="t-mono" style={{ fontSize: 12, color: "var(--c-success)" }}>
+                  ± {Math.round(accuracyM)} m
+                </div>
+              )}
+              {lat != null && lon != null && (
+                <div className="t-mono" style={{ fontSize: 12, color: "var(--c-text-muted)" }}>
+                  GPS fix
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+              <PrimaryBtn
+                style={{ flex: 1 }}
+                onClick={() => { haptic.medium(); fetchLocationAuto(true); }}
+              >
+                <Icon name="target" size={16} stroke={2.2}/> Get new fix
+              </PrimaryBtn>
+              {lat != null && lon != null && (
+                <GhostBtn onClick={() => window.open(mapsLink(lat, lon), "_blank")}>
+                  <Icon name="map" size={16}/> Open in Maps
+                </GhostBtn>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 000 + MESSAGE-CONTACTS row */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 10, marginTop: 16 }}>
+          <button onClick={callEmergency} style={{
+            minHeight: 88, borderRadius: 18,
+            background: "var(--c-danger)", color: "white",
+            display: "flex", alignItems: "center", gap: 12,
+            padding: "12px 16px",
+            boxShadow: "var(--sh-card)",
+            position: "relative", overflow: "hidden",
+          }}>
+            <div style={{
+              position: "absolute", inset: 0, opacity: 0.18,
+              background: "radial-gradient(circle at 80% 20%, white, transparent 60%)",
+            }}/>
+            <div style={{
+              width: 56, height: 56, borderRadius: 14,
+              background: "rgba(255,255,255,0.18)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              position: "relative",
+            }}>
+              <Icon name="sos" size={28} stroke={2.4}/>
+            </div>
+            <div style={{ textAlign: "left", position: "relative" }}>
+              <div className="t-display" style={{
+                fontWeight: 700, fontSize: 32, lineHeight: 1, letterSpacing: -0.5,
+              }}>000</div>
+              <div style={{ fontSize: 12, opacity: 0.9, marginTop: 4 }}>Police · Fire · Ambulance</div>
+            </div>
+          </button>
+
+          <button
+            onClick={sendLocationToSelected}
+            disabled={items.length === 0}
+            style={{
+              minHeight: 88, borderRadius: 18,
+              background: items.length === 0 ? "var(--c-surface-muted)" : "var(--c-surface)",
+              color: items.length === 0 ? "var(--c-text-muted)" : "var(--c-text)",
+              border: "1px solid var(--c-border)",
+              display: "flex", flexDirection: "column",
+              alignItems: "flex-start", justifyContent: "center",
+              padding: "12px 14px", gap: 4, boxShadow: "var(--sh-card)",
+              opacity: items.length === 0 ? 0.6 : 1,
+            }}
+          >
+            <div style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: "var(--c-info-tint)", color: "var(--c-info)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <Icon name="msg" size={18} stroke={2.4}/>
+            </div>
+            <div className="t-display" style={{
+              fontWeight: 700, fontSize: 16, letterSpacing: -0.2, marginTop: 4,
+            }}>
+              {selectedCount > 0 ? `Msg ${selectedCount}` : "Msg"}
+            </div>
+            <div className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
+              {items.length === 0 ? "add a contact" : "send location"}
+            </div>
+          </button>
+        </div>
+
+        {/* SPEED DIAL HEADING + ADD */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          marginTop: 22, marginBottom: 10,
+        }}>
+          <div className="t-display" style={{ fontWeight: 700, fontSize: 17 }}>Speed dial</div>
+          <button onClick={startNew} style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            color: "var(--c-accent)", fontSize: 13, fontWeight: 700,
+            padding: "4px 8px",
+          }}>
+            <Icon name="plus" size={14} stroke={2.4}/> Add contact
+          </button>
+        </div>
+
+        {/* INLINE EDITOR (real flow: __new__ + existing edit) */}
+        {editingId ? (
+          <div style={{
+            padding: 12, borderRadius: 16,
+            background: "var(--c-surface)", border: "1.5px solid var(--c-accent)",
+            boxShadow: "var(--sh-card)", marginBottom: 12,
+          }}>
+            <div style={{
+              fontWeight: 700, fontSize: 15, marginBottom: 8,
+              color: "var(--c-text)",
+            }}>
+              {editingId === "__new__" ? "Add contact" : "Edit contact"}
+            </div>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name (e.g. Mum)" style={sosInputStyle()}/>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (e.g. +61 412 …)" inputMode="tel" style={{ ...sosInputStyle(), fontFamily: "var(--font-mono)" }}/>
+            <input value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Relationship (optional)" style={sosInputStyle()}/>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Notes (optional)" style={{ ...sosInputStyle(), resize: "none", minHeight: 56 }}/>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={cancelEdit} style={{
+                flex: 1, height: 44, borderRadius: 10,
+                background: "var(--c-surface-muted)", color: "var(--c-text)",
+                fontWeight: 600, fontSize: 14,
+              }}>Cancel</button>
+              {editingId !== "__new__" && (
+                <button onClick={() => remove(editingId!)} disabled={busy === "delete"} style={{
+                  width: 44, height: 44, borderRadius: 10,
+                  background: "var(--c-error-bg)", color: "var(--c-error-text)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}><Icon name="trash" size={16}/></button>
+              )}
+              <button onClick={save} disabled={busy === "save" || !name.trim() || !phone.trim()} style={{
+                flex: 1, height: 44, borderRadius: 10,
+                background: "var(--c-accent)", color: "white",
+                fontWeight: 700, fontSize: 14,
+                opacity: !name.trim() || !phone.trim() ? 0.55 : 1,
+              }}>Save</button>
+            </div>
+          </div>
+        ) : null}
+
+        {/* CONTACTS LIST */}
+        {items.length === 0 ? (
+          <div style={{
+            textAlign: "center", padding: "24px 0", fontSize: 13,
+            color: "var(--c-text-muted)",
+          }}>
+            No contacts saved. Add one above.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {items.map((c) => {
+              const sel = !!selectedIds[c.id];
+              return (
+                <div key={c.id} style={{
+                  padding: "10px 12px", borderRadius: 16,
+                  background: "var(--c-surface)",
+                  border: sel ? "1.5px solid var(--c-accent)" : "1px solid var(--c-border)",
+                  boxShadow: "var(--sh-card)",
+                  display: "flex", alignItems: "center", gap: 12,
+                }}>
+                  <button
+                    onClick={() => toggleSelected(c.id)}
+                    aria-pressed={sel}
+                    title={sel ? "Selected" : "Tap to select"}
+                    style={{
+                      width: 44, height: 44, borderRadius: 999,
+                      background: sel ? "var(--c-accent)" : "var(--c-surface-muted)",
+                      color: sel ? "white" : "var(--c-text-muted)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {sel ? (
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10.5l4 4 8-8.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ) : (
+                      <Icon name="user" size={20}/>
+                    )}
+                  </button>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontWeight: 700, fontSize: 15,
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                    }}>{c.name}</div>
+                    <div className="t-mono" style={{
+                      fontSize: 12, color: "var(--c-text-muted)",
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                    }}>
+                      {c.phone}{c.relationship ? ` · ${c.relationship}` : ""}
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (!confirm(`Call ${c.name} (${c.phone})?`)) return;
+                      haptic.heavy();
+                      window.location.href = telHref(c.phone);
+                    }}
+                    style={{
+                      width: 48, height: 48, borderRadius: 12,
+                      background: "var(--c-success)", color: "white",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  ><Icon name="phone" size={18} stroke={2.2}/></button>
+                  <button
+                    onClick={() => {
+                      if (lat == null || lon == null) {
+                        setErr("Location unavailable right now.");
+                        haptic.error();
+                        return;
+                      }
+                      const coords = `${fmt5(lat)}, ${fmt5(lon)}${accuracyM ? ` (±${Math.round(accuracyM)}m)` : ""}`;
+                      const link = mapsLink(lat, lon);
+                      const time = new Date().toLocaleString();
+                      const msg =
+                        `ROAM SAFETY: I need help.\n` +
+                        `Your coordinates are: ${coords}\n` +
+                        `Map: ${link}\n` +
+                        `Time: ${time}`;
+                      haptic.heavy();
+                      window.location.href = smsHref([c.phone], msg);
+                    }}
+                    style={{
+                      width: 48, height: 48, borderRadius: 12,
+                      background: "var(--c-info-tint)", color: "var(--c-info)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  ><Icon name="msg" size={18} stroke={2.2}/></button>
+                  <button
+                    onClick={() => { haptic.selection(); setEditingId(c.id); }}
+                    style={{ width: 32, height: 48, color: "var(--c-text-muted)" }}
+                  ><Icon name="dots" size={16}/></button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* REASSURANCE FOOTER */}
+        <div style={{
+          marginTop: 22, padding: "14px",
+          borderRadius: 14, background: "var(--c-surface-muted)",
+          display: "flex", gap: 10, alignItems: "flex-start",
+        }}>
+          <Icon name="leaf" size={18} style={{ color: "var(--c-success)" }}/>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>Your last fix is saved offline</div>
+            <div style={{ fontSize: 12, color: "var(--c-text-muted)" }}>
+              Roam keeps your last known position even without signal. SMS works on any one bar of 2G.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
+}
+
+function sosInputStyle(): React.CSSProperties {
+  return {
+    width: "100%", minHeight: 44, borderRadius: 10,
+    background: "var(--c-surface-muted)", border: "1px solid var(--c-border)",
+    padding: "0 12px", fontSize: 15, fontFamily: "var(--font-body)",
+    color: "var(--c-text)", marginBottom: 8, outline: "none",
+  };
 }

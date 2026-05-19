@@ -34,7 +34,8 @@ import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
 import { GuideView, type GuideTabBarProps } from "@/components/trip/GuideView";
 
 import { Sparkles, MapPin, Wifi, WifiOff, Satellite, AlertTriangle, UserCircle } from "lucide-react";
-import { SectionHeader, LiveDot } from "@/components/ui/SectionHeader";
+import { Icon, NetworkPill, AccountBtn } from "@/components/roam-ui-v2/shared";
+import { FauxMap } from "@/components/roam-ui-v2/faux-map";
 import { WatermarkCard } from "@/components/ui/WatermarkCard";
 import { GuideSkeleton } from "./GuideSkeleton";
 
@@ -507,226 +508,145 @@ export default function GuideClientPage(props: {
         overflow: "hidden",
       }}
     >
-      {/* ── Sticky header ───────────────────────────────────────── */}
-      <div
-        className="terra-topo"
-        style={{
-          flexShrink: 0,
-          zIndex: 50,
-          padding: "calc(env(safe-area-inset-top, 0px) + 20px) 16px 0",
-          background: "var(--roam-bg)",
-          boxShadow: "0 2px 0 var(--roam-border)",
-        }}
-      >
-        {/* Section label */}
-        <SectionHeader
-          label="Trip Guide"
-          right={isOnline ? <LiveDot label="LIVE DATA" /> : undefined}
-          variant="muted"
-          style={{ marginBottom: 6 }}
-        />
-        {/* Title row: title | tabs (centered) | status */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", height: 44 }}>
-          <div style={{ minWidth: 0, justifySelf: "start" }}>
-            <div
-              className="trip-truncate"
-              style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.025rem" }}
-            >
-              {headerTitle}
-            </div>
-          </div>
-
-          {/* Underline tab switcher - centered */}
-          {guideTabBar && (
-            <div style={{ display: "flex", gap: 0, justifySelf: "center" }}>
-              {([
-                { key: "chat" as const, label: "Guide", Icon: Sparkles, badge: null },
-                { key: "discoveries" as const, label: "Found", Icon: MapPin, badge: guideTabBar.discoveredCount > 0 ? guideTabBar.discoveredCount : null },
-              ]).map((tab) => {
-                const active = guideTabBar.activeTab === tab.key;
-                const TIcon = tab.Icon;
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => { haptic.selection(); guideTabBar.setActiveTab(tab.key); }}
-                    style={{
-                      display: "inline-flex", alignItems: "center", justifyContent: "center",
-                      gap: 6, padding: "8px 14px", height: 44, border: "none",
-                      borderBottom: active ? "3px solid var(--brand-eucalypt)" : "3px solid transparent",
-                      marginBottom: "-1px",
-                      background: "transparent",
-                      color: active ? "var(--brand-eucalypt)" : "var(--roam-text-muted)",
-                      fontSize: 13, fontWeight: active ? 800 : 600,
-                      cursor: "pointer", WebkitTapHighlightColor: "transparent",
-                      transition: "color 200ms, border-color 200ms",
-                    }}
-                  >
-                    <TIcon size={13} strokeWidth={2.5} />
-                    {tab.label}
-                    {tab.badge != null && (
-                      <span style={{
-                        fontSize: 10, fontWeight: 800,
-                        background: active ? "var(--brand-eucalypt)" : "var(--roam-surface-hover)",
-                        color: active ? "white" : "var(--roam-text-muted)",
-                        borderRadius: 999, padding: "1px 6px", minWidth: 18, textAlign: "center",
-                      }}>
-                        {tab.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Right: status pill + account */}
-          <div style={{ justifySelf: "end", display: "flex", alignItems: "center", gap: 8 }}>
-            <div
-              style={{
-                padding: "6px 10px", borderRadius: 999, fontSize: 12, fontWeight: 700,
-                background: isOnline ? "var(--accent-tint)" : "var(--bg-warn)",
-                color: isOnline ? "var(--roam-success)" : "var(--text-warn)",
-                whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6,
-              }}
-            >
-              {isOnline ? <Wifi size={13} /> : <WifiOff size={13} />}
-              {isOnline ? "Online" : "Offline"}
-            </div>
-            <button
-              type="button"
-              onClick={() => { haptic.light(); router("/account"); }}
-              aria-label="Account"
-              style={{
-                width: 36, height: 36, borderRadius: "50%",
-                border: "none", background: "var(--roam-surface)",
-                color: "var(--roam-text-muted)", display: "flex",
-                alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0,
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              <UserCircle size={20} />
-            </button>
+      {/* ── HEADER (prototype 2-row layout) ───────────────────── */}
+      <div style={{
+        flexShrink: 0,
+        zIndex: 50,
+        padding: "calc(env(safe-area-inset-top, 0px) + 20px) 16px 12px",
+        background: "var(--c-bg)",
+      }}>
+        {/* Row 1: title + network + account */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12,
+        }}>
+          <div className="t-display" style={{
+            fontWeight: 700, fontSize: 28, letterSpacing: -0.4,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            maxWidth: "60%",
+          }}>{headerTitle}</div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <NetworkPill state={isOnline ? "online" : "offline"} compact/>
+            <AccountBtn onClick={() => { haptic.light(); router("/account"); }}/>
           </div>
         </div>
 
-        {/* ── Progress bar ────────────────────────────────────── */}
-        {tripProgress && tripProgress.total_km > 0 ? (
-          <div style={{ marginTop: 10 }}>
+        {/* Row 2: segmented-control tabs */}
+        {guideTabBar && (
+          <div style={{
+            display: "grid", gridTemplateColumns: "1fr 1fr",
+            background: "var(--c-surface-muted)", borderRadius: 14, padding: 4, gap: 4,
+          }}>
+            {([
+              { key: "discoveries" as const, label: "Found", iconName: "pin" as const, badge: guideTabBar.discoveredCount > 0 ? guideTabBar.discoveredCount : null },
+              { key: "chat" as const, label: "Chat", iconName: "sparkle" as const, badge: null },
+            ]).map((tab) => {
+              const active = guideTabBar.activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => { haptic.selection(); guideTabBar.setActiveTab(tab.key); }}
+                  style={{
+                    minHeight: 44, borderRadius: 10,
+                    background: active ? "var(--c-surface)" : "transparent",
+                    color: active ? "var(--c-text)" : "var(--c-text-muted)",
+                    fontWeight: active ? 700 : 600, fontSize: 14,
+                    boxShadow: active ? "var(--sh-card)" : "none",
+                    display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    border: "none",
+                  }}
+                >
+                  <Icon name={tab.iconName} size={16} stroke={2}/>
+                  {tab.label}
+                  {tab.badge != null && (
+                    <span style={{
+                      fontSize: 11, fontWeight: 700,
+                      padding: "0 6px", minWidth: 18, height: 18,
+                      borderRadius: 999,
+                      background: active ? "var(--c-accent-tint)" : "transparent",
+                      color: active ? "var(--c-accent)" : "var(--c-text-muted)",
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    }}>{tab.badge}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
-            <div
-              style={{
-                height: 8,
-                borderRadius: 4,
-                background: "var(--roam-surface-hover)",
-                overflow: "hidden",
-                position: "relative",
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
+      {/* ── MAP STRIP (real trip progress + GPS + error inline) ── */}
+      <div style={{
+        position: "relative", height: 168, margin: "0 16px",
+        borderRadius: 18, overflow: "hidden",
+        border: "1px solid var(--c-border)",
+        boxShadow: "var(--sh-card)",
+        flexShrink: 0,
+      }}>
+        <FauxMap
+          width={370} height={168} style="terrain"
+          progress={tripProgress && tripProgress.total_km > 0 ? Math.min(1, tripProgress.km_from_start / tripProgress.total_km) : 0}
+          showProgress
+          showCar={!!geo.position}
+          clusterSize="small"
+        />
+        <div style={{ position: "absolute", left: 10, top: 10, display: "flex", gap: 8 }}>
+          {geo.loading ? (
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "6px 10px", borderRadius: 999,
+              background: "var(--c-surface)", border: "1px solid var(--c-border)",
+              boxShadow: "var(--sh-card)",
+              color: "var(--c-text-muted)", fontSize: 12, fontWeight: 700,
+            }}>
+              <Satellite size={14}/> GPS…
+            </div>
+          ) : geo.error ? (
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "6px 10px", borderRadius: 999,
+              background: "var(--c-warn-bg)", color: "var(--c-warn-text)",
+              fontSize: 12, fontWeight: 700,
+            }}>
+              <AlertTriangle size={14}/> No GPS
+            </div>
+          ) : null}
+        </div>
+        {tripProgress && tripProgress.total_km > 0 && (
+          <div style={{ position: "absolute", left: 10, right: 10, bottom: 10 }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "6px 10px", borderRadius: 12,
+              background: "rgba(0,0,0,0.55)", color: "white",
+            }}>
+              <div className="t-mono" style={{ fontSize: 11, fontWeight: 700, minWidth: 36 }}>
+                {Math.round((tripProgress.km_from_start / tripProgress.total_km) * 100)}%
+              </div>
+              <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.25)", overflow: "hidden" }}>
+                <div style={{
                   width: `${Math.min(100, (tripProgress.km_from_start / tripProgress.total_km) * 100)}%`,
-                  background: "linear-gradient(90deg, var(--roam-accent), var(--roam-success))",
-                  borderRadius: 4,
-                  transition: "width 0.5s ease-out",
-                }}
-              />
-
-              {/* Stop markers on the progress bar */}
-              {(() => {
-                const stops = (navpack?.req?.stops ?? plan.preview?.stops ?? []) as TripStop[];
-                const legs = navpack?.primary?.legs ?? [];
-                if (stops.length < 2 || legs.length === 0) return null;
-
-                let cumKm = 0;
-                const markers: { pct: number; visited: boolean; name: string }[] = [];
-
-                markers.push({
-                  pct: 0,
-                  visited: tripProgress.visited_stop_ids.includes(stops[0]?.id ?? ""),
-                  name: stops[0]?.name ?? "",
-                });
-
-                for (let i = 0; i < legs.length; i++) {
-                  cumKm += legs[i].distance_m / 1000;
-                  const stop = stops[i + 1];
-                  if (stop) {
-                    markers.push({
-                      pct: (cumKm / tripProgress.total_km) * 100,
-                      visited: tripProgress.visited_stop_ids.includes(stop.id ?? ""),
-                      name: stop.name ?? "",
-                    });
-                  }
-                }
-
-                return markers.map((m, idx) => (
-                  <div
-                    key={idx}
-                    title={m.name}
-                    style={{
-                      position: "absolute",
-                      left: `${Math.min(100, m.pct)}%`,
-                      top: -1,
-                      width: 10,
-                      height: 10,
-                      borderRadius: "var(--r-btn)",
-                      background: m.visited ? "var(--roam-accent)" : "var(--roam-surface)",
-                      border: "2px solid var(--roam-surface-hover)",
-                      transform: "translateX(-50%)",
-                      zIndex: 2,
-                    }}
-                  />
-                ));
-              })()}
+                  height: "100%", background: "var(--c-accent)",
+                }}/>
+              </div>
+              <div className="t-mono" style={{ fontSize: 11, fontWeight: 700 }}>
+                {Math.round(tripProgress.km_remaining)} km left
+              </div>
             </div>
           </div>
-        ) : null}
-
-        {/* ── GPS status ──────────────────────────────────────── */}
-        {geo.loading ? (
-          <div
-            style={{
-              marginTop: 8,
-              fontSize: 11,
-              fontWeight: 900,
-              color: "var(--roam-text-muted)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <Satellite size={14} />
-            Getting GPS fix…
-          </div>
-        ) : geo.error ? (
-          <div
-            style={{
-              marginTop: 8,
-              fontSize: 11,
-              fontWeight: 900,
-              color: "var(--text-warn)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <AlertTriangle size={14} />
-            {geo.error}
-          </div>
-        ) : null}
-
-        {err ? (
-          <div className="trip-err-box" style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 8 }}>
-            <AlertTriangle size={16} />
-            {err}
-          </div>
-        ) : null}
+        )}
       </div>
+
+      {err ? (
+        <div style={{
+          margin: "12px 16px 0",
+          padding: "10px 12px", borderRadius: 12,
+          background: "var(--c-error-bg)", color: "var(--c-error-text)",
+          display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13,
+        }}>
+          <AlertTriangle size={16}/>
+          {err}
+        </div>
+      ) : null}
 
       {/* ── AI intro card - shown until guide has messages ───── */}
       {guidePack && guidePack.thread.length === 0 && busy === "chat" && (
