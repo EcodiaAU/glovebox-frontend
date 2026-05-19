@@ -2845,7 +2845,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
            slides out, so the action bar drops down to 0 to take the freed space.
            At full both slide out together so the sheet fully covers the screen. */}
       {!activeNav.isActive && (
-        <div style={{
+        <div className="trip-action-bar" style={{
           position: "absolute",
           left: 0, right: 0,
           bottom: 0,
