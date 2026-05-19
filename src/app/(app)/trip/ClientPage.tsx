@@ -14,6 +14,7 @@ import type { AlertHighlightEvent } from "@/components/trip/TripAlertsPanel";
 import { InviteCodeModal } from "@/components/plans/InviteCodeModal";
 import { PlanDrawer } from "@/components/trip/PlanDrawer";
 import { FuelPressureIndicator } from "@/components/fuel/FuelPressureIndicator";
+import { BottomSheet as SuggestionsBottomSheet, Icon as SuggestionsIcon, PrimaryBtn as SuggestionsPrimaryBtn } from "@/components/roam-ui-v2/shared";
 import { FuelLastChanceToast } from "@/components/fuel/FuelLastChanceToast";
 import { VehicleFuelSettings } from "@/components/fuel/VehicleFuelSettings";
 
@@ -312,6 +313,11 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       }
     });
   }, []);
+
+  // Suggestions sheet — opened by the "Stops" CTA in the persistent action bar.
+  // Separate bottom sheet that slides over the planning sheet with a backdrop dim,
+  // matching the prototype's onSuggestions / <BottomSheet title="Suggestions">.
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
 
   // Bottom Sheet Snap State (3 snaps: peek, expanded, full)
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -2721,6 +2727,118 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
       </div>{/* end trip-bottom-sheet */}
 
+      {/* Suggestions sheet — opened from the "Stops" CTA in the persistent
+           action bar. Slides up over the planning sheet with a backdrop dim
+           per the prototype's onSuggestions flow. Wires to the real `places`
+           pack so the user sees actual POIs along their route. */}
+      <SuggestionsBottomSheet
+        open={suggestionsOpen}
+        onClose={() => setSuggestionsOpen(false)}
+        title="Add stops along route"
+      >
+        {(() => {
+          const items = (places?.items ?? []).filter((p) => !stopPlaceIds.has(p.id)).slice(0, 30);
+          const totalAvailable = (places?.items?.length ?? 0) - stopPlaceIds.size;
+
+          // Category chip counts derived from the real places pack
+          const catMap: Record<string, { label: string; color: string }> = {
+            fuel:    { label: "Fuel",      color: "var(--c-accent)" },
+            camping: { label: "Camping",   color: "var(--c-success-dark)" },
+            water:   { label: "Water",     color: "var(--c-cat-water)" },
+            food:    { label: "Food",      color: "var(--c-cat-solar)" },
+            attraction: { label: "Attractions", color: "var(--c-info)" },
+            heritage: { label: "Heritage", color: "#8a5a2b" },
+          };
+          const counts: Record<string, number> = {};
+          for (const p of places?.items ?? []) {
+            const key = (p.category ?? "attraction").toLowerCase();
+            counts[key] = (counts[key] ?? 0) + 1;
+          }
+
+          return (
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <div style={{
+                  flex: 1, height: 40, borderRadius: 999,
+                  background: "var(--c-surface-muted)",
+                  display: "flex", alignItems: "center", padding: "0 12px", gap: 8,
+                }}>
+                  <SuggestionsIcon name="search" size={16}/>
+                  <span style={{ color: "var(--c-text-muted)", fontSize: 13 }}>
+                    {totalAvailable > 0 ? `Search ${totalAvailable} places along route` : "Search categories"}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+                {Object.entries(catMap).map(([key, c]) => (
+                  <button key={key} type="button" style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    padding: "6px 10px", borderRadius: 999,
+                    background: "var(--c-surface-muted)", fontSize: 12, fontWeight: 700,
+                    border: 0, color: "var(--c-text)",
+                  }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 999, background: c.color }}/>
+                    {c.label}
+                    <span style={{ color: "var(--c-text-muted)", fontWeight: 500 }}>{counts[key] ?? 0}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingBottom: 16 }}>
+                {items.length === 0 ? (
+                  <div style={{
+                    padding: "20px 12px", borderRadius: 14,
+                    background: "var(--c-surface-muted)",
+                    color: "var(--c-text-muted)", fontSize: 13, textAlign: "center",
+                  }}>
+                    No places along this route yet. Try expanding the corridor or building out the trip.
+                  </div>
+                ) : items.map((p) => (
+                  <div key={p.id} style={{
+                    display: "flex", alignItems: "center", gap: 10,
+                    padding: "10px 12px", borderRadius: 14, background: "var(--c-surface-muted)",
+                  }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 10,
+                      background: "var(--c-surface)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      color: "var(--c-accent)",
+                    }}>
+                      <SuggestionsIcon name="pin" size={18}/>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        fontWeight: 600, fontSize: 14,
+                        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                      }}>{p.name || "Unnamed"}</div>
+                      <div className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
+                        {p.category ?? "Place"}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        haptic.selection();
+                        handleAddExternalPlace(p);
+                        setSuggestionsOpen(false);
+                      }}
+                      style={{
+                        width: 40, height: 40, borderRadius: 999,
+                        background: "var(--c-accent-tint)", color: "var(--c-accent)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        border: 0,
+                      }}
+                    >
+                      <SuggestionsIcon name="plus" size={18} stroke={2.4}/>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </SuggestionsBottomSheet>
+
       {/* Persistent action bar — outside the sheet, anchored to the very bottom of
            the trip-app-container. At peek the bottom tab bar is visible so we lift
            the action bar above it via translateY(-tab-h). At expanded the tab bar
@@ -2747,7 +2865,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           <button
             type="button"
             aria-label="Add stops"
-            onClick={() => { haptic.selection(); setSheetSnap("expanded"); }}
+            onClick={() => { haptic.selection(); setSuggestionsOpen(true); }}
             style={{
               flex: "0 0 auto", height: 48, padding: "0 14px",
               borderRadius: 14,
