@@ -45,76 +45,66 @@ export function NativeBootstrap() {
     if (initRef.current) return;
     initRef.current = true;
 
+    // A single bootstrap step failure must never prevent the splash from
+    // hiding - otherwise we ship a black-screen build. Each step is wrapped
+    // in its own catch and the splash hide runs in a finally.
+    const safe = async (label: string, fn: () => Promise<unknown> | unknown) => {
+      try { await fn(); } catch (e) { console.warn(`[NativeBootstrap] ${label} failed`, e); }
+    };
+
     (async () => {
-      // 1. Visual setup (status bar)
-      await configureStatusBar();
+      try {
+        await safe("configureStatusBar", configureStatusBar);
+        await safe("lockPortrait", lockPortrait);
+        await safe("configureKeyboard", configureKeyboard);
+        await safe("initAppLifecycle", initAppLifecycle);
 
-      // 2. Lock orientation
-      await lockPortrait();
-
-      // 3. Keyboard behavior
-      await configureKeyboard();
-
-      // 4. App lifecycle (foreground/background)
-      await initAppLifecycle();
-
-      // When app comes to foreground: trigger sync drain + network recheck
-      onAppStateChange((state) => {
-        if (state === "foreground") {
-          // Recheck network and drain sync queue
-          networkMonitor.start(); // idempotent - will re-poll health
-          planSync.drainQueue();
-        }
-      });
-
-      // 5. Permissions (notifications + location requested together so both
-      //    OS prompts appear at boot - location alone doesn't trigger a
-      //    visible prompt on some devices)
-      await Promise.all([
-        requestNotificationPermission(),
-        requestLocationPermission(),
-      ]);
-      await initNotificationTapListener();
-
-      // Handle notification taps → route to relevant screen
-      onNotificationTap((extra) => {
-        const type = extra?.type;
-        if (type === "bundle_ready" || type === "sync" || type === "hazard") {
-          router("/trip");
-        }
-      });
-
-      // 6. Handle deep links (e.g. OAuth callback via custom URL scheme)
-      App.addListener("appUrlOpen", ({ url }) => {
-        // au.ecodia.roam://auth/callback?code=... → /auth/callback?code=...
-        try {
-          const parsed = new URL(url);
-          if (parsed.pathname === "/auth/callback") {
-            router("/auth/callback" + parsed.search + parsed.hash, { replace: true });
-          }
-        } catch {}
-      });
-
-      // 7. Initialize RevenueCat (non-blocking - paywall still works via cached state)
-      if (RC_API_KEY) {
-        initRevenueCat(RC_API_KEY).catch(() => {});
-
-        // Log RC in with the Supabase user ID so the RC webhook can identify
-        // which user to unlock when a purchase completes on device.
-        // We subscribe to auth changes so this works for both immediate and
-        // delayed sign-ins (e.g. user opens app → signs in → buys).
-        supabase.auth.onAuthStateChange((_event, session) => {
-          if (session?.user?.id) {
-            import("@revenuecat/purchases-capacitor")
-              .then(({ Purchases }) => Purchases.logIn({ appUserID: session.user.id }))
-              .catch(() => {});
+        onAppStateChange((state) => {
+          if (state === "foreground") {
+            networkMonitor.start();
+            planSync.drainQueue();
           }
         });
-      }
 
-      // 8. Hide splash (everything is ready)
-      //    Small delay ensures the first paint has happened
-      setTimeout(() => hideSplash(), 150);
+        // Permissions run in parallel; either rejecting must not abort boot.
+        await Promise.allSettled([
+          requestNotificationPermission(),
+          requestLocationPermission(),
+        ]);
+        await safe("initNotificationTapListener", initNotificationTapListener);
+
+        onNotificationTap((extra) => {
+          const type = extra?.type;
+          if (type === "bundle_ready" || type === "sync" || type === "hazard") {
+            router("/trip");
+          }
+        });
+
+        App.addListener("appUrlOpen", ({ url }) => {
+          try {
+            const parsed = new URL(url);
+            if (parsed.pathname === "/auth/callback") {
+              router("/auth/callback" + parsed.search + parsed.hash, { replace: true });
+            }
+          } catch {}
+        });
+
+        if (RC_API_KEY) {
+          initRevenueCat(RC_API_KEY).catch(() => {});
+          supabase.auth.onAuthStateChange((_event, session) => {
+            if (session?.user?.id) {
+              import("@revenuecat/purchases-capacitor")
+                .then(({ Purchases }) => Purchases.logIn({ appUserID: session.user.id }))
+                .catch(() => {});
+            }
+          });
+        }
+      } finally {
+        // Always hide the splash, even if a step above threw. The 150ms
+        // delay gives the first React paint time to land so the transition
+        // doesn't reveal an empty WebView.
+        setTimeout(() => { hideSplash().catch(() => {}); }, 150);
+      }
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

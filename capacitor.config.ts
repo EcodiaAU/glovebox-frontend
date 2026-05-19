@@ -17,10 +17,19 @@ const config: CapacitorConfig = {
 
   plugins: {
     SplashScreen: {
-      launchAutoHide: false,
-      launchShowDuration: 0,
+      // JS calls SplashScreen.hide() from NativeBootstrap once the app is
+      // ready (~150ms after permissions). launchAutoHide acts as a safety
+      // net: if the WebView crashes before React mounts, the OS will still
+      // hide the splash after launchShowDuration so the user never sees a
+      // permanent black screen.
+      launchAutoHide: true,
+      launchShowDuration: 3000,
       backgroundColor: "#0a0a0a",
       showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true,
+      androidScaleType: "CENTER_CROP",
+      androidSplashResourceName: "splash",
     },
 
     StatusBar: {
