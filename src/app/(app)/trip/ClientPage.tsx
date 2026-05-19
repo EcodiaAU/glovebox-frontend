@@ -39,6 +39,8 @@ import { useMapNavigationMode } from "@/lib/hooks/useMapNavigationMode";
 import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { useObservations } from "@/lib/hooks/useObservations";
 import type { InterpolatedPosition } from "@/lib/nav/gpsInterpolator";
+import { useCarPlayBridgeSync } from "@/lib/native/carPlay";
+import type { CarPlayHazard, CarPlayFuelStop, CarPlayVehicle } from "@/plugins/roam-carplay-bridge";
 
 import { haptic } from "@/lib/native/haptics";
 import { useStopProximity } from "@/lib/hooks/useStopProximity";
@@ -354,6 +356,81 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
   // ── Active Navigation ──
   const activeNav = useActiveNavigation(navpack, DEFAULT_NAV_CONFIG, weather);
+
+  // ── CarPlay bridge sync ──────────────────────────────────────────
+  // Push the active trip + GPS ticks + hazards + fuel stops + vehicle
+  // profile to the iOS in-process singleton that the CarPlay scene reads
+  // from. No-op on web / Android.
+  const carPlayHazards = useMemo<CarPlayHazard[] | null>(() => {
+    const items = hazards?.items ?? [];
+    if (!items.length) return [];
+    return items.map((h): CarPlayHazard => {
+      const sev =
+        h.severity === "high" ? "critical"
+          : h.severity === "medium" ? "warning"
+          : "info";
+      const typeLabel =
+        h.kind === "flood" || h.kind === "marine" ? "flood"
+          : h.kind === "fire" ? "fire"
+          : h.kind === "storm" || h.kind === "cyclone" || h.kind === "wind" || h.kind === "weather_warning" ? "weather"
+          : h.kind === "heat" ? "weather"
+          : "closure";
+      const bb = h.bbox;
+      const lat = Array.isArray(bb) && bb.length >= 4 ? (bb[1] + bb[3]) / 2 : 0;
+      const lng = Array.isArray(bb) && bb.length >= 4 ? (bb[0] + bb[2]) / 2 : 0;
+      return {
+        id: h.id,
+        lat,
+        lng,
+        typeLabel,
+        severity: sev,
+        headline: h.title,
+        detail: h.description ?? undefined,
+      };
+    }).filter((h) => h.lat !== 0 || h.lng !== 0);
+  }, [hazards]);
+
+  const carPlayFuelStops = useMemo<CarPlayFuelStop[] | null>(() => {
+    const stations = fuelOverlay?.stations ?? [];
+    if (!stations.length) return [];
+    const sorted = [...stations].sort(
+      (a, b) => (a.km_along_route ?? 0) - (b.km_along_route ?? 0)
+    );
+    return sorted.map((s, idx): CarPlayFuelStop => ({
+      id: s.id ?? s.place_id ?? `fuel-${idx}`,
+      name: s.name,
+      brand: s.brand ?? undefined,
+      lat: s.lat,
+      lng: s.lng,
+      distanceAlongRouteMeters: (s.km_along_route ?? 0) * 1000,
+      // Last-chance heuristic: gap to next > 200 km, OR the final fuel before
+      // a >200 km no-fuel stretch flagged by analysis.
+      isLastChance: idx < sorted.length - 1
+        ? ((sorted[idx + 1].km_along_route ?? 0) - (s.km_along_route ?? 0)) > 200
+        : false,
+    }));
+  }, [fuelOverlay]);
+
+  const carPlayVehicle = useMemo<CarPlayVehicle | null>(() => {
+    const profile: VehicleFuelProfile | undefined = fuelAnalysis?.profile;
+    if (!profile) return null;
+    const litresPer100Km = 10;
+    const tankCapacityLitres = profile.tank_range_km / 10;
+    return {
+      litresPer100Km,
+      tankCapacityLitres,
+      currentFuelLitres: tankCapacityLitres,
+    };
+  }, [fuelAnalysis]);
+
+  useCarPlayBridgeSync({
+    navpack,
+    navStatus: activeNav.nav.status,
+    lastPosition: activeNav.lastPosition,
+    hazards: carPlayHazards,
+    fuelStops: carPlayFuelStops,
+    vehicle: carPlayVehicle,
+  });
 
   // ── Map Navigation Mode (heading-up camera tracking) ──
   const effectiveBbox = navpack?.primary?.bbox ?? plan?.preview?.bbox ?? null;

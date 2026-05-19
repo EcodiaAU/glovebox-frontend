@@ -5,8 +5,13 @@
 // entry in Info.plist that maps CPTemplateApplicationSceneSessionRoleApplication
 // to this class.
 //
-// Scaffold for v1.1. Implementation pass lands the full template tree.
-// Tested in Xcode's CarPlay simulator without the carplay-maps entitlement.
+// Responsibilities:
+// - Build the root CPMapTemplate (search button, plans button).
+// - Install the CarPlayMapViewController as the carWindow's rootVC so the
+//   MKMapView actually shows on the car display.
+// - Hand the interfaceController + mapTemplate to the
+//   CarPlayNavigationCoordinator which owns state + decisions.
+// - Tear everything down on disconnect.
 
 import CarPlay
 import UIKit
@@ -15,23 +20,64 @@ import UIKit
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
 
     var interfaceController: CPInterfaceController?
+    var carWindow: UIWindow?
+    var mapViewController: CarPlayMapViewController?
 
-    // Called when CarPlay attaches. Build the root template and present it.
+    func templateApplicationScene(
+        _ templateApplicationScene: CPTemplateApplicationScene,
+        didConnect interfaceController: CPInterfaceController,
+        to window: CPWindow
+    ) {
+        self.interfaceController = interfaceController
+        self.carWindow = window
+
+        let mapVC = CarPlayMapViewController()
+        self.mapViewController = mapVC
+        window.rootViewController = mapVC
+
+        let mapTemplate = makeRootMapTemplate()
+        CarPlayNavigationCoordinator.shared.mapViewController = mapVC
+        CarPlayNavigationCoordinator.shared.sceneDidConnect(
+            interfaceController: interfaceController,
+            mapTemplate: mapTemplate
+        )
+        mapTemplate.mapDelegate = CarPlayNavigationCoordinator.shared
+
+        interfaceController.setRootTemplate(mapTemplate, animated: false, completion: nil)
+    }
+
+    // Legacy connect signature (without window) for older SDKs / sims that
+    // call the non-window variant. We forward to the windowed path with a
+    // freshly-created window so behaviour is identical.
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController
     ) {
+        // On iOS 14+ in CarPlay the windowed callback is the canonical one.
+        // If only the no-window variant fires (older simulator path), the
+        // map will render as a plain UIWindow via the screen's first window.
         self.interfaceController = interfaceController
 
-        // Coordinator wakes up. Backend nav calls share the same endpoints
-        // the phone app uses (see CarPlayNavigationCoordinator).
-        CarPlayNavigationCoordinator.shared.sceneDidConnect()
-
-        let rootTemplate = makeRootMapTemplate()
-        interfaceController.setRootTemplate(rootTemplate, animated: false, completion: nil)
+        let mapTemplate = makeRootMapTemplate()
+        CarPlayNavigationCoordinator.shared.sceneDidConnect(
+            interfaceController: interfaceController,
+            mapTemplate: mapTemplate
+        )
+        mapTemplate.mapDelegate = CarPlayNavigationCoordinator.shared
+        interfaceController.setRootTemplate(mapTemplate, animated: false, completion: nil)
     }
 
-    // Called when CarPlay detaches (vehicle disconnects, user undocks phone).
+    func templateApplicationScene(
+        _ templateApplicationScene: CPTemplateApplicationScene,
+        didDisconnectInterfaceController interfaceController: CPInterfaceController,
+        from window: CPWindow
+    ) {
+        CarPlayNavigationCoordinator.shared.sceneDidDisconnect()
+        self.carWindow = nil
+        self.mapViewController = nil
+        self.interfaceController = nil
+    }
+
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnectInterfaceController interfaceController: CPInterfaceController
@@ -40,10 +86,12 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         self.interfaceController = nil
     }
 
-    // Root: the map template with leading + trailing nav-bar buttons.
-    // The buttons are stubs in v1.1 scaffold; implementation pass wires them.
+    // MARK: - Templates
+
     private func makeRootMapTemplate() -> CPMapTemplate {
         let mapTemplate = CPMapTemplate()
+        mapTemplate.automaticallyHidesNavigationBar = false
+        mapTemplate.hidesButtonsWithNavigationBar = false
 
         let searchButton = CPBarButton(image: UIImage(systemName: "magnifyingglass") ?? UIImage()) { [weak self] _ in
             self?.presentSearchTemplate()
@@ -54,24 +102,18 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
 
         mapTemplate.leadingNavigationBarButtons = [searchButton]
         mapTemplate.trailingNavigationBarButtons = [plansButton]
-        mapTemplate.mapDelegate = CarPlayNavigationCoordinator.shared
 
         return mapTemplate
     }
 
-    // CPSearchTemplate stub. Will wire to CarPlayNavigationCoordinator.searchPOI.
     private func presentSearchTemplate() {
         let search = CPSearchTemplate()
         search.delegate = CarPlayNavigationCoordinator.shared
         interfaceController?.pushTemplate(search, animated: true, completion: nil)
     }
 
-    // CPListTemplate stub. Will populate from saved plans + alternates.
     private func presentPlansListTemplate() {
-        let header = CPListSection(items: [
-            CPListItem(text: "Loading saved plans...", detailText: nil)
-        ])
-        let list = CPListTemplate(title: "Plans", sections: [header])
+        let list = CarPlayNavigationCoordinator.shared.plansListTemplate()
         interfaceController?.pushTemplate(list, animated: true, completion: nil)
     }
 }

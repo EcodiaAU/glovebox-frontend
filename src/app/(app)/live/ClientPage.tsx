@@ -22,6 +22,7 @@ import { useKeepAwake } from "@/lib/native/keepAwake";
 import { useActiveNavigation } from "@/lib/hooks/useActiveNavigation";
 import { useMapNavigationMode } from "@/lib/hooks/useMapNavigationMode";
 import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
+import { useCarPlayBridgeSync } from "@/lib/native/carPlay";
 
 import { haptic } from "@/lib/native/haptics";
 import { navApi } from "@/lib/api/nav";
@@ -85,6 +86,14 @@ export default function LiveTripClientPage() {
 
   // Active navigation
   const activeNav = useActiveNavigation(navpack);
+
+  // CarPlay bridge: minimal sync on /live (navpack + position only;
+  // /trip is the page that owns the richer hazards+fuel+vehicle state).
+  useCarPlayBridgeSync({
+    navpack,
+    navStatus: activeNav.nav.status,
+    lastPosition: activeNav.lastPosition,
+  });
 
   // Map navigation mode
   const effectiveBbox = navpack?.primary?.bbox ?? null;
