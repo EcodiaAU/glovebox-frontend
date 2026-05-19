@@ -313,9 +313,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     });
   }, []);
 
-  // Bottom Sheet Snap State (2 snaps: expanded, peek)
+  // Bottom Sheet Snap State (3 snaps: peek, expanded, full)
   const sheetRef = useRef<HTMLDivElement>(null);
-  type SheetSnap = "expanded" | "peek";
+  type SheetSnap = "expanded" | "peek" | "full";
   const [sheetSnap, setSheetSnap] = useState<SheetSnap>("peek");
   // Reflect snap to <body> so .roam-tabs-wrap can slide out when the
   // sheet covers everything. Without this the bottom tab bar overlays
@@ -1896,13 +1896,14 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     const startSnap = dragData.current.startSnap;
     const THRESHOLD = 60;
 
-    // Determine next snap based on drag direction + distance
+    // Determine next snap based on drag direction + distance.
+    // 3 states: peek → expanded → full on drag up; reverse on drag down.
     if (delta < -THRESHOLD) {
-      // Dragged up → expand
-      if (startSnap === "peek") { setSheetSnap("expanded"); haptic.tap(); }
+      if (startSnap === "peek")     { setSheetSnap("expanded"); haptic.tap(); }
+      else if (startSnap === "expanded") { setSheetSnap("full"); haptic.tap(); }
     } else if (delta > THRESHOLD) {
-      // Dragged down → peek
-      if (startSnap === "expanded") { setSheetSnap("peek"); haptic.tap(); }
+      if (startSnap === "full")     { setSheetSnap("expanded"); haptic.tap(); }
+      else if (startSnap === "expanded") { setSheetSnap("peek"); haptic.tap(); }
     }
 
     setDragOffset(0);
@@ -1912,11 +1913,13 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   // Snap positions (translateY values).
   // The sheet extends 300px below the viewport to absorb spring bounce,
   // so peek/nav snaps add 300px to compensate.
+  //   full:      calc(safe-top - 80) — sheet pulled up by the 80px top-gap so it covers screen
   //   expanded:  0px (sheet fills from 80px down)
   //   peek:      calc(100% - 520px - safe-bottom)   [220px visible + 300px offset]
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
+      case "full":      return "calc(var(--roam-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       case "peek":
       default:          return `calc(100% - 520px - var(--roam-safe-bottom, 0px))`;
@@ -2388,25 +2391,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           willChange: "transform",
         }}
       >
-        {/* ── Elevation profile strip (between map and sheet) ── */}
-        {elevation?.profile && (
-          <div className="trip-elevation-wrap" style={{
-            position: "relative",
-            zIndex: 1,
-            borderRadius: "28px 28px 0 0",
-            overflow: "hidden",
-          }}>
-            <ElevationStrip
-              profile={elevation.profile}
-              gradeSegments={elevation.grade_segments}
-              currentKm={activeNav.isActive ? activeNav.nav.kmAlongRoute : currentKm || null}
-              viewportKmRange={viewportKmRange}
-              onTapLocation={handleElevTap}
-              collapsed={elevCollapsed}
-              onToggleCollapse={() => setElevCollapsed((c) => !c)}
-            />
-          </div>
-        )}
+        {/* Elevation strip removed from sheet per redesign — lives in T-b-T ProgressCard only. */}
 
         <div
           onPointerDown={handlePointerDown}

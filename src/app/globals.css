@@ -1290,7 +1290,7 @@ body[data-trip-sheet="expanded"] .roam-tabs-wrap {
 .trip-bottom-sheet {
   height: 100%;
   background: var(--roam-surface);
-  border-radius: var(--r-card) var(--r-card) 0 0;
+  border-radius: 22px 22px 0 0;
   box-shadow: var(--shadow-sheet);
   pointer-events: auto;
   display: flex;
@@ -1303,7 +1303,7 @@ body[data-trip-sheet="expanded"] .roam-tabs-wrap {
   padding: 14px 20px 8px 20px;
   touch-action: none;
   flex-shrink: 0;
-  border-radius: var(--r-card) var(--r-card) 0 0;
+  border-radius: 22px 22px 0 0;
 }
 
 .trip-sheet-content,
