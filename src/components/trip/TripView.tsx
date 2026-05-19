@@ -1,6 +1,6 @@
 // src/components/trip/TripView.tsx
 
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef, type ReactNode } from "react";
 import { useFLIP } from "@/lib/hooks/useFLIP";
 import type { NavPack, CorridorGraphPack, TrafficOverlay, HazardOverlay } from "@/lib/types/navigation";
 import type { TripStop } from "@/lib/types/trip";
@@ -30,8 +30,14 @@ import {
     WifiOff,
     GripVertical,
     Shuffle,
+    Shuffle as ShuffleIcon,
     CheckCheck,
     Clock,
+    MoreHorizontal,
+    Trash2,
+    Edit3,
+    Fuel,
+    Navigation as NavigationIcon,
 } from "lucide-react";
 
 import {
@@ -185,6 +191,7 @@ export function TripView({
 
   /* ── Editor state ───────────────────────────────────────────────────── */
   const [stops, setStops] = useState<TripStop[]>(() => ensureStopIds(navpack?.req?.stops ?? []));
+  const [actionStopId, setActionStopId] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -305,6 +312,32 @@ export function TripView({
       if (moved) autoRebuild(moved);
     },
     [autoRebuild, capturePositions, setMovedId],
+  );
+
+  const renameStop = useCallback(
+    (id: string, newName: string) => {
+      let updated: TripStop[] | null = null;
+      setStops((prev) => {
+        const out = prev.map((s) => (s.id === id ? { ...s, name: newName } : s));
+        updated = out;
+        return out;
+      });
+      if (updated) autoRebuild(updated);
+    },
+    [autoRebuild],
+  );
+
+  const updateStopTime = useCallback(
+    (id: string, field: "arrive_at" | "depart_at", value: string | null) => {
+      let updated: TripStop[] | null = null;
+      setStops((prev) => {
+        const out = prev.map((s) => (s.id === id ? { ...s, [field]: value } : s));
+        updated = out;
+        return out;
+      });
+      if (updated) autoRebuild(updated);
+    },
+    [autoRebuild],
   );
 
   const removeStop = useCallback(
@@ -881,45 +914,22 @@ export function TripView({
                       )}
                     </div>
 
-                    {/* Edit controls - simple mode: delete only */}
+                    {/* Edit controls - single kebab opens the StopActionsSheet
+                         with full per-stop options (rename, schedule, fuel,
+                         reorder, remove) per prototype. Locked stops show nothing. */}
                     {!locked && (
                       <div className={s.stopControls} onPointerDown={(e) => e.stopPropagation()}>
-                        {!simple && index > 1 && (
-                          <button
-                            type="button"
-                            className={s.controlBtn}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              moveStop(index, -1);
-                            }}
-                            aria-label="Move up"
-                          >
-                            <ChevronUp size={14} strokeWidth={2} />
-                          </button>
-                        )}
-                        {!simple && index < stops.length - 2 && (
-                          <button
-                            type="button"
-                            className={s.controlBtn}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              moveStop(index, 1);
-                            }}
-                            aria-label="Move down"
-                          >
-                            <ChevronDown size={14} strokeWidth={2} />
-                          </button>
-                        )}
                         <button
                           type="button"
-                          className={s.controlBtnDanger}
+                          className={s.controlBtn}
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeStop(stop.id);
+                            haptic.selection();
+                            if (stop.id) setActionStopId(stop.id);
                           }}
-                          aria-label="Remove stop"
+                          aria-label="Stop options"
                         >
-                          <X size={14} strokeWidth={2} />
+                          <MoreHorizontal size={16} strokeWidth={2} />
                         </button>
                       </div>
                     )}
@@ -1080,6 +1090,296 @@ export function TripView({
           />
         </div>
       ) : null}
+
+      <StopActionsSheet
+        stop={actionStopId ? stops.find((s) => s.id === actionStopId) ?? null : null}
+        stopIndex={actionStopId ? stops.findIndex((s) => s.id === actionStopId) : -1}
+        totalStops={stops.length}
+        onClose={() => setActionStopId(null)}
+        onRename={(id, name) => renameStop(id, name)}
+        onUpdateTime={(id, field, value) => updateStopTime(id, field, value)}
+        onMove={(idx, dir) => moveStop(idx, dir)}
+        onRemove={(id) => { removeStop(id); setActionStopId(null); }}
+      />
     </div>
+  );
+}
+
+function StopActionsSheet({
+  stop, stopIndex, totalStops, onClose, onRename, onUpdateTime, onMove, onRemove,
+}: {
+  stop: TripStop | null;
+  stopIndex: number;
+  totalStops: number;
+  onClose: () => void;
+  onRename: (id: string, name: string) => void;
+  onUpdateTime: (id: string, field: "arrive_at" | "depart_at", value: string | null) => void;
+  onMove: (idx: number, dir: -1 | 1) => void;
+  onRemove: (id: string) => void;
+}) {
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+
+  useEffect(() => {
+    if (stop) { setNameDraft(stop.name ?? ""); setEditingName(false); }
+  }, [stop]);
+
+  if (!stop) return null;
+  const id = stop.id ?? "";
+  const locked = isLockedStop(stop);
+  const tag =
+    stop.type === "start" ? "Start" :
+    stop.type === "end" ? "Destination" :
+    `Waypoint ${stopIndex + 1}`;
+  const isFirstMovable = stopIndex <= 1;
+  const isLastMovable = stopIndex >= totalStops - 2;
+
+  const hhmm = (iso: string | null | undefined): string => {
+    if (!iso) return "";
+    const m = /T(\d{2}:\d{2})/.exec(iso);
+    return m ? m[1] : "";
+  };
+  const setHhmm = (field: "arrive_at" | "depart_at", value: string) => {
+    if (!id) return;
+    if (!value) { onUpdateTime(id, field, null); return; }
+    const prev = stop[field];
+    const datePart = prev && /^\d{4}-\d{2}-\d{2}T/.test(prev) ? prev.slice(0, 10) : new Date().toISOString().slice(0, 10);
+    onUpdateTime(id, field, `${datePart}T${value}`);
+  };
+
+  return (
+    <>
+      <div
+        onClick={onClose}
+        style={{
+          position: "fixed", inset: 0,
+          background: "rgba(0,0,0,0.45)", zIndex: 200,
+          animation: "fade-in 0.2s ease",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        role="dialog"
+        aria-label="Stop options"
+        style={{
+          position: "fixed", left: 0, right: 0, bottom: 0,
+          background: "var(--c-surface)",
+          borderTopLeftRadius: 22, borderTopRightRadius: 22,
+          padding: "8px 0 calc(24px + env(safe-area-inset-bottom, 0px))",
+          zIndex: 201,
+          boxShadow: "var(--sh-raised)",
+          animation: "slide-up 0.25s cubic-bezier(0.2,0.8,0.2,1)",
+          display: "flex", flexDirection: "column",
+          maxHeight: "85vh",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "center", padding: "4px 0 8px" }}>
+          <div style={{ width: 36, height: 4, borderRadius: 4, background: "var(--c-border-strong)" }}/>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 18px 8px", gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="t-display" style={{ fontWeight: 700, fontSize: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {stop.name || "Unnamed stop"}
+            </div>
+            <div style={{
+              display: "inline-flex", marginTop: 4,
+              padding: "3px 10px", borderRadius: 999,
+              background: stop.type === "end" ? "var(--c-accent-tint)" : "var(--c-surface-muted)",
+              color: stop.type === "end" ? "var(--c-accent)" : "var(--c-text-muted)",
+              fontSize: 11, fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase",
+            }}>
+              {tag}
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{
+              width: 40, height: 40, borderRadius: 999,
+              background: "var(--c-surface-muted)", border: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "var(--c-text)", cursor: "pointer",
+            }}
+          >
+            <X size={18} strokeWidth={2} />
+          </button>
+        </div>
+
+        <div className="scroll-y" style={{ flex: 1, overflowY: "auto", padding: "8px 18px 0" }}>
+          <div className="t-mono" style={{
+            fontSize: 11, color: "var(--c-text-muted)",
+            textTransform: "uppercase", letterSpacing: 0.4,
+            marginTop: 6, marginBottom: 8,
+          }}>
+            Schedule
+          </div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+            <SheetTimeField label="Arrive" value={hhmm(stop.arrive_at)} onChange={(v) => setHhmm("arrive_at", v)}/>
+            <SheetTimeField label="Depart" value={hhmm(stop.depart_at)} onChange={(v) => setHhmm("depart_at", v)}/>
+          </div>
+
+          <div className="t-mono" style={{
+            fontSize: 11, color: "var(--c-text-muted)",
+            textTransform: "uppercase", letterSpacing: 0.4,
+            marginBottom: 8,
+          }}>
+            Stop options
+          </div>
+          <div style={{
+            display: "flex", flexDirection: "column", gap: 1,
+            background: "var(--c-surface-muted)", borderRadius: 14,
+            overflow: "hidden", marginBottom: 14,
+          }}>
+            {editingName ? (
+              <div style={{ padding: "10px 14px", background: "var(--c-surface)" }}>
+                <input
+                  autoFocus
+                  value={nameDraft}
+                  onChange={(e) => setNameDraft(e.target.value)}
+                  onBlur={() => {
+                    if (id && nameDraft.trim() && nameDraft.trim() !== stop.name) {
+                      onRename(id, nameDraft.trim());
+                    }
+                    setEditingName(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                    if (e.key === "Escape") { setNameDraft(stop.name ?? ""); setEditingName(false); }
+                  }}
+                  style={{
+                    width: "100%", border: 0, outline: "none",
+                    background: "transparent", fontSize: 15, fontWeight: 600,
+                    color: "var(--c-text)", padding: "6px 0",
+                  }}
+                  placeholder="Stop name"
+                />
+              </div>
+            ) : (
+              <ActionRow
+                icon={<Edit3 size={16} strokeWidth={2} />}
+                label="Rename"
+                sub={stop.name || "Set a name"}
+                onClick={() => setEditingName(true)}
+              />
+            )}
+            {!locked && !isFirstMovable && (
+              <ActionRow
+                icon={<ChevronUp size={16} strokeWidth={2} />}
+                label="Move up"
+                onClick={() => { onMove(stopIndex, -1); onClose(); }}
+              />
+            )}
+            {!locked && !isLastMovable && (
+              <ActionRow
+                icon={<ChevronDown size={16} strokeWidth={2} />}
+                label="Move down"
+                onClick={() => { onMove(stopIndex, 1); onClose(); }}
+              />
+            )}
+            <ActionRow
+              icon={<Fuel size={16} strokeWidth={2} />}
+              label="Fuel stop"
+              sub="Coming soon"
+              disabled
+            />
+            <ActionRow
+              icon={<ShuffleIcon size={16} strokeWidth={2} />}
+              label="Replace with nearby"
+              sub="Coming soon"
+              disabled
+            />
+            <ActionRow
+              icon={<NavigationIcon size={16} strokeWidth={2} />}
+              label="Re-route via this stop"
+              sub="Coming soon"
+              disabled
+            />
+          </div>
+
+          <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+            <button
+              onClick={onClose}
+              style={{
+                flex: 1, minHeight: 48, borderRadius: 12,
+                background: "var(--c-accent)", color: "white",
+                fontWeight: 700, fontSize: 14, border: 0, cursor: "pointer",
+              }}
+            >
+              Done
+            </button>
+            {!locked && id && (
+              <button
+                onClick={() => onRemove(id)}
+                style={{
+                  minHeight: 48, padding: "0 14px", borderRadius: 12,
+                  background: "var(--c-error-bg, rgba(220,53,69,0.12))",
+                  color: "var(--c-error-text, #c92a2a)",
+                  fontWeight: 700, fontSize: 14, border: 0, cursor: "pointer",
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                }}
+                aria-label="Remove stop"
+              >
+                <Trash2 size={14} strokeWidth={2} /> Remove
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function SheetTimeField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <label style={{ flex: 1, padding: "8px 12px", borderRadius: 12, background: "var(--c-surface-muted)", display: "block" }}>
+      <div className="t-mono" style={{ fontSize: 9, color: "var(--c-text-muted)", textTransform: "uppercase", letterSpacing: 0.4 }}>
+        {label}
+      </div>
+      <input
+        type="time"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          border: 0, background: "transparent", outline: "none",
+          fontFamily: "var(--font-mono)", fontSize: 16, fontWeight: 700,
+          color: "var(--c-text)", width: "100%", padding: "2px 0", marginTop: 2,
+        }}
+      />
+    </label>
+  );
+}
+
+function ActionRow({
+  icon, label, sub, onClick, disabled,
+}: {
+  icon: ReactNode;
+  label: string;
+  sub?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        width: "100%", minHeight: 52, padding: "10px 14px",
+        display: "flex", alignItems: "center", gap: 12,
+        background: "transparent", textAlign: "left",
+        border: 0, cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.55 : 1,
+      }}
+    >
+      <span style={{ color: "var(--c-text-muted)", display: "inline-flex" }}>{icon}</span>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ display: "block", fontSize: 14, fontWeight: 600, color: "var(--c-text)" }}>{label}</span>
+        {sub && (
+          <span style={{ display: "block", fontSize: 11, color: "var(--c-text-muted)" }}>{sub}</span>
+        )}
+      </span>
+      {!disabled && <span style={{ color: "var(--c-text-muted)", fontSize: 14 }}>›</span>}
+    </button>
   );
 }
