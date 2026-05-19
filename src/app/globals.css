@@ -633,7 +633,9 @@ input, textarea, [contenteditable] {
    its own action surface when expanded, so the tab bar is redundant.
    Mirror the keyboard-open easing so the transitions feel identical. */
 body[data-trip-sheet="expanded"] .roam-tab-bar,
-body[data-trip-sheet="expanded"] .roam-tabs-wrap {
+body[data-trip-sheet="expanded"] .roam-tabs-wrap,
+body[data-trip-sheet="full"] .roam-tab-bar,
+body[data-trip-sheet="full"] .roam-tabs-wrap {
   transform: translateY(100%);
   pointer-events: none;
   opacity: 0;

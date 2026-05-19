@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2732 2732" width="2732" height="2732">
+  <rect width="2732" height="2732" fill="#A8431F"/>
+
+  <!-- Mark, scaled to 760x760, centred horizontally, sitting above middle.
+       Internal viewBox 0..100 means scale=7.6, offset chosen so mark centre is at (1366, 1230). -->
+  <g transform="translate(986, 850) scale(7.6)">
+    <circle cx="50" cy="44" r="13" fill="#E8DFC9"/>
+    <line x1="20" y1="62" x2="80" y2="62" stroke="#E8DFC9" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Wordmark, centred below mark. Heavy sans, generous letter-spacing. -->
+  <text x="1366" y="1820"
+        font-family="Helvetica Neue, Helvetica, Arial Black, Arial, sans-serif"
+        font-weight="900"
+        font-size="280"
+        fill="#E8DFC9"
+        text-anchor="middle"
+        letter-spacing="32">ROAM</text>
+</svg>

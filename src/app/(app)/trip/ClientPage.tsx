@@ -2231,7 +2231,11 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       {/* Navigation overlays are rendered at the end of the tree (after bottom sheet)
          so they paint above all other layers. See below. */}
 
-      {!activeNav.isActive && sheetSnap === "peek" && <FuelPressureIndicator tracking={fuelTracking} />}
+      {/* FuelPressureIndicator overlaps the new sheet+action-bar in planning mode.
+           Surface fuel info inside the sheet (FuelSummary / FuelStrip) instead.
+           Only show during active navigation (where the sheet collapses to peek
+           and the floating pill is the primary fuel readout). */}
+      {false && !activeNav.isActive && sheetSnap === "peek" && <FuelPressureIndicator tracking={fuelTracking} />}
       <FuelLastChanceToast tracking={fuelTracking} currentKm={currentKm} />
 
       <VehicleFuelSettings
@@ -2707,67 +2711,74 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           </div>
         </div>
 
-        {/* Persistent action bar (prototype: stops button + Start nav) — pinned to the
-             bottom of the sheet so it's always reachable regardless of scroll position.
-             Only shown when not actively navigating; the sheet itself collapses to peek
-             during turn-by-turn. */}
-        {!activeNav.isActive && (
-          <div style={{
-            position: "absolute",
-            left: 0, right: 0,
-            bottom: 300, // sheet has bottom:-300 so this sits at visible-bottom of sheet
-            padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
-            display: "flex", gap: 8, alignItems: "center",
-            borderTop: "1px solid var(--c-border)",
-            background: "var(--c-surface)",
-            zIndex: 2,
-          }}>
+      </div>{/* end trip-bottom-sheet */}
+
+      {/* Persistent action bar — outside the sheet, above the bottom tab bar.
+           Stays visible whether the sheet is peek, expanded, or full so the
+           Start nav CTA is always reachable. Hidden during T-b-T (the sheet
+           collapses; nav HUD takes over). Slides out with the tab bar at full
+           snap (body[data-trip-sheet="full"]) so the sheet fully covers the
+           screen. */}
+      {!activeNav.isActive && (
+        <div style={{
+          position: "absolute",
+          left: 0, right: 0,
+          bottom: "var(--roam-tab-h, 80px)", // sits just above the bottom tab bar
+          padding: "10px 16px",
+          display: "flex", gap: 8, alignItems: "center",
+          background: "var(--c-surface)",
+          borderTop: "1px solid var(--c-border)",
+          zIndex: 22, // above sheet (20) but below modals
+          transition: "transform var(--dur-normal) ease, opacity var(--dur-fast) ease",
+          transform: sheetSnap === "full" ? "translateY(calc(100% + var(--roam-tab-h, 80px)))" : "translateY(0)",
+          opacity: sheetSnap === "full" ? 0 : 1,
+          pointerEvents: sheetSnap === "full" ? "none" : "auto",
+        }}>
+          <button
+            type="button"
+            aria-label="Add stops"
+            onClick={() => { haptic.selection(); setSheetSnap("expanded"); }}
+            style={{
+              flex: "0 0 auto", height: 48, padding: "0 14px",
+              borderRadius: 14,
+              background: "var(--c-accent-tint)", color: "var(--c-accent)",
+              border: 0,
+              fontWeight: 700, fontSize: 13,
+              display: "inline-flex", alignItems: "center", gap: 6,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Stops
+          </button>
+          {navpack && (
             <button
               type="button"
-              aria-label="Add stops"
-              onClick={() => { haptic.selection(); setSheetSnap("expanded"); }}
+              aria-label="Start navigation"
+              onClick={handleStartNavigation}
+              disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
               style={{
-                flex: "0 0 auto", height: 48, padding: "0 14px",
+                flex: 1, minHeight: 56,
+                padding: "0 22px",
                 borderRadius: 14,
-                background: "var(--c-accent-tint)", color: "var(--c-accent)",
+                background: "var(--grad-cta)", color: "white",
                 border: 0,
-                fontWeight: 700, fontSize: 13,
-                display: "inline-flex", alignItems: "center", gap: 6,
+                fontWeight: 700, fontSize: 16,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                boxShadow: "var(--sh-card)",
+                letterSpacing: 0.2,
+                opacity: navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0) ? 1 : 0.55,
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14M5 12h14"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 11l18-7-7 18-2-8-9-3z"/>
               </svg>
-              Stops
+              Start navigation
             </button>
-            {navpack && (
-              <button
-                type="button"
-                aria-label="Start navigation"
-                onClick={handleStartNavigation}
-                disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
-                style={{
-                  flex: 1, minHeight: 56,
-                  padding: "0 22px",
-                  borderRadius: 14,
-                  background: "var(--grad-cta)", color: "white",
-                  border: 0,
-                  fontWeight: 700, fontSize: 16,
-                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  boxShadow: "var(--sh-card)",
-                  letterSpacing: 0.2,
-                  opacity: navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0) ? 1 : 0.55,
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 11l18-7-7 18-2-8-9-3z"/>
-                </svg>
-                Start navigation
-              </button>
-            )}
-          </div>
-        )}
-      </div>{/* end trip-bottom-sheet */}
+          )}
+        </div>
+      )}
 
       {/* Desktop-only panel toggle. Visible via CSS only at ≥900px;
           rendered as a sibling of the sheet (not a child) so the sheet's
