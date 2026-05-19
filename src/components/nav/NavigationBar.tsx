@@ -17,6 +17,13 @@ type Props = {
 };
 
 const BAR_BG = "#242220";
+// The nav bar is intentionally always dark for sunlight readability while
+// driving (matches NavigationHUD's NAV_CARD_BG comment). Text colours must
+// therefore be light-on-dark in BOTH themes — don't bind to var(--roam-text),
+// which flips dark in day mode and renders the distance numeral invisible
+// on the bar's #242220 background.
+const BAR_FG_PRIMARY = "#f0ece6";
+const BAR_FG_MUTED = "rgba(250,246,239,0.5)";
 
 /** Split "2:45 PM" → { time: "2:45", ampm: "PM" } */
 function splitEta(eta: string): { time: string; ampm: string } {
@@ -119,7 +126,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
               letterSpacing: "-0.6px",
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
-              color: "var(--roam-text)",
+              color: BAR_FG_PRIMARY,
               flexShrink: 0,
             }}>
               {primaryDist}
@@ -131,7 +138,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
               letterSpacing: "-0.4px",
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
-              color: "rgba(250,246,239,0.5)",
+              color: BAR_FG_MUTED,
               flexShrink: 0,
             }}>
               {primaryDur}

@@ -315,6 +315,13 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   const sheetRef = useRef<HTMLDivElement>(null);
   type SheetSnap = "expanded" | "peek";
   const [sheetSnap, setSheetSnap] = useState<SheetSnap>("peek");
+  // Reflect snap to <body> so .roam-tabs-wrap can slide out when the
+  // sheet covers everything. Without this the bottom tab bar overlays
+  // the lowest 80px of the expanded sheet (route summary, stop list).
+  useEffect(() => {
+    document.body.setAttribute("data-trip-sheet", sheetSnap);
+    return () => { document.body.removeAttribute("data-trip-sheet"); };
+  }, [sheetSnap]);
   const [dragOffset, setDragOffset] = useState(0);
   const isDragging = useRef(false);
   const [isDraggingState, setIsDraggingState] = useState(false);

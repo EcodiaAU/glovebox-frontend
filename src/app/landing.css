@@ -313,7 +313,10 @@
 @media (min-width: 969px) { .rl-nav-mobile { display: none !important; } }
 @media (max-width: 480px) {
   .rl-hero { padding: 60px 20px 80px; }
-  .rl-hero-mega { font-size: 64px; gap: 12px; }
+  /* Syne is wide; 64px overflows ~390px viewports — the trailing M was
+     getting clipped on iPhone 12-class widths. clamp() keeps the
+     wordmark big on iPad-ish widths but shrinks it for narrow phones. */
+  .rl-hero-mega { font-size: clamp(48px, 14vw, 64px); gap: 10px; }
   .rl-btn-hero { width: 100%; justify-content: center; padding: 16px 28px; font-size: 15px; }
   .rl-download-card { padding: 56px 24px; border-radius: var(--r-card); }
   .rl-download-card h2 { font-size: 32px; }

@@ -779,105 +779,100 @@ export function StopRow(props: {
 
       {/* Main content */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-        {/* Search input + Use My Location */}
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
-            <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--roam-text-muted)", pointerEvents: "none" }}>
+        {/* Search input + Use My Location, unified into a single bordered
+            field so the row reads as ONE control (marker / input / locate)
+            instead of three disconnected islands. The trailing locate
+            action lives behind a thin divider inside the same surface. */}
+        <div style={{ position: "relative" }}>
+          <div className="trip-stop-input">
+            <span className="trip-stop-input-leading" aria-hidden>
               {loading
                 ? <Loader2 size={16} style={{ animation: "roam-spin 1s linear infinite" }} />
                 : <Search size={16} />
               }
-            </div>
+            </span>
             <input
               value={q}
               onFocus={() => setIsFocused(true)}
               onChange={(e) => onInput(e.target.value)}
               placeholder={placeholderText}
-              className="trip-input"
-              style={{ paddingLeft: 38, width: "100%", height: 44, fontSize: 15, borderRadius: "var(--r-card)" }}
             />
-
-            {/* Dropdown results */}
-            {isFocused && q.length >= MIN_QUERY_LEN && (
-              <div style={{
-                position: "absolute",
-                top: "calc(100% + 6px)",
-                left: 0, right: 0,
-                background: "var(--roam-surface)",
-                border: "1px solid var(--roam-border)",
-                borderRadius: "var(--r-card)",
-                boxShadow: "var(--shadow-heavy)",
-                zIndex: 50,
-                overflow: "hidden",
-                maxHeight: 220,
-                overflowY: "auto",
-              }}>
-                {results.length === 0 && !loading && (
-                  <div style={{ padding: 16, fontSize: 14, color: "var(--roam-text-muted)", textAlign: "center" }}>
-                    No places found.
-                  </div>
-                )}
-                {results.map((it) => (
-                  <button
-                    key={it.id}
-                    type="button"
-                    onClick={() => handlePick(it)}
-                    style={{
-                      width: "100%",
-                      padding: "11px 16px",
-                      minHeight: 44,
-                      boxSizing: "border-box",
-                      background: "transparent",
-                      border: "none",
-                      borderBottom: "1px solid var(--roam-border)",
-                      textAlign: "left",
-                      cursor: "pointer",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      gap: 2,
-                      WebkitTapHighlightColor: "transparent",
-                    }}
-                  >
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text)" }}>{it.name}</span>
-                    <span style={{ fontSize: 12, color: "var(--roam-text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {(() => {
-                        const extra = it.extra as Record<string, unknown> | undefined;
-                        const placeName = extra?.place_name as string | undefined;
-                        const addr = extra?.address as string | undefined;
-                        // Prefer the full Mapbox place_name (includes house
-                        // number context); fall back to the shorter context
-                        // string; final fallback is category + coords.
-                        return (placeName && placeName !== it.name)
-                          ? placeName
-                          : (addr || `${it.category} · ${it.lat.toFixed(3)}, ${it.lng.toFixed(3)}`);
-                      })()}
-                    </span>
-                  </button>
-                ))}
-              </div>
+            {(props.onUseMyLocation || s.type === "start") && (
+              <button
+                type="button"
+                onClick={handleUseMyLocation}
+                disabled={props.isLocating}
+                className="trip-stop-input-action"
+                title="Use my location"
+                aria-label="Use my location"
+              >
+                {props.isLocating
+                  ? <Loader2 size={16} style={{ animation: "roam-spin 0.8s linear infinite" }} />
+                  : <Crosshair size={16} />
+                }
+                <span className="trip-stop-input-action-label">
+                  {props.isLocating ? "Locating…" : "Locate"}
+                </span>
+              </button>
             )}
           </div>
 
-          {/* Use My Location button */}
-          {(props.onUseMyLocation || s.type === "start") && (
-            <button
-              type="button"
-              onClick={handleUseMyLocation}
-              disabled={props.isLocating}
-              className="trip-interactive trip-btn-sm"
-              title="Use my location"
-              aria-label="Use my location"
-              style={{ flexShrink: 0, gap: 4, height: 44, paddingInline: 10, borderRadius: "var(--r-card)", whiteSpace: "nowrap", opacity: props.isLocating ? 0.7 : 1 }}
-            >
-              {props.isLocating
-                ? <Loader2 size={16} style={{ animation: "roam-spin 0.8s linear infinite" }} />
-                : <Crosshair size={16} />
-              }
-              <span className="hide-mobile" style={{ fontSize: 12 }}>
-                {props.isLocating ? "Locating…" : "Locate"}
-              </span>
-            </button>
+          {/* Dropdown results */}
+          {isFocused && q.length >= MIN_QUERY_LEN && (
+            <div style={{
+              position: "absolute",
+              top: "calc(100% + 6px)",
+              left: 0, right: 0,
+              background: "var(--roam-surface)",
+              border: "1px solid var(--roam-border)",
+              borderRadius: "var(--r-card)",
+              boxShadow: "var(--shadow-heavy)",
+              zIndex: 50,
+              overflow: "hidden",
+              maxHeight: 220,
+              overflowY: "auto",
+            }}>
+              {results.length === 0 && !loading && (
+                <div style={{ padding: 16, fontSize: 14, color: "var(--roam-text-muted)", textAlign: "center" }}>
+                  No places found.
+                </div>
+              )}
+              {results.map((it) => (
+                <button
+                  key={it.id}
+                  type="button"
+                  onClick={() => handlePick(it)}
+                  style={{
+                    width: "100%",
+                    padding: "11px 16px",
+                    minHeight: 44,
+                    boxSizing: "border-box",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: "1px solid var(--roam-border)",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    gap: 2,
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text)" }}>{it.name}</span>
+                  <span className="roam-wrap-1" style={{ fontSize: 12, color: "var(--roam-text-muted)" }}>
+                    {(() => {
+                      const extra = it.extra as Record<string, unknown> | undefined;
+                      const placeName = extra?.place_name as string | undefined;
+                      const addr = extra?.address as string | undefined;
+                      return (placeName && placeName !== it.name)
+                        ? placeName
+                        : (addr || `${it.category} · ${it.lat.toFixed(3)}, ${it.lng.toFixed(3)}`);
+                    })()}
+                  </span>
+                </button>
+              ))}
+            </div>
           )}
         </div>
 

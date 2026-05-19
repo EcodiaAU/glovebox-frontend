@@ -545,6 +545,21 @@ input, textarea, [contenteditable] {
   --bottom-nav-height: 0px;
 }
 
+/* ── Trip sheet expanded: slide the bottom tab bar out of the way ─
+   The trip/new sheet's expanded snap fills the visible content area
+   (top:80 → bottom of viewport) but the bottom tab bar (z=100) was
+   overlaying the lowest 80px, hiding the destination input on /new
+   and the route summary / first stop on /trip. The sheet provides
+   its own action surface when expanded, so the tab bar is redundant.
+   Mirror the keyboard-open easing so the transitions feel identical. */
+body[data-trip-sheet="expanded"] .roam-tab-bar,
+body[data-trip-sheet="expanded"] .roam-tabs-wrap {
+  transform: translateY(100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform var(--dur-normal) ease, opacity var(--dur-fast) ease;
+}
+
 
 /* ==========================================================================
    4. APP LAYOUT PRIMITIVES
@@ -999,6 +1014,80 @@ input, textarea, [contenteditable] {
   padding: 0 16px;
   height: 52px;
   gap: 10px;
+}
+
+/* StopRow input + locate, grouped into a single unified surface so the
+   two affordances read as one control. Replaces the old layout where a
+   borderless input sat beside a bordered icon-button — three disconnected
+   islands (stop marker / input / locate button) became a single field. */
+.trip-stop-input {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 44px;
+  border-radius: var(--r-card);
+  background: var(--roam-surface-hover);
+  border: 1px solid var(--roam-border);
+  overflow: hidden;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.trip-stop-input:focus-within {
+  border-color: color-mix(in srgb, var(--brand-eucalypt) 60%, var(--roam-border));
+  background: var(--roam-surface);
+}
+.trip-stop-input .trip-stop-input-leading {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 100%;
+  color: var(--roam-text-muted);
+}
+.trip-stop-input input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--roam-text);
+  height: 100%;
+  padding: 0 4px 0 0;
+}
+.trip-stop-input input::placeholder {
+  color: var(--roam-text-muted);
+  opacity: 0.7;
+  font-weight: 600;
+}
+.trip-stop-input-action {
+  all: unset;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  min-width: 44px;
+  padding: 0 12px;
+  cursor: pointer;
+  color: var(--roam-text-muted);
+  border-left: 1px solid var(--roam-border);
+  background: transparent;
+  transition: background 120ms ease, color 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.trip-stop-input-action:hover { background: var(--roam-surface-raised); color: var(--roam-text); }
+.trip-stop-input-action:active { background: var(--roam-surface); }
+.trip-stop-input-action[disabled] { opacity: 0.55; cursor: default; }
+.trip-stop-input-action .trip-stop-input-action-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+@media (max-width: 420px) {
+  .trip-stop-input-action .trip-stop-input-action-label { display: none; }
 }
 
 
@@ -1732,7 +1821,11 @@ input[type="range"]::-moz-range-thumb {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   scroll-behavior: smooth;
-  padding: calc(var(--roam-safe-top) + 16px) 16px calc(var(--bottom-nav-height) + 24px) 16px;
+  /* Top padding clears the fixed ThemeToggle (40px tall + 8px top offset)
+     so the Emergency hero card's title doesn't sit behind the toggle in
+     either theme. The previous +16 only cleared the safe-area, not the
+     toggle, so "Emergency" rendered behind the sun/moon button. */
+  padding: calc(var(--roam-safe-top) + 56px) 16px calc(var(--bottom-nav-height) + 24px) 16px;
   display: grid;
   align-content: start;
   gap: 16px;
