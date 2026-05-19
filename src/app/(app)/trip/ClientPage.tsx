@@ -2961,18 +2961,12 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
               }}
             />
           ) : undefined}
-        />
-        {activeNav.isActive && activeNav.nav.heading != null && (
-          <div className="roam-compass-hud" style={{
-            position: "absolute",
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + var(--roam-tab-h, 64px) + 110px)",
-            right: 12,
-            zIndex: 35,
-            pointerEvents: "none",
-          }}>
+          /* Compass embedded ABOVE the control group so the right-side stack
+             reads as one NavRail capsule per the prototype. */
+          compass={activeNav.nav.heading != null ? (
             <CompassHUD heading={activeNav.nav.heading} />
-          </div>
-        )}
+          ) : undefined}
+        />
         <NavigationBar
           nav={activeNav.nav}
           fuelTracking={fuelTracking}

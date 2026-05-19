@@ -16,6 +16,9 @@ type Props = {
   onReport?: () => void;
   reportOpen?: boolean;
   reportTray?: React.ReactNode;
+  /** Optional compass/heading widget rendered ABOVE the control group so the
+   *  whole right-side stack reads as one NavRail capsule per the prototype. */
+  compass?: React.ReactNode;
   simple?: boolean;
 };
 
@@ -90,6 +93,7 @@ export function NavigationControls({
   onReport,
   reportOpen,
   reportTray,
+  compass,
   simple,
 }: Props) {
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -122,6 +126,14 @@ export function NavigationControls({
       alignItems: "center",
       gap: 12,
     }}>
+      {compass && (
+        <div style={{
+          display: "flex", justifyContent: "center", marginBottom: 2,
+          pointerEvents: "none",
+        }}>
+          {compass}
+        </div>
+      )}
       <div className="roam-control-group">
         {onLayerToggle && (
           <NavBtn
