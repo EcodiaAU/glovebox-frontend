@@ -354,40 +354,79 @@
   pointer-events: none;
 }
 
-/* ── Connector line between stops ────────────────────────────── */
+/* ── Connector line between stops (prototype spine: bold accent line that
+       links the markers so the stop list reads as a sequence) ──────────── */
 
 .connector {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-left: 27px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  /* 14px stopCard padding + 16px to marker center = 30px from left edge */
+  padding-left: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
   gap: 0;
 }
 
-/* Vertical stem: grows to fill remaining space */
 .connectorLine {
-  width: 1.5px;
-  min-height: 6px;
+  width: 2.5px;
+  min-height: 8px;
   flex-shrink: 0;
-  background: var(--roam-border);
+  background: var(--c-accent, var(--roam-accent));
+  opacity: 0.45;
   border-radius: 2px;
   align-self: stretch;
 }
 
-/* When a legPill is between two connectorLines, lay them vertically */
 .connector:has(.legPill) {
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .connector:has(.legPill) .connectorLine {
-  width: 1.5px;
-  height: 6px;
+  width: 2.5px;
+  height: 12px;
   min-height: unset;
   align-self: unset;
+  opacity: 0.45;
+}
+
+/* Spine continuation INSIDE every stop card so the line runs continuously
+   through each marker rather than only between cards. The pseudo-element is
+   anchored to the marker column (28px from card left + 1.25px to align
+   with the 2.5px line) and extends 100% above + 100% below the marker,
+   meeting the connectors above/below. The marker itself sits over it at
+   z-index 1 so the line appears to pass through it. */
+.stopCard {
+  position: relative;
+}
+.stopCard::before {
+  content: "";
+  position: absolute;
+  /* Card padding-left 14 + marker width/2 (32/2 = 16) - line width/2 (1.25) = ~28.75 */
+  left: 28.75px;
+  top: -8px;
+  bottom: -8px;
+  width: 2.5px;
+  background: var(--c-accent, var(--roam-accent));
+  opacity: 0.45;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 0;
+}
+/* First stop in the list: no spine above the marker */
+.stopList .stopEntry:first-child .stopCard::before {
+  top: 50%;
+}
+/* Last stop in the list: no spine below the marker */
+.stopList .stopEntry:last-child .stopCard::before {
+  bottom: 50%;
+}
+.stopMarker {
+  z-index: 1;
 }
 
 /* ── Leg time/distance pill ──────────────────────────────────── */
