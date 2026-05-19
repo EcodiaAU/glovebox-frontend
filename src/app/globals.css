@@ -304,6 +304,86 @@
 }
 
 /* ==========================================================================
+   1c. PROTOTYPE ALIASES + MAP TOKENS (2026-05-19 redesign)
+   --------------------------------------------------------------------------
+   The 2026-05-19 redesign prototype uses a shorter --c-* token namespace plus
+   a few map-specific tokens. Map them to existing --roam-* tokens so both
+   themes get covered for free. New tokens (--map-*, --c-cat-water, etc.)
+   defined here and overridden per-theme below.
+   ========================================================================== */
+:root {
+  --c-bg: var(--roam-bg);
+  --c-surface: var(--roam-surface);
+  --c-surface-muted: var(--roam-surface-hover);
+  --c-surface-raised: var(--roam-surface-raised);
+  --c-nav-card: var(--nav-card-bg);
+  --c-text: var(--roam-text);
+  --c-text-muted: var(--roam-text-muted);
+  --c-border: var(--roam-border);
+  --c-border-strong: var(--roam-border-strong);
+  --c-accent: var(--roam-accent);
+  --c-accent-tint: var(--accent-tint);
+  --c-success: var(--roam-success);
+  --c-success-dark: var(--brand-eucalypt-dark);
+  --c-danger: var(--roam-danger);
+  --c-danger-tint: var(--danger-tint);
+  --c-info: var(--roam-info);
+  --c-info-tint: var(--info-tint);
+  --c-warn-bg: var(--bg-warn);
+  --c-warn-text: var(--text-warn);
+  --c-error-bg: var(--bg-error);
+  --c-error-text: var(--text-error);
+  --c-overlay: var(--overlay-bg);
+  --c-shared: var(--brand-shared);
+  --c-cat-water: #6FA2C2;
+  --c-cat-solar: var(--terra-solar);
+  --c-cat-emergency: var(--terra-emergency);
+  --c-sev-major: var(--severity-major);
+  --c-sev-moderate: var(--severity-moderate);
+  --c-sev-minor: var(--severity-minor);
+  --c-tabbar-bg: var(--tab-bar-bg);
+  --c-tab-active: var(--tab-active-color);
+  --c-tab-inactive: var(--tab-inactive-color);
+  --c-tab-centre-bg: var(--tab-center-bg);
+  --c-tab-centre-icon: var(--tab-center-icon);
+  --grad-cta: var(--cta-gradient);
+  --sh-card: var(--shadow-soft);
+  --sh-floating: var(--shadow-medium);
+  --sh-raised: var(--shadow-heavy);
+  --font-body: var(--ff-body);
+  --font-mono: var(--ff-mono);
+
+  /* Map-surface tokens (day defaults; night override below) */
+  --map-bg: #ede4d2;
+  --map-ridge: rgba(122, 84, 43, 0.18);
+  --map-route: var(--roam-accent);
+  --map-route-cased: rgba(255, 255, 255, 0.85);
+}
+[data-theme="tactical-night"] {
+  --c-cat-water: #4DB8F0;
+  --map-bg: #1f1a14;
+  --map-ridge: rgba(255, 182, 147, 0.16);
+  --map-route: var(--roam-accent);
+  --map-route-cased: rgba(0, 0, 0, 0.55);
+}
+
+/* Animations referenced by the redesigned components */
+@keyframes fade-in    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-up   { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slide-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes pulse-soft { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.55; transform: scale(1.08); } }
+@keyframes ping-ring  { 0% { transform: scale(0.85); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes cursor     { 50% { opacity: 0; } }
+@keyframes spin-360   { to { transform: rotate(360deg); } }
+
+/* Helper classes the redesigned components use */
+.t-display { font-family: var(--ff-display); }
+.t-mono    { font-family: var(--ff-mono); font-variant-numeric: tabular-nums; }
+.t-num     { font-variant-numeric: tabular-nums; }
+.t-muted   { color: var(--roam-text-muted); }
+.scroll-y  { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* ==========================================================================
    2. GLOBAL RESETS & NATIVE SHELL
    ========================================================================== */
 html, body {

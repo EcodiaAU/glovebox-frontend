@@ -139,7 +139,7 @@ export function PersistentTabs({ children }: { children: React.ReactNode }) {
       <div ref={setPaneRef("/guide")} className={paneClass("/guide")}>
         {mounted.has("/guide") && (
           <Suspense fallback={<GuideSkeleton />}>
-            <GuideClientPage initialPlanId={null} initialFocusPlaceId={null} />
+            <GuideClientPage />
           </Suspense>
         )}
       </div>
@@ -147,7 +147,7 @@ export function PersistentTabs({ children }: { children: React.ReactNode }) {
       <div ref={setPaneRef("/trip")} className={paneClass("/trip")}>
         {mounted.has("/trip") && (
           <Suspense fallback={<TripSkeleton />}>
-            <TripClientPage initialPlanId={null} />
+            <TripClientPage />
           </Suspense>
         )}
       </div>
