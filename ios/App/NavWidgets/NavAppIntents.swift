@@ -10,21 +10,8 @@ import AppIntents
 import WidgetKit
 import Foundation
 
-// MARK: - Pending action channel (App Group)
-
-extension AppGroupStore {
-    static let pendingActionKey = "nav.widget.pendingAction.v1"
-
-    static func setPendingAction(_ action: String) {
-        UserDefaults(suiteName: NavAppGroup.id)?.set(action, forKey: pendingActionKey)
-    }
-    static func takePendingAction() -> String? {
-        let d = UserDefaults(suiteName: NavAppGroup.id)
-        let v = d?.string(forKey: pendingActionKey)
-        d?.removeObject(forKey: pendingActionKey)
-        return v
-    }
-}
+// Pending-action helpers live on AppGroupStore (Shared) so both the app and
+// this extension can use them. See AppGroupStore.setPendingAction.
 
 // MARK: - Intents
 

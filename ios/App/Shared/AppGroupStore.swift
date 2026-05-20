@@ -54,6 +54,22 @@ public enum AppGroupStore {
         )
     }
 
+    // MARK: Pending action (widget / Siri / Control -> app)
+
+    public static let pendingActionKey = "nav.widget.pendingAction.v1"
+
+    /// Queue a one-shot action for the app to drain on next resume.
+    public static func setPendingAction(_ action: String) {
+        defaults?.set(action, forKey: pendingActionKey)
+    }
+
+    /// Read + clear the pending action. Returns nil if none.
+    public static func takePendingAction() -> String? {
+        let v = defaults?.string(forKey: pendingActionKey)
+        defaults?.removeObject(forKey: pendingActionKey)
+        return v
+    }
+
     // MARK: Reload
 
     public static func reloadAllWidgets() {
