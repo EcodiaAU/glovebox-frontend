@@ -47,6 +47,10 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Nav uses your photo library to attach images to trip reports and road condition submissions.</string>
 	<key>NSCameraUsageDescription</key>

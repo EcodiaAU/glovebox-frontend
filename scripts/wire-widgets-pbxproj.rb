@@ -79,6 +79,15 @@ else
   puts "[skip] target #{EXT_TARGET_NAME} already exists"
 end
 
+# Copy the App target's CONCRETE version numbers so the extension's
+# CFBundleVersion / CFBundleShortVersionString match the app exactly (Apple
+# rejects an upload where the extension version differs from the app). Read
+# from the App target's Release config; fall back to Debug then sane defaults.
+app_cfg = app_target.build_configurations.find { |c| c.name == "Release" } || app_target.build_configurations.first
+app_mkt = (app_cfg && app_cfg.build_settings["MARKETING_VERSION"]) || "1.0"
+app_ver = (app_cfg && app_cfg.build_settings["CURRENT_PROJECT_VERSION"]) || "1"
+puts "[ver ] extension inherits app version #{app_mkt}(#{app_ver})"
+
 # ─── Build settings on the extension (all configs, incl Release-CarPlay) ─────
 ext_target.build_configurations.each do |conf|
   bs = conf.build_settings
@@ -93,8 +102,8 @@ ext_target.build_configurations.each do |conf|
   bs["SWIFT_VERSION"] = "5.0"
   bs["SKIP_INSTALL"] = "YES"
   bs["GENERATE_INFOPLIST_FILE"] = "NO"
-  bs["MARKETING_VERSION"] = "$(MARKETING_VERSION)"
-  bs["CURRENT_PROJECT_VERSION"] = "$(CURRENT_PROJECT_VERSION)"
+  bs["MARKETING_VERSION"] = app_mkt
+  bs["CURRENT_PROJECT_VERSION"] = app_ver
   bs["LD_RUNPATH_SEARCH_PATHS"] = ["$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"]
   bs["SWIFT_EMIT_LOC_STRINGS"] = "YES"
   bs["ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"] = ""
