@@ -254,7 +254,7 @@ final class CarPlayNavigationCoordinator: NSObject {
                 DispatchQueue.main.async {
                     self?.presentTransientAlert(
                         title: "Route unavailable",
-                        detail: "Could not reach Roam to plan this route. Check signal and try again."
+                        detail: "Could not reach Nav to plan this route. Check signal and try again."
                     )
                 }
                 return
@@ -499,7 +499,7 @@ final class CarPlayNavigationCoordinator: NSObject {
         if items.isEmpty {
             let placeholder = CPListItem(
                 text: "No saved trips",
-                detailText: "Plan a trip in Roam on your phone; it will show here."
+                detailText: "Plan a trip in Nav on your phone; it will show here."
             )
             items.append(placeholder)
             header = "Plans"

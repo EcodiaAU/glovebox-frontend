@@ -81,7 +81,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           No connection
         </div>
         <div style={{ fontSize: 14, color: "var(--roam-muted, #888)", lineHeight: 1.5, maxWidth: 260 }}>
-          Sign in requires internet. Once you&apos;ve signed in once, Roam works fully offline.
+          Sign in requires internet. Once you&apos;ve signed in once, Nav works fully offline.
         </div>
       </div>
     );

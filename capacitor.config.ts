@@ -3,8 +3,13 @@ import type { CapacitorConfig } from "@capacitor/cli";
 import { KeyboardResize } from "@capacitor/keyboard";
 
 const config: CapacitorConfig = {
+  // appId intentionally retains the legacy "au.ecodia.roam" identifier. It is the
+  // immutable anchor for the App Store Connect record, the active CarPlay Maps
+  // entitlement, Sign in with Apple, and the au.ecodia.roam:// OAuth callback scheme.
+  // The product is branded "Nav." via display name only - the bundle id is never
+  // user-visible. Do NOT change this without a full ASC teardown + CarPlay re-application.
   appId: "au.ecodia.roam",
-  appName: "Roam",
+  appName: "Nav.",
 
   // Static bundle built via `npm run build:static` → `out/`
   // Capacitor serves this from device storage - fully offline, no network required.

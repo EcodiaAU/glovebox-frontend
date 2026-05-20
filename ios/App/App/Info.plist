@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Roam</string>
+	<string>Nav.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -48,17 +48,17 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Roam uses your photo library to attach images to trip reports and road condition submissions.</string>
+	<string>Nav uses your photo library to attach images to trip reports and road condition submissions.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Roam uses the camera to capture photos for trip reports and road condition submissions.</string>
+	<string>Nav uses the camera to capture photos for trip reports and road condition submissions.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Roam saves captured photos to your library so you can access them later.</string>
+	<string>Nav saves captured photos to your library so you can access them later.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Roam uses your location to show your position on the map, provide turn-by-turn navigation along your route, and alert you when you are approaching the last fuel station before a remote stretch. For example, 'You are 12km from the next fuel stop at Coober Pedy.'</string>
+	<string>Nav uses your location to show your position on the map, provide turn-by-turn navigation along your route, and alert you when you are approaching the last fuel station before a remote stretch. For example, 'You are 12km from the next fuel stop at Coober Pedy.'</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Roam uses your location in the background to continue turn-by-turn navigation and send fuel-range warnings when the app is minimised. For example, keeping your route progress updated while your phone is locked on a long outback drive.</string>
+	<string>Nav uses your location in the background to continue turn-by-turn navigation and send fuel-range warnings when the app is minimised. For example, keeping your route progress updated while your phone is locked on a long outback drive.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Roam uses your location in the background to continue turn-by-turn navigation and send fuel-range warnings when the app is minimised. For example, keeping your route progress updated while your phone is locked on a long outback drive.</string>
+	<string>Nav uses your location in the background to continue turn-by-turn navigation and send fuel-range warnings when the app is minimised. For example, keeping your route progress updated while your phone is locked on a long outback drive.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

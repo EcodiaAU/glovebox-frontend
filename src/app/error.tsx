@@ -9,7 +9,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[Roam] Unhandled error:", error);
+    console.error("[Nav] Unhandled error:", error);
   }, [error]);
 
   return (
@@ -42,7 +42,7 @@ export default function GlobalError({
           margin: 0,
         }}
       >
-        Roam hit an unexpected error. Try again, or restart the app if it
+        Nav hit an unexpected error. Try again, or restart the app if it
         persists.
       </p>
       <button

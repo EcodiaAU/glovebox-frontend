@@ -384,7 +384,7 @@ function PurchaseSuccessInner() {
               margin: 0, fontSize: 15, fontWeight: 500,
               color: "rgba(255,255,255,0.70)", lineHeight: 1.5,
             }}>
-              Activating Roam Untethered...
+              Activating Nav Untethered...
             </p>
           </div>
 
@@ -484,7 +484,7 @@ function PurchaseSuccessInner() {
               fontSize: 11, fontWeight: 800, letterSpacing: "0.08em",
               color: "rgba(255,255,255,0.95)", textTransform: "uppercase",
             }}>
-              Roam Untethered
+              Nav Untethered
             </span>
           </div>
 
@@ -599,7 +599,7 @@ function PurchaseSuccessInner() {
               WebkitTapHighlightColor: "transparent",
             }}
           >
-            Go to Roam
+            Go to Nav
           </button>
         </div>
       )}

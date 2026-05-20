@@ -1,6 +1,6 @@
 // src/lib/api/assets.ts
 //
-// Roam Asset API (Hybrid - local tile server preferred, Supabase fallback)
+// Nav Asset API (Hybrid - local tile server preferred, Supabase fallback)
 //
 // Invariants:
 // - Styles are shipped inside the app bundle (static export): /public/offline/styles/*

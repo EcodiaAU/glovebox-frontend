@@ -60,9 +60,9 @@ const PLAY_STORE = "https://play.google.com/store/apps/details?id=au.ecodia.roam
 function useCtaConfig(platform: Platform) {
   return useMemo(() => {
     switch (platform) {
-      case "ios": return { href: APP_STORE, heroLabel: "Download for iPhone", navLabel: "Get the App", mobileLabel: "Download Roam", external: true };
-      case "android": return { href: PLAY_STORE, heroLabel: "Get it on Google Play", navLabel: "Get the App", mobileLabel: "Download Roam", external: true };
-      default: return { href: "/trip", heroLabel: "Open Roam", navLabel: "Open Roam", mobileLabel: "Open Roam", external: false };
+      case "ios": return { href: APP_STORE, heroLabel: "Download for iPhone", navLabel: "Get the App", mobileLabel: "Download Nav", external: true };
+      case "android": return { href: PLAY_STORE, heroLabel: "Get it on Google Play", navLabel: "Get the App", mobileLabel: "Download Nav", external: true };
+      default: return { href: "/trip", heroLabel: "Open Nav", navLabel: "Open Nav", mobileLabel: "Open Nav", external: false };
     }
   }, [platform]);
 }
@@ -101,7 +101,7 @@ const MARQUEE_ITEMS = [
 
 const FEATURES = [
   { icon: WifiOff, num: "01", title: "Works without signal", body: "Your maps, route, fuel stops and hazard warnings all live on your phone. Drive through dead zones like they don\u2019t exist." },
-  { icon: Fuel, num: "02", title: "Never miss a servo", body: "See every fuel stop between here and there. Roam flags the gaps where your tank won\u2019t make it, before you\u2019re stranded." },
+  { icon: Fuel, num: "02", title: "Never miss a servo", body: "See every fuel stop between here and there. Nav flags the gaps where your tank won\u2019t make it, before you\u2019re stranded." },
   { icon: AlertTriangle, num: "03", title: "Know before you go", body: "Road closures, floods, fires and roadworks from every state transport authority. If something\u2019s blocking your road, you\u2019ll know about it." },
   { icon: Navigation, num: "04", title: "Proper turn-by-turn", body: "Voice directions that keep going when you lose signal. No spinning wheel, no \u201csearching for route.\u201d Just the next turn, on time." },
   { icon: Clock, num: "05", title: "Fatigue nudges", body: "Tracks your drive time and tells you where the next rest stop is. Two hours in, you\u2019ll get a gentle reminder to pull over." },
@@ -109,9 +109,9 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { t: "Drop your stops", d: "Tell Roam where you\u2019re headed. It finds the route, every fuel station, and checks for road closures." },
+  { t: "Drop your stops", d: "Tell Nav where you\u2019re headed. It finds the route, every fuel station, and checks for road closures." },
   { t: "Tap download", d: "One button saves your whole trip. Maps, directions, fuel plan, and warnings stay on your phone." },
-  { t: "Hit the road", d: "Voice directions and fatigue reminders work 100% offline. Roam handles the dead zones." },
+  { t: "Hit the road", d: "Voice directions and fatigue reminders work 100% offline. Nav handles the dead zones." },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -195,7 +195,7 @@ export default function LandingPage() {
               <span className="rl-label">The Signal Void</span>
               <h2>Google Maps quits 50km out of town.</h2>
               <p>You&apos;re past Longreach. Fuel light&apos;s on. 180km to the next servo. Your phone says <strong>&ldquo;No connection&rdquo;</strong> and the map is a grey void.</p>
-              <p>Most nav apps need the cloud. Roam downloads everything to your phone before you leave so it&apos;s useful the whole way.</p>
+              <p>Most nav apps need the cloud. Nav downloads everything to your phone before you leave so it&apos;s useful the whole way.</p>
             </div>
             <div className="rl-problem-visual">
               <div className="rl-visual-card">
@@ -249,12 +249,12 @@ export default function LandingPage() {
         <div className="rl-inner">
           <div className="rl-download-card">
             <h2>Don&apos;t get stranded.</h2>
-            <p>The outback is no place for a loading wheel. Get Roam and plan your first trip today.</p>
+            <p>The outback is no place for a loading wheel. Get Nav and plan your first trip today.</p>
             <div className="rl-download-btns">
               {(platform === "ios" || platform === "desktop") && <a href={APP_STORE} className="rl-app-btn" target="_blank" rel="noopener noreferrer"><AppleSvg /> <span>App Store</span></a>}
               {(platform === "android" || platform === "desktop") && <a href={PLAY_STORE} className="rl-app-btn" target="_blank" rel="noopener noreferrer"><PlaySvg /> <span>Google Play</span></a>}
             </div>
-            {platform === "desktop" && <a href="/trip" className="rl-download-web">Or use Roam in your browser <ArrowRight size={14} /></a>}
+            {platform === "desktop" && <a href="/trip" className="rl-download-web">Or use Nav in your browser <ArrowRight size={14} /></a>}
           </div>
         </div>
       </section>
@@ -263,7 +263,7 @@ export default function LandingPage() {
         <div className="rl-inner">
           <div className="rl-aoc-content">
             <Map className="rl-aoc-icon" size={18} strokeWidth={1.5} />
-            <p>Roam was built on the lands of the <strong>Gubbi Gubbi</strong> people. We pay our respects to their Elders past and present. As you travel this wide country, we invite you to recognize that every track, highway, and river you cross has been cared for by Traditional Custodians for tens of thousands of years.</p>
+            <p>Nav was built on the lands of the <strong>Gubbi Gubbi</strong> people. We pay our respects to their Elders past and present. As you travel this wide country, we invite you to recognize that every track, highway, and river you cross has been cared for by Traditional Custodians for tens of thousands of years.</p>
           </div>
         </div>
       </section>

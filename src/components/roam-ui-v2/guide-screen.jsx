@@ -341,7 +341,7 @@ function ChatMessage({ msg }) {
             <span style={{
               fontSize: 10, fontWeight: 700, color: "var(--c-accent)",
               textTransform: "uppercase", letterSpacing: 0.4,
-            }}>Roam Guide</span>
+            }}>Nav Guide</span>
             {msg.streaming && (
               <span style={{ display: "inline-flex", gap: 2, marginLeft: 4 }}>
                 <Dot d="0s"/><Dot d="0.2s"/><Dot d="0.4s"/>

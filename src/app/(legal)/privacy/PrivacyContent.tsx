@@ -14,7 +14,7 @@ export default function PrivacyContent() {
       {/* ── Intro ────────────────────────────────────── */}
       <section className={s.section}>
         <p className={s.text}>
-          Roam is operated by Ecodia Pty Ltd (ABN: 89693123278), a company
+          Nav is operated by Ecodia Pty Ltd (ABN: 89693123278), a company
           registered in Queensland, Australia (&quot;we&quot;, &quot;us&quot;,
           &quot;our&quot;). We are committed to protecting your privacy in
           accordance with the <em>Privacy Act 1988</em> (Cth) and the Australian
@@ -23,13 +23,13 @@ export default function PrivacyContent() {
         <p className={s.text}>
           This policy explains what personal information we collect, why we
           collect it, how we use and store it, and what rights you have. It
-          applies to the Roam mobile application, the roam web application, and
+          applies to the Nav mobile application, the Nav web application, and
           any associated APIs and services (collectively, the
           &quot;Service&quot;).
         </p>
         <div className={s.highlight}>
           <p>
-            <strong>Roam is built offline-first.</strong> The vast majority of
+            <strong>Nav is built offline-first.</strong> The vast majority of
             your data - routes, maps, trip plans, fuel calculations - is stored
             locally on your device and never transmitted to our servers unless
             you explicitly choose to sync or share.
@@ -180,7 +180,7 @@ export default function PrivacyContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>3. Location Data - Detailed Handling</h2>
         <p className={s.text}>
-          Location data is central to Roam&apos;s navigation functionality. We
+          Location data is central to Nav&apos;s navigation functionality. We
           treat it with the highest level of care.
         </p>
 
@@ -193,7 +193,7 @@ export default function PrivacyContent() {
           </li>
           <li>
             <strong>Background tracking:</strong> When you tap &quot;Start
-            Navigation&quot;, Roam requests background location permission so
+            Navigation&quot;, Nav requests background location permission so
             navigation continues when the screen is off. You can revoke this at
             any time in your device settings.
           </li>
@@ -226,7 +226,7 @@ export default function PrivacyContent() {
           3.3 No location tracking or history
         </h3>
         <p className={s.text}>
-          Roam does not store a breadcrumb trail of your past positions. We do
+          Nav does not store a breadcrumb trail of your past positions. We do
           not build movement profiles. We do not sell, share, or monetise
           location data. When you end navigation, all live position data is
           discarded from memory.
@@ -235,7 +235,7 @@ export default function PrivacyContent() {
         <h3 className={s.subsectionTitle}>3.4 Revoking location permission</h3>
         <p className={s.text}>
           You can revoke location permission at any time through your
-          device&apos;s system settings. Roam will continue to function for trip
+          device&apos;s system settings. Nav will continue to function for trip
           planning and offline map viewing, but real-time navigation and
           position display will be unavailable.
         </p>
@@ -247,7 +247,7 @@ export default function PrivacyContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>4. On-Device &amp; Offline Storage</h2>
         <p className={s.text}>
-          Roam stores the following data locally on your device using IndexedDB
+          Nav stores the following data locally on your device using IndexedDB
           (a browser/app-embedded database):
         </p>
         <ul className={s.list}>
@@ -303,7 +303,7 @@ export default function PrivacyContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>6. Third-Party Services</h2>
         <p className={s.text}>
-          Roam uses the following third-party services. We only share the
+          Nav uses the following third-party services. We only share the
           minimum data necessary for each service to function:
         </p>
         <ul className={s.list}>
@@ -455,7 +455,7 @@ export default function PrivacyContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>10. Children&apos;s Privacy</h2>
         <p className={s.text}>
-          Roam is not directed at children under the age of 16. We do not
+          Nav is not directed at children under the age of 16. We do not
           knowingly collect personal information from children under 16. If you
           are a parent or guardian and believe your child has provided us with
           personal information, please contact us at{" "}
@@ -519,7 +519,7 @@ export default function PrivacyContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>12. International Users</h2>
         <p className={s.text}>
-          Roam is designed for use in Australia. If you access the Service from
+          Nav is designed for use in Australia. If you access the Service from
           outside Australia, your information may be transferred to and
           processed in Australia.
         </p>

@@ -1,5 +1,5 @@
 // src/app/(app)/untethered/loading.tsx
-// Skeleton for the Roam Untethered paywall/marketing page.
+// Skeleton for the Nav Untethered paywall/marketing page.
 
 export default function UntetheredLoading() {
   return (

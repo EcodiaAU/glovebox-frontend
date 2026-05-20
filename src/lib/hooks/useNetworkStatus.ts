@@ -18,7 +18,7 @@ const ssrOffline = () => false;
  * Returns `{ online, deviceOnline, backendReachable }`.
  *   - `online` = device has network AND backend is reachable
  *   - `deviceOnline` = device has any connectivity at all
- *   - `backendReachable` = Roam API responded to /health
+ *   - `backendReachable` = Nav API responded to /health
  *
  * Starts the network monitor on first mount (idempotent).
  */

@@ -276,7 +276,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             marginBottom: 14,
         }}>
             <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", color: "rgba(255,255,255,0.9)", textTransform: "uppercase" }}>
-              Roam Untethered
+              Nav Untethered
             </span>
           </div>
 
@@ -403,7 +403,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             {buying
               ? (isNative ? "Processing…" : "Redirecting to checkout…")
               : isNative
-                ? "Unlock Roam Untethered · $19.99"
+                ? "Unlock Nav Untethered · $19.99"
                 : session
                   ? "Pay with Card · $19.99 →"
                   : "Sign in to unlock · $19.99 →"}

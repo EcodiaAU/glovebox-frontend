@@ -1,6 +1,6 @@
 // src/lib/peer/roamCodec.ts
 // ──────────────────────────────────────────────────────────────
-// Roam Binary Codec - ultra-compact encoding for ultrasonic
+// Nav Binary Codec - ultra-compact encoding for ultrasonic
 // peer-to-peer data transfer between roamers.
 //
 // Design principle: both phones have the same "codebook" -

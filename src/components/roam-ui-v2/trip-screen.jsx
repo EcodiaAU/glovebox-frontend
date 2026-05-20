@@ -1138,7 +1138,7 @@ export function PaywallModal({ onClose }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Icon name="crown" size={20} style={{ color: 'var(--c-accent)' }}/>
-          <div className="t-display" style={{ fontWeight: 700, fontSize: 18 }}>Roam Pro</div>
+          <div className="t-display" style={{ fontWeight: 700, fontSize: 18 }}>Nav Pro</div>
         </div>
         <button onClick={onClose} style={{ width: 36, height: 36 }}><Icon name="x" size={18}/></button>
       </div>
@@ -1735,7 +1735,7 @@ export function FooterRail({ tier, onInvite, onUpgrade }) {
           background: 'var(--grad-cta)', color: 'white',
           fontWeight: 700, fontSize: 11,
         }}>
-          <Icon name="crown" size={12} stroke={2.2}/> Roam Pro
+          <Icon name="crown" size={12} stroke={2.2}/> Nav Pro
         </button>
       )}
     </div>

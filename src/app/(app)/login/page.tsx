@@ -137,13 +137,13 @@ export default function LoginPage() {
             }}
           >
             You&apos;re offline - sign-in requires a connection.
-            Once signed in, Roam works without any signal.
+            Once signed in, Nav works without any signal.
           </div>
         )}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 4 }}>
           <img
             src="/img/roam-app-icon.png"
-            alt="Roam"
+            alt="Nav"
             width={56}
             height={56}
             style={{

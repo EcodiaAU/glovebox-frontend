@@ -41,6 +41,8 @@ import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { useObservations } from "@/lib/hooks/useObservations";
 import type { InterpolatedPosition } from "@/lib/nav/gpsInterpolator";
 import { useCarPlayBridgeSync } from "@/lib/native/carPlay";
+import { useWidgetSync } from "@/lib/native/widgets";
+import { buildWidgetInputs } from "@/lib/native/widgetInputs";
 import type { CarPlayHazard, CarPlayFuelStop, CarPlayVehicle } from "@/plugins/roam-carplay-bridge";
 
 import { haptic } from "@/lib/native/haptics";
@@ -437,6 +439,25 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     fuelStops: carPlayFuelStops,
     vehicle: carPlayVehicle,
   });
+
+  // ── Widgets + Live Activity sync ─────────────────────────────────
+  // Same derived data drives the lock-screen Live Activity + home/lock
+  // widgets via the App Group. No-op on web / Android.
+  const widgetInputs = useMemo(
+    () =>
+      buildWidgetInputs({
+        navpack,
+        nav: activeNav.nav,
+        lastPosition: activeNav.lastPosition,
+        isActive: activeNav.isActive,
+        hazards: carPlayHazards,
+        fuelStops: carPlayFuelStops,
+        vehicle: carPlayVehicle,
+        isOnline,
+      }),
+    [navpack, activeNav.nav, activeNav.lastPosition, activeNav.isActive, carPlayHazards, carPlayFuelStops, carPlayVehicle, isOnline],
+  );
+  useWidgetSync(widgetInputs);
 
   // ── Map Navigation Mode (heading-up camera tracking) ──
   const effectiveBbox = navpack?.primary?.bbox ?? plan?.preview?.bbox ?? null;
@@ -2555,7 +2576,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             {unlocked === false && (
               <button
                 type="button"
-                aria-label="Upgrade to Roam Untethered"
+                aria-label="Upgrade to Nav Untethered"
                 onClick={() => { haptic.selection(); setPaywallVariant("upgrade"); setPaywallOpen(true); }}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 6,

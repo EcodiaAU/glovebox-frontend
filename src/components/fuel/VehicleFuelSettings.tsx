@@ -294,7 +294,7 @@ export function VehicleFuelSettings({
           color: "var(--roam-text-muted)",
           lineHeight: "1.5",
         }}>
-          Roam will warn at {profile.reserve_warn_km}km remaining range and alert critically at{" "}
+          Nav will warn at {profile.reserve_warn_km}km remaining range and alert critically at{" "}
           {profile.reserve_critical_km}km. Fuel gaps longer than {profile.tank_range_km}km will be
           flagged as impassable.
         </div>

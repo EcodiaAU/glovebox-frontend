@@ -207,7 +207,7 @@ function AccountPageInner() {
               Sign out
             </div>
             <div style={{ fontSize: 12, color: "var(--roam-text-muted)", lineHeight: 1.4 }}>
-              Sign out of your Roam account on this device
+              Sign out of your Nav account on this device
             </div>
           </div>
         </button>

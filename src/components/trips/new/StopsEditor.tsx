@@ -417,7 +417,7 @@ export function StopsEditor(props: {
   tripPrefs: TripPreferences;
   onTripPrefsChange: (next: TripPreferences) => void;
 
-  /** Whether user has Roam Untethered. null = still loading. */
+  /** Whether user has Nav Untethered. null = still loading. */
   unlocked?: boolean | null;
   /** Called when user taps the upgrade button. */
   onUpgrade?: () => void;
@@ -582,7 +582,7 @@ export function StopsEditor(props: {
                 <button
                   type="button"
                   className="trip-interactive"
-                  aria-label="Upgrade to Roam Untethered"
+                  aria-label="Upgrade to Nav Untethered"
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={() => { haptic.selection(); props.onUpgrade?.(); }}
                   style={{

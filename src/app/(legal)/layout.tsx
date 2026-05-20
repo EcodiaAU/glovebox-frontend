@@ -13,7 +13,7 @@ export function LegalLayout() {
           © {new Date().getFullYear()} Ecodia Pty Ltd · ABN: 89693123278
         </p>
         <p style={styles.footerText}>
-          Roam is built on Gubbi Gubbi land - Sunshine Coast, Australia
+          Nav is built on Gubbi Gubbi land - Sunshine Coast, Australia
         </p>
       </footer>
     </div>

@@ -9,7 +9,7 @@ export default function AppError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[Roam] App error:", error);
+    console.error("[Nav] App error:", error);
   }, [error]);
 
   return (

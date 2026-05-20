@@ -84,7 +84,7 @@ export function SosScreen({ networkState = "online" }) {
           <div>
             <div style={{ fontSize: 13, fontWeight: 700 }}>Your last fix is saved offline</div>
             <div className="t-muted" style={{ fontSize: 12 }}>
-              Roam keeps your last 7 known positions even without signal. SMS works on any one bar of 2G.
+              Nav keeps your last 7 known positions even without signal. SMS works on any one bar of 2G.
             </div>
           </div>
         </div>

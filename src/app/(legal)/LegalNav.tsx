@@ -34,7 +34,7 @@ function useCtaConfig(platform: Platform) {
   return useMemo(() => {
     // Inside the native app, link back to the app - not the store
     if (isNativeApp) {
-      return { href: "/login", label: "Back to Roam", external: false, isBack: true };
+      return { href: "/login", label: "Back to Nav", external: false, isBack: true };
     }
     switch (platform) {
       case "ios":
@@ -42,7 +42,7 @@ function useCtaConfig(platform: Platform) {
       case "android":
         return { href: PLAY_STORE, label: "Get the App", external: true, isBack: false };
       default:
-        return { href: "/trip", label: "Open Roam", external: false, isBack: false };
+        return { href: "/trip", label: "Open Nav", external: false, isBack: false };
     }
   }, [platform]);
 }

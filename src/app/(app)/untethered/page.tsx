@@ -216,7 +216,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
                 textTransform: "uppercase",
               }}
             >
-              Active · Roam Untethered
+              Active · Nav Untethered
             </span>
           </div>
 
@@ -627,7 +627,7 @@ function PurchasePage({
                 textTransform: "uppercase",
               }}
             >
-              Roam Untethered
+              Nav Untethered
             </span>
           </div>
 

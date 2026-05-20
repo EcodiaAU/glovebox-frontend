@@ -1,6 +1,6 @@
 {
-  "name": "Roam Nav",
-  "short_name": "Roam",
+  "name": "Nav.",
+  "short_name": "Nav.",
   "description": "Offline-first navigation built for real-world travel.",
   "start_url": "/",
   "scope": "/",

@@ -93,7 +93,7 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
         const e = data.stops.find((x) => x.type === "end");
         return `${s?.name || "Start"} → ${e?.name || "End"}`;
       })())
-    : "My Roam";
+    : "My Nav";
 
   const handleExport = useCallback(async (shareMode: "share" | "save") => {
     if (!data) return;
@@ -179,7 +179,7 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
           { Icon: MessageSquare, label: "Message", onClick: () => { haptic.selection(); handleExport("share"); } },
           { Icon: Phone, label: "SMS", onClick: () => {
               haptic.selection();
-              const txt = encodeURIComponent(`Roam trip: ${tripLabel} — ${typeof window !== "undefined" ? window.location.href : ""}`);
+              const txt = encodeURIComponent(`Nav trip: ${tripLabel} — ${typeof window !== "undefined" ? window.location.href : ""}`);
               if (typeof window !== "undefined") window.location.href = `sms:?body=${txt}`;
             } },
           { Icon: Copy, label: "Copy link", onClick: () => {
