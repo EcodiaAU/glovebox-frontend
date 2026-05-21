@@ -390,7 +390,7 @@ export default function EmergencyClientPage() {
     const time = new Date().toLocaleString();
 
     const msg =
-      `ROAM SAFETY: I need help.\n` +
+      `Nav SAFETY: I need help.\n` +
       `Your coordinates are: ${coords}\n` +
       `Map: ${link}\n` +
       `Time: ${time}`;
@@ -792,7 +792,7 @@ export default function EmergencyClientPage() {
                       const link = mapsLink(lat, lon);
                       const time = new Date().toLocaleString();
                       const msg =
-                        `ROAM SAFETY: I need help.\n` +
+                        `Nav SAFETY: I need help.\n` +
                         `Your coordinates are: ${coords}\n` +
                         `Map: ${link}\n` +
                         `Time: ${time}`;

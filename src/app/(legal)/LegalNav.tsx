@@ -83,7 +83,7 @@ export default function LegalNav({ activePath }: LegalNavProps) {
         <div className="rl-nav-bar">
           <Link to="/" className="rl-nav-logo">
             <Compass size={22} strokeWidth={2.5} />
-            <span>ROAM</span>
+            <span>Nav.</span>
           </Link>
 
           <div className="rl-nav-links">

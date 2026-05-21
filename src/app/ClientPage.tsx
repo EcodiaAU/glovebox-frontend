@@ -145,7 +145,7 @@ export default function LandingPage() {
         <div className="rl-nav-bar">
           <Link to="/" className="rl-nav-logo">
             <Compass size={20} strokeWidth={2.5} />
-            <span>ROAM</span>
+            <span>Nav.</span>
           </Link>
           <div className="rl-nav-links">
             <a href="#features" className="rl-nav-link">Features</a>
@@ -169,7 +169,7 @@ export default function LandingPage() {
         <div className="rl-hero-content">
           <h1 className="rl-hero-mega">
             <Compass strokeWidth={1.5} className="rl-hero-compass" />
-            ROAM
+            Nav.
           </h1>
           <p className="rl-hero-tagline">Road trip navigation that works<br /><strong>way</strong> out here.</p>
           <div className="rl-hero-actions">
@@ -272,7 +272,7 @@ export default function LandingPage() {
         <div className="rl-inner">
           <div className="rl-footer-grid">
             <div className="rl-footer-left">
-              <div className="rl-footer-logo"><Compass size={16} /> <strong>ROAM</strong></div>
+              <div className="rl-footer-logo"><Compass size={16} /> <strong>Nav.</strong></div>
               <p>Road navigation for the wide brown land.</p>
             </div>
             <div className="rl-footer-right">

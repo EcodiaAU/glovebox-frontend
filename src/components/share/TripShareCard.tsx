@@ -402,7 +402,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                 fill="rgba(255,255,255,0.9)"
                 fontFamily="'Syne', sans-serif"
                 letterSpacing="0.22em">
-                ROAM
+                Nav.
               </text>
             </g>
           );
@@ -424,7 +424,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                 fill="rgba(255,255,255,0.7)"
                 fontFamily="'Syne', sans-serif"
                 letterSpacing="0.2em">
-                ROAM
+                Nav.
               </text>
             </g>
           );
