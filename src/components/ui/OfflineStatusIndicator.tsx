@@ -1,5 +1,6 @@
 // src/components/ui/OfflineStatusIndicator.tsx
 
+import { useEffect, useState } from "react";
 import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 
 /**
@@ -10,7 +11,15 @@ import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
  *   - Online: hidden (show nothing)
  *   - Degraded (Solar Amber dot + "No server") - device online but backend unreachable
  *   - Offline (Emergency Red pulsing dot + "OFFLINE MODE" + optional region/version subtitle)
+ *
+ * Startup grace: the backend health probe takes a few seconds to land its
+ * first response. We don't want every page load to flash "No Server" while
+ * the probe is in flight, so suppress the degraded (backend-only) state for
+ * `STARTUP_GRACE_MS`. A genuinely offline device (no network at all) still
+ * shows immediately because the browser knows that synchronously.
  */
+const STARTUP_GRACE_MS = 8000;
+
 export function OfflineStatusIndicator({
   offlineRegion,
   offlineVersion,
@@ -21,9 +30,20 @@ export function OfflineStatusIndicator({
   offlineVersion?: string;
 }) {
   const { deviceOnline, backendReachable } = useNetworkStatus();
+  const [graceElapsed, setGraceElapsed] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setGraceElapsed(true), STARTUP_GRACE_MS);
+    return () => clearTimeout(t);
+  }, []);
 
   // Online - show nothing
   if (deviceOnline && backendReachable) return null;
+
+  // During grace window, suppress the soft "degraded" state. Hard offline
+  // (no device network) is still surfaced because the user benefits from
+  // immediate feedback.
+  if (deviceOnline && !backendReachable && !graceElapsed) return null;
 
   let stateClass: string;
   let label: string;
