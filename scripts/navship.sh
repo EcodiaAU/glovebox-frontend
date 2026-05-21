@@ -67,12 +67,18 @@ grep -rqE 'https://[a-z0-9]+\.supabase\.co' ios/App/App/public/assets/ \
   || { echo "FATAL: ios public bundle has NO supabase URL after cap copy. Aborting."; exit 3; }
 echo "  ios public bundle OK"
 
-echo "=== bump build number ==="
+echo "=== set build number (monotonic epoch) ==="
+# Use the Unix epoch as CFBundleVersion. Rationale: `git reset --hard` (above)
+# discards any working-tree bump, and `git fetch --depth 1` makes commit-count
+# schemes useless, so an increment-the-committed-value scheme silently produces
+# the SAME build number every run (this shipped build 32 AFTER build 35 -> the
+# fixed build looked OLDER than the broken one in TestFlight). The epoch is
+# always strictly greater than any prior build, needs no committed state, and
+# fits a 32-bit int until 2038.
 PROJ=ios/App/App.xcodeproj/project.pbxproj
-M=$(grep -oE 'CURRENT_PROJECT_VERSION = [0-9]+;' "$PROJ" | grep -oE '[0-9]+' | sort -n | tail -1)
-NEW=$((M + 1))
+NEW=$(date +%s)
 sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*;/CURRENT_PROJECT_VERSION = $NEW;/g" "$PROJ"
-echo "  build $M -> $NEW"
+echo "  build = $NEW"
 
 echo "=== wire widgets extension (idempotent) ==="
 ruby scripts/wire-widgets-pbxproj.rb >/dev/null
