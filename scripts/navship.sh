@@ -20,12 +20,19 @@
 set -euo pipefail
 
 # Non-interactive SSH shells do not load nvm, so node/npm are absent from PATH.
-# Source nvm if present, else fall back to the highest installed node bin.
+# Source nvm if present. The Capacitor CLI v8 hard-requires NodeJS >=22, so
+# ensure a >=22 runtime (install on demand) before building/copying.
 export NVM_DIR="$HOME/.nvm"
 # shellcheck disable=SC1091
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
-command -v node >/dev/null 2>&1 || export PATH="$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | tail -1):$PATH"
+if command -v nvm >/dev/null 2>&1; then
+  nvm install 22 >/dev/null 2>&1 || true
+  nvm use 22 >/dev/null 2>&1 || nvm use node >/dev/null 2>&1 || true
+fi
+command -v node >/dev/null 2>&1 || export PATH="$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | sort -V | tail -1):$PATH"
 command -v node >/dev/null 2>&1 || { echo "FATAL: node not found on PATH. Aborting."; exit 1; }
+NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]')
+[ "$NODE_MAJOR" -ge 22 ] || { echo "FATAL: node >=22 required for Capacitor CLI 8, have $(node -v). Aborting."; exit 1; }
 echo "node $(node -v) / npm $(npm -v)"
 
 REPO=~/workspaces/nav-frontend
