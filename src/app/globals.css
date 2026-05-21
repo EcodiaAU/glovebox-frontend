@@ -2610,14 +2610,15 @@ input[type="range"]::-moz-range-thumb {
     bottom: auto !important;
   }
   .trip-bottom-sheet[data-desktop-open] {
-    /* .pt-pane is `will-change: transform` which creates a new
-       containing block for `position: fixed` descendants. So this
-       sheet's `left: 0` is anchored to `.roam-main`'s left edge, which
-       already starts at viewport 72px (past the rail). No extra offset
-       needed here. */
+    /* Anchor to viewport-left + rail-width. The earlier author's note
+       claimed `.pt-pane` (will-change: transform) created the containing
+       block so `left: 0` was the rail's right edge, but empirically that
+       does NOT hold here - position:fixed escapes the pane and lays out
+       against the viewport, so without the rail-width offset the panel
+       slides under the rail and clips its first 72px of content. */
     position: fixed !important;
     top: 0 !important;
-    left: 0 !important;
+    left: var(--desktop-rail-w) !important;
     bottom: 0 !important;
     right: auto !important;
     width: var(--desktop-panel-w) !important;
@@ -2641,17 +2642,16 @@ input[type="range"]::-moz-range-thumb {
   /* Panel toggle - a fixed button pinned to the viewport, NOT a child
      of the sheet, so the sheet's translateX(-100%) doesn't carry it
      off-screen. Position is driven entirely by data-panel-open.
-     Containing block note: `.pt-pane` sets `will-change: transform`,
-     which re-parents position:fixed descendants so their coordinates
-     are relative to the pane (not the viewport). The pane already
-     starts at viewport `--desktop-rail-w`, so we DON'T add rail-w
-     here — otherwise the FAB drifts rail-w px past the sheet edge. */
+     Empirically `position: fixed` here lays out against the viewport
+     (not `.pt-pane`), so we add `--desktop-rail-w` to keep the toggle
+     pinned to the panel's actual right edge. The earlier note about
+     pt-pane being the containing block was wrong in practice. */
   .trip-desktop-panel-toggle {
     display: flex !important;
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
-    left: var(--desktop-panel-visible);
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible));
     width: 22px;
     height: 56px;
     align-items: center;
@@ -2677,13 +2677,12 @@ input[type="range"]::-moz-range-thumb {
   }
 
   /* ── Action bar (Stops + Start navigation) sits flush at the bottom of the
-       desktop panel, NOT spanning the map. The bar is fixed-positioned, but
-       its containing block is .pt-pane (which has will-change:transform),
-       so its coordinates are pane-relative — the pane already starts at
-       viewport rail-width, so we use left:0 to align with the sheet. */
+       desktop panel, NOT spanning the map. The bar is fixed-positioned and
+       lays out against the viewport, so we pin it to the rail's right edge
+       to align with the side panel. */
   .trip-action-bar {
     position: fixed !important;
-    left: 0 !important;
+    left: var(--desktop-rail-w) !important;
     right: auto !important;
     bottom: 0 !important;
     width: var(--desktop-panel-visible) !important;
@@ -2798,15 +2797,13 @@ input[type="range"]::-moz-range-thumb {
      instead of the full viewport. Flex-centering avoids fighting with
      the component's inline transform:translateX(-50%) by taking over
      positioning entirely with fixed + left/right offsets.
-     Containing-block note: `.pt-pane` is `will-change: transform` and
-     becomes the containing block for position:fixed descendants. The
-     pane already starts at viewport `--desktop-rail-w`, so we omit
-     the rail-w in these left calcs — otherwise chrome drifts a full
-     rail-width past where the panel actually ends. */
+     position:fixed lays out against the viewport, so the left offset
+     needs to clear both the rail and the (possibly-collapsed) side
+     panel. */
   .trip-top-toast,
   .trip-enrichment-banner {
     position: fixed !important;
-    left: var(--desktop-panel-visible) !important;
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible)) !important;
     right: 0 !important;
     top: 18px !important;
     transform: none !important;
@@ -2817,7 +2814,7 @@ input[type="range"]::-moz-range-thumb {
   }
 
   .trip-fuel-pressure {
-    left: calc(var(--desktop-panel-visible) + 16px) !important;
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 16px) !important;
     bottom: 18px !important;
   }
 
@@ -2827,23 +2824,23 @@ input[type="range"]::-moz-range-thumb {
   }
 
   .trip-report-placement {
-    left: calc(var(--desktop-panel-visible) + 12px) !important;
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 12px !important;
     bottom: 18px !important;
   }
 
   .roam-nav-hud {
     top: 18px !important;
-    left: calc(var(--desktop-panel-visible) + 12px) !important;
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 80px !important;
   }
   .roam-nav-offroute {
     top: 18px !important;
-    left: calc(var(--desktop-panel-visible) + 12px) !important;
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 80px !important;
   }
   .roam-nav-bar {
-    left: calc(var(--desktop-panel-visible) + 12px) !important;
+    left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 12px !important;
     bottom: 18px !important;
   }
