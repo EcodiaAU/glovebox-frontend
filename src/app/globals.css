@@ -2564,7 +2564,19 @@ input[type="range"]::-moz-range-thumb {
   .roam-tab-label { display: none !important; }
   .roam-tab-center .roam-tab-bump { display: none; }
   .roam-tab-center { transform: none !important; }
-  .roam-tab { padding: 14px 0 !important; }
+  /* Base .roam-tab uses `flex: 1; height: 100%` for the mobile bottom
+     bar, where each tab fills its share of the row. On the desktop
+     column-flex rail that expansion makes every tab a 290px-tall block
+     spread across the viewport. Reset to intrinsic sizing so the
+     `justify-content: center` on `.roam-tabs` actually centres a tight
+     stack of icon-sized tap targets. */
+  .roam-tab,
+  .roam-tab-item {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    padding: 14px 0 !important;
+    min-height: 56px;
+  }
 
   /* Shell content clears the left nav rail so scrollable pages like
      /guide and /sos don't render under it. The trip/new/live pages use
@@ -2843,6 +2855,35 @@ input[type="range"]::-moz-range-thumb {
   .roam-compass-hud {
     bottom: 100px !important;
     right: 18px !important;
+  }
+
+  /* ── Floating chrome: clear of the left rail ──────────────────
+     ThemeToggle is `position: fixed; left: 12px` on every breakpoint.
+     On desktop the rail occupies 0..72px so the toggle renders inside
+     the rail strip and reads as part of it. Slide it past the rail. */
+  .roam-shell > button[aria-label*="Day"],
+  .roam-shell > button[aria-label*="Night"] {
+    left: calc(var(--desktop-rail-w) + 12px) !important;
+  }
+
+  /* Offline / "No Server" indicator: top-centre of the visible map area
+     (right of the rail), not viewport-centre. Same containing-block
+     trick used by .trip-top-toast above. */
+  .terra-offline-indicator-enhanced {
+    /* Restyle to read as ambient status rather than alarm. The mobile
+       pill uses a saturated solar amber dot + bold caps copy that
+       reads as a critical warning on a wide-screen page. Tone it down
+       to muted text on a subtle chip. */
+    opacity: 0.85;
+  }
+}
+
+/* ── Offline indicator: desktop placement clears the left rail.
+     We can't use the media block above because the indicator's
+     containing block is the AppLayout root (not .roam-main). */
+@media (min-width: 900px) {
+  .roam-shell > div:has(> .terra-offline-indicator-enhanced) {
+    left: calc(50% + var(--desktop-rail-w) / 2) !important;
   }
 }
 
