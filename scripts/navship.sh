@@ -19,6 +19,15 @@
 # Usage:  KCPW=... bash scripts/navship.sh [branch]
 set -euo pipefail
 
+# Non-interactive SSH shells do not load nvm, so node/npm are absent from PATH.
+# Source nvm if present, else fall back to the highest installed node bin.
+export NVM_DIR="$HOME/.nvm"
+# shellcheck disable=SC1091
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
+command -v node >/dev/null 2>&1 || export PATH="$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | tail -1):$PATH"
+command -v node >/dev/null 2>&1 || { echo "FATAL: node not found on PATH. Aborting."; exit 1; }
+echo "node $(node -v) / npm $(npm -v)"
+
 REPO=~/workspaces/nav-frontend
 BRANCH="${1:-feat/nav-rebrand-and-widgets}"
 cd "$REPO"
