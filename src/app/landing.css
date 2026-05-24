@@ -6,12 +6,14 @@
    mode. No nav. No icons. No marquee. No feature cards.
    ─────────────────────────────────────────────────────────────────── */
 
+/* Page palette mirrors the Glovebox app icon and splash:
+   burnt-orange background (#A8431F), cream foreground (#E8DFC9). */
 .gl {
-  --bg: #E8DFC9;
-  --fg: #1A1613;
-  --fg-trace: rgba(26, 22, 19, 0.36);
-  --fg-soft: rgba(26, 22, 19, 0.62);
-  --accent: #A8431F;
+  --bg: #A8431F;
+  --fg: #E8DFC9;
+  --fg-trace: rgba(232, 223, 201, 0.36);
+  --fg-soft: rgba(232, 223, 201, 0.66);
+  --accent: #E8DFC9;
 
   min-height: 100dvh;
   background: var(--bg);
@@ -24,16 +26,6 @@
   line-height: 1.55;
   display: flex;
   flex-direction: column;
-}
-
-@media (prefers-color-scheme: dark) {
-  .gl {
-    --bg: #14110D;
-    --fg: #E8DFC9;
-    --fg-trace: rgba(232, 223, 201, 0.34);
-    --fg-soft: rgba(232, 223, 201, 0.65);
-    --accent: #C97A4E;
-  }
 }
 
 .gl ::selection { background: var(--fg); color: var(--bg); }

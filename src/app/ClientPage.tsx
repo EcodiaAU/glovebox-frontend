@@ -82,10 +82,6 @@ export default function LandingPage() {
           stays a map when you are past Longreach.
         </p>
 
-        <p>
-          It is small, quiet, and stays out of the way until you need it.
-        </p>
-
         <p className="gl-section-label">install</p>
         <p className="gl-row">
           <a href={APP_STORE} target="_blank" rel="noopener noreferrer">App Store</a>
