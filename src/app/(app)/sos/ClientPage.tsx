@@ -495,7 +495,7 @@ export default function EmergencyClientPage() {
 
   return (
     <div className="page sos-page" style={{ background: "var(--c-bg)", position: "relative", height: "100%" }}>
-      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 110px", height: "100%" }}>
+      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "env(safe-area-inset-top, 0px) 16px 110px", height: "100%" }}>
         {err ? (
           <div style={{
             background: "var(--c-error-bg)", color: "var(--c-error-text)",
@@ -546,9 +546,9 @@ export default function EmergencyClientPage() {
                 textTransform: "uppercase", letterSpacing: 0.5,
               }}>Current location</div>
               <div className="t-mono" style={{
-                fontSize: 20, fontWeight: 700, color: "var(--c-text)",
-                marginTop: 2, letterSpacing: -0.3, lineHeight: 1.1,
-                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                fontSize: 16, fontWeight: 700, color: "var(--c-text)",
+                marginTop: 2, letterSpacing: -0.2, lineHeight: 1.2,
+                wordBreak: "break-word",
               }}>
                 {lat != null && lon != null ? `${fmt5(lat)}, ${fmt5(lon)}` : (isLocating ? "Locating..." : "Location unavailable")}
               </div>
@@ -621,11 +621,13 @@ export default function EmergencyClientPage() {
             }}>
               <Icon name="sos" size={28} stroke={2.4}/>
             </div>
-            <div style={{ textAlign: "left", position: "relative" }}>
+            <div style={{ textAlign: "left", position: "relative", minWidth: 0, flex: 1 }}>
               <div className="t-display" style={{
                 fontWeight: 700, fontSize: 32, lineHeight: 1, letterSpacing: -0.5,
               }}>000</div>
-              <div style={{ fontSize: 12, opacity: 0.9, marginTop: 4 }}>Police · Fire · Ambulance</div>
+              <div style={{ fontSize: 11, opacity: 0.9, marginTop: 4, lineHeight: 1.25, wordBreak: "break-word" }}>
+                Police &middot; Fire &middot; Ambulance
+              </div>
             </div>
           </button>
 

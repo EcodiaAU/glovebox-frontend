@@ -6,7 +6,6 @@ import { PlaceDetailProvider } from "@/lib/context/PlaceDetailContext";
 import { PlaceDetailSheet } from "@/components/places/PlaceDetailSheet";
 import { SavedPlacesSync } from "@/components/places/SavedPlacesSync";
 import { OfflineStatusIndicator } from "@/components/ui/OfflineStatusIndicator";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 export function AppLayout() {
   useEffect(() => {
     document.documentElement.classList.add("roam-shell");
@@ -18,11 +17,9 @@ export function AppLayout() {
       {/* Wires useSavedPlaces into PlaceDetailContext so the sheet can toggle bookmarks */}
       <SavedPlacesSync />
       <div className="roam-shell">
-        {/* Day/Night mode toggle - top-left, always accessible */}
-        <ThemeToggle />
         {/* Persistent offline status - always visible, never dismissable.
-            Pinned top-center so it never collides with the theme toggle (top-left)
-            or per-page corner controls like MapStyleSwitcher (top-right). */}
+            Pinned top-center so it doesn't collide with per-page corner
+            controls (MapStyleSwitcher top-right, etc). */}
         <div style={{
           position: "fixed",
           top: "calc(env(safe-area-inset-top, 0px) + 6px)",

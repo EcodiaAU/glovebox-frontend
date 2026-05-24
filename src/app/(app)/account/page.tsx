@@ -10,6 +10,7 @@ import { ArrowLeft, LogOut, Trash2, Mail, Shield, ExternalLink } from "lucide-re
 import { useAuth } from "@/lib/supabase/auth";
 import { haptic } from "@/lib/native/haptics";
 import { AuthGate } from "@/components/auth/AuthGate";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export default function AccountPage() {
   return (
@@ -168,6 +169,9 @@ function AccountPageInner() {
             </div>
           </div>
         )}
+
+        {/* Theme - moved out of the floating top-left pill it used to live in */}
+        <ThemeToggle />
 
         {/* Sign out */}
         <button

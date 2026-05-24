@@ -1412,28 +1412,31 @@ export function PlanSheet({ tweaks, setTweak, stops, setStops, legs, onAction, o
           overflow: 'hidden',
           display: 'flex', flexDirection: 'column',
         }}>
-          {/* Drag handle - generous 44px hit target with a chunkier 56x5 bar
-              so the thumb finds it without aiming. The visible pill darkens
-              while dragging for tactile feedback. */}
+          {/* Drag handle - the entire top header strip is the hit target
+              (56px tall), with a prominent 96x6 pill so the thumb finds it
+              from anywhere along the top edge. Widens + darkens on drag. */}
           <div
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
             style={{
-              padding: '14px 0 10px',
-              minHeight: 44,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+              padding: '18px 0 14px',
+              minHeight: 56,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
               touchAction: 'none', cursor: 'ns-resize',
               flexShrink: 0, userSelect: 'none',
               WebkitTapHighlightColor: 'transparent',
+              background: isDragging ? 'var(--c-surface-muted)' : 'transparent',
+              transition: 'background 140ms ease',
             }}>
             <div style={{
-              width: isDragging ? 64 : 56,
-              height: 5,
+              width: isDragging ? 112 : 96,
+              height: 6,
               borderRadius: 999,
-              background: isDragging ? 'var(--c-text-muted)' : 'var(--c-border-strong)',
-              transition: 'width 160ms cubic-bezier(0.2,0.8,0.2,1), background 160ms ease',
+              background: isDragging ? 'var(--c-text)' : 'var(--c-text-muted)',
+              opacity: isDragging ? 0.55 : 0.32,
+              transition: 'width 160ms cubic-bezier(0.2,0.8,0.2,1), background 160ms ease, opacity 160ms ease',
             }}/>
             <SnapDots snap={snap} onSnap={setSnap}/>
           </div>

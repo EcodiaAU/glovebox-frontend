@@ -1492,6 +1492,10 @@ export function GuideView({
               // input bar (50px) + gaps (36px) + bottom nav + safe-area notch
               maxHeight: "calc(100dvh - 270px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px) - var(--roam-keyboard-h, 0px))",
               overflowY: "auto", paddingRight: 2,
+              // Bottom padding so the sticky input bar doesn't overlay the last
+              // message. Matches input height (~60px) + suggestion row (~36px)
+              // + breathing room.
+              paddingBottom: 110,
               WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain",
             }}>
               {thread.slice(-20).map((m, idx) => {

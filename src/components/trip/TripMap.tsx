@@ -370,17 +370,11 @@ function makeIconSVG(pathD: string, bgColor: string, sizePx: number, iconColor: 
   // Icon is drawn in a 24x24 viewbox, scaled and centered within the circle
   const iconScale = (sizePx * 0.38) / 24;
   const iconOff = (sizePx - 24 * iconScale) / 2;
+  // Crisp markers: solid fill, opaque, single thin white ring, no drop-shadow
+  // or gaussian blur. The previous translucent + blurred + soft-shadow stack
+  // read as "fuzzy" on retina; this version is pixel-sharp at every zoom.
   return `<svg width="${sizePx}" height="${sizePx}" viewBox="0 0 ${sizePx} ${sizePx}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <filter id="ds" x="-20%" y="-10%" width="140%" height="150%">
-        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
-      </filter>
-      <filter id="gb" x="-10%" y="-10%" width="120%" height="120%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="0.8"/>
-      </filter>
-    </defs>
-    <circle cx="${r}" cy="${r}" r="${r - 1.5}" fill="${bgColor}" opacity="0.72" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" filter="url(#ds)"/>
-    <circle cx="${r}" cy="${r}" r="${r - 2.5}" fill="rgba(255,255,255,0.1)" filter="url(#gb)"/>
+    <circle cx="${r}" cy="${r}" r="${r - 1.5}" fill="${bgColor}" stroke="#ffffff" stroke-width="1.75"/>
     <g transform="translate(${iconOff},${iconOff}) scale(${iconScale.toFixed(3)})">
       <path d="${pathD}" fill="${iconColor}" fill-rule="evenodd"/>
     </g>
@@ -1615,24 +1609,8 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       /* ── 1. Route layers - glassmorphic warm outback ─────────────────── */
       addOrUpdateGeoJsonSource(map, ROUTE_SRC, routeFC);
 
-      // Outer glow - wide translucent line simulates blur cheaply on mobile GPUs.
-      // Using line-blur is expensive (GPU fragment shader per pixel); a wider
-      // low-opacity line gives a similar haze without the mobile perf hit.
-      if (!map.getLayer(ROUTE_GLOW)) {
-        map.addLayer({
-          id: ROUTE_GLOW,
-          type: "line",
-          source: ROUTE_SRC,
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": "rgba(30,100,210,0.12)",
-            "line-width": ["interpolate", ["linear"], ["zoom"], 4, 12, 10, 20, 14, 30],
-            "line-opacity": 0.55,
-          },
-        });
-      }
-
-      // Frosted casing - translucent warm white for glass edge
+      // Glow removed per visual review - the route now reads crisp.
+      // Casing kept as a thin opaque white halo for legibility on dark tiles.
       if (!map.getLayer(ROUTE_CASING)) {
         map.addLayer({
           id: ROUTE_CASING,
@@ -1640,14 +1618,14 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: ROUTE_SRC,
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
-            "line-color": "rgba(250,246,239,0.4)",
-            "line-width": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 6, 14, 9],
-            "line-opacity": 0.65,
+            "line-color": "rgba(255,255,255,0.95)",
+            "line-width": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 6.5, 14, 9.5],
+            "line-opacity": 1,
           },
         });
       }
 
-      // Main route line - vivid blue, high contrast for navigation
+      // Main route line - vivid blue, full opacity, no fade.
       if (!map.getLayer(ROUTE_LINE)) {
         map.addLayer({
           id: ROUTE_LINE,
@@ -1657,7 +1635,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           paint: {
             "line-color": "#4285F4",
             "line-width": ["interpolate", ["linear"], ["zoom"], 4, 2.5, 10, 4.5, 14, 7],
-            "line-opacity": 0.95,
+            "line-opacity": 1,
           },
         });
       }
@@ -1953,9 +1931,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           paint: {
             "circle-color": ["step", ["get", "point_count"], "#22804a", 10, "#1e7342", 30, "#186338", 80, "#145530"],
             "circle-radius": ["step", ["get", "point_count"], 12, 10, 14, 30, 16, 80, 20],
-            "circle-stroke-color": "rgba(255,255,255,0.55)",
-            "circle-stroke-width": 2.5,
-            "circle-opacity": 0.95,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 2,
+            "circle-opacity": 1,
             "circle-blur": 0,
           },
         });
@@ -1995,9 +1973,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
               ["match", ["get", "sizeClass"], "lg", 19, "md", 16, 14],
             ],
             "circle-color": ["get", "color"],
-            "circle-stroke-color": ["case", ["==", ["get", "id"], props.focusedSuggestionId ?? ""], "#ffffff", "rgba(255,255,255,0.6)"],
-            "circle-stroke-width": ["case", ["==", ["get", "id"], props.focusedSuggestionId ?? ""], 3, 2.5],
-            "circle-opacity": 0.92,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": ["case", ["==", ["get", "id"], props.focusedSuggestionId ?? ""], 3, 2],
+            "circle-opacity": 1,
             "circle-blur": 0,
           },
         });
@@ -2212,7 +2190,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
             "icon-allow-overlap": true,
             "icon-ignore-placement": true,
           },
-          paint: { "icon-opacity": ["interpolate", ["linear"], ["zoom"], 11, 0.5, 13, 0.95] },
+          paint: { "icon-opacity": 1 },
         });
       }
 
