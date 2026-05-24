@@ -88,7 +88,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
           }}>
             {lastFreeTrip
               ? "Make this one count"
-              : "Welcome to Roam"}
+              : "Welcome to Glovebox"}
           </h1>
 
           <p style={{
@@ -98,7 +98,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
             lineHeight: 1.55,
           }}>
             {lastFreeTrip
-              ? "This is your last free trip. Explore every feature - offline maps, the AI guide, turn-by-turn nav. If you love it, Roam Untethered is $19.99, one-time."
+              ? "This is your last free trip. Explore every feature - offline maps, the AI guide, turn-by-turn nav. If you love it, Glovebox Untethered is $19.99, one-time."
               : "Your first two trips are completely free. No credit card needed - just tap, plan, and go."}
           </p>
         </div>

@@ -312,7 +312,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                       color: "var(--c-text-muted, var(--roam-text-muted))",
                     }}
                   >
-                    Share this code to add roamers to your plan
+                    Share this code to add travelers to your plan
                   </div>
                 </div>
                 <button

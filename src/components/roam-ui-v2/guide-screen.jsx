@@ -130,7 +130,7 @@ function FoundFeed({ onTap }) {
     { id: "cameron", icon: "cafe", scene: "cafe", name: "Cameron Corner Store", dist: "312 km", cat: "Roadhouse",
       reason: "This is your last reliable fuel for the next 212 km. Cold pies. Closes at 6pm and you're on track for 14:20." },
     { id: "tent", icon: "tent", scene: "camp", name: "Walkers Crossing camp", dist: "233 km", cat: "Free camp",
-      reason: "Three vehicles overnighted here last night per a Roamer report - friendly. Cooper Creek frontage." },
+      reason: "Three vehicles overnighted here last night per a traveler report - friendly. Cooper Creek frontage." },
     { id: "star", icon: "star", scene: "night", name: "Dark sky window", dist: "Tonight, 21:00-04:30", cat: "Astronomy",
       reason: "New moon over Strzelecki tonight. Bortle 1 sky. Your camp is well-positioned." },
     { id: "fire", icon: "leaf", scene: "bloom", name: "Banksia in bloom", dist: "78 km", cat: "Seasonal",
@@ -299,7 +299,7 @@ function ChatPanel() {
         const copy = m.slice();
         copy[copy.length - 1] = {
           from: "ai",
-          text: "I've flagged that for the camp tonight. There's also a Roamer report 6 km north of your route worth a look.",
+          text: "I've flagged that for the camp tonight. There's also a traveler report 6 km north of your route worth a look.",
         };
         return copy;
       });
@@ -341,7 +341,7 @@ function ChatMessage({ msg }) {
             <span style={{
               fontSize: 10, fontWeight: 700, color: "var(--c-accent)",
               textTransform: "uppercase", letterSpacing: 0.4,
-            }}>Roam Guide</span>
+            }}>Glovebox Guide</span>
             {msg.streaming && (
               <span style={{ display: "inline-flex", gap: 2, marginLeft: 4 }}>
                 <Dot d="0s"/><Dot d="0.2s"/><Dot d="0.4s"/>

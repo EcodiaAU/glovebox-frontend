@@ -378,8 +378,8 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
         {!isOverlay && (() => {
           const iconSize = 24;
           const gap = 7;
-          // Approximate text width for "ROAM" at fontSize 15 + letterSpacing 0.22em
-          const textW = 42;
+          // Approximate text width for "GLOVEBOX" at fontSize 15 + letterSpacing 0.22em
+          const textW = 95;
           const rowW = iconDataUrl ? iconSize + gap + textW : textW;
           const startX = CARD_W / 2 - rowW / 2;
           const midY = BRAND_Y + 22; // vertical center of branding row
@@ -402,7 +402,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                 fill="rgba(255,255,255,0.9)"
                 fontFamily="'Syne', sans-serif"
                 letterSpacing="0.22em">
-                ROAM
+                GLOVEBOX
               </text>
             </g>
           );
@@ -424,7 +424,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                 fill="rgba(255,255,255,0.7)"
                 fontFamily="'Syne', sans-serif"
                 letterSpacing="0.2em">
-                ROAM
+                GLOVEBOX
               </text>
             </g>
           );

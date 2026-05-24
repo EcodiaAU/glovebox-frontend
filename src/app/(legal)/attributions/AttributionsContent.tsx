@@ -448,21 +448,21 @@ const ATTRIBUTION_GROUPS: AttributionGroup[] = [
         url: "https://www.deepseek.com",
         licence: "Proprietary (DeepSeek ToS)",
         description:
-          "Large language model API powering the Roam Guide for trip planning suggestions, local knowledge, and route recommendations.",
+          "Large language model API powering the Glovebox Guide for trip planning suggestions, local knowledge, and route recommendations.",
       },
       {
         name: "Tavily",
         url: "https://tavily.com",
         licence: "Proprietary (Tavily ToS)",
         description:
-          "Web search API providing the Roam Guide with up-to-date information on road conditions, local events, and regional knowledge.",
+          "Web search API providing the Glovebox Guide with up-to-date information on road conditions, local events, and regional knowledge.",
       },
       {
         name: "Google Custom Search",
         url: "https://programmablesearchengine.google.com",
         licence: "Proprietary (Google ToS)",
         description:
-          "Web search fallback providing supplementary search results for the Roam Guide. © Google.",
+          "Web search fallback providing supplementary search results for the Glovebox Guide. © Google.",
       },
     ],
   },
@@ -474,7 +474,7 @@ const ATTRIBUTION_GROUPS: AttributionGroup[] = [
         url: "https://stripe.com",
         licence: "Proprietary (Stripe ToS)",
         description:
-          "Payment processing for Roam Untethered web purchases.",
+          "Payment processing for Glovebox Untethered web purchases.",
       },
       {
         name: "RevenueCat",
@@ -566,7 +566,7 @@ const ATTRIBUTION_GROUPS: AttributionGroup[] = [
         name: "FastAPI",
         url: "https://github.com/fastapi/fastapi",
         licence: "MIT",
-        description: "Python web framework powering the Roam backend API.",
+        description: "Python web framework powering the Glovebox backend API.",
       },
       {
         name: "Pydantic",
@@ -597,12 +597,12 @@ export default function AttributionsContent() {
       <div className="rl-legal-content">
       <h1 className={s.pageTitle}>Open Source Attributions</h1>
       <p className={s.effectiveDate}>
-        Roam is built on the shoulders of open-source communities
+        Glovebox is built on the shoulders of open-source communities
       </p>
 
       <section className={s.section}>
         <p className={s.text}>
-          Roam uses the following open-source software, open data, public data
+          Glovebox uses the following open-source software, open data, public data
           sources, and third-party services. We are grateful to the developers,
           contributors, and organisations that make these resources available.
         </p>
@@ -647,7 +647,7 @@ export default function AttributionsContent() {
         <h2 className={s.sectionTitle}>Additional Notice</h2>
         <p className={s.text}>
           This list covers the primary components, data sources, and services.
-          Roam also uses numerous smaller libraries and dependencies, each
+          Glovebox also uses numerous smaller libraries and dependencies, each
           governed by their respective open-source licences (primarily MIT, BSD,
           and Apache 2.0). A complete list of dependencies and their licences is
           available in the application&apos;s source repository.
@@ -661,7 +661,7 @@ export default function AttributionsContent() {
         <div className={s.highlight}>
           <p>
             If you are an open-source maintainer or data provider and believe
-            Roam is using your work in a way that does not comply with your
+            Glovebox is using your work in a way that does not comply with your
             licence terms, please{" "}
             <a href="/contact" className={s.link}>
               contact us immediately

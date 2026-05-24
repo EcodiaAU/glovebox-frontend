@@ -219,7 +219,7 @@ export function NavigationOverlay({ tweaks, setTweak, nextStopOpen, setNextStopO
           boxShadow: 'var(--sh-floating)', border: '1px solid var(--c-border)',
           padding: 6, width: 168,
         }}>
-          {['Traffic','Hazards','Fuel prices','Roamers','POIs'].map((l, i) => (
+          {['Traffic','Hazards','Fuel prices','Travelers','POIs'].map((l, i) => (
             <div key={l} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: '10px 10px',
@@ -290,7 +290,7 @@ export function NearbyRoamersPill({ count = 0 }) {
         <span style={{ position: 'absolute', inset: 0, borderRadius: 999, background: count > 0 ? 'var(--c-info)' : 'var(--c-text-muted)',
           animation: count > 0 ? 'pulse-soft 2s ease-in-out infinite' : 'none' }}/>
       </span>
-      {count > 0 ? `${count} nearby` : 'No roamers'}
+      {count > 0 ? `${count} nearby` : 'No travelers'}
     </div>
   );
 }
@@ -1117,7 +1117,7 @@ export function InviteCodeModal({ onClose }) {
         <div className="t-display" style={{ fontWeight: 700, fontSize: 36, letterSpacing: 6, color: 'var(--c-accent)' }}>
           R7-K3M
         </div>
-        <div className="t-muted" style={{ fontSize: 12 }}>Share this code to add roamers to your plan</div>
+        <div className="t-muted" style={{ fontSize: 12 }}>Share this code to add travelers to your plan</div>
       </div>
       <div className="t-mono" style={{ fontSize: 11, color: 'var(--c-text-muted)', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 6 }}>Or redeem a code</div>
       <div style={{
@@ -1138,7 +1138,7 @@ export function PaywallModal({ onClose }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Icon name="crown" size={20} style={{ color: 'var(--c-accent)' }}/>
-          <div className="t-display" style={{ fontWeight: 700, fontSize: 18 }}>Roam Pro</div>
+          <div className="t-display" style={{ fontWeight: 700, fontSize: 18 }}>Glovebox Pro</div>
         </div>
         <button onClick={onClose} style={{ width: 36, height: 36 }}><Icon name="x" size={18}/></button>
       </div>
@@ -1149,7 +1149,7 @@ export function PaywallModal({ onClose }) {
         {[
           { i: 'route',  t: 'Unlimited offline corridors',  d: 'Cache the entire continent if you want' },
           { i: 'sparkle',t: 'AI guide along every kilometre', d: 'Tap-free context Q&A while driving' },
-          { i: 'invite', t: 'Shared plans · roamer presence', d: 'Up to 12 vehicles on one trip' },
+          { i: 'invite', t: 'Shared plans · traveler presence', d: 'Up to 12 vehicles on one trip' },
           { i: 'radio',  t: 'Satellite hand-off',            d: 'When the corridor goes truly dark' },
         ].map(f => (
           <div key={f.t} style={{ display: 'flex', gap: 10, padding: '10px 0' }}>
@@ -1726,7 +1726,7 @@ export function FooterRail({ tier, onInvite, onUpgrade }) {
     }}>
       <button onClick={onInvite} style={{ display: 'inline-flex', alignItems: 'center', gap: 6,
         color: 'var(--c-text)', fontWeight: 600, fontSize: 12, minHeight: 32 }}>
-        <Icon name="invite" size={14} stroke={2}/> Invite roamers
+        <Icon name="invite" size={14} stroke={2}/> Invite travelers
       </button>
       {tier === 'free' && (
         <button onClick={onUpgrade} style={{
@@ -1735,7 +1735,7 @@ export function FooterRail({ tier, onInvite, onUpgrade }) {
           background: 'var(--grad-cta)', color: 'white',
           fontWeight: 700, fontSize: 11,
         }}>
-          <Icon name="crown" size={12} stroke={2.2}/> Roam Pro
+          <Icon name="crown" size={12} stroke={2.2}/> Glovebox Pro
         </button>
       )}
     </div>

@@ -34,14 +34,14 @@ export const NearbyRoamersIndicator = memo(function NearbyRoamersIndicator({ roa
         type="button"
         onClick={() => { haptic.selection(); setExpanded(!expanded); }}
         style={styles.pill}
-        aria-label={`${roamers.length} roamer${roamers.length > 1 ? "s" : ""} nearby`}
+        aria-label={`${roamers.length} traveler${roamers.length > 1 ? "s" : ""} nearby`}
         onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.95)"; }}
         onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = ""; }}
         onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = ""; }}
       >
         <span style={styles.dot} />
         <span style={styles.pillText}>
-          {roamers.length} roamer{roamers.length > 1 ? "s" : ""} nearby
+          {roamers.length} traveler{roamers.length > 1 ? "s" : ""} nearby
         </span>
         <svg
           width="14" height="14" viewBox="0 0 24 24" fill="none"

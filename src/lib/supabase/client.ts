@@ -6,7 +6,7 @@ const SUPA_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY ?? "";
 
 if (!SUPA_URL || !SUPA_ANON) {
   console.warn(
-    "[Roam] VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing. " +
+    "[Glovebox] VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing. " +
       "Auth and sync will not work.",
   );
 }

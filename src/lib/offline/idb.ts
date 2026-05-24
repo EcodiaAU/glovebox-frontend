@@ -64,11 +64,11 @@ function openAtVersion(version: number): Promise<IDBDatabase | null> {
       // Another tab has the DB open at an older version.
       // We can't force-close it, but we can tell the user.
       console.warn(
-        "[roam/idb] DB upgrade blocked - close other tabs with Roam open and retry.",
+        "[roam/idb] DB upgrade blocked - close other tabs with Glovebox open and retry.",
       );
       reject(
         new Error(
-          "IndexedDB upgrade blocked by another tab. Please close other Roam tabs and refresh.",
+          "IndexedDB upgrade blocked by another tab. Please close other Glovebox tabs and refresh.",
         ),
       );
     };

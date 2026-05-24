@@ -4,7 +4,7 @@ import { KeyboardResize } from "@capacitor/keyboard";
 
 const config: CapacitorConfig = {
   appId: "au.ecodia.roam",
-  appName: "Roam",
+  appName: "Glovebox",
 
   // Static bundle built via `npm run build:static` → `out/`
   // Capacitor serves this from device storage - fully offline, no network required.

@@ -9,12 +9,13 @@
     <line x1="20" y1="62" x2="80" y2="62" stroke="#E8DFC9" stroke-width="4.5" stroke-linecap="round"/>
   </g>
 
-  <!-- Wordmark, centred below mark. Heavy sans, generous letter-spacing. -->
+  <!-- Wordmark, centred below mark. Heavy sans, generous letter-spacing.
+       Sized down vs the old 4-char ROAM so 8-char GLOVEBOX still breathes. -->
   <text x="1366" y="1820"
         font-family="Helvetica Neue, Helvetica, Arial Black, Arial, sans-serif"
         font-weight="900"
-        font-size="280"
+        font-size="220"
         fill="#E8DFC9"
         text-anchor="middle"
-        letter-spacing="32">ROAM</text>
+        letter-spacing="18">GLOVEBOX</text>
 </svg>

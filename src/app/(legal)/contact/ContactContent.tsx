@@ -119,11 +119,11 @@ export default function ContactContent() {
           name: form.name.trim(),
           email: form.email.trim(),
           category: categoryLabel,
-          subject: form.subject.trim() || `[Roam] ${categoryLabel}`,
+          subject: form.subject.trim() || `[Glovebox] ${categoryLabel}`,
           message: form.message.trim(),
           _subject: form.subject.trim()
-            ? `[Roam ${categoryLabel}] ${form.subject.trim()}`
-            : `[Roam] ${categoryLabel}`,
+            ? `[Glovebox ${categoryLabel}] ${form.subject.trim()}`
+            : `[Glovebox] ${categoryLabel}`,
           _template: "box",
           _captcha: "true",
         }),

@@ -15,18 +15,18 @@ export default function TermsContent() {
       <section className={s.section}>
         <p className={s.text}>
           These Terms and Conditions (&quot;Terms&quot;) govern your use of the
-          Roam navigation application and all associated services (the
+          Glovebox navigation application and all associated services (the
           &quot;Service&quot;), operated by Ecodia Pty Ltd (ABN: 89693123278), a
           company registered in Queensland, Australia (&quot;we&quot;,
           &quot;us&quot;, &quot;our&quot;).
         </p>
         <p className={s.text}>
-          By downloading, installing, or using Roam, you agree to be bound by
+          By downloading, installing, or using Glovebox, you agree to be bound by
           these Terms. If you do not agree, do not use the Service.
         </p>
         <div className={s.highlight}>
           <p>
-            <strong>Important safety notice:</strong> Roam is a navigation aid.
+            <strong>Important safety notice:</strong> Glovebox is a navigation aid.
             It is not a substitute for your own judgment, local knowledge,
             current road signage, or official road authority instructions.
             Always drive safely and obey posted signs and conditions.
@@ -40,7 +40,7 @@ export default function TermsContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>1. About the Service</h2>
         <p className={s.text}>
-          Roam provides trip planning, turn-by-turn navigation, offline mapping,
+          Glovebox provides trip planning, turn-by-turn navigation, offline mapping,
           fuel range estimation, hazard awareness, fatigue monitoring, and
           related tools designed for driving in Australia, particularly in
           remote and outback regions.
@@ -61,7 +61,7 @@ export default function TermsContent() {
         <h2 className={s.sectionTitle}>2. Eligibility</h2>
         <p className={s.text}>
           You must be at least 16 years of age to create an account and use the
-          Service. By using Roam, you represent that you meet this age
+          Service. By using Glovebox, you represent that you meet this age
           requirement. If you are under 18, you represent that you have the
           consent of a parent or legal guardian.
         </p>
@@ -73,7 +73,7 @@ export default function TermsContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>3. Your Account</h2>
         <p className={s.text}>
-          You may use some features of Roam without an account. Creating an
+          You may use some features of Glovebox without an account. Creating an
           account enables trip syncing, plan sharing, and collaboration
           features.
         </p>
@@ -121,13 +121,13 @@ export default function TermsContent() {
           Hazard warnings, traffic alerts, road closures, and flood information
           are sourced from Australian state government feeds (QLD, NSW, VIC, SA,
           WA, NT) and the Bureau of Meteorology. These feeds may have delays,
-          gaps, or inaccuracies. The absence of an alert in Roam does not mean a
+          gaps, or inaccuracies. The absence of an alert in Glovebox does not mean a
           road is safe.
         </p>
         <div className={s.highlight}>
           <p>
             <strong>Always check official sources</strong> before travelling in
-            remote areas. Roam supplements but does not replace official road
+            remote areas. Glovebox supplements but does not replace official road
             condition reports from state road authorities.
           </p>
         </div>
@@ -140,7 +140,7 @@ export default function TermsContent() {
           factors. Fuel station data may be outdated - stations may be
           permanently closed, temporarily unavailable, or have limited fuel
           types. Always carry sufficient fuel reserves when travelling in remote
-          areas, and never rely solely on Roam for fuel planning.
+          areas, and never rely solely on Glovebox for fuel planning.
         </p>
 
         <h3 className={s.subsectionTitle}>4.4 Fatigue monitoring</h3>
@@ -154,10 +154,10 @@ export default function TermsContent() {
 
         <h3 className={s.subsectionTitle}>4.5 Offline limitations</h3>
         <p className={s.text}>
-          When used offline, Roam relies on previously cached data. This data
+          When used offline, Glovebox relies on previously cached data. This data
           may become stale. Cached traffic alerts, road conditions, and fuel
           station availability may no longer be accurate. Offline rerouting is
-          only available within pre-downloaded corridor areas. Roam will clearly
+          only available within pre-downloaded corridor areas. Glovebox will clearly
           indicate when data is stale or when features are limited due to
           offline operation.
         </p>
@@ -174,7 +174,7 @@ export default function TermsContent() {
         <p className={s.text}>You acknowledge and agree that:</p>
         <ul className={s.list}>
           <li>
-            Roam is a navigation aid, not a definitive source of road
+            Glovebox is a navigation aid, not a definitive source of road
             information.
           </li>
           <li>
@@ -182,7 +182,7 @@ export default function TermsContent() {
             directions of emergency services or road authorities.
           </li>
           <li>
-            You should not interact with the Roam interface while driving. Use
+            You should not interact with the Glovebox interface while driving. Use
             voice guidance and set your route before departing.
           </li>
           <li>
@@ -239,7 +239,7 @@ export default function TermsContent() {
 
         <h3 className={s.subsectionTitle}>6.1 Our property</h3>
         <p className={s.text}>
-          The Roam application, including its design, code, algorithms,
+          The Glovebox application, including its design, code, algorithms,
           branding, icons, UI components, and documentation, is the intellectual
           property of Ecodia Pty Ltd and is protected by Australian and
           international copyright, trademark, and intellectual property laws.
@@ -247,7 +247,7 @@ export default function TermsContent() {
 
         <h3 className={s.subsectionTitle}>6.2 Open-source components</h3>
         <p className={s.text}>
-          Roam uses open-source software components including but not limited to
+          Glovebox uses open-source software components including but not limited to
           Next.js, MapLibre GL JS, OSRM, PMTiles, and Capacitor. These
           components are subject to their respective open-source licences. Our
           use of open-source software does not affect your rights under those
@@ -267,12 +267,12 @@ export default function TermsContent() {
           </a>{" "}
           contributors, available under the Open Data Commons Open Database
           Licence (ODbL). Map tiles are generated from this data and are
-          provided for use within Roam only.
+          provided for use within Glovebox only.
         </p>
 
         <h3 className={s.subsectionTitle}>6.4 Your content</h3>
         <p className={s.text}>
-          You retain ownership of any content you create in Roam (trip plans,
+          You retain ownership of any content you create in Glovebox (trip plans,
           notes, etc.). By using the sharing features, you grant us a limited
           licence to transmit and display your shared content to the intended
           recipients.
@@ -326,7 +326,7 @@ export default function TermsContent() {
 
         <h3 className={s.subsectionTitle}>7.3 SOS feature disclaimer</h3>
         <p className={s.text}>
-          If Roam includes an SOS or emergency feature, it is provided as a
+          If Glovebox includes an SOS or emergency feature, it is provided as a
           convenience tool only. It is not a substitute for calling 000
           (Australian emergency services) or 112 (international emergency
           number). We do not guarantee that SOS features will function in all
@@ -386,7 +386,7 @@ export default function TermsContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>10. Plan Sharing &amp; Collaboration</h2>
         <p className={s.text}>
-          Roam allows you to share trip plans with other users via invite codes.
+          Glovebox allows you to share trip plans with other users via invite codes.
           When you share a plan:
         </p>
         <ul className={s.list}>
@@ -414,7 +414,7 @@ export default function TermsContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>11. Third-Party Data &amp; Services</h2>
         <p className={s.text}>
-          Roam incorporates data and services from third parties, including
+          Glovebox incorporates data and services from third parties, including
           OpenStreetMap, Australian government traffic and hazard feeds, weather
           services, and elevation data providers. We do not control and are not
           responsible for the accuracy, completeness, timeliness, or
@@ -422,9 +422,9 @@ export default function TermsContent() {
         </p>
         <p className={s.text}>
           Third-party services are subject to their own terms of use and privacy
-          policies. Your use of Roam constitutes acceptance of the terms of
+          policies. Your use of Glovebox constitutes acceptance of the terms of
           these third-party services to the extent they apply to data displayed
-          within Roam.
+          within Glovebox.
         </p>
       </section>
 

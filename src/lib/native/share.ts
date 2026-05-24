@@ -13,8 +13,8 @@ export type ShareOpts = {
  *
  * Usage:
  *   await nativeShare({
- *     title: "Join my Roam trip!",
- *     text: `Use code ${code} in the Roam app to join.`,
+ *     title: "Join my Glovebox trip!",
+ *     text: `Use code ${code} in the Glovebox app to join.`,
  *   });
  */
 export async function nativeShare(opts: ShareOpts): Promise<boolean> {

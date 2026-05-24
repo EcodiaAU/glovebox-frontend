@@ -24,7 +24,7 @@ function usePlatform(): Platform {
 }
 
 // TODO: Replace with real App Store ID after first submission
-const APP_STORE = "https://apps.apple.com/au/app/roam-nav/id000000000";
+const APP_STORE = "https://apps.apple.com/au/app/glovebox/id000000000";
 const PLAY_STORE =
   "https://play.google.com/store/apps/details?id=au.ecodia.roam";
 
@@ -34,7 +34,7 @@ function useCtaConfig(platform: Platform) {
   return useMemo(() => {
     // Inside the native app, link back to the app - not the store
     if (isNativeApp) {
-      return { href: "/login", label: "Back to Roam", external: false, isBack: true };
+      return { href: "/login", label: "Back to Glovebox", external: false, isBack: true };
     }
     switch (platform) {
       case "ios":
@@ -42,7 +42,7 @@ function useCtaConfig(platform: Platform) {
       case "android":
         return { href: PLAY_STORE, label: "Get the App", external: true, isBack: false };
       default:
-        return { href: "/trip", label: "Open Roam", external: false, isBack: false };
+        return { href: "/trip", label: "Open Glovebox", external: false, isBack: false };
     }
   }, [platform]);
 }
@@ -83,7 +83,7 @@ export default function LegalNav({ activePath }: LegalNavProps) {
         <div className="rl-nav-bar">
           <Link to="/" className="rl-nav-logo">
             <Compass size={22} strokeWidth={2.5} />
-            <span>ROAM</span>
+            <span>GLOVEBOX</span>
           </Link>
 
           <div className="rl-nav-links">

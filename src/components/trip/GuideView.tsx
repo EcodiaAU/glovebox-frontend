@@ -1429,11 +1429,11 @@ export function GuideView({
                   boxShadow: "var(--shadow-medium)",
                   flexShrink: 0,
                 }}>
-                  <img src="/img/roam-app-icon.png" alt="Roam" width={40} height={40} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src="/img/roam-app-icon.png" alt="Glovebox" width={40} height={40} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 800, color: "var(--roam-text)" }}>
-                    Roam Guide
+                    Glovebox Guide
                   </div>
                   <div style={{ fontSize: 12, fontWeight: 500, color: "var(--roam-text-muted)" }}>
                     {guideReady ? "Your AI road trip companion" : "Loading trip data…"}
@@ -1525,7 +1525,7 @@ export function GuideView({
                         overflow: "hidden",
                         boxShadow: "var(--shadow-soft)",
                       }}>
-                        <img src="/img/roam-app-icon.png" alt="Roam" width={28} height={28} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <img src="/img/roam-app-icon.png" alt="Glovebox" width={28} height={28} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       </div>
 
                       <div style={{
@@ -1593,7 +1593,7 @@ export function GuideView({
                     overflow: "hidden",
                     boxShadow: "var(--shadow-soft)",
                   }}>
-                    <img src="/img/roam-app-icon.png" alt="Roam" width={28} height={28} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <img src="/img/roam-app-icon.png" alt="Glovebox" width={28} height={28} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                   <div style={{
                     padding: "12px 16px", borderRadius: "4px 16px 16px 16px",

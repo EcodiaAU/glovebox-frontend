@@ -65,7 +65,7 @@ async function getPositionNative(timeoutMs = 120_000): Promise<GeoResult> {
         perms = await Geolocation.requestPermissions({ permissions: ["location", "coarseLocation"] });
       }
       if (!isLocationGranted(perms)) {
-        throw new Error("Location permission denied. Please allow it in Settings → Roam → Location.");
+        throw new Error("Location permission denied. Please allow it in Settings → Glovebox → Location.");
       }
 
       return await new Promise<GeoResult>((resolve, reject) => {
@@ -825,7 +825,7 @@ export default function EmergencyClientPage() {
           <div>
             <div style={{ fontSize: 13, fontWeight: 700 }}>Your last fix is saved offline</div>
             <div style={{ fontSize: 12, color: "var(--c-text-muted)" }}>
-              Roam keeps your last known position even without signal. SMS works on any one bar of 2G.
+              Glovebox keeps your last known position even without signal. SMS works on any one bar of 2G.
             </div>
           </div>
         </div>

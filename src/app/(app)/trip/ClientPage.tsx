@@ -2555,7 +2555,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             {unlocked === false && (
               <button
                 type="button"
-                aria-label="Upgrade to Roam Untethered"
+                aria-label="Upgrade to Glovebox Untethered"
                 onClick={() => { haptic.selection(); setPaywallVariant("upgrade"); setPaywallOpen(true); }}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 6,

@@ -141,8 +141,8 @@ export const roamNotify = {
 
   nearbyRoamer(distanceKm: number, direction: string) {
     notify({
-      title: "Roamer nearby",
-      body: `A fellow roamer is ~${distanceKm}km away, heading ${direction}. Pull over to exchange fresh road intel!`,
+      title: "Traveler nearby",
+      body: `A fellow traveler is ~${distanceKm}km away, heading ${direction}. Pull over to exchange fresh road intel!`,
       extra: { type: "nearby_roamer" },
     });
   },
@@ -150,7 +150,7 @@ export const roamNotify = {
   observationReceived(type: string, count: number) {
     notify({
       title: "New road intel",
-      body: `${count} ${type.replace("_", " ")} report${count > 1 ? "s" : ""} from nearby roamers.`,
+      body: `${count} ${type.replace("_", " ")} report${count > 1 ? "s" : ""} from nearby travelers.`,
       extra: { type: "peer_observation" },
     });
   },
@@ -159,7 +159,7 @@ export const roamNotify = {
     if (totalItems <= 0) return;
     notify({
       title: "Peer data received",
-      body: `${totalItems} overlay update${totalItems > 1 ? "s" : ""} received from nearby roamers.`,
+      body: `${totalItems} overlay update${totalItems > 1 ? "s" : ""} received from nearby travelers.`,
       extra: { type: "peer_sync" },
     });
   },
