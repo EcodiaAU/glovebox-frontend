@@ -118,12 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // On web, derive the callback URL from the current origin so localhost dev
     // redirects back to localhost instead of the live domain.
     const redirectTo = Capacitor.isNativePlatform()
-      ? "https://roam.ecodia.au/auth/callback"
+      ? "https://glovebox.ecodia.au/auth/callback"
       : `${window.location.origin}/auth/callback`;
 
     if (Capacitor.isNativePlatform()) {
       // skipBrowserRedirect prevents Supabase from calling window.location.href,
-      // which would navigate the WebView off roam.ecodia.au into Safari.
+      // which would navigate the WebView off glovebox.ecodia.au into Safari.
       // Instead we open the OAuth URL in SFSafariViewController / Chrome Custom Tab.
       // After Google auth, Supabase redirects to /auth/callback which detects the
       // in-app browser context, redirects to au.ecodia.roam:// custom scheme,
@@ -203,9 +203,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { SignInWithApple } = await import("@capacitor-community/apple-sign-in");
       const result = await SignInWithApple.authorize({
         clientId: "au.ecodia.roam",
-        redirectURI: "https://roam.ecodia.au/auth/callback", // unused on native, required by plugin types
+        redirectURI: "https://glovebox.ecodia.au/auth/callback", // unused on native, required by plugin types
         scopes: "email name",
-        state: `roam-${Date.now()}`,
+        state: `glovebox-${Date.now()}`,
         nonce: nonceHash,
       });
 
