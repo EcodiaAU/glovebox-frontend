@@ -1,39 +1,66 @@
 // src/components/ui/ThemeToggle.tsx
 
+import { useEffect, useState } from "react";
 import { useTheme } from "@/lib/context/ThemeContext";
 import { haptic } from "@/lib/native/haptics";
 import type { CSSProperties } from "react";
 
 /* ── Day/Night toggle ────────────────────────────────────────────────
-   Compact pill that floats in the app shell.
-   Instant switch (no transition on mode change - per spec).
-   Icons: Sun (☀) for Day, Moon (☽) for Tactical Night.
+   Floats above the bottom tab bar at left, small and translucent so it
+   doesn't compete with content. Suppressed on /trip where the map chrome
+   already owns the corners and the in-map style picker offers light/dark
+   per surface anyway.
    ──────────────────────────────────────────────────────────────────── */
 
 const PILL: CSSProperties = {
   position: "fixed",
-  top: "calc(var(--roam-safe-top, 0px) + 8px)",
-  left: "calc(var(--roam-safe-left, 0px) + 12px)",
-  zIndex: 100,
+  bottom: "calc(var(--bottom-nav-height, 80px) + var(--roam-safe-bottom, 0px) + 10px)",
+  left: "calc(var(--roam-safe-left, 0px) + 10px)",
+  zIndex: 12,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: 40,
-  height: 40,
-  borderRadius: "var(--r-card)",
-  border: "1px solid var(--roam-border-strong)",
-  background: "color-mix(in srgb, var(--roam-surface) 80%, transparent)",
-  backdropFilter: "blur(16px) saturate(140%)",
-  WebkitBackdropFilter: "blur(16px) saturate(140%)",
+  width: 36,
+  height: 36,
+  borderRadius: 999,
+  border: "1px solid var(--roam-border)",
+  background: "color-mix(in srgb, var(--roam-surface) 65%, transparent)",
+  backdropFilter: "blur(14px) saturate(140%)",
+  WebkitBackdropFilter: "blur(14px) saturate(140%)",
   boxShadow: "var(--shadow-soft)",
   cursor: "pointer",
   WebkitTapHighlightColor: "transparent",
   touchAction: "manipulation",
   color: "var(--roam-text)",
+  opacity: 0.78,
 };
+
+function useCurrentPath() {
+  const [path, setPath] = useState<string>(() =>
+    typeof window === "undefined" ? "" : window.location.pathname
+  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const update = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", update);
+    window.addEventListener("hashchange", update);
+    // SPA navigations don't fire popstate - poll on a slow interval is cheap
+    const id = window.setInterval(update, 800);
+    return () => {
+      window.removeEventListener("popstate", update);
+      window.removeEventListener("hashchange", update);
+      window.clearInterval(id);
+    };
+  }, []);
+  return path;
+}
 
 export function ThemeToggle() {
   const { isDark, toggle } = useTheme();
+  const path = useCurrentPath();
+  // Suppress on the trip surface - map style picker covers light/dark there
+  // and the corner toggle was covering map UI underneath.
+  if (path.startsWith("/trip")) return null;
 
   return (
     <button

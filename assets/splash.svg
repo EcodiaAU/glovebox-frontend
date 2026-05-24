@@ -9,13 +9,15 @@
     <line x1="20" y1="62" x2="80" y2="62" stroke="#E8DFC9" stroke-width="4.5" stroke-linecap="round"/>
   </g>
 
-  <!-- Wordmark, centred below mark. Heavy sans, generous letter-spacing.
-       Sized down vs the old 4-char ROAM so 8-char GLOVEBOX still breathes. -->
-  <text x="1366" y="1820"
+  <!-- Wordmark, centred below mark. Heavy sans, tight tracking so the 8-char
+       GLOVEBOX clears the safe inset on a 320px-wide iPhone SE (the narrowest
+       device in active use). Splash is centre-cropped on iOS so we need the
+       wordmark to comfortably fit inside ~70% of the 2732 canvas width. -->
+  <text x="1366" y="1780"
         font-family="Helvetica Neue, Helvetica, Arial Black, Arial, sans-serif"
         font-weight="900"
-        font-size="220"
+        font-size="150"
         fill="#E8DFC9"
         text-anchor="middle"
-        letter-spacing="18">GLOVEBOX</text>
+        letter-spacing="8">GLOVEBOX</text>
 </svg>

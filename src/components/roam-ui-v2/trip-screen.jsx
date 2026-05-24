@@ -1412,19 +1412,29 @@ export function PlanSheet({ tweaks, setTweak, stops, setStops, legs, onAction, o
           overflow: 'hidden',
           display: 'flex', flexDirection: 'column',
         }}>
-          {/* Drag handle — touch/mouse to resize, tap a snap dot to jump */}
+          {/* Drag handle - generous 44px hit target with a chunkier 56x5 bar
+              so the thumb finds it without aiming. The visible pill darkens
+              while dragging for tactile feedback. */}
           <div
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
             style={{
-              padding: '8px 0 6px',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+              padding: '14px 0 10px',
+              minHeight: 44,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
               touchAction: 'none', cursor: 'ns-resize',
               flexShrink: 0, userSelect: 'none',
+              WebkitTapHighlightColor: 'transparent',
             }}>
-            <div style={{ width: 40, height: 4, borderRadius: 4, background: 'var(--c-border-strong)' }}/>
+            <div style={{
+              width: isDragging ? 64 : 56,
+              height: 5,
+              borderRadius: 999,
+              background: isDragging ? 'var(--c-text-muted)' : 'var(--c-border-strong)',
+              transition: 'width 160ms cubic-bezier(0.2,0.8,0.2,1), background 160ms ease',
+            }}/>
             <SnapDots snap={snap} onSnap={setSnap}/>
           </div>
 
@@ -1446,12 +1456,16 @@ export function PlanSheet({ tweaks, setTweak, stops, setStops, legs, onAction, o
                   )}
                 </Fragment>
               ))}
+              {/* "Add another stop" - aligned to the name column so it reads
+                  as a continuation of the itinerary, not a stray button.
+                  Gutter math: drag(18) + gap(10) + time(46) + gap(10) + spine(20) + gap(10) = 114 */}
               <button onClick={() => onAddAt(stops.length)} style={{
-                margin: '4px 0 8px 38px',
+                marginLeft: 114,
+                marginTop: 4, marginBottom: 8,
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '6px 10px', height: 36, borderRadius: 10,
+                padding: '7px 12px', height: 34, borderRadius: 10,
                 background: 'var(--c-accent-tint)', color: 'var(--c-accent)',
-                fontSize: 12, fontWeight: 700,
+                fontSize: 12.5, fontWeight: 700,
                 alignSelf: 'flex-start',
               }}>
                 <Icon name="plus" size={14} stroke={2.4}/> Add another stop
@@ -1553,54 +1567,82 @@ export function StatChip({ icon, big, unit, mono }) {
 }
 
 // Single stop row
+// SPINE_COL_W is the shared timeline column used by StopRow + LegRow so the
+// continuous vertical line lands in the exact same x-coordinate on every row.
+// Don't change without also updating LegRow.
+const SPINE_COL_W = 20;
+
 export function StopRow({ stop, index, isLast, onAction, onRename }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(stop.name);
 
-  const markerColor =
-    stop.kind === 'start' ? 'var(--c-success)' :
-    stop.kind === 'end'   ? 'var(--c-danger)'  :
-    'var(--c-surface)';
-  const markerSize = stop.kind === 'wp' ? 12 : 16;
+  const isStart = stop.kind === 'start';
+  const isEnd = stop.kind === 'end';
+  const isWp = stop.kind === 'wp';
+
+  // Marker palette: start = green pin, end = red pin, waypoint = hollow ring on accent.
+  const dotFill = isStart ? 'var(--c-success)' : isEnd ? 'var(--c-danger)' : 'var(--c-surface)';
+  const dotRing = isStart || isEnd ? dotFill : 'var(--c-accent)';
+  const dotSize = isWp ? 12 : 14;
 
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 8,
-      padding: '4px 4px 4px 4px',
+      position: 'relative',
+      display: 'flex', alignItems: 'stretch', gap: 10,
+      padding: '2px 4px',
     }}>
-      {/* drag handle */}
+      {/* drag handle - hint only, real reorder lives in StopActionsSheet */}
       <div style={{
-        width: 18, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: 'var(--c-text-muted)', cursor: 'grab', opacity: 0.55,
+        width: 18, alignSelf: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: 'var(--c-text-muted)', cursor: 'grab', opacity: 0.45,
       }}>
         <Icon name="drag" size={14} stroke={1.6}/>
       </div>
 
-      {/* time badge */}
+      {/* time pill - typographic anchor on the left */}
       <div className="t-mono t-num" style={{
-        minWidth: 44, height: 40,
+        minWidth: 46, alignSelf: 'center',
+        padding: '6px 0',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         background: 'var(--c-surface-muted)', borderRadius: 8,
         fontSize: 12, fontWeight: 700, color: 'var(--c-text)',
-        letterSpacing: -0.2,
+        letterSpacing: -0.2, lineHeight: 1,
       }}>
         {stop.time}
       </div>
 
-      {/* marker + connector */}
-      <div style={{ position: 'relative', width: 16, alignSelf: 'stretch',
-        display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      {/* Timeline spine: a vertical line that runs the full row height with
+          the marker dot overlaid on top. The line above the first stop and
+          below the last stop is clipped so the spine reads as start->end. */}
+      <div style={{
+        position: 'relative', width: SPINE_COL_W, alignSelf: 'stretch',
+        display: 'flex', justifyContent: 'center',
+      }}>
+        {!isStart && (
+          <div style={{
+            position: 'absolute', top: 0, bottom: '50%',
+            width: 2, background: 'var(--c-accent)', opacity: 0.85,
+          }}/>
+        )}
+        {!isEnd && (
+          <div style={{
+            position: 'absolute', top: '50%', bottom: 0,
+            width: 2, background: 'var(--c-accent)', opacity: 0.85,
+          }}/>
+        )}
         <div style={{
-          width: markerSize, height: markerSize, borderRadius: 999,
-          background: markerColor,
-          border: stop.kind === 'wp' ? '2.5px solid var(--c-accent)' : '2px solid var(--c-surface)',
-          boxShadow: stop.kind !== 'wp' ? '0 0 0 2px var(--c-surface)' : 'none',
+          position: 'relative', alignSelf: 'center',
+          width: dotSize, height: dotSize, borderRadius: 999,
+          background: dotFill,
+          border: `2px solid ${dotRing}`,
+          boxShadow: '0 0 0 3px var(--c-surface)',
           zIndex: 2,
         }}/>
       </div>
 
       {/* name + tags */}
-      <div style={{ flex: 1, minWidth: 0, padding: '4px 0' }}>
+      <div style={{ flex: 1, minWidth: 0, padding: '8px 0', alignSelf: 'center' }}>
         {editing ? (
           <input autoFocus value={draft}
             onChange={e => setDraft(e.target.value)}
@@ -1614,25 +1656,29 @@ export function StopRow({ stop, index, isLast, onAction, onRename }) {
             }}/>
         ) : (
           <div onClick={() => { setDraft(stop.name); setEditing(true); }}
-            style={{ fontWeight: 700, fontSize: 14, color: 'var(--c-text)',
+            style={{ fontWeight: 700, fontSize: 14.5, color: 'var(--c-text)', lineHeight: 1.25,
               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {stop.name}
           </div>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-          {stop.kind === 'start' && <TinyTag label="Start"/>}
-          {stop.kind === 'end' && <TinyTag label="Destination" accent/>}
-          {stop.fuel && <TinyTag icon="fuel" label="Fuel"/>}
-          {stop.note && <span className="t-muted" style={{ fontSize: 11,
-            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{stop.note}</span>}
-        </div>
+        {(isStart || isEnd || stop.fuel || stop.note) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3,
+            overflow: 'hidden' }}>
+            {isStart && <TinyTag label="Start"/>}
+            {isEnd && <TinyTag label="Destination" accent/>}
+            {stop.fuel && <TinyTag icon="fuel" label="Fuel"/>}
+            {stop.note && <span className="t-muted" style={{ fontSize: 11, minWidth: 0,
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{stop.note}</span>}
+          </div>
+        )}
       </div>
 
-      {/* action menu — explicit 44px tap target */}
+      {/* action menu - explicit 44px tap target */}
       <button onClick={onAction} aria-label="Stop options" style={{
-        width: 44, height: 44, borderRadius: 12,
+        width: 40, alignSelf: 'center', height: 40, borderRadius: 12,
         color: 'var(--c-text-muted)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
       }}>
         <Icon name="dots" size={16}/>
       </button>
@@ -1655,7 +1701,8 @@ export function TinyTag({ label, icon, accent }) {
   );
 }
 
-// Leg row between stops — shows distance, time, surface, plus +-between affordance
+// Leg row between stops - rides the same spine column as StopRow so the
+// vertical line reads as continuous. Info chips float on the right.
 export function LegRow({ leg, onAddBetween }) {
   const surfaceColor = leg.surface === 'sealed' ? 'var(--c-success)'
                      : leg.surface === 'sand' ? 'var(--c-cat-solar)'
@@ -1663,45 +1710,60 @@ export function LegRow({ leg, onAddBetween }) {
                      : 'var(--c-text-muted)';
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 8,
-      padding: '0 4px 0 4px', minHeight: 28,
-      position: 'relative',
+      display: 'flex', alignItems: 'stretch', gap: 10,
+      padding: '0 4px',
+      position: 'relative', minHeight: 30,
     }}>
-      {/* leg connector line */}
+      {/* gutter widths match StopRow exactly: drag(18) + gap(10) + time(46) */}
       <div style={{ width: 18 }}/>
-      <div style={{ minWidth: 44 }}/>
-      <div style={{ position: 'relative', width: 16, alignSelf: 'stretch',
-        display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 2, background: 'var(--c-accent)', alignSelf: 'stretch', opacity: 0.6 }}/>
-      </div>
-      {/* leg info chip */}
-      <div className="t-mono" style={{
-        flex: 1, fontSize: 10.5, color: 'var(--c-text-muted)',
-        display: 'flex', alignItems: 'center', gap: 6,
-        padding: '4px 0',
+      <div style={{ minWidth: 46 }}/>
+
+      {/* spine column - continuous line through the row */}
+      <div style={{
+        position: 'relative', width: SPINE_COL_W, alignSelf: 'stretch',
+        display: 'flex', justifyContent: 'center',
       }}>
-        <span style={{ fontWeight: 700, color: 'var(--c-text)' }}>{leg.km}km</span>
-        <span style={{ opacity: 0.4 }}>·</span>
-        <span>{Math.floor(leg.min/60)}h {(leg.min%60).toString().padStart(2,'0')}</span>
-        <span style={{ opacity: 0.4 }}>·</span>
-        <span style={{ color: surfaceColor, fontWeight: 700 }}>{leg.surface}</span>
+        <div style={{
+          width: 2, background: 'var(--c-accent)', opacity: 0.85,
+          alignSelf: 'stretch',
+        }}/>
+      </div>
+
+      {/* leg info row - distance, time, surface, optional fuel-gap warning */}
+      <div style={{
+        flex: 1, minWidth: 0, padding: '5px 0',
+        display: 'flex', alignItems: 'center', gap: 6,
+        flexWrap: 'wrap',
+      }}>
+        <span className="t-mono t-num" style={{ fontSize: 11, fontWeight: 700, color: 'var(--c-text)' }}>
+          {leg.km}km
+        </span>
+        <span style={{ opacity: 0.35, fontSize: 11 }}>·</span>
+        <span className="t-mono t-num" style={{ fontSize: 11, color: 'var(--c-text-muted)' }}>
+          {Math.floor(leg.min/60)}h {(leg.min%60).toString().padStart(2,'0')}
+        </span>
+        <span style={{ opacity: 0.35, fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 10.5, fontWeight: 700, color: surfaceColor,
+          textTransform: 'uppercase', letterSpacing: 0.3 }}>{leg.surface}</span>
         {leg.warn === 'fuelgap' && (
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 3,
-            padding: '1px 6px', borderRadius: 4,
+            padding: '1px 6px', borderRadius: 999,
             background: 'var(--c-warn-bg)', color: 'var(--c-warn-text)',
-            fontWeight: 700, marginLeft: 4,
+            fontWeight: 700, fontSize: 10, letterSpacing: 0.2,
           }}>
             <Icon name="fuel" size={9} stroke={2.4}/> 124km between fuel
           </span>
         )}
       </div>
-      {/* +-between */}
+
+      {/* +-between - compact, lives on the right edge */}
       <button onClick={onAddBetween} aria-label="Add stop between" style={{
-        width: 28, height: 28, borderRadius: 999,
+        width: 26, height: 26, borderRadius: 999,
         background: 'var(--c-surface-muted)', color: 'var(--c-text-muted)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        opacity: 0.85,
+        alignSelf: 'center',
+        opacity: 0.85, flexShrink: 0,
       }}>
         <Icon name="plus" size={12} stroke={2.4}/>
       </button>

@@ -390,7 +390,7 @@ export default function EmergencyClientPage() {
     const time = new Date().toLocaleString();
 
     const msg =
-      `ROAM SAFETY: I need help.\n` +
+      `GLOVEBOX SAFETY: I need help.\n` +
       `Your coordinates are: ${coords}\n` +
       `Map: ${link}\n` +
       `Time: ${time}`;
@@ -495,7 +495,7 @@ export default function EmergencyClientPage() {
 
   return (
     <div className="page sos-page" style={{ background: "var(--c-bg)", position: "relative", height: "100%" }}>
-      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "50px 16px 110px", height: "100%" }}>
+      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 110px", height: "100%" }}>
         {err ? (
           <div style={{
             background: "var(--c-error-bg)", color: "var(--c-error-text)",
@@ -513,7 +513,7 @@ export default function EmergencyClientPage() {
               letterSpacing: 1, textTransform: "uppercase",
             }}>SOS</div>
             <div className="t-display" style={{
-              fontWeight: 700, fontSize: 28, letterSpacing: -0.4, whiteSpace: "nowrap",
+              fontWeight: 700, fontSize: 22, letterSpacing: -0.3, lineHeight: 1.15,
             }}>Help & location</div>
           </div>
           <NetworkPill state={isOnline ? "online" : "offline"} compact />
@@ -758,12 +758,12 @@ export default function EmergencyClientPage() {
                   </button>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontWeight: 700, fontSize: 15,
+                      fontWeight: 700, fontSize: 14, lineHeight: 1.2,
                       whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                     }}>{c.name}</div>
                     <div className="t-mono" style={{
-                      fontSize: 12, color: "var(--c-text-muted)",
-                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                      fontSize: 11, color: "var(--c-text-muted)", lineHeight: 1.3,
+                      overflow: "hidden", wordBreak: "break-word",
                     }}>
                       {c.phone}{c.relationship ? ` · ${c.relationship}` : ""}
                     </div>
@@ -792,7 +792,7 @@ export default function EmergencyClientPage() {
                       const link = mapsLink(lat, lon);
                       const time = new Date().toLocaleString();
                       const msg =
-                        `ROAM SAFETY: I need help.\n` +
+                        `GLOVEBOX SAFETY: I need help.\n` +
                         `Your coordinates are: ${coords}\n` +
                         `Map: ${link}\n` +
                         `Time: ${time}`;

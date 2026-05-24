@@ -4,46 +4,42 @@
 
 /* ── Layer toggle button ── */
 .layer-toggle-btn {
-  width: 46px; height: 46px; border-radius: var(--r-card);
+  position: relative;
+  width: 44px; height: 44px; border-radius: var(--r-card, 14px);
   border: 1px solid var(--roam-border);
   cursor: pointer; display: grid; place-items: center;
-  background: linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(244,239,230,0.96) 100%);
-  color: var(--text-main, #1A1A1A);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-medium);
+  background: rgba(0,0,0,0.45);
+  color: #faf6ef;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-heavy);
   transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
-.layer-toggle-btn--filtered {
-  background: linear-gradient(160deg, rgba(45,110,64,0.95) 0%, rgba(31,82,54,0.98) 100%);
-  color: var(--on-color);
-  border: 1px solid var(--roam-success);
-  box-shadow: 0 4px 16px rgba(45,110,64,0.30), 0 1px 4px rgba(0,0,0,0.12);
+/* Filtered state: keep glassy chrome, signal with a small accent dot in the
+   corner instead of repainting the entire button green. */
+.layer-toggle-btn--filtered::after {
+  content: "";
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--c-accent, var(--brand-sky, #4DB8F0));
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.55);
 }
 [data-theme="tactical-night"] .layer-toggle-btn {
-  background: rgba(26, 26, 26, 0.72);
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  background: rgba(0, 0, 0, 0.55);
   color: var(--on-color);
-  border: 1px solid var(--roam-border);
-  box-shadow: var(--shadow-medium);
 }
 
 /* ── First-time layer hint glow + tooltip ── */
 .layer-toggle-btn--hint {
   animation: layer-hint-pulse 2s ease-in-out infinite;
-  border-color: rgba(45,110,64,0.5);
+  border-color: rgba(77,184,240,0.5);
 }
 @keyframes layer-hint-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(45,110,64,0.5), 0 4px 16px rgba(0,0,0,0.08); }
-  50% { box-shadow: 0 0 0 8px rgba(45,110,64,0), 0 4px 20px rgba(45,110,64,0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(77,184,240,0.45), 0 4px 16px rgba(0,0,0,0.12); }
+  50% { box-shadow: 0 0 0 8px rgba(77,184,240,0), 0 4px 20px rgba(77,184,240,0.25); }
 }
 [data-theme="tactical-night"] .layer-toggle-btn--hint {
-  animation: layer-hint-pulse-dark 2s ease-in-out infinite;
-  border-color: rgba(74,222,128,0.4);
-}
-@keyframes layer-hint-pulse-dark {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.45), 0 4px 16px rgba(0,0,0,0.3); }
-  50% { box-shadow: 0 0 0 8px rgba(74,222,128,0), 0 4px 20px rgba(74,222,128,0.2); }
+  animation: layer-hint-pulse 2s ease-in-out infinite;
 }
 .layer-hint-tooltip {
   position: absolute;

@@ -331,9 +331,10 @@ const LAYER_CONTROLS_STYLE_NAV: React.CSSProperties = {
   gap: 8,
 };
 const LAYER_CONTROLS_STYLE: React.CSSProperties = {
+  // Sits directly below the MapStyleSwitcher launcher (top 12 + height 44 + 8 gap).
   position: "absolute",
-  top: "calc(env(safe-area-inset-top, 0px) + 56px)",
-  right: 12,
+  top: "calc(env(safe-area-inset-top, 0px) + 64px)",
+  right: 10,
   zIndex: 25,
   display: "flex",
   flexDirection: "column",
