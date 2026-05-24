@@ -99,7 +99,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
           }}>
             {lastFreeTrip
               ? "This is your last free trip. Explore every feature - offline maps, the AI guide, turn-by-turn nav. If you love it, Glovebox Untethered is $19.99, one-time."
-              : "Your first two trips are completely free. No credit card needed - just tap, plan, and go."}
+              : "Two free trips inside. No card needed."}
           </p>
         </div>
 

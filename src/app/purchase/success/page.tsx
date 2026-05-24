@@ -501,7 +501,7 @@ function PurchaseSuccessInner() {
             color: "rgba(255,255,255,0.75)", lineHeight: 1.5, maxWidth: 290,
             animation: "fade-up 0.5s ease 0.65s both",
           }}>
-            Every feature unlocked. Every road ahead is yours.
+            The whole Glovebox is yours now.
           </p>
 
           {/* Feature pills */}

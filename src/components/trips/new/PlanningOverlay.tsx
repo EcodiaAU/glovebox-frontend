@@ -98,7 +98,7 @@ const STEPS: StepDef[] = [
       "Almost there. Deep breaths.",
       "Cherry on top.",
     ],
-    doneQuip: "Saved. You're ready.",
+    doneQuip: "Tucked into the Glovebox.",
   },
 ];
 
