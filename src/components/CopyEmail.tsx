@@ -37,14 +37,18 @@ export default function CopyEmail({
     [email],
   );
 
+  // Fix the row reflow when "code@ecodia.au" swaps to "copied" - reserve
+  // the wider of the two widths inside the anchor so nothing shifts.
+  const label = (children ?? email) as React.ReactNode;
   return (
     <a
       href={`mailto:${email}`}
       className={className}
       onClick={onClick}
       data-copied={copied || undefined}
+      style={{ display: "inline-block", minWidth: "14ch", textAlign: "center" }}
     >
-      {copied ? "copied" : (children ?? email)}
+      {copied ? "copied" : label}
     </a>
   );
 }
