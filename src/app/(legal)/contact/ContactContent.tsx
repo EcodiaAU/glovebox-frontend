@@ -219,25 +219,19 @@ export default function ContactContent() {
 
           {status === "success" ? (
             <div className={s.successMsg}>
-              <p style={{ margin: "0 0 4px", fontSize: "17px" }}>✓ Message sent</p>
-              <p style={{ margin: 0, opacity: 0.8, fontSize: "14px" }}>
+              <p style={{ margin: "0 0 0.4em", fontStyle: "italic" }}>
+                Message sent.
+              </p>
+              <p style={{ margin: 0, fontSize: "0.95em", opacity: 0.85 }}>
                 Thanks for reaching out. We&apos;ll get back to you at{" "}
                 {form.email || "your email"} as soon as we can.
               </p>
               <button
                 onClick={() => setStatus("idle")}
-                style={{
-                  marginTop: "16px",
-                  background: "var(--roam-surface)",
-                  border: "1px solid var(--roam-border-strong)",
-                  borderRadius: "8px",
-                  padding: "8px 16px",
-                  color: "var(--roam-success)",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
+                className={s.submitBtn}
+                style={{ marginTop: "1.2em" }}
               >
-                Send another message
+                Send another
               </button>
             </div>
           ) : (
@@ -361,8 +355,9 @@ export default function ContactContent() {
                 <span
                   style={{
                     fontSize: "11px",
-                    color: "var(--roam-text-muted)",
-                    opacity: 0.5,
+                    color: "var(--fg-trace)",
+                    fontStyle: "italic",
+                    letterSpacing: "0.04em",
                     textAlign: "right",
                   }}
                 >
@@ -374,12 +369,11 @@ export default function ContactContent() {
               {status === "error" && errorMsg && (
                 <div
                   style={{
-                    background: "var(--danger-tint)",
-                    border: "1px solid var(--roam-border-strong)",
-                    borderRadius: "10px",
-                    padding: "12px 16px",
-                    color: "var(--roam-danger)",
-                    fontSize: "14px",
+                    padding: "0.8em 1em",
+                    borderLeft: "1px solid var(--fg)",
+                    color: "var(--fg)",
+                    fontSize: "0.95em",
+                    fontStyle: "italic",
                   }}
                 >
                   {errorMsg}
@@ -399,25 +393,24 @@ export default function ContactContent() {
               {/* Privacy note */}
               <p
                 style={{
-                  fontSize: "12px",
-                  color: "var(--roam-text-muted)",
-                  opacity: 0.6,
+                  fontSize: "12.5px",
+                  color: "var(--fg-trace)",
+                  fontStyle: "italic",
                   lineHeight: 1.6,
                   margin: 0,
+                  letterSpacing: "0.02em",
                 }}
               >
                 By submitting this form, your message is sent to us via{" "}
                 <a
                   href="https://formsubmit.co"
-                  className={s.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontSize: "12px" }}
                 >
                   FormSubmit
                 </a>
                 . Your information is handled in accordance with our{" "}
-                <a href="/privacy" className={s.link} style={{ fontSize: "12px" }}>
+                <a href="/privacy">
                   Privacy Policy
                 </a>
                 .

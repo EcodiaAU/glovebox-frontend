@@ -56,7 +56,7 @@ export default function LandingPage() {
 
       <section className="gl-title">
         <p className="gl-sentence">
-          <em>Offline navigation for the outback.</em>
+          <em>Offline navigation for Australia.</em>
         </p>
         <p className="gl-primary">
           <a
@@ -70,16 +70,12 @@ export default function LandingPage() {
 
       <main className="gl-memo">
         <p className="gl-lede">
-          <em>
-            Most navigation apps quit when the signal does. This one was
-            built for the part of the trip where the signal stops.
-          </em>
+          <em>Maps, routing, fuel and road conditions. Works without signal.</em>
         </p>
 
         <p>
-          Glovebox downloads the whole trip to your phone before you leave.
-          Maps, fuel stations, road closures, voice directions. The map
-          stays a map when you are past Longreach.
+          Glovebox downloads the trip to your phone before you leave. It
+          keeps working in areas with no coverage.
         </p>
 
         <p className="gl-section-label">install</p>

@@ -1,53 +1,82 @@
 import React from "react";
 import { Outlet } from "react-router";
-import "./legal.module.css";
 
 export function LegalLayout() {
   return (
-    <div style={styles.wrapper}>
-      <main style={styles.main}>
-        <Outlet />
-      </main>
-      <footer style={styles.footer}>
-        <p style={styles.footerText}>
-          © {new Date().getFullYear()} Ecodia Pty Ltd · ABN: 89693123278
-        </p>
-        <p style={styles.footerText}>
-          Glovebox is built on Gubbi Gubbi land - Sunshine Coast, Australia
-        </p>
-      </footer>
-    </div>
+    <>
+      <style>{WRAPPER_CSS}</style>
+      <div className="gl-legal-page">
+        <main className="gl-legal-main">
+          <Outlet />
+        </main>
+        <footer className="gl-legal-footer">
+          <p>
+            © {new Date().getFullYear()} Ecodia Pty Ltd · ABN 89693123278
+          </p>
+          <p>
+            <em>Built on Gubbi Gubbi land, Sunshine Coast, Australia.</em>
+          </p>
+        </footer>
+      </div>
+    </>
   );
 }
 
 export default LegalLayout;
 
-const styles: Record<string, React.CSSProperties> = {
-  wrapper: {
-    minHeight: "100dvh",
-    height: "100%",
-    overflowY: "auto" as const,
-    WebkitOverflowScrolling: "touch",
-    background: "var(--bg-sand)",
-    color: "var(--text-main)",
-    fontFamily: "var(--ff-body)",
-    display: "flex",
-    flexDirection: "column",
-  },
-  main: {
-    flex: 1,
-    width: "100%",
-  },
-  footer: {
-    padding: "24px 20px",
-    borderTop: "1px solid var(--roam-border)",
-    textAlign: "center" as const,
-  },
-  footerText: {
-    color: "var(--roam-text-muted)",
-    fontSize: "12px",
-    lineHeight: 1.6,
-    margin: 0,
-    opacity: 0.5,
-  },
-};
+/* Wrapper-scoped tokens + base type. Inherits the marketing palette
+   (burnt-orange #A8431F on cream #E8DFC9) and EB Garamond body. */
+const WRAPPER_CSS = `
+.gl-legal-page {
+  --bg: #A8431F;
+  --fg: #E8DFC9;
+  --fg-trace: rgba(232, 223, 201, 0.45);
+  --fg-soft: rgba(232, 223, 201, 0.7);
+  --fg-hairline: rgba(232, 223, 201, 0.18);
+
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-feature-settings: "kern", "liga", "dlig", "onum";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-size: clamp(17px, 1.4vw, 19px);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+}
+
+.gl-legal-page ::selection { background: var(--fg); color: var(--bg); }
+
+.gl-legal-page a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--fg-trace);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+.gl-legal-page a:hover { text-decoration-color: var(--fg); }
+
+.gl-legal-main {
+  flex: 1;
+  width: 100%;
+  max-width: 62ch;
+  margin: 0 auto;
+  padding: clamp(40px, 8vh, 96px) clamp(24px, 5vw, 60px) clamp(40px, 6vh, 80px);
+}
+
+.gl-legal-footer {
+  padding: clamp(24px, 4vh, 48px) clamp(24px, 5vw, 60px) clamp(20px, 3vh, 32px);
+  border-top: 1px solid var(--fg-hairline);
+  text-align: center;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-trace);
+  font-style: italic;
+  line-height: 1.7;
+}
+.gl-legal-footer p { margin: 0; }
+.gl-legal-footer p + p { margin-top: 0.3em; }
+`;

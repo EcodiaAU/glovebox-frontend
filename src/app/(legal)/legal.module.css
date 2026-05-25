@@ -1,124 +1,154 @@
-/* Legal page shared styles - Roam Outback Native aesthetic */
+/* ── Glovebox legal aesthetic ───────────────────────────────────────
+   Same editorial grammar as the marketing landing page: burnt-orange
+   ground (#A8431F), cream ink (#E8DFC9), EB Garamond serif, single
+   column, quiet hairlines instead of chunky cards. Inherits link
+   styling from the .gl-legal-page wrapper applied in layout.tsx.
+   ─────────────────────────────────────────────────────────────────── */
 
+/* ── Title block (h1 + effective date) ────────────── */
 .pageTitle {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--roam-text);
-  margin: 0 0 6px;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+  margin: 0 0 0.5em;
+  text-wrap: balance;
 }
 
 .effectiveDate {
-  font-size: 13px;
-  color: var(--roam-text-muted);
-  opacity: 0.7;
-  margin: 0 0 32px;
+  font-style: italic;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--fg-trace);
+  margin: 0 0 3em;
   font-weight: 400;
 }
 
+/* ── Sectioning ──────────────────────────────────── */
 .section {
-  margin-bottom: 32px;
+  margin-bottom: 2.2em;
 }
 
 .sectionTitle {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--roam-accent);
-  margin: 0 0 12px;
-  letter-spacing: -0.01em;
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(20px, 1.7vw, 23px);
+  line-height: 1.3;
+  letter-spacing: -0.008em;
+  color: var(--fg);
+  margin: 2.8em 0 0.9em;
+  text-wrap: balance;
 }
 
 .subsectionTitle {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--roam-text);
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1em;
+  color: var(--fg);
   opacity: 0.85;
-  margin: 16px 0 8px;
+  margin: 1.6em 0 0.4em;
 }
 
+/* ── Body copy + lists ───────────────────────────── */
 .text {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--roam-text-muted);
-  margin: 0 0 12px;
+  font-size: 1em;
+  line-height: 1.65;
+  color: var(--fg);
+  margin: 0 0 1.1em;
+  text-wrap: pretty;
 }
 
 .list {
-  margin: 8px 0 16px;
-  padding-left: 20px;
+  margin: 0.4em 0 1.4em;
+  padding-left: 1.2em;
+  list-style: none;
 }
 
 .list li {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--roam-text-muted);
-  margin-bottom: 6px;
+  font-size: 1em;
+  line-height: 1.65;
+  color: var(--fg);
+  margin-bottom: 0.45em;
+  position: relative;
+  text-wrap: pretty;
+}
+
+.list li::before {
+  content: "·";
+  position: absolute;
+  left: -1em;
+  color: var(--fg-trace);
 }
 
 .list li strong {
-  color: var(--roam-text);
-  font-weight: 600;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--fg);
 }
 
+/* ── Quiet callout (was orange-border highlight) ──── */
 .highlight {
-  background: var(--accent-tint);
-  border-left: 3px solid var(--roam-accent);
-  padding: 12px 16px;
-  border-radius: 0 8px 8px 0;
-  margin: 16px 0;
+  margin: 1.6em 0;
+  padding: 1em 1.2em;
+  border-left: 1px solid var(--fg-trace);
+  background: transparent;
 }
 
 .highlight p {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--roam-text);
-  opacity: 0.85;
+  font-style: italic;
+  font-size: 1.02em;
+  line-height: 1.55;
+  color: var(--fg);
+}
+
+.highlight p strong {
+  font-weight: 400;
+  font-style: italic;
 }
 
 .divider {
   border: none;
-  height: 2px;
-  background: var(--roam-border);
-  margin: 32px 0;
+  height: 1px;
+  background: var(--fg-trace);
+  opacity: 0.5;
+  margin: 2.4em 0;
 }
 
+/* ── Links inside .text and .list inherit from .gl-legal-page a ── */
 .link {
-  color: var(--roam-accent);
-  text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.15s ease;
+  color: inherit;
 }
 
-.link:hover {
-  opacity: 0.8;
-}
-
-/* Table for data collection summary */
+/* ── Table for response times / data summaries ───── */
 .dataTable {
   width: 100%;
   border-collapse: collapse;
-  margin: 12px 0 20px;
-  font-size: 13px;
+  margin: 1em 0 1.6em;
+  font-size: 0.95em;
 }
 
 .dataTable th {
   text-align: left;
-  padding: 10px 12px;
-  background: var(--roam-surface);
-  color: var(--roam-text-muted);
-  font-weight: 600;
-  font-size: 11px;
-  text-transform: uppercase;
+  padding: 0.8em 1em 0.8em 0;
+  color: var(--fg-trace);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 12px;
   letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--roam-border-strong);
+  text-transform: lowercase;
+  border-bottom: 1px solid var(--fg-trace);
 }
 
 .dataTable td {
-  padding: 10px 12px;
-  color: var(--roam-text-muted);
-  border-bottom: 1px solid var(--roam-border);
+  padding: 0.8em 1em 0.8em 0;
+  color: var(--fg);
+  border-bottom: 1px solid var(--fg-hairline);
   vertical-align: top;
   line-height: 1.5;
 }
@@ -127,142 +157,164 @@
   border-bottom: none;
 }
 
-/* Contact form */
+/* ── Contact form ────────────────────────────────── */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.4em;
+  margin: 0.4em 0 1em;
 }
 
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.55em;
 }
 
 .label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--roam-text-muted);
-  letter-spacing: 0.02em;
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--fg-trace);
+  text-transform: lowercase;
+  font-weight: 400;
 }
 
 .required {
-  color: var(--roam-accent);
+  color: var(--fg);
   margin-left: 2px;
 }
 
 .input,
 .textarea,
 .select {
-  background: var(--roam-surface);
-  border: 1px solid var(--roam-border-strong);
-  border-radius: var(--r-card);
-  padding: 12px 14px;
-  font-size: 15px;
-  color: var(--roam-text);
+  width: 100%;
+  padding: 0.75em 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--fg-trace);
+  border-radius: 0;
+  color: var(--fg);
   font-family: inherit;
+  font-size: 1em;
+  line-height: 1.5;
   outline: none;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.18s ease;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 .input:focus,
 .textarea:focus,
 .select:focus {
-  border-color: var(--roam-accent);
-  background: var(--roam-surface-hover);
+  border-bottom-color: var(--fg);
 }
 
 .input::placeholder,
 .textarea::placeholder {
-  color: var(--roam-text-muted);
-  opacity: 0.5;
+  color: var(--fg-trace);
+  opacity: 0.7;
+  font-style: italic;
 }
 
 .textarea {
-  min-height: 140px;
+  min-height: 7em;
   resize: vertical;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 .select {
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23d4845a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' fill='none' stroke='%23E8DFC9' stroke-opacity='0.55' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
+  background-position: right 4px center;
+  padding-right: 22px;
 }
 
 .select option {
-  background: var(--roam-bg);
-  color: var(--roam-text);
+  background: #A8431F;
+  color: #E8DFC9;
 }
 
 .submitBtn {
-  background: var(--roam-accent);
-  color: var(--on-color, #ffffff);
-  border: none;
-  border-radius: var(--r-card);
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 600;
+  align-self: flex-start;
   cursor: pointer;
-  letter-spacing: -0.01em;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--fg);
+  padding: 0.65em 1.6em;
+  border: 1px solid var(--fg);
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.18s ease, color 0.18s ease;
+  margin-top: 0.4em;
   -webkit-tap-highlight-color: transparent;
-  margin-top: 4px;
 }
 
-.submitBtn:hover {
-  opacity: 0.92;
-}
-
-.submitBtn:active {
-  transform: scale(0.98);
+.submitBtn:hover:not(:disabled) {
+  background: var(--fg);
+  color: #A8431F;
 }
 
 .submitBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
+  border-color: var(--fg-trace);
+  color: var(--fg-trace);
+  cursor: default;
 }
 
 .successMsg {
-  background: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.2);
-  border-radius: var(--r-card);
-  padding: 16px;
-  text-align: center;
-  color: var(--roam-success);
-  font-size: 15px;
-  font-weight: 500;
+  padding: 1.4em 0;
+  font-style: italic;
+  font-size: 1.05em;
+  line-height: 1.5;
+  color: var(--fg);
+  border-top: 1px solid var(--fg-trace);
+  border-bottom: 1px solid var(--fg-trace);
 }
 
+/* ── Contact summary blocks (was contactCard) ─────── */
 .contactMethods {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0.4em;
 }
 
 .contactCard {
-  background: var(--roam-surface);
-  border: 1px solid var(--roam-border);
-  border-radius: var(--r-card);
-  padding: 16px;
+  padding: 1.2em 0;
+  border-top: 1px solid var(--fg-hairline);
+  background: transparent;
+  border-radius: 0;
+}
+
+.contactCard:last-child {
+  border-bottom: 1px solid var(--fg-hairline);
 }
 
 .contactCard h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--roam-text);
-  margin: 0 0 4px;
+  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: var(--fg-trace);
+  text-transform: lowercase;
+  margin: 0 0 0.4em;
 }
 
 .contactCard p {
-  font-size: 13px;
-  color: var(--roam-text-muted);
+  font-size: 1em;
+  line-height: 1.55;
+  color: var(--fg);
   margin: 0;
-  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+@media (max-width: 540px) {
+  .pageTitle { font-size: clamp(26px, 7vw, 34px); }
 }
