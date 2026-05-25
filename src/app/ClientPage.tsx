@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router";
 import { Capacitor } from "@capacitor/core";
+import CopyEmail from "@/components/CopyEmail";
 import "./landing.css";
 
 /* Capacitor native shortcut: the marketing page never shows inside the app.
@@ -106,7 +107,7 @@ export default function LandingPage() {
           <span className="gl-sep" aria-hidden="true">.</span>
           <a href="/terms">Terms</a>
           <span className="gl-sep" aria-hidden="true">.</span>
-          <a href="mailto:hello@ecodia.au">Contact</a>
+          <CopyEmail email="code@ecodia.au">Contact</CopyEmail>
         </span>
       </footer>
 
