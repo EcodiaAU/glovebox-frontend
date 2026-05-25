@@ -3,7 +3,7 @@
 # download-glyphs.sh
 #
 # Downloads glyph PBF files from MapLibre's demo tile server
-# for the two fontstack names used in Roam's style JSON:
+# for the two fontstack names used in Glovebox's style JSON:
 #   - "Open Sans Regular"
 #   - "Arial Unicode MS Regular"
 #

@@ -1,4 +1,4 @@
-// Roam service worker — caches the app shell for offline-first loading.
+// Glovebox service worker - caches the app shell for offline-first loading.
 // Strategy:
 //   - App shell (HTML, JS, CSS, fonts, icons): cache-first, network fallback
 //   - API calls & Supabase: network-only (handled by the app's own offline layer)

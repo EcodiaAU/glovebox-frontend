@@ -13,7 +13,7 @@ type Listener = (online: boolean) => void;
  *
  * Separately pings backend /health (via our typed healthApi) to distinguish:
  *   - Device offline (no network at all)
- *   - Backend unreachable (has network but Roam API is down)
+ *   - Backend unreachable (has network but Glovebox API is down)
  */
 class NetworkMonitorImpl {
   private _browserOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
@@ -36,7 +36,7 @@ class NetworkMonitorImpl {
     return this._deviceOnline;
   }
 
-  /** Whether the Roam backend last responded to /health */
+  /** Whether the Glovebox backend last responded to /health */
   get backendReachable() {
     return this._backendReachable;
   }

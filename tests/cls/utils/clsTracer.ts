@@ -1,5 +1,5 @@
 /**
- * CLS measurement helpers for the Roam regression suite.
+ * CLS measurement helpers for the Glovebox regression suite.
  *
  * Two usage patterns:
  *

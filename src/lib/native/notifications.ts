@@ -109,7 +109,7 @@ export async function initNotificationTapListener(): Promise<void> {
   } catch {}
 }
 
-/* ── Convenience: common Roam notifications ──────────────────────────── */
+/* ── Convenience: common Glovebox notifications ──────────────────────── */
 
 export const roamNotify = {
   bundleReady(planLabel?: string) {

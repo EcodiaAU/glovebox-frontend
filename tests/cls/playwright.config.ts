@@ -1,5 +1,5 @@
 /**
- * Playwright config for the Roam CLS regression suite.
+ * Playwright config for the Glovebox CLS regression suite.
  *
  * Two projects:
  *   chromium-mobile  — iPhone 13 viewport (390x844), touch UA
