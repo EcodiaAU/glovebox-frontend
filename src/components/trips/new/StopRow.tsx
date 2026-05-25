@@ -908,9 +908,12 @@ export function StopRow(props: {
         )}
       </div>
 
-      {/* Reorder / remove controls */}
+      {/* Reorder / remove controls - top-aligned to the input row (the
+          first child of the column above). The previous `paddingTop: 8`
+          pushed these 44px buttons down so their centres sat 8px below
+          the input's centre. Drop it so vertical centres line up. */}
       {(canMoveUp || canMoveDown || canRemove) && (
-        <div style={{ display: "flex", gap: 4, paddingTop: 8, flexShrink: 0, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 4, flexShrink: 0, alignItems: "center" }}>
           {canMoveUp && (
             <button
               type="button"

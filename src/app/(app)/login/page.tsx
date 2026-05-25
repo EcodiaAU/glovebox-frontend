@@ -113,7 +113,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{
+    <div className="login-scroll" style={{
       position: "absolute", inset: 0,
       bottom: "var(--bottom-nav-height, 80px)",
       overflowY: "auto", WebkitOverflowScrolling: "touch" as const,
@@ -141,16 +141,7 @@ export default function LoginPage() {
           </div>
         )}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 4 }}>
-          <img
-            src="/img/roam-app-icon.png"
-            alt="Glovebox"
-            width={56}
-            height={56}
-            style={{
-              borderRadius: "14px",
-              objectFit: "contain",
-            }}
-          />
+          <GloveboxMark />
         </div>
         <h1 style={{
           fontSize: 22,
@@ -162,7 +153,7 @@ export default function LoginPage() {
           {mode === "login" ? "Sign in" : "Create account"}
         </h1>
         <div className="trip-muted" style={{ textAlign: "center", marginBottom: 0 }}>
-          Navigate anywhere. Even offline.
+          Offline navigation for the outback.
         </div>
 
         {/* Apple Sign-In (iOS-only) - plugin has no Android bridge. Apple HIG: black on light, white on dark */}
@@ -327,33 +318,67 @@ export default function LoginPage() {
 
       </div>
 
-      {/* Legal links - always accessible, sit below the card */}
+      {/* Legal links - quiet row, dotted under-line style to match the
+          editorial register of the marketing landing. */}
       <div style={{
-        display: "flex", flexWrap: "wrap", justifyContent: "center",
-        gap: "4px 16px", marginTop: 12,
+        display: "inline-flex", flexWrap: "wrap", justifyContent: "center",
+        alignItems: "baseline", gap: "4px 10px", marginTop: 16,
+        color: "var(--roam-text-muted)", opacity: 0.65,
       }}>
         {[
           { href: "/contact", label: "Contact" },
           { href: "/terms", label: "Terms" },
           { href: "/privacy", label: "Privacy" },
           { href: "/attributions", label: "Attributions" },
-        ].map(({ href, label }) => (
-          <a
-            key={href}
-            href={href}
-            style={{
-              color: "var(--roam-text-muted)",
-              fontSize: 12,
-              textDecoration: "none",
-              opacity: 0.55,
-              fontWeight: 500,
-            }}
-          >
-            {label}
-          </a>
+        ].map(({ href, label }, i, arr) => (
+          <span key={href} style={{ display: "inline-flex", alignItems: "baseline", gap: 10 }}>
+            <a
+              href={href}
+              style={{
+                color: "inherit",
+                fontSize: 12,
+                textDecoration: "none",
+                fontWeight: 500,
+                borderBottom: "1px dotted currentColor",
+                paddingBottom: 1,
+              }}
+            >
+              {label}
+            </a>
+            {i < arr.length - 1 && (
+              <span aria-hidden="true" style={{ userSelect: "none" }}>·</span>
+            )}
+          </span>
         ))}
       </div>
     </div>
+  );
+}
+
+/* The Glovebox mark from the app icon, lifted off its ochre block so it
+   reads as a sun cresting a horizon line against whatever background the
+   page is on. Stroke/fill use currentColor so it inherits page text. */
+function GloveboxMark() {
+  return (
+    <svg
+      width="56"
+      height="56"
+      viewBox="0 0 1024 1024"
+      role="img"
+      aria-label="Glovebox"
+      style={{ color: "var(--roam-accent)" }}
+    >
+      <circle cx="512" cy="450" r="133" fill="currentColor" />
+      <line
+        x1="205"
+        y1="635"
+        x2="819"
+        y2="635"
+        stroke="currentColor"
+        strokeWidth="46"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 

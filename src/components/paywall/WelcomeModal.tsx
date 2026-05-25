@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { haptic } from "@/lib/native/haptics";
 import { Map, Route, Download, AudioLines, Fuel, Sparkles } from "lucide-react";
+import { useSheetPullToDismiss } from "@/lib/hooks/useSheetPullToDismiss";
 
 type Props = {
   open: boolean;
@@ -20,6 +21,10 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
   }, [open]);
+
+  // Apple-style pull-to-dismiss: drag from the top of the sheet (handle
+  // strip) OR drag down from the scroll body when it's at the top.
+  const { sheetRef, scrollRef, handleRef } = useSheetPullToDismiss(onClose);
 
   if (!mounted || !open) return null;
 
@@ -48,6 +53,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
       aria-modal="true"
     >
       <div
+        ref={sheetRef}
         style={{
           width: "100%",
           maxWidth: 480,
@@ -55,8 +61,41 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
           borderRadius: "28px 28px 0 0",
           overflow: "hidden",
           paddingBottom: "var(--bottom-nav-height, calc(80px + env(safe-area-inset-bottom, 0px)))",
+          transition: "transform 0.28s cubic-bezier(0.34,1.12,0.64,1)",
+          willChange: "transform",
         }}
       >
+        {/* Pull-to-dismiss handle strip. Sits above the hero so the user
+            can drag from the top edge to close. Visually it's an iOS-style
+            grabber: 36×5px capsule centred. */}
+        <div
+          ref={handleRef}
+          style={{
+            position: "relative",
+            padding: "8px 0 6px",
+            display: "flex",
+            justifyContent: "center",
+            touchAction: "none",
+            cursor: "grab",
+            background: "transparent",
+            zIndex: 2,
+          }}
+        >
+          <div style={{
+            width: 36, height: 5,
+            background: "rgba(0,0,0,0.18)",
+            borderRadius: 999,
+          }} />
+        </div>
+        {/* Scroll container - the modal content rarely scrolls but
+            wrapping it lets at-top pull-to-dismiss work consistently. */}
+        <div ref={scrollRef} style={{
+          maxHeight: "calc(100dvh - 56px - env(safe-area-inset-bottom, 0px))",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch" as const,
+          overscrollBehavior: "contain",
+          touchAction: "pan-y",
+        }}>
         {/* Hero */}
         <div
           style={{
@@ -166,6 +205,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
             </p>
           )}
         </div>
+        </div>{/* /scroll container */}
       </div>
     </div>,
     document.body,

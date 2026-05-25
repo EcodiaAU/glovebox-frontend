@@ -9,6 +9,7 @@ import { Search } from "lucide-react";
 import { haptic } from "@/lib/native/haptics";
 import { hideKeyboard } from "@/lib/native/keyboard";
 import { useDebounceSearch } from "@/lib/hooks/useDebounceSearch";
+import { useSheetPullToDismiss } from "@/lib/hooks/useSheetPullToDismiss";
 
 const MIN_QUERY_LEN = 2;
 
@@ -75,6 +76,8 @@ export function PlaceSearchModal(props: {
     props.onClose();
   };
 
+  const { sheetRef, scrollRef, handleRef } = useSheetPullToDismiss(handleClose);
+
   const handlePick = (it: PlaceItem) => {
     if (!props.stopId) return;
     haptic.success();
@@ -86,8 +89,8 @@ export function PlaceSearchModal(props: {
 
   return (
     <div className="trip-modal-overlay" role="dialog" aria-modal="true" onClick={handleClose}>
-      <div className="trip-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="trip-drag-handle" />
+      <div ref={sheetRef} className="trip-modal" onClick={(e) => e.stopPropagation()}>
+        <div ref={handleRef} className="trip-drag-handle" style={{ touchAction: "none", cursor: "grab" }} />
 
         <div className="trip-row-between" style={{ marginBottom: 8 }}>
           <div className="trip-h1">Search Location</div>
@@ -110,7 +113,7 @@ export function PlaceSearchModal(props: {
         {loading && <div style={{ height: 3, background: "var(--roam-accent)", borderRadius: 2, animation: "roam-pulse 1s ease-in-out infinite", marginTop: 4 }} />}
         {err && <div className="trip-err-box" style={{ marginTop: 8 }}>{err}</div>}
 
-        <div style={{ flex: 1, overflowY: "auto", marginTop: 12, WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"], overscrollBehaviorX: "contain" }}>
+        <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", marginTop: 12, WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"], overscrollBehaviorX: "contain", touchAction: "pan-y" }}>
           {!loading && !hasSearched && q.length < MIN_QUERY_LEN && (
             <div className="trip-muted" style={{ textAlign: "center", marginTop: 60 }}>Type at least {MIN_QUERY_LEN} characters to search.</div>
           )}

@@ -625,6 +625,40 @@ input, textarea, [contenteditable] {
   --bottom-nav-height: 0px;
 }
 
+/* ── Keyboard open: scroll containers know about the obstructed bottom.
+   --roam-keyboard-h is set live by lib/native/keyboard.ts on
+   keyboardWillShow. Scroll-padding-bottom is the right primitive here:
+   it tells `scrollIntoView({block: 'center'})` to treat the keyboard
+   region as off-limits when picking a scroll position, so the focused
+   input ends up centred in the visible area ABOVE the keyboard. Bottom
+   padding is also added so the user can manually scroll past the last
+   input even when the keyboard sits on top of the chrome.
+
+   Applied to every scrollable surface that hosts inputs - login card
+   wrapper, the trip sheet content, the SOS scroll, the generic
+   scroll-y class used by the in-app pages, and the place-detail sheet
+   body. Other surfaces (map, native modals) don't host inputs so they
+   don't need it. */
+.keyboard-open .login-scroll,
+.keyboard-open .trip-sheet-content,
+.keyboard-open .trip-sheet-body,
+.keyboard-open .trip-list-container,
+.keyboard-open .sos-scroll,
+.keyboard-open .scroll-y,
+.keyboard-open .place-detail-sheet > div:last-child {
+  scroll-padding-bottom: calc(var(--roam-keyboard-h, 0px) + 24px);
+  padding-bottom: calc(var(--roam-keyboard-h, 0px) + 24px) !important;
+}
+
+/* The /login wrapper vertically centres its card while the keyboard is
+   closed. When the keyboard opens, centring inside the now-shorter
+   container fights scrollIntoView (iOS keeps re-centering the card and
+   the password input ends up beneath the keyboard). Flip to top-aligned
+   so the form scrolls from the top once the keyboard is up. */
+.keyboard-open .login-scroll {
+  justify-content: flex-start !important;
+}
+
 /* ── Trip sheet expanded: slide the bottom tab bar out of the way ─
    The trip/new sheet's expanded snap fills the visible content area
    (top:80 → bottom of viewport) but the bottom tab bar (z=100) was
@@ -1417,11 +1451,32 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 .trip-badge-bad  { background: var(--roam-danger); color: var(--on-color); }
 .trip-badge-warn { background: var(--roam-warn); color: var(--on-color); }
 
-/* Range slider thumb — 28px visual, 44px touch target via padding */
+/* Range slider — 28px visual thumb, 44px touch target.
+   The TRACK is rendered via pseudo-elements at 8px so it stays narrower
+   than the thumb (which previously read as "bar taller than the circle"
+   because the inline `height: 6` was overridden by min-height: 44px and
+   the gradient filled the whole 44px tall input). Per-instance fill is
+   passed via the --slider-fill CSS variable. */
 input[type="range"] {
   min-height: 44px;
   cursor: pointer;
   touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  /* No reachable border, the track pseudo-elements draw the visible line. */
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--slider-fill, var(--roam-border, #d1d5db));
+  border: none;
+}
+input[type="range"]::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--slider-fill, var(--roam-border, #d1d5db));
+  border: none;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -1433,6 +1488,7 @@ input[type="range"]::-webkit-slider-thumb {
   border: 3px solid #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.25);
   cursor: pointer;
+  /* Centre the 28px thumb on the 8px track. */
   margin-top: -10px;
 }
 input[type="range"]::-moz-range-thumb {
@@ -1903,11 +1959,11 @@ input[type="range"]::-moz-range-thumb {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   scroll-behavior: smooth;
-  /* Top padding clears the fixed ThemeToggle (40px tall + 8px top offset)
-     so the Emergency hero card's title doesn't sit behind the toggle in
-     either theme. The previous +16 only cleared the safe-area, not the
-     toggle, so "Emergency" rendered behind the sun/moon button. */
-  padding: calc(var(--roam-safe-top) + 56px) 16px calc(var(--bottom-nav-height) + 24px) 16px;
+  /* Top padding is JUST the safe-area inset plus a single line of
+     breathing room. The old +56px was clearing a fixed ThemeToggle that
+     has since moved into /account, so it became dead space pushing the
+     SOS header well below the notch with nothing in it. */
+  padding: calc(var(--roam-safe-top) + 8px) 16px calc(var(--bottom-nav-height) + 24px) 16px;
   display: grid;
   align-content: start;
   gap: 16px;

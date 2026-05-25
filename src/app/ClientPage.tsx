@@ -103,7 +103,7 @@ export default function LandingPage() {
 
       <footer className="gl-foot">
         <span className="gl-sig">
-          A small thing from <a href="https://ecodia.au" target="_blank" rel="noopener noreferrer">Ecodia</a>.
+          An <a href="https://ecodia.au" target="_blank" rel="noopener noreferrer">Ecodia</a> thing.
         </span>
         <span className="gl-foot-links">
           <a href="/privacy">Privacy</a>

@@ -182,7 +182,10 @@ export function TripPrefsPanel({
               </span>
             </div>
 
-            {/* Range slider */}
+            {/* Range slider — the visible track is the ::*-track pseudo-element
+                in globals.css, sized at 8px so it stays narrower than the 28px
+                thumb. The fill colour is driven per-instance via --slider-fill
+                so the gradient updates with the current density. */}
             <div style={{ padding: "4px 2px" }}>
               <input
                 type="range"
@@ -194,14 +197,11 @@ export function TripPrefsPanel({
                 aria-label="Stop density"
                 style={{
                   width: "100%",
-                  height: 6,
-                  appearance: "none",
-                  WebkitAppearance: "none",
-                  background: `linear-gradient(to right, #2563eb 0%, #2563eb ${((prefs.stop_density - 1) / 4) * 100}%, var(--roam-border, #d1d5db) ${((prefs.stop_density - 1) / 4) * 100}%, var(--roam-border, #d1d5db) 100%)`,
-                  borderRadius: 999,
                   outline: "none",
                   cursor: "pointer",
-                }}
+                  ["--slider-fill" as keyof React.CSSProperties as string]:
+                    `linear-gradient(to right, #2563eb 0%, #2563eb ${((prefs.stop_density - 1) / 4) * 100}%, var(--roam-border, #d1d5db) ${((prefs.stop_density - 1) / 4) * 100}%, var(--roam-border, #d1d5db) 100%)`,
+                } as React.CSSProperties}
               />
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
                 <span style={{ fontSize: 10, fontWeight: 600, color: "var(--roam-text-muted)" }}>Minimal</span>

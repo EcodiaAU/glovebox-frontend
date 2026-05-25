@@ -21,6 +21,7 @@ import type { PlaceExtra } from "@/lib/types/places";
 import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
 import { parseOpeningHours, ohToHuman } from "@/lib/utils/openingHours";
 import { haptic } from "@/lib/native/haptics";
+import { useSheetPullToDismiss } from "@/lib/hooks/useSheetPullToDismiss";
 
 const PlaceMapPreview = lazy(() => import("@/components/places/PlaceMapPreview"));
 
@@ -239,74 +240,6 @@ function ActionBtn({
   );
 }
 
-// ── Swipe-to-dismiss hook ────────────────────────────────────
-// Pointer events for both touch and mouse.
-
-function useSwipeToDismiss(onDismiss: () => void) {
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef<{ startY: number; pointerId: number } | null>(null);
-
-  useEffect(() => {
-    const sheet = sheetRef.current;
-    if (!sheet) return;
-
-    const handleEl = sheet.querySelector(".place-detail-drag-zone") as HTMLElement | null;
-    const target = handleEl ?? sheet;
-
-    function onPointerDown(e: PointerEvent) {
-      if (e.button !== 0) return;
-      dragRef.current = { startY: e.clientY, pointerId: e.pointerId };
-      target.setPointerCapture(e.pointerId);
-    }
-
-    function onPointerMove(e: PointerEvent) {
-      if (!dragRef.current || e.pointerId !== dragRef.current.pointerId || !sheet) return;
-      const dy = e.clientY - dragRef.current.startY;
-      if (dy < 0) return;
-      sheet.style.transition = "none";
-      sheet.style.transform = `translateY(${dy}px)`;
-    }
-
-    function onPointerUp(e: PointerEvent) {
-      if (!dragRef.current || e.pointerId !== dragRef.current.pointerId || !sheet) {
-        dragRef.current = null;
-        return;
-      }
-      const dy = e.clientY - dragRef.current.startY;
-      dragRef.current = null;
-      sheet.style.transition = "";
-
-      if (dy > 110) {
-        sheet.style.transform = "translateY(120%)";
-        setTimeout(onDismiss, 280);
-      } else {
-        sheet.style.transform = "";
-      }
-    }
-
-    function onPointerCancel(e: PointerEvent) {
-      if (!dragRef.current || e.pointerId !== dragRef.current.pointerId || !sheet) return;
-      dragRef.current = null;
-      sheet.style.transition = "";
-      sheet.style.transform = "";
-    }
-
-    target.addEventListener("pointerdown", onPointerDown);
-    target.addEventListener("pointermove", onPointerMove);
-    target.addEventListener("pointerup", onPointerUp);
-    target.addEventListener("pointercancel", onPointerCancel);
-
-    return () => {
-      target.removeEventListener("pointerdown", onPointerDown);
-      target.removeEventListener("pointermove", onPointerMove);
-      target.removeEventListener("pointerup", onPointerUp);
-      target.removeEventListener("pointercancel", onPointerCancel);
-    };
-  }, [onDismiss]);
-
-  return sheetRef;
-}
-
 // ══════════════════════════════════════════════════════════════
 // PLACE DETAIL SHEET - MAIN COMPONENT
 // ══════════════════════════════════════════════════════════════
@@ -343,7 +276,10 @@ export function PlaceDetailSheet({
     setTimeout(closePlace, 280);
   }, [closePlace]);
 
-  const sheetRef = useSwipeToDismiss(handleClose);
+  // Pull-to-dismiss: the map-hero handle is always grabbable, AND the
+  // scroll body engages once it's at scrollTop===0. Matches Apple's
+  // bottom-sheet feel - flick down from the top of the content to close.
+  const { sheetRef, scrollRef, handleRef } = useSheetPullToDismiss(handleClose);
 
   useEffect(() => {
     if (!place) return;
@@ -528,6 +464,7 @@ export function PlaceDetailSheet({
             map chunk loads. The drag handle and close button are position:absolute
             inside here so they still render correctly at the reserved height. */}
         <div
+          ref={handleRef}
           className="place-detail-drag-zone"
           style={{
             position: "relative",
@@ -596,15 +533,18 @@ export function PlaceDetailSheet({
         </div>
 
         {/* ── Scrollable body ────────────────────────────────── */}
-        <div style={{
-          flex: 1,
-          overflowY: "auto",
-          WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"],
-          overscrollBehaviorX: "contain",
-          overscrollBehaviorY: "contain",
-          touchAction: "pan-y",
-          paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
-        }}>
+        <div
+          ref={scrollRef}
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"],
+            overscrollBehaviorX: "contain",
+            overscrollBehaviorY: "contain",
+            touchAction: "pan-y",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+          }}
+        >
 
           {/* ── HEADER ─────────────────────────────────────── */}
           <div style={{ padding: "16px 16px 16px" }}>

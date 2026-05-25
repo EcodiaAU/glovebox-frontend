@@ -495,7 +495,10 @@ export default function EmergencyClientPage() {
 
   return (
     <div className="page sos-page" style={{ background: "var(--c-bg)", position: "relative", height: "100%" }}>
-      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "env(safe-area-inset-top, 0px) 16px 110px", height: "100%" }}>
+      {/* Inner scroll inherits the .sos-page padding from globals.css
+          (safe-area-top + 8px). The previous duplicate top padding here
+          stacked on top of that and pushed the first card well down. */}
+      <div className="scroll-y sos-scroll" style={{ flex: 1, padding: "0 0 110px", height: "100%" }}>
         {err ? (
           <div style={{
             background: "var(--c-error-bg)", color: "var(--c-error-text)",
@@ -565,7 +568,7 @@ export default function EmergencyClientPage() {
                 )}
                 {!isLocating && lat != null && lon != null && (
                   <span className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
-                    Last fix just now
+                    Updated just now
                   </span>
                 )}
               </div>
@@ -577,7 +580,7 @@ export default function EmergencyClientPage() {
               style={{ flex: 1 }}
               onClick={() => { haptic.medium(); fetchLocationAuto(true); }}
             >
-              <Icon name="target" size={16} stroke={2.2}/> Get new fix
+              <Icon name="target" size={16} stroke={2.2}/> Update location
             </PrimaryBtn>
             {lat != null && lon != null && (
               <GhostBtn onClick={() => window.open(mapsLink(lat, lon), "_blank")}>
@@ -825,9 +828,9 @@ export default function EmergencyClientPage() {
         }}>
           <Icon name="leaf" size={18} style={{ color: "var(--c-success)" }}/>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700 }}>Your last fix is saved offline</div>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>Your location is saved on this phone</div>
             <div style={{ fontSize: 12, color: "var(--c-text-muted)" }}>
-              Glovebox keeps your last known position even without signal. SMS works on any one bar of 2G.
+              Glovebox remembers where you last were, even without signal. SMS works on one bar of 2G.
             </div>
           </div>
         </div>
