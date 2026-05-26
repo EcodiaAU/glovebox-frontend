@@ -30,18 +30,18 @@
 
 .gl ::selection { background: var(--fg); color: var(--bg); }
 
-/* ── Title viewport ── one italic sentence + one link. */
+/* ── Title viewport ── one italic sentence. Fills the screen, centered. */
 .gl-title {
-  min-height: 88vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   text-align: center;
-  padding: clamp(40px, 8vh, 96px) clamp(24px, 5vw, 60px) clamp(24px, 5vh, 60px);
+  padding: clamp(24px, 5vh, 60px) clamp(24px, 5vw, 60px);
 }
 
 .gl-sentence {
   font-style: italic;
-  font-weight: 400;
+  font-weight: 300;
   font-size: clamp(30px, 4.8vw, 60px);
   line-height: 1.22;
   letter-spacing: -0.014em;
@@ -151,10 +151,10 @@
   gap: 0.4em;
 }
 
-/* Narrow viewport: title page collapses but stays prominent. */
+/* Narrow viewport: title page stays full-screen, sentence sizes down. */
 @media (max-width: 540px) {
   .gl { font-size: 17px; }
-  .gl-title { min-height: 78vh; }
+  .gl-title { min-height: 100dvh; }
   .gl-sentence { font-size: clamp(28px, 9vw, 42px); }
   .gl-foot {
     flex-direction: column;
