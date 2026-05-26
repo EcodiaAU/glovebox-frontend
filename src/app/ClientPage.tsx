@@ -25,6 +25,29 @@ const PLAY_STORE = "https://play.google.com/store/apps/details?id=au.ecodia.roam
 
 export default function LandingPage() {
   const isNative = useNativeRedirect();
+
+  // Paint html + body burnt-orange so iOS Safari overscroll/rubber-band
+  // shows the page colour instead of the system default. html bg is what
+  // iOS exposes above/below content during the elastic bounce. Revert on
+  // unmount so SPA navigation to other routes (e.g. /trip) doesn't carry
+  // the marketing palette.
+  useEffect(() => {
+    if (isNative === null || isNative === true) return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlBg = html.style.backgroundColor;
+    const prevBodyBg = body.style.backgroundColor;
+    const prevBodyOverscroll = body.style.overscrollBehaviorY;
+    html.style.backgroundColor = "#A8431F";
+    body.style.backgroundColor = "#A8431F";
+    body.style.overscrollBehaviorY = "contain";
+    return () => {
+      html.style.backgroundColor = prevHtmlBg;
+      body.style.backgroundColor = prevBodyBg;
+      body.style.overscrollBehaviorY = prevBodyOverscroll;
+    };
+  }, [isNative]);
+
   if (isNative === null || isNative === true) return null;
 
   return (
