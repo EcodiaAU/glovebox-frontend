@@ -37,6 +37,14 @@ export default function LandingPage() {
       </section>
 
       <main className="gl-memo">
+        <p className="gl-row">
+          <a href={APP_STORE} target="_blank" rel="noopener noreferrer">App Store</a>
+          <span className="gl-sep" aria-hidden="true">.</span>
+          <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer">Google Play</a>
+          <span className="gl-sep" aria-hidden="true">.</span>
+          <a href="/trip">Open in browser</a>
+        </p>
+
         <p className="gl-lede">
           <em>Maps, routing, fuel and road conditions. Works without signal.</em>
         </p>
@@ -44,15 +52,6 @@ export default function LandingPage() {
         <p>
           Glovebox downloads the trip to your phone before you leave. It
           keeps working in areas with no coverage.
-        </p>
-
-        <p className="gl-section-label">install</p>
-        <p className="gl-row">
-          <a href={APP_STORE} target="_blank" rel="noopener noreferrer">App Store</a>
-          <span className="gl-sep" aria-hidden="true">.</span>
-          <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer">Google Play</a>
-          <span className="gl-sep" aria-hidden="true">.</span>
-          <a href="/trip">Open in browser</a>
         </p>
 
         <p className="gl-section-label">acknowledgement</p>
