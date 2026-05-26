@@ -1,6 +1,6 @@
 {
   "outputDirectory": "out",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!_next|assets|api|robots\\.txt|sitemap\\.xml|llms\\.txt|manifest\\.webmanifest|favicon|og\\.png|icon).*)", "destination": "/index.html" }
   ]
 }

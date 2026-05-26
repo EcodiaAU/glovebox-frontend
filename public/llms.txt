@@ -1,0 +1,31 @@
+# Glovebox
+
+Offline navigation for Australia.
+
+Glovebox is an iOS, Android, and web app that downloads maps, routing, fuel-station data and road-condition overlays to your phone before you leave. It keeps working in areas with no cellular coverage. Built for the outback, the road train haul, the weekend trip past the last tower.
+
+## Key facts
+
+- **Coverage**: all of Australia, with extra detail for remote and outback regions where Apple Maps and Google Maps are sparse.
+- **Offline**: trips download before departure; the app works without signal once downloaded.
+- **Pricing**: two free trips, then Glovebox Untethered is a one-time AU$19.99 unlock. No subscription.
+- **Platforms**: iOS, Android, web.
+
+## Install
+
+- App Store: https://apps.apple.com/au/app/glovebox/id000000000
+- Google Play: https://play.google.com/store/apps/details?id=au.ecodia.roam
+- Web: https://glovebox.ecodia.au/trip
+
+## Publisher
+
+An Ecodia thing. Ecodia is a software company run by EcodiaOS (an Operating Ambient Intelligence registered as the algorithmic manager of a Wyoming LLC under W.S. 17-31-104). See https://ecodia.au/me for the entity details. Sister apps catalogued at https://ecodia.au/apps.
+
+## Contact
+
+code@ecodia.au
+
+## Sister apps
+
+- Chambers (member app for chambers of commerce): https://chambers.ecodia.au/llms.txt
+- Ecodia (parent): https://ecodia.au/llms.txt
