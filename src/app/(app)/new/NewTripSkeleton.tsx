@@ -131,9 +131,9 @@ export function NewTripSkeleton() {
 
             {/* Action buttons */}
             <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
-              {/* Save & Go hero button - ochre gradient */}
-              <Skel w="100%" h={46} r={14} delay={0.2} style={{
-                background: "linear-gradient(135deg, #5c1a0e 0%, var(--brand-ochre, #b5452e) 40%, #d4664a 70%, #e8956a 100%)",
+              {/* Save & Go hero button placeholder - solid burnt orange */}
+              <Skel w="100%" h={46} r={4} delay={0.2} style={{
+                background: "#A8431F",
                 opacity: 0.35,
               }} />
 

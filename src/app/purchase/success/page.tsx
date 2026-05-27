@@ -244,9 +244,7 @@ function PurchaseSuccessInner() {
         overflow: "hidden",
         position: "relative",
         // Polling: warm ochre gradient. Unlocked: deeper, richer.
-        background: isUnlocked
-          ? "linear-gradient(165deg, #3a1208 0%, #6b2518 20%, var(--brand-ochre, #b5452e) 50%, #c9633e 75%, #d98a5c 100%)"
-          : "var(--ps-bg)",
+        background: isUnlocked ? "#A8431F" : "var(--ps-bg)",
         transition: "background 1.2s cubic-bezier(0.16, 1, 0.3, 1)",
       }}
     >
@@ -375,16 +373,20 @@ function PurchaseSuccessInner() {
 
           <div>
             <h1 style={{
-              fontSize: 28, fontWeight: 950, margin: "0 0 8px",
-              color: "var(--on-color)", letterSpacing: "-0.4px",
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic", fontSize: 32, fontWeight: 400, margin: "0 0 8px",
+              color: "#E8DFC9", letterSpacing: "-0.014em", lineHeight: 1.1,
             }}>
-              Payment confirmed!
+              Payment confirmed.
             </h1>
             <p style={{
-              margin: 0, fontSize: 15, fontWeight: 500,
-              color: "rgba(255,255,255,0.70)", lineHeight: 1.5,
+              margin: 0,
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 15, fontWeight: 400,
+              color: "rgba(232,223,201,0.78)", lineHeight: 1.5,
             }}>
-              Activating Glovebox Untethered...
+              Activating Glovebox Untethered.
             </p>
           </div>
 
@@ -489,16 +491,21 @@ function PurchaseSuccessInner() {
           </div>
 
           <h1 style={{
-            fontSize: 34, fontWeight: 950, margin: 0, color: "var(--on-color)",
-            lineHeight: 1.08, letterSpacing: "-0.5px",
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic", fontSize: 38, fontWeight: 400, margin: 0,
+            color: "#E8DFC9",
+            lineHeight: 1.1, letterSpacing: "-0.014em",
             animation: "fade-up 0.5s ease 0.5s both",
           }}>
             You&apos;re untethered.
           </h1>
 
           <p style={{
-            margin: "8px 0 0", fontSize: 16, fontWeight: 500,
-            color: "rgba(255,255,255,0.75)", lineHeight: 1.5, maxWidth: 290,
+            margin: "8px 0 0",
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 16, fontWeight: 400,
+            color: "rgba(232,223,201,0.78)", lineHeight: 1.5, maxWidth: 290,
             animation: "fade-up 0.5s ease 0.65s both",
           }}>
             The whole Glovebox is yours now.
@@ -570,16 +577,20 @@ function PurchaseSuccessInner() {
 
           <div>
             <h1 style={{
-              fontSize: 24, fontWeight: 900, margin: "0 0 8px",
-              color: "var(--on-color)", letterSpacing: "-0.3px",
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic", fontSize: 26, fontWeight: 400, margin: "0 0 8px",
+              color: "var(--on-color)", letterSpacing: "-0.014em", lineHeight: 1.2,
             }}>
-              Still processing...
+              Still processing.
             </h1>
             <p style={{
-              margin: 0, fontSize: 14, fontWeight: 500,
+              margin: 0,
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 14, fontWeight: 400,
               color: "rgba(255,255,255,0.65)", lineHeight: 1.5, maxWidth: 300,
             }}>
-              Your payment went through. It can take a moment to activate - close this page and reopen the app.
+              Your payment went through. It can take a moment to activate. Close this page and reopen the app.
             </p>
           </div>
 

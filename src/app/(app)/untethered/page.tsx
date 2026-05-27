@@ -113,7 +113,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
         style={{
           position: "relative",
           overflow: "hidden",
-          background: "linear-gradient(165deg, #6b2518 0%, var(--brand-ochre, #b5452e) 35%, #c9633e 65%, #d98a5c 100%)",
+          background: "#A8431F",
           padding: "0 0 52px",
           flexShrink: 0,
           minHeight: 300,
@@ -224,16 +224,18 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
           <h1
             style={{
               margin: "0 0 12px",
-              fontSize: 32,
-              fontWeight: 950,
-              color: "var(--on-color)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.5px",
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 36,
+              fontWeight: 400,
+              color: "#E8DFC9",
+              lineHeight: 1.1,
+              letterSpacing: "-0.014em",
             }}
           >
             You&apos;re
             <br />
-            Untethered.
+            untethered.
           </h1>
 
           {/* Email row */}
@@ -343,7 +345,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
                 height: 46,
                 flexShrink: 0,
                 borderRadius: "var(--r-card)",
-                background: "linear-gradient(135deg, var(--brand-ochre, #b5452e) 0%, #c9633e 100%)",
+                background: "#A8431F",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -427,7 +429,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               width: 16,
               height: 16,
               borderRadius: "50%",
-              background: "linear-gradient(135deg, var(--brand-ochre, #b5452e), #c9633e)",
+              background: "#A8431F",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -517,7 +519,7 @@ function PurchasePage({
         style={{
           position: "relative",
           overflow: "hidden",
-          background: "linear-gradient(165deg, #6b2518 0%, var(--brand-ochre, #b5452e) 35%, #c9633e 65%, #d98a5c 100%)",
+          background: "#A8431F",
           padding: "0 0 52px",
           flexShrink: 0,
           minHeight: 360,
@@ -634,11 +636,13 @@ function PurchasePage({
           <h1
             style={{
               margin: "0 0 14px",
-              fontSize: 34,
-              fontWeight: 950,
-              color: "var(--on-color)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.5px",
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 36,
+              fontWeight: 400,
+              color: "#E8DFC9",
+              lineHeight: 1.1,
+              letterSpacing: "-0.014em",
             }}
           >
             No signal?
@@ -714,7 +718,7 @@ function PurchasePage({
                 height: 46,
                 flexShrink: 0,
                 borderRadius: "var(--r-card)",
-                background: "linear-gradient(135deg, var(--brand-ochre, #b5452e) 0%, #c9633e 100%)",
+                background: "#A8431F",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -766,7 +770,7 @@ function PurchasePage({
                 width: 16,
                 height: 16,
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, var(--brand-ochre, #b5452e), #c9633e)",
+                background: "#A8431F",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -799,15 +803,27 @@ function PurchasePage({
             marginBottom: 18,
           }}
         >
-          <span style={{ fontSize: 48, fontWeight: 950, color: "var(--roam-text, #1a1613)", lineHeight: 1, letterSpacing: "-1px" }}>
+          <span style={{
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic", fontSize: 42, fontWeight: 400,
+            color: "var(--roam-text)", lineHeight: 1, letterSpacing: "-0.014em",
+          }}>
             $19.99
           </span>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--roam-text-muted, #7a7067)", lineHeight: 1.3 }}>
-              one-time
+            <span style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 13, fontWeight: 400, color: "var(--roam-text-muted)", lineHeight: 1.3,
+            }}>
+              one-time.
             </span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "var(--roam-text-muted, #7a7067)", opacity: 0.7, lineHeight: 1.3 }}>
-              yours forever
+            <span style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 12, fontWeight: 400, color: "var(--roam-text-muted)", opacity: 0.7, lineHeight: 1.3,
+            }}>
+              yours forever.
             </span>
           </div>
         </div>
@@ -820,20 +836,18 @@ function PurchasePage({
           style={{
             position: "relative",
             width: "100%",
-            background: buying
-              ? "var(--brand-ochre, #b5452e)"
-              : "linear-gradient(135deg, #6b2518 0%, var(--brand-ochre, #b5452e) 45%, #c9633e 100%)",
-            color: "var(--on-color)",
+            background: "#A8431F",
+            color: "#E8DFC9",
             border: "none",
-            padding: "18px 20px",
-            borderRadius: "var(--r-btn, 14px)",
-            fontSize: 17,
-            fontWeight: 800,
+            padding: "16px 20px",
+            borderRadius: 4,
+            fontSize: 15,
+            fontWeight: 600,
             cursor: busy ? "default" : "pointer",
             opacity: busy ? 0.7 : 1,
             letterSpacing: "0.01em",
-            boxShadow: busy ? "none" : "0 6px 24px rgba(181,69,46,0.35), 0 2px 8px rgba(181,69,46,0.20)",
-            transition: "opacity 0.15s, box-shadow 0.15s",
+            boxShadow: "none",
+            transition: "opacity 0.15s",
             WebkitTapHighlightColor: "transparent",
             overflow: "hidden",
           }}

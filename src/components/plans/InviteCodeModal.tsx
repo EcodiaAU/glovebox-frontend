@@ -242,8 +242,14 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
       >
         {/* ── Header ──────────────────────────────────────────────── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: "var(--roam-text, #eee)" }}>
-            {mode === "create" ? "Share Plan" : "Join Plan"}
+          <h2 style={{
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 24, fontWeight: 400, margin: 0,
+            color: "var(--roam-text, #eee)",
+            letterSpacing: "-0.005em",
+          }}>
+            {mode === "create" ? "Share plan." : "Join plan."}
           </h2>
           <button
             type="button"

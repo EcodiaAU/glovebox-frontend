@@ -217,7 +217,7 @@ function GeneratingView({ quip }: { quip: string }) {
           width: 56,
           height: 56,
           borderRadius: "50%",
-          background: "linear-gradient(135deg, rgba(181,69,46,0.10), rgba(56,189,248,0.10))",
+          background: "var(--roam-surface-hover)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -287,7 +287,7 @@ function BuildingView({ quip }: { quip: string }) {
           width: 56,
           height: 56,
           borderRadius: "50%",
-          background: "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(56,189,248,0.10))",
+          background: "var(--roam-surface-hover)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -348,7 +348,7 @@ function BuildingView({ quip }: { quip: string }) {
           style={{
             height: "100%",
             borderRadius: 2,
-            background: "linear-gradient(90deg, var(--brand-eucalypt, #2d6e40), var(--brand-sky, #38bdf8))",
+            background: "var(--roam-accent)",
             animation: "aitm-progress 2s ease-in-out infinite",
           }}
         />
@@ -577,7 +577,7 @@ export function AiTripModal({
                 width: 30,
                 height: 30,
                 borderRadius: "var(--r-card)",
-                background: "linear-gradient(135deg, rgba(56,189,248,0.15), rgba(181,69,46,0.10))",
+                background: "var(--roam-surface-hover)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -709,7 +709,7 @@ export function AiTripModal({
                   borderRadius: "var(--r-card)",
                   background: !vibe.trim()
                     ? "var(--roam-surface-hover)"
-                    : "linear-gradient(135deg, var(--brand-ochre, #b5452e), #c9633e)",
+                    : "#A8431F",
                   color: !vibe.trim()
                     ? "var(--roam-text-muted)"
                     : "#fff",
@@ -849,7 +849,7 @@ export function AiTripModal({
                     boxSizing: "border-box",
                     height: 54,
                     borderRadius: "var(--r-card)",
-                    background: "linear-gradient(135deg, var(--brand-eucalypt, #2d6e40), #3a8f52)",
+                    background: "var(--brand-eucalypt, #2d6e40)",
                     color: "var(--on-color)",
                     fontSize: 16,
                     fontWeight: 800,

@@ -6,11 +6,12 @@
 
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, LogOut, Trash2, Mail, Shield, ExternalLink } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth";
 import { haptic } from "@/lib/native/haptics";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import "@/app/landing.css";
 
 export default function AccountPage() {
   return (
@@ -59,366 +60,195 @@ function AccountPageInner() {
 
   return (
     <div
+      className="ed"
       style={{
         position: "absolute",
         inset: 0,
         bottom: "var(--bottom-nav-height, 80px)",
         overflowY: "auto",
         WebkitOverflowScrolling: "touch" as const,
-        background: "var(--roam-bg)",
-        display: "flex",
-        flexDirection: "column",
       }}
     >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "16px 20px 12px",
-          flexShrink: 0,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => { haptic.light(); navigate(-1); }}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            border: "none",
-            background: "var(--roam-surface)",
-            color: "var(--roam-text)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-          aria-label="Go back"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: 20,
-            fontWeight: 800,
-            color: "var(--roam-text)",
-          }}
-        >
-          Account
-        </h1>
-      </div>
-
-      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
-
-        {/* Account info */}
-        {email && (
-          <div
+      <div className="ed-column" style={{ paddingTop: "clamp(20px, 4vh, 40px)" }}>
+        {/* Back + heading */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => { haptic.light(); navigate(-1); }}
             style={{
-              display: "flex",
+              all: "unset",
+              cursor: "pointer",
+              color: "var(--roam-text-muted)",
+              display: "inline-flex",
               alignItems: "center",
-              gap: 14,
-              padding: "16px",
-              borderRadius: "var(--r-card)",
-              background: "var(--roam-surface)",
+              padding: 4,
             }}
+            aria-label="Go back"
           >
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "var(--accent-tint)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--roam-accent)",
-                flexShrink: 0,
-              }}
-            >
-              <Mail size={18} />
-            </div>
-            <div style={{ minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "var(--roam-text-muted)",
-                  marginBottom: 2,
-                }}
-              >
-                Signed in as
-              </div>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "var(--roam-text)",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {email}
-              </div>
-            </div>
+            <ArrowLeft size={18} />
+          </button>
+          <h1 className="ed-heading" style={{ fontSize: "clamp(26px, 4vw, 36px)" }}>
+            <em>Account.</em>
+          </h1>
+        </div>
+
+        {email && (
+          <div>
+            <p className="ed-label">signed in as</p>
+            <p style={{
+              margin: "4px 0 0",
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 16,
+              color: "var(--roam-text)",
+              wordBreak: "break-all",
+            }}>
+              {email}
+            </p>
           </div>
         )}
 
-        {/* Theme - moved out of the floating top-left pill it used to live in */}
-        <ThemeToggle />
-
-        {/* Sign out */}
-        <button
-          type="button"
-          onClick={handleSignOut}
-          className="trip-interactive"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            width: "100%",
-            padding: "16px",
-            borderRadius: "var(--r-card)",
-            background: "var(--roam-surface)",
-            border: "none",
-            cursor: "pointer",
-            textAlign: "left",
-          }}
-        >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: "var(--info-tint)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "var(--roam-info)",
-              flexShrink: 0,
-            }}
-          >
-            <LogOut size={18} />
+        <div>
+          <p className="ed-label">theme</p>
+          <div style={{ marginTop: 6 }}>
+            <ThemeToggle />
           </div>
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--roam-text)" }}>
-              Sign out
-            </div>
-            <div style={{ fontSize: 12, color: "var(--roam-text-muted)", lineHeight: 1.4 }}>
-              Sign out of your Glovebox account on this device
-            </div>
-          </div>
-        </button>
-
-        {/* Legal links */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            borderRadius: "var(--r-card)",
-            background: "var(--roam-surface)",
-            overflow: "hidden",
-          }}
-        >
-          {[
-            { href: "/privacy", label: "Privacy Policy", icon: Shield },
-            { href: "/terms", label: "Terms & Conditions", icon: ExternalLink },
-            { href: "/contact", label: "Contact & Support", icon: Mail },
-          ].map(({ href, label, icon: Icon }, i, arr) => (
-            <a
-              key={href}
-              href={href}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                padding: "14px 16px",
-                textDecoration: "none",
-                color: "var(--roam-text)",
-                fontSize: 14,
-                fontWeight: 600,
-                borderBottom: i < arr.length - 1 ? "1px solid var(--roam-border)" : "none",
-              }}
-            >
-              <Icon size={16} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
-              {label}
-            </a>
-          ))}
         </div>
 
-        {/* Delete account */}
-        <div style={{ marginTop: 16 }}>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--roam-text-muted)",
-              marginBottom: 8,
-              paddingLeft: 4,
-            }}
+        <div>
+          <p className="ed-label">session</p>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="ed-action"
+            style={{ marginTop: 2, fontSize: 16 }}
           >
-            Account management
+            <em>Sign out.</em>
+          </button>
+        </div>
+
+        <div>
+          <p className="ed-label">legal</p>
+          <div style={{ display: "flex", flexDirection: "column", marginTop: 6, gap: 4 }}>
+            {[
+              { href: "/privacy", label: "Privacy policy" },
+              { href: "/terms", label: "Terms and conditions" },
+              { href: "/contact", label: "Contact and support" },
+              { href: "/attributions", label: "Attributions" },
+            ].map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                className="ed-textlink"
+                style={{ display: "inline-block", padding: "6px 0", textAlign: "left" }}
+              >
+                <em>{label}.</em>
+              </a>
+            ))}
           </div>
+        </div>
 
-          <div
-            style={{
-              borderRadius: "var(--r-card)",
-              background: "var(--roam-surface)",
-              padding: "16px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background: "var(--danger-tint)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--roam-danger)",
-                  flexShrink: 0,
-                }}
-              >
-                <Trash2 size={18} />
-              </div>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--roam-text)" }}>
-                  Delete account
-                </div>
-                <div style={{ fontSize: 12, color: "var(--roam-text-muted)", lineHeight: 1.5, marginTop: 2 }}>
-                  Permanently delete your account and all associated data including trips,
-                  saved places, emergency contacts, and plan history. This cannot be undone.
-                </div>
-              </div>
-            </div>
+        <div>
+          <p className="ed-label">account management</p>
+          <p style={{
+            margin: "6px 0 12px",
+            fontSize: 13.5,
+            color: "var(--roam-text-muted)",
+            lineHeight: 1.5,
+          }}>
+            Permanently delete your account and all associated data including trips,
+            saved places, emergency contacts, and plan history. This cannot be undone.
+          </p>
 
-            {error && (
-              <div
-                style={{
-                  padding: "10px 14px",
-                  borderRadius: "var(--r-card)",
-                  background: "var(--bg-error)",
-                  color: "var(--text-error)",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  textAlign: "center",
-                }}
-              >
-                {error}
-              </div>
-            )}
+          {error && (
+            <p className="ed-notice ed-notice-err" style={{ textAlign: "left", marginBottom: 10 }}>
+              <em>{error}</em>
+            </p>
+          )}
 
-            {!confirmDelete ? (
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={deleting}
-                style={{
-                  width: "100%",
-                  padding: "14px",
-                  borderRadius: "var(--r-btn)",
-                  border: "1px solid var(--roam-danger)",
-                  background: "transparent",
-                  color: "var(--roam-danger)",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  WebkitTapHighlightColor: "transparent",
-                }}
-              >
-                Delete my account
-              </button>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <div
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: "var(--r-card)",
-                    background: "var(--bg-error)",
-                    color: "var(--text-error)",
-                    fontSize: 13,
-                    fontWeight: 700,
-                    textAlign: "center",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  Are you sure? This will permanently delete your account and all your data.
-                </div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button
-                    type="button"
-                    onClick={() => { haptic.light(); setConfirmDelete(false); }}
-                    disabled={deleting}
-                    style={{
-                      flex: 1,
-                      padding: "14px",
-                      borderRadius: "var(--r-btn)",
-                      border: "none",
-                      background: "var(--roam-surface-hover)",
-                      color: "var(--roam-text)",
-                      fontSize: 14,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    disabled={deleting}
-                    style={{
-                      flex: 1,
-                      padding: "14px",
-                      borderRadius: "var(--r-btn)",
-                      border: "none",
-                      background: "var(--roam-danger)",
-                      color: "var(--on-color)",
-                      fontSize: 14,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      opacity: deleting ? 0.6 : 1,
-                    }}
-                  >
-                    {deleting ? "Deleting..." : "Yes, delete everything"}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Data-only deletion link (Google Play requirement) */}
-            <a
-              href="/contact?category=data-request"
+          {!confirmDelete ? (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
               style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "var(--roam-text-muted)",
-                textAlign: "center",
-                textDecoration: "none",
-                opacity: 0.8,
-                marginTop: 4,
+                width: "100%",
+                padding: "13px 16px",
+                borderRadius: 2,
+                border: "1px solid var(--roam-danger)",
+                background: "transparent",
+                color: "var(--roam-danger)",
+                fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+                fontStyle: "italic",
+                fontSize: 15,
+                fontWeight: 400,
+                cursor: "pointer",
+                WebkitTapHighlightColor: "transparent",
               }}
             >
-              Request data deletion without deleting your account
-            </a>
-          </div>
+              Delete my account
+            </button>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <p className="ed-notice ed-notice-err" style={{ textAlign: "left", fontSize: 13.5 }}>
+                <em>Are you sure? This permanently deletes your account and every piece of data tied to it.</em>
+              </p>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => { haptic.light(); setConfirmDelete(false); }}
+                  disabled={deleting}
+                  style={{
+                    flex: 1,
+                    padding: "13px",
+                    borderRadius: 2,
+                    border: "1px solid var(--roam-border)",
+                    background: "transparent",
+                    color: "var(--roam-text)",
+                    fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+                    fontStyle: "italic",
+                    fontSize: 15,
+                    fontWeight: 400,
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  style={{
+                    flex: 1,
+                    padding: "13px",
+                    borderRadius: 2,
+                    border: "none",
+                    background: "var(--roam-danger)",
+                    color: "var(--on-color)",
+                    fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+                    fontStyle: "italic",
+                    fontSize: 15,
+                    fontWeight: 400,
+                    cursor: "pointer",
+                    opacity: deleting ? 0.6 : 1,
+                  }}
+                >
+                  {deleting ? "Deleting..." : "Yes, delete everything"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <a
+            href="/contact?category=data-request"
+            className="ed-textlink"
+            style={{ display: "inline-block", marginTop: 14, fontSize: 13 }}
+          >
+            <em>Request data deletion without deleting your account.</em>
+          </a>
         </div>
       </div>
 
-      {/* Bottom padding */}
       <div style={{ height: 32, flexShrink: 0 }} />
     </div>
   );

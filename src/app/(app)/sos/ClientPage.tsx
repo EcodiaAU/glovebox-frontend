@@ -515,9 +515,12 @@ export default function EmergencyClientPage() {
               fontSize: 11, color: "var(--c-danger)", fontWeight: 700,
               letterSpacing: 1, textTransform: "uppercase",
             }}>SOS</div>
-            <div className="t-display" style={{
-              fontWeight: 700, fontSize: 22, letterSpacing: -0.3, lineHeight: 1.15,
-            }}>Help & location</div>
+            <div style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontWeight: 400, fontSize: 26, letterSpacing: "-0.005em", lineHeight: 1.15,
+              color: "var(--c-text)",
+            }}>Help and location.</div>
           </div>
           <NetworkPill state={isOnline ? "online" : "offline"} compact />
         </div>
@@ -671,7 +674,11 @@ export default function EmergencyClientPage() {
           display: "flex", alignItems: "center", justifyContent: "space-between",
           marginTop: 22, marginBottom: 10,
         }}>
-          <div className="t-display" style={{ fontWeight: 700, fontSize: 17 }}>Speed dial</div>
+          <div style={{
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontWeight: 400, fontSize: 20, color: "var(--c-text)",
+          }}>Speed dial.</div>
           <button onClick={startNew} style={{
             display: "inline-flex", alignItems: "center", gap: 6,
             color: "var(--c-accent)", fontSize: 13, fontWeight: 700,
