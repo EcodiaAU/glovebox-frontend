@@ -1369,6 +1369,17 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   min-height: 44px;
 }
 
+/* Drag handles are a mobile affordance. On laptop / desktop the sheets
+   close via X button or outside-click; the visual handle reads as
+   misleading clutter at wide widths. Hide at >= 768px across every
+   sheet that uses the standard handle classes. */
+@media (min-width: 768px) {
+  .trip-drag-handle,
+  .place-detail-drag-handle {
+    display: none !important;
+  }
+}
+
 
 
 /* ==========================================================================

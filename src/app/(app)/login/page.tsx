@@ -131,7 +131,6 @@ export default function LoginPage() {
         position: "absolute",
         inset: 0,
         bottom: "var(--bottom-nav-height, 80px)",
-        overflowY: "auto",
         WebkitOverflowScrolling: "touch" as const,
         display: "flex",
         flexDirection: "column",
@@ -139,9 +138,13 @@ export default function LoginPage() {
         justifyContent: "center",
         padding:
           "env(safe-area-inset-top, 24px) 20px max(24px, env(safe-area-inset-bottom, 24px))",
+        // Auto-scroll only kicks in when content actually overflows
+        // (short mobile viewport with on-screen keyboard). On desktop
+        // the column fits the viewport via the tighter editorial rhythm.
+        overflowY: "auto",
       }}
     >
-      <div className="ed-column">
+      <div className="ed-column" style={{ paddingTop: "clamp(32px, 6vh, 80px)" }}>
         <div className="ed-mark">
           <GloveboxMark />
         </div>

@@ -31,7 +31,7 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      aria-label={isDark ? "Switch to Day mode" : "Switch to Tactical Night mode"}
+      aria-label={isDark ? "Switch to Day mode" : "Switch to Night mode"}
       style={ROW}
       onClick={() => {
         haptic.selection();
@@ -66,7 +66,7 @@ export function ThemeToggle() {
       <div style={{ flex: 1, textAlign: "left", minWidth: 0 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: "var(--roam-text)" }}>Theme</div>
         <div style={{ fontSize: 12, color: "var(--roam-text-muted)", marginTop: 1 }}>
-          {isDark ? "Tactical Night" : "Day"}
+          {isDark ? "Night" : "Day"}
         </div>
       </div>
       <span style={{

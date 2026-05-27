@@ -394,39 +394,14 @@
   opacity: 0.45;
 }
 
-/* Spine continuation INSIDE every stop card so the line runs continuously
-   through each marker rather than only between cards. The pseudo-element is
-   anchored to the marker column (28px from card left + 1.25px to align
-   with the 2.5px line) and extends 100% above + 100% below the marker,
-   meeting the connectors above/below. The marker itself sits over it at
-   z-index 1 so the line appears to pass through it. */
+/* Stop cards keep position:relative for the indexBadge inside the marker
+   and for any per-card overlays. The previous "spine through every marker"
+   pseudo-element was removed (5/26): it ran a line at opacity 0.45 right
+   through the marker icon, which read as a defect rather than a sequence
+   indicator. The vertical sequence is now carried only by .connector
+   between stops (below). */
 .stopCard {
   position: relative;
-}
-.stopCard::before {
-  content: "";
-  position: absolute;
-  /* Card padding-left 14 + marker width/2 (32/2 = 16) - line width/2 (1.25) = ~28.75 */
-  left: 28.75px;
-  top: -8px;
-  bottom: -8px;
-  width: 2.5px;
-  background: var(--c-accent, var(--roam-accent));
-  opacity: 0.45;
-  border-radius: 2px;
-  pointer-events: none;
-  z-index: 0;
-}
-/* First stop in the list: no spine above the marker */
-.stopList .stopEntry:first-child .stopCard::before {
-  top: 50%;
-}
-/* Last stop in the list: no spine below the marker */
-.stopList .stopEntry:last-child .stopCard::before {
-  bottom: 50%;
-}
-.stopMarker {
-  z-index: 1;
 }
 
 /* ── Leg time/distance pill ──────────────────────────────────── */

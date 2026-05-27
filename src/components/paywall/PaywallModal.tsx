@@ -9,15 +9,7 @@ import {
     redirectToStripeCheckout,
 } from "@/lib/paywall/tripGate";
 import { useAuth } from "@/lib/supabase/auth";
-import {
-    Infinity,
-    Download,
-    Sparkles,
-    Users,
-    Fuel,
-    ChevronDown,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -27,12 +19,12 @@ type Props = {
   variant?: "gate" | "upgrade";
 };
 
-const FEATURES: { Icon: LucideIcon; label: string; sub: string }[] = [
-  { Icon: Infinity, label: "Unlimited trips", sub: "Plan as many adventures as you want" },
-  { Icon: Download, label: "Permanent offline maps", sub: "Every trip saved forever, works without signal" },
-  { Icon: Sparkles, label: "AI co-pilot", sub: "Smart fuel stops, hazards & local tips en-route" },
-  { Icon: Users, label: "Trip sharing", sub: "Share with your co-pilot via a 6-character code" },
-  { Icon: Fuel, label: "Fuel range alerts", sub: "Never run dry - warnings before the last servo" },
+const FEATURES: { label: string; sub: string }[] = [
+  { label: "Unlimited trips", sub: "Plan as many adventures as you want." },
+  { label: "Permanent offline maps", sub: "Every trip saved forever, works without signal." },
+  { label: "AI co-pilot", sub: "Smart fuel stops, hazards and local tips en-route." },
+  { label: "Trip sharing", sub: "Share with your co-pilot via a 6-character code." },
+  { label: "Fuel range alerts", sub: "Never run dry. Warnings before the last servo." },
 ];
 
 const HERO_COPY = {
@@ -222,111 +214,116 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             : "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}
       >
-        {/* Hero band */}
+        {/* Hero band - solid burnt orange + cream, editorial italic
+            heading. Borrows the marketing palette without the chrome:
+            no gradient, no decorative rings, no all-caps badge pill. */}
         <div
           style={{
-            background: "linear-gradient(135deg, #5c1a0e 0%, var(--brand-ochre, #b5452e) 40%, #d4664a 70%, #e8956a 100%)",
+            background: "#A8431F",
+            color: "#E8DFC9",
             padding: "32px 28px 28px",
             position: "relative",
             overflow: "hidden",
             flexShrink: 0,
           }}
         >
-          {/* Decorative rings */}
-          <div style={{
-            position: "absolute", top: -60, right: -60,
-            width: 200, height: 200, borderRadius: "50%",
-            border: "1px solid var(--roam-border)",
-            pointerEvents: "none",
-          }} />
-          <div style={{
-            position: "absolute", top: -30, right: -30,
-            width: 130, height: 130, borderRadius: "50%",
-            border: "1px solid var(--roam-border)",
-            pointerEvents: "none",
-          }} />
-
-          {/* Close pill */}
+          {/* Close */}
           <button
             type="button"
             onClick={handleClose}
             disabled={busy}
             style={{
-              position: "absolute", top: 16, right: 16,
+              position: "absolute", top: 14, right: 14,
               border: "none", margin: 0, padding: 0,
               cursor: "pointer",
-              width: 44, height: 44, borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
+              width: 36, height: 36, borderRadius: "50%",
+              background: "transparent",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: "rgba(255,255,255,0.8)",
+              color: "rgba(232,223,201,0.8)",
               boxSizing: "border-box",
             }}
             aria-label="Close"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: "block" }}>
-              <path d="M1.5 1.5L12.5 12.5M12.5 1.5L1.5 12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path d="M1.5 1.5L12.5 12.5M12.5 1.5L1.5 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
 
-          {/* Badge */}
+          {/* Quiet section label - reading beat, not badge pill */}
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 6,
-            background: "rgba(255,255,255,0.15)",
-            borderRadius: 999, padding: "4px 12px",
-            marginBottom: 14,
-        }}>
-            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", color: "rgba(255,255,255,0.9)", textTransform: "uppercase" }}>
-              Glovebox Untethered
-            </span>
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 12.5,
+            letterSpacing: "0.08em",
+            color: "rgba(232,223,201,0.55)",
+            textTransform: "lowercase",
+            marginBottom: 10,
+          }}>
+            glovebox untethered
           </div>
 
           <h1 style={{
-            margin: "0 0 8px",
-            fontSize: 26, fontWeight: 900,
-            color: "var(--on-color)",
-            lineHeight: 1.2,
+            margin: "0 0 10px",
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: 30,
+            lineHeight: 1.18,
+            letterSpacing: "-0.014em",
+            color: "#E8DFC9",
           }}>
             {HERO_COPY[variant].heading}
           </h1>
           <p style={{
             margin: 0,
-            fontSize: 14, fontWeight: 500,
-            color: "rgba(255,255,255,0.75)",
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 15, fontWeight: 400,
+            color: "rgba(232,223,201,0.78)",
             lineHeight: 1.5,
           }}>
             {HERO_COPY[variant].body}
           </p>
         </div>
 
-        {/* Feature list */}
+        {/* Feature list - quieter rows, ochre dot instead of icon
+            square, less weight on the labels. Keeps the scan pattern
+            (label + sub) so the value props still land. */}
         <div style={{ position: "relative", flex: 1, minHeight: 0 }}>
           <div
             ref={featureRef}
-            style={{ padding: "20px 28px 12px", overflowY: "auto", height: "100%", WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"], overscrollBehaviorX: "contain" }}
+            style={{ padding: "22px 28px 12px", overflowY: "auto", height: "100%", WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"], overscrollBehaviorX: "contain" }}
           >
+            <div style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 12.5,
+              letterSpacing: "0.08em",
+              color: "var(--roam-text-muted)",
+              textTransform: "lowercase",
+              marginBottom: 8,
+            }}>
+              what you get
+            </div>
             {FEATURES.map((f) => (
               <div
                 key={f.label}
                 style={{
-                  display: "flex", alignItems: "flex-start", gap: 12,
-                  padding: "12px 0",
-                  // Prototype style: no per-row dividers; clean column with breathing room
+                  display: "flex", alignItems: "baseline", gap: 14,
+                  padding: "10px 0",
                 }}
               >
-                <div style={{
-                  width: 36, height: 36, flexShrink: 0,
-                  borderRadius: 10,
-                  background: "var(--c-accent-tint, rgba(181, 69, 46, 0.08))",
-                  color: "var(--c-accent, var(--brand-ochre, #b5452e))",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <f.Icon size={18} />
-                </div>
+                <span style={{
+                  width: 6, height: 6, flexShrink: 0,
+                  borderRadius: "50%",
+                  background: "var(--roam-accent)",
+                  alignSelf: "center",
+                }} aria-hidden="true" />
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text, #1a1613)", marginBottom: 2 }}>
+                  <div style={{ fontSize: 14.5, fontWeight: 600, color: "var(--roam-text)", marginBottom: 2 }}>
                     {f.label}
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--roam-text-muted, #7a7067)", lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 12.5, color: "var(--roam-text-muted)", lineHeight: 1.45 }}>
                     {f.sub}
                   </div>
                 </div>
@@ -358,44 +355,55 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
           </div>
         </div>
 
-        {/* Price + CTA */}
+        {/* Price + CTA - lighter price weight, solid burnt-orange
+            button instead of gradient + shadow. */}
         <div style={{ padding: "16px 28px 20px", flexShrink: 0 }}>
-          {/* Price callout */}
           <div style={{
-            display: "flex", alignItems: "baseline", gap: 8,
+            display: "flex", alignItems: "baseline", gap: 10,
             marginBottom: 14,
             justifyContent: "center",
           }}>
-            <span style={{ fontSize: 40, fontWeight: 900, color: "var(--roam-text, #1a1613)", lineHeight: 1 }}>
+            <span style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 34,
+              fontWeight: 400,
+              color: "var(--roam-text)",
+              lineHeight: 1,
+              letterSpacing: "-0.01em",
+            }}>
               $19.99
             </span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--roam-text-muted, #7a7067)" }}>
-              one-time · yours forever
+            <span style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 13,
+              fontWeight: 400,
+              color: "var(--roam-text-muted)",
+            }}>
+              one-time. yours forever.
             </span>
           </div>
 
-          {/* Buy button */}
           <button
             type="button"
             onClick={handlePurchase}
             disabled={busy}
             style={{
               width: "100%",
-              background: buying
-                ? "#5c1a0e"
-                : "linear-gradient(135deg, #5c1a0e 0%, var(--brand-ochre, #b5452e) 100%)",
-              color: "var(--on-color, #faf6ef)",
+              background: "#A8431F",
+              color: "#E8DFC9",
               border: "none",
               padding: "16px",
               minHeight: 52,
-              borderRadius: "var(--r-btn, 14px)",
-              fontSize: 16,
-              fontWeight: 800,
+              borderRadius: 4,
+              fontSize: 15,
+              fontWeight: 600,
               cursor: busy ? "default" : "pointer",
               opacity: busy ? 0.7 : 1,
               letterSpacing: "0.01em",
-              boxShadow: busy ? "none" : "0 4px 16px rgba(181,69,46,0.35)",
-              transition: "opacity 0.15s, box-shadow 0.15s",
+              boxShadow: "none",
+              transition: "opacity 0.15s",
               WebkitTapHighlightColor: "transparent",
               touchAction: "manipulation",
             }}

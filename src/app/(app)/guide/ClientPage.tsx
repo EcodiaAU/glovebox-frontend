@@ -33,9 +33,9 @@ import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
 
 import { GuideView, type GuideTabBarProps } from "@/components/trip/GuideView";
 
-import { Sparkles, MapPin, Wifi, WifiOff, Satellite, AlertTriangle, UserCircle } from "lucide-react";
-import { Icon, NetworkPill, AccountBtn } from "@/components/roam-ui-v2/shared";
-import { WatermarkCard } from "@/components/ui/WatermarkCard";
+import { Satellite, AlertTriangle } from "lucide-react";
+import { NetworkPill, AccountBtn } from "@/components/roam-ui-v2/shared";
+import { GloveboxMark } from "@/components/brand/GloveboxMark";
 import { GuideSkeleton } from "./GuideSkeleton";
 
 import type { GuideBootstrap } from "@/lib/guide/guideEngine";
@@ -518,8 +518,13 @@ export default function GuideClientPage(props: {
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12,
         }}>
-          <div className="t-display" style={{
-            fontWeight: 700, fontSize: 28, letterSpacing: -0.4,
+          <div style={{
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: 24,
+            letterSpacing: "-0.005em",
+            color: "var(--roam-text)",
             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             maxWidth: "60%",
           }}>{headerTitle}</div>
@@ -529,15 +534,17 @@ export default function GuideClientPage(props: {
           </div>
         </div>
 
-        {/* Row 2: segmented-control tabs */}
+        {/* Row 2: text-tab pair with a hairline underline on active.
+            Softer than the filled segmented control - readable as a
+            reading beat rather than a button cluster. */}
         {guideTabBar && (
           <div style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr",
-            background: "var(--c-surface-muted)", borderRadius: 14, padding: 4, gap: 4,
+            display: "flex", gap: 24, paddingTop: 4,
+            borderBottom: "1px solid var(--roam-border)",
           }}>
             {([
-              { key: "discoveries" as const, label: "Found", iconName: "pin" as const, badge: guideTabBar.discoveredCount > 0 ? guideTabBar.discoveredCount : null },
-              { key: "chat" as const, label: "Chat", iconName: "sparkle" as const, badge: null },
+              { key: "discoveries" as const, label: "Found", badge: guideTabBar.discoveredCount > 0 ? guideTabBar.discoveredCount : null },
+              { key: "chat" as const, label: "Chat", badge: null },
             ]).map((tab) => {
               const active = guideTabBar.activeTab === tab.key;
               return (
@@ -546,24 +553,30 @@ export default function GuideClientPage(props: {
                   type="button"
                   onClick={() => { haptic.selection(); guideTabBar.setActiveTab(tab.key); }}
                   style={{
-                    minHeight: 44, borderRadius: 10,
-                    background: active ? "var(--c-surface)" : "transparent",
-                    color: active ? "var(--c-text)" : "var(--c-text-muted)",
-                    fontWeight: active ? 700 : 600, fontSize: 14,
-                    boxShadow: active ? "var(--sh-card)" : "none",
-                    display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    minHeight: 40,
+                    background: "transparent",
+                    color: active ? "var(--roam-text)" : "var(--roam-text-muted)",
+                    fontWeight: active ? 600 : 500,
+                    fontSize: 14,
+                    letterSpacing: "0.01em",
+                    display: "inline-flex", alignItems: "center", gap: 8,
                     border: "none",
+                    borderBottom: active
+                      ? "1.5px solid var(--roam-accent)"
+                      : "1.5px solid transparent",
+                    paddingBottom: 8,
+                    marginBottom: -1,
+                    cursor: "pointer",
                   }}
                 >
-                  <Icon name={tab.iconName} size={16} stroke={2}/>
                   {tab.label}
                   {tab.badge != null && (
                     <span style={{
-                      fontSize: 11, fontWeight: 700,
+                      fontSize: 11, fontWeight: 600,
                       padding: "0 6px", minWidth: 18, height: 18,
                       borderRadius: 999,
-                      background: active ? "var(--c-accent-tint)" : "transparent",
-                      color: active ? "var(--c-accent)" : "var(--c-text-muted)",
+                      background: active ? "var(--roam-accent)" : "var(--roam-surface-hover)",
+                      color: active ? "var(--on-color)" : "var(--roam-text-muted)",
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
                     }}>{tab.badge}</span>
                   )}
@@ -681,16 +694,46 @@ export default function GuideClientPage(props: {
         </div>
       ) : null}
 
-      {/* ── AI intro card - shown until guide has messages ───── */}
+      {/* ── Editorial intro - shown until guide has messages ───── */}
       {guidePack && guidePack.thread.length === 0 && busy === "chat" && (
-        <div style={{ padding: "0 16px", marginBottom: 8 }}>
-          <WatermarkCard
-            icon="explore"
-            title="Your Guide"
-            subtitle="Preparing route intel, points of interest, and conditions for your trip."
-            accentLabel="AI Guide"
-            style={{ minHeight: 180 }}
-          />
+        <div
+          style={{
+            padding: "20px 16px 8px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: 10,
+          }}
+        >
+          <div style={{ color: "var(--roam-accent)" }}>
+            <GloveboxMark size={36} />
+          </div>
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: "clamp(22px, 3vw, 28px)",
+              lineHeight: 1.18,
+              color: "var(--roam-text)",
+              letterSpacing: "-0.005em",
+            }}
+          >
+            Your guide.
+          </h2>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 14,
+              color: "var(--roam-text-muted)",
+              lineHeight: 1.5,
+              maxWidth: "44ch",
+            }}
+          >
+            Preparing route intel, points of interest, and conditions for
+            your trip.
+          </p>
         </div>
       )}
 

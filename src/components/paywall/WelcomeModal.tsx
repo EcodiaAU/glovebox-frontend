@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { haptic } from "@/lib/native/haptics";
-import { Map, Route, Download, AudioLines, Fuel, Sparkles } from "lucide-react";
 import { useSheetPullToDismiss } from "@/lib/hooks/useSheetPullToDismiss";
+import { GloveboxMark } from "@/components/brand/GloveboxMark";
 
 type Props = {
   open: boolean;
@@ -96,68 +96,81 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
           overscrollBehavior: "contain",
           touchAction: "pan-y",
         }}>
-        {/* Hero */}
+        {/* Hero - solid burnt-orange + cream editorial, no gradient,
+            no decorative ring, GloveboxMark instead of lucide icon. */}
         <div
           style={{
-            background: lastFreeTrip
-              ? "linear-gradient(135deg, #7a3d00 0%, var(--brand-amber, #b8872a) 100%)"
-              : "linear-gradient(135deg, #0d3a5e 0%, var(--brand-sky, #1a6fa6) 100%)",
+            background: "#A8431F",
+            color: "#E8DFC9",
             padding: "36px 28px 32px",
-            textAlign: "center",
+            textAlign: "left",
             position: "relative",
             overflow: "hidden",
           }}
         >
-          {/* Decorative ring */}
-          <div style={{
-            position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)",
-            width: 280, height: 280, borderRadius: "50%",
-            border: "1px solid var(--roam-border)",
-            pointerEvents: "none",
-          }} />
-
-          <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.9)" }}>
-            {lastFreeTrip ? <Route size={48} strokeWidth={1.5} /> : <Map size={48} strokeWidth={1.5} />}
+          <div style={{ marginBottom: 16, color: "#E8DFC9" }}>
+            <GloveboxMark size={40} />
           </div>
 
           <h1 style={{
             margin: "0 0 10px",
-            fontSize: 24, fontWeight: 900,
-            color: "var(--on-color)", lineHeight: 1.2,
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 30, fontWeight: 400,
+            color: "#E8DFC9",
+            lineHeight: 1.18,
+            letterSpacing: "-0.014em",
           }}>
             {lastFreeTrip
-              ? "Make this one count"
-              : "Welcome to Glovebox"}
+              ? "Make this one count."
+              : "Welcome to Glovebox."}
           </h1>
 
           <p style={{
             margin: 0,
-            fontSize: 15, fontWeight: 500,
-            color: "rgba(255,255,255,0.80)",
-            lineHeight: 1.55,
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 15, fontWeight: 400,
+            color: "rgba(232,223,201,0.78)",
+            lineHeight: 1.5,
           }}>
             {lastFreeTrip
-              ? "This is your last free trip. Explore every feature - offline maps, the AI guide, turn-by-turn nav. If you love it, Glovebox Untethered is $19.99, one-time."
+              ? "This is your last free trip. Explore every feature: offline maps, the AI guide, turn-by-turn nav. If you love it, Glovebox Untethered is $19.99, one-time."
               : "Two free trips inside. No card needed."}
           </p>
         </div>
 
-        {/* Bullets */}
+        {/* Bullets - quiet ochre dots, no per-row dividers */}
         {!lastFreeTrip && (
-          <div style={{ padding: "20px 28px 4px" }}>
-            {([
-              [<Download size={18} key="dl" />, "Beautiful offline maps that work without signal"],
-              [<AudioLines size={18} key="audio" />, "Turn-by-turn navigation with voice guidance"],
-              [<Fuel size={18} key="fuel" />, "Fuel range alerts so you never run dry in the outback"],
-              [<Sparkles size={18} key="ai" />, "AI co-pilot - fuel stops, hazards & local knowledge"],
-            ] as const).map(([icon, text]) => (
+          <div style={{ padding: "22px 28px 4px" }}>
+            <div style={{
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 12.5,
+              letterSpacing: "0.08em",
+              color: "var(--roam-text-muted)",
+              textTransform: "lowercase",
+              marginBottom: 8,
+            }}>
+              what's inside
+            </div>
+            {[
+              "Beautiful offline maps that work without signal.",
+              "Turn-by-turn navigation with voice guidance.",
+              "Fuel range alerts so you never run dry in the outback.",
+              "AI co-pilot for fuel stops, hazards and local knowledge.",
+            ].map((text) => (
               <div key={text} style={{
-                display: "flex", alignItems: "center", gap: 12,
+                display: "flex", alignItems: "baseline", gap: 14,
                 padding: "8px 0",
-                borderBottom: "1px solid var(--roam-border)",
               }}>
-                <span style={{ width: 28, textAlign: "center", flexShrink: 0, color: "var(--brand-eucalypt, #2d6e40)", display: "flex", alignItems: "center", justifyContent: "center" }}>{icon}</span>
-                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--roam-text, #1a1613)", lineHeight: 1.4 }}>
+                <span style={{
+                  width: 6, height: 6, flexShrink: 0,
+                  borderRadius: "50%",
+                  background: "var(--roam-accent)",
+                  alignSelf: "center",
+                }} aria-hidden="true" />
+                <span style={{ fontSize: 14.5, fontWeight: 500, color: "var(--roam-text)", lineHeight: 1.45 }}>
                   {text}
                 </span>
               </div>
@@ -165,43 +178,41 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
           </div>
         )}
 
-        {/* CTA */}
-        <div style={{ padding: "20px 28px 24px" }}>
+        {/* CTA - solid burnt-orange, no gradient, no shadow */}
+        <div style={{ padding: "22px 28px 24px" }}>
           <button
             type="button"
             onClick={handleStart}
             style={{
               width: "100%",
-              background: lastFreeTrip
-                ? "linear-gradient(135deg, #7a3d00 0%, var(--brand-amber, #b8872a) 100%)"
-                : "linear-gradient(135deg, var(--brand-eucalypt-dark, #1f5236) 0%, var(--brand-eucalypt, #2d6e40) 100%)",
-              color: "var(--on-color, #faf6ef)",
+              background: "#A8431F",
+              color: "#E8DFC9",
               border: "none",
               padding: "16px",
               minHeight: 52,
-              borderRadius: "var(--r-btn, 14px)",
-              fontSize: 16,
-              fontWeight: 800,
+              borderRadius: 4,
+              fontSize: 15,
+              fontWeight: 600,
               cursor: "pointer",
               WebkitTapHighlightColor: "transparent",
               touchAction: "manipulation",
-              boxShadow: lastFreeTrip
-                ? "0 4px 16px rgba(122,61,0,0.30)"
-                : "0 4px 16px rgba(31,82,54,0.30)",
+              letterSpacing: "0.01em",
             }}
           >
-            {lastFreeTrip ? "Plan my last free trip →" : "Let's go →"}
+            {lastFreeTrip ? "Plan my last free trip" : "Let's go"}
           </button>
 
           {!lastFreeTrip && (
             <p style={{
-              margin: "12px 0 0",
+              margin: "14px 0 0",
               textAlign: "center",
-              fontSize: 12, fontWeight: 500,
-              color: "var(--roam-text-muted, #7a7067)",
+              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+              fontStyle: "italic",
+              fontSize: 13, fontWeight: 400,
+              color: "var(--roam-text-muted)",
               lineHeight: 1.5,
             }}>
-              After 2 free trips, go Untethered for $19.99 - one-time, no subscription.
+              After 2 free trips, go Untethered for $19.99. One-time, no subscription.
             </p>
           )}
         </div>
