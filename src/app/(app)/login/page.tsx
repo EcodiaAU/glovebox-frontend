@@ -6,6 +6,7 @@ import { Capacitor } from "@capacitor/core";
 import { useAuth } from "@/lib/supabase/auth";
 import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { haptic } from "@/lib/native/haptics";
+import "@/app/landing.css";
 
 export default function LoginPage() {
   const {
@@ -106,63 +107,71 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <div className="trip-wrap-center">
-        <span className="trip-muted">Loading…</span>
+      <div className="ed ed-page">
+        <span className="ed-notice">
+          <em>Loading.</em>
+        </span>
       </div>
     );
   }
 
+  const headingText =
+    mode === "login" ? "Sign in." : "Make an account.";
+  const submitLabel =
+    busy ? "..." : mode === "login" ? "Sign in." : "Create account.";
+  const toggleLabel =
+    mode === "login"
+      ? "Don't have an account? Sign up."
+      : "Already have an account? Sign in.";
+
   return (
-    <div className="login-scroll" style={{
-      position: "absolute", inset: 0,
-      bottom: "var(--bottom-nav-height, 80px)",
-      overflowY: "auto", WebkitOverflowScrolling: "touch" as const,
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "env(safe-area-inset-top, 24px) 20px max(24px, env(safe-area-inset-bottom, 24px))",
-      background: "var(--roam-bg)",
-      gap: 0,
-    }}>
-      <div className="trip-card login-card" style={{ gap: 12, width: "100%", maxWidth: 440, margin: "0 auto" }}>
-        {!deviceOnline && (
-          <div
-            style={{
-              padding: "10px 14px",
-              borderRadius: "var(--r-card)",
-              background: "var(--bg-warn, #2a1f00)",
-              color: "var(--text-warn, #f5c542)",
-              fontSize: 13,
-              fontWeight: 600,
-              textAlign: "center",
-              lineHeight: 1.4,
-            }}
-          >
-            You&apos;re offline - sign-in requires a connection.
-            Once signed in, Glovebox works without any signal.
-          </div>
-        )}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 4 }}>
+    <div
+      className="ed login-scroll"
+      style={{
+        position: "absolute",
+        inset: 0,
+        bottom: "var(--bottom-nav-height, 80px)",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch" as const,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding:
+          "env(safe-area-inset-top, 24px) 20px max(24px, env(safe-area-inset-bottom, 24px))",
+      }}
+    >
+      <div className="ed-column">
+        <div className="ed-mark">
           <GloveboxMark />
         </div>
-        <h1 style={{
-          fontSize: 22,
-          fontWeight: 800,
-          textAlign: "center",
-          margin: 0,
-          color: "var(--roam-text)",
-        }}>
-          {mode === "login" ? "Sign in" : "Create account"}
-        </h1>
-        <div className="trip-muted" style={{ textAlign: "center", marginBottom: 0 }}>
-          Offline navigation for the outback.
-        </div>
 
-        {/* Apple Sign-In (iOS-only) - plugin has no Android bridge. Apple HIG: black on light, white on dark */}
+        <h1 className="ed-heading">
+          <em>{headingText}</em>
+        </h1>
+
+        <p className="ed-lede">
+          <em>Offline navigation for the outback.</em>
+        </p>
+
+        {!deviceOnline && (
+          <p className="ed-notice ed-notice-err">
+            <em>
+              You&apos;re offline. Sign-in needs a connection. Once in,
+              Glovebox works without signal.
+            </em>
+          </p>
+        )}
+
+        {/* Apple Sign-In (iOS-only). Apple HIG mandates the official
+            button presentation; do NOT edit the styling without
+            re-checking review compliance. */}
         {isIOS && (
           <button
             type="button"
             onClick={handleApple}
             disabled={busy}
-            className="trip-interactive apple-sso-btn"
+            className="apple-sso-btn"
             style={{
               display: "flex",
               alignItems: "center",
@@ -171,10 +180,10 @@ export default function LoginPage() {
               width: "100%",
               minHeight: 52,
               padding: "0 16px",
-              borderRadius: "var(--r-btn)",
+              borderRadius: 6,
               border: "none",
               fontSize: 16,
-              fontWeight: 700,
+              fontWeight: 600,
               opacity: busy ? 0.55 : 1,
               fontFamily:
                 '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif',
@@ -191,26 +200,22 @@ export default function LoginPage() {
           </button>
         )}
 
-        {/* Google OAuth */}
         <button
           type="button"
           onClick={handleGoogle}
           disabled={busy}
-          className="trip-btn trip-btn-secondary"
-          style={{ opacity: busy ? 0.55 : 1, minHeight: 52, width: "100%" }}
+          className="ed-btn"
+          style={{ opacity: busy ? 0.55 : 1 }}
         >
           <GoogleG />
           <span>Continue with Google</span>
         </button>
 
-        {/* Divider */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ flex: 1, height: 1, background: "var(--roam-border)" }} />
-          <span className="trip-muted-small">or</span>
-          <div style={{ flex: 1, height: 1, background: "var(--roam-border)" }} />
-        </div>
+        <p className="ed-label" style={{ textAlign: "center" }}>
+          or with email
+        </p>
 
-        <form onSubmit={handleEmailSubmit} style={{ display: "contents" }}>
+        <form onSubmit={handleEmailSubmit} className="ed-form">
           <input
             type="email"
             value={email}
@@ -218,22 +223,7 @@ export default function LoginPage() {
             placeholder="Email"
             autoComplete="email"
             inputMode="email"
-            style={{
-              width: "100%",
-              height: 52,
-              padding: "0 16px",
-              borderRadius: "var(--r-btn)",
-              border: "none",
-              background: "var(--roam-surface-hover)",
-              color: "var(--roam-text)",
-              fontSize: 15,
-              fontWeight: 600,
-              outline: "none",
-              boxSizing: "border-box",
-              transition: "box-shadow 0.15s ease",
-            }}
-            onFocus={(e) => { e.currentTarget.style.boxShadow = "inset 0 0 0 2px var(--roam-info)"; }}
-            onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
+            className="ed-input"
             disabled={busy}
           />
           <input
@@ -242,51 +232,29 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             autoComplete={mode === "signup" ? "new-password" : "current-password"}
-            style={{
-              width: "100%",
-              height: 52,
-              padding: "0 16px",
-              borderRadius: "var(--r-btn)",
-              border: "none",
-              background: "var(--roam-surface-hover)",
-              color: "var(--roam-text)",
-              fontSize: 15,
-              fontWeight: 600,
-              outline: "none",
-              boxSizing: "border-box",
-              transition: "box-shadow 0.15s ease",
-            }}
-            onFocus={(e) => { e.currentTarget.style.boxShadow = "inset 0 0 0 2px var(--roam-info)"; }}
-            onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
+            className="ed-input"
             disabled={busy}
           />
           <button
             type="submit"
             disabled={busy}
-            className="trip-btn trip-btn-primary"
-            style={{ opacity: busy ? 0.55 : 1 }}
+            className="ed-action"
+            style={{ opacity: busy ? 0.55 : 1, alignSelf: "flex-start" }}
           >
-            {busy ? "…" : mode === "login" ? "Sign in" : "Create account"}
+            <em>{submitLabel}</em>
           </button>
         </form>
 
-        {error && <div className="trip-err-box">{error}</div>}
+        {error && (
+          <p className="ed-notice ed-notice-err">
+            <em>{error}</em>
+          </p>
+        )}
 
         {signupSuccess && (
-          <div
-            style={{
-              padding: "12px 14px",
-              borderRadius: "var(--r-btn)",
-              background: "var(--accent-tint)",
-              color: "var(--roam-accent)",
-              fontSize: "0.875rem",
-              fontWeight: 700,
-              textAlign: "center",
-              lineHeight: 1.4,
-            }}
-          >
-            Check your email for a confirmation link, then sign in.
-          </div>
+          <p className="ed-notice">
+            <em>Check your email for a confirmation link, then sign in.</em>
+          </p>
         )}
 
         <button
@@ -297,56 +265,31 @@ export default function LoginPage() {
             setError(null);
             setSignupSuccess(false);
           }}
-          className="trip-interactive"
-          style={{
-            background: "none",
-            border: "none",
-            color: "var(--roam-accent)",
-            fontSize: 13,
-            fontWeight: 700,
-            cursor: "pointer",
-            textAlign: "center",
-            padding: "8px 0",
-            width: "100%",
-          }}
+          className="ed-textlink"
+          style={{ textAlign: "center" }}
           disabled={busy}
         >
-          {mode === "login"
-            ? "Don't have an account? Sign up"
-            : "Already have an account? Sign in"}
+          <em>{toggleLabel}</em>
         </button>
-
       </div>
 
-      {/* Legal links - quiet row, dotted under-line style to match the
-          editorial register of the marketing landing. */}
-      <div style={{
-        display: "inline-flex", flexWrap: "wrap", justifyContent: "center",
-        alignItems: "baseline", gap: "4px 10px", marginTop: 16,
-        color: "var(--roam-text-muted)", opacity: 0.65,
-      }}>
+      {/* Legal links - quiet dotted-underline row, marketing voice. */}
+      <div className="ed-row" style={{ marginTop: 16, paddingBottom: 8 }}>
         {[
           { href: "/contact", label: "Contact" },
           { href: "/terms", label: "Terms" },
           { href: "/privacy", label: "Privacy" },
           { href: "/attributions", label: "Attributions" },
         ].map(({ href, label }, i, arr) => (
-          <span key={href} style={{ display: "inline-flex", alignItems: "baseline", gap: 10 }}>
-            <a
-              href={href}
-              style={{
-                color: "inherit",
-                fontSize: 12,
-                textDecoration: "none",
-                fontWeight: 500,
-                borderBottom: "1px dotted currentColor",
-                paddingBottom: 1,
-              }}
-            >
+          <span
+            key={href}
+            style={{ display: "inline-flex", alignItems: "baseline", gap: 10 }}
+          >
+            <a href={href} className="ed-link-dotted">
               {label}
             </a>
             {i < arr.length - 1 && (
-              <span aria-hidden="true" style={{ userSelect: "none" }}>·</span>
+              <span className="ed-sep" aria-hidden="true">.</span>
             )}
           </span>
         ))}

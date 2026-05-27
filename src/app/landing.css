@@ -162,3 +162,231 @@
     gap: 8px;
   }
 }
+
+/* ── Editorial in-app surfaces ──────────────────────────────────────
+   Sibling vocabulary to .gl-* (marketing page). Used on app surfaces
+   that should feel like rooms with the marketing voice: login,
+   paywall, guide chat. Opt-in via .ed wrapper on the surface root.
+   Themes via --roam-* tokens so it auto-adapts day / night.
+   ─────────────────────────────────────────────────────────────────── */
+.ed {
+  --ed-font-serif: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  --ed-fg: var(--roam-text);
+  --ed-fg-soft: var(--roam-text-muted);
+  --ed-fg-trace: color-mix(in srgb, var(--roam-text) 35%, transparent);
+  --ed-fg-faint: color-mix(in srgb, var(--roam-text) 18%, transparent);
+  --ed-accent: var(--roam-accent);
+  --ed-bg: var(--roam-bg);
+
+  font-family: var(--ed-font-serif);
+  font-feature-settings: "kern", "liga", "dlig", "onum";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  color: var(--ed-fg);
+  background: var(--ed-bg);
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.55;
+}
+
+.ed ::selection { background: var(--ed-fg); color: var(--ed-bg); }
+
+/* Page wrapper: fills viewport, centers a single column. */
+.ed-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Single column. Breathing margins, no card chrome. */
+.ed-column {
+  width: 100%;
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: clamp(24px, 6vh, 64px) clamp(24px, 5vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Editorial heading: one italic sentence. */
+.ed-heading {
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.18;
+  letter-spacing: -0.014em;
+  text-wrap: balance;
+  margin: 0;
+  color: var(--ed-fg);
+}
+
+/* Quiet italic lede directly under the heading. */
+.ed-lede {
+  font-style: italic;
+  font-size: 1.05em;
+  color: var(--ed-fg-soft);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* Section label: lowercase italic letter-spaced. Reading beat, never heading. */
+.ed-label {
+  font-style: italic;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: var(--ed-fg-trace);
+  font-weight: 400;
+  text-transform: lowercase;
+  margin: 0.4em 0 0 0;
+}
+
+/* Hairline underlined link. */
+.ed-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ed-fg-trace);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  font-style: italic;
+  transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+.ed-link:hover { text-decoration-color: var(--ed-fg); }
+
+/* Dotted underline variant (legal row style). */
+.ed-link-dotted {
+  color: inherit;
+  border-bottom: 1px dotted currentColor;
+  padding-bottom: 1px;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* Bottom-line input. No filled rect, no border-radius. */
+.ed-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--ed-fg-trace);
+  border-radius: 0;
+  padding: 12px 0;
+  font-family: var(--ed-font-serif);
+  font-size: 17px;
+  color: var(--ed-fg);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease;
+  -webkit-appearance: none;
+}
+.ed-input:focus { border-bottom-color: var(--ed-fg); }
+.ed-input::placeholder { color: var(--ed-fg-trace); font-style: italic; }
+.ed-input:disabled { opacity: 0.5; }
+
+/* Text-link primary action. Italic underlined, no filled pill. */
+.ed-action {
+  background: none;
+  border: none;
+  font-family: var(--ed-font-serif);
+  font-style: italic;
+  font-size: 19px;
+  color: var(--ed-fg);
+  cursor: pointer;
+  padding: 10px 0;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: var(--ed-fg);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+  transition: opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ed-action:hover:not(:disabled) { opacity: 0.7; }
+.ed-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Hairline-bordered button. For OAuth and alternative actions. */
+.ed-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid var(--ed-fg-trace);
+  border-radius: 2px;
+  font-family: var(--ed-font-serif);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ed-fg);
+  cursor: pointer;
+  transition: border-color 0.18s ease, opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ed-btn:hover:not(:disabled) { border-color: var(--ed-fg); }
+.ed-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Inline quiet text-button (toggle, link-shaped). */
+.ed-textlink {
+  background: none;
+  border: none;
+  font-family: var(--ed-font-serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ed-fg-soft);
+  cursor: pointer;
+  padding: 8px 0;
+  text-decoration: underline;
+  text-decoration-color: var(--ed-fg-faint);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ed-textlink:hover:not(:disabled) {
+  color: var(--ed-fg);
+  text-decoration-color: var(--ed-fg);
+}
+
+/* Row of links separated by tiny dots. Matches marketing footer. */
+.ed-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5em;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--ed-fg-soft);
+}
+.ed-sep {
+  color: var(--ed-fg-trace);
+  user-select: none;
+}
+
+/* Notice: italic, no box. For errors, offline warnings, success. */
+.ed-notice {
+  font-style: italic;
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+  color: var(--ed-fg-soft);
+  line-height: 1.45;
+}
+.ed-notice-err { color: var(--roam-danger); }
+
+/* Form rhythm: stacked, breathing room, no surrounding card. */
+.ed-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+}
+
+/* Mark slot: small accent-color glyph. */
+.ed-mark {
+  color: var(--ed-accent);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
