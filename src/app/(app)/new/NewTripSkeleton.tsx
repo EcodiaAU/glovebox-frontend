@@ -45,15 +45,18 @@ export function NewTripSkeleton() {
         }}
       />
 
-      {/* ── Bottom sheet (matches StopsEditor trip-bottom-sheet-wrap) ── */}
+      {/* Sheet shell matches StopsEditor. The data-desktop-open attribute
+          opts both wrap + inner into the left-side panel layout on >=900px
+          via globals.css media queries; under 900px the inline transform
+          drives the bottom-sheet peek position. */}
       <div
         className="trip-bottom-sheet-wrap"
+        data-desktop-open="true"
         style={{
-          // Peek state: same offset as StopsEditor snapState="peek"
           transform: `translateY(calc(100% - 260px - 400px - var(--roam-safe-bottom, 0px)))`,
         }}
       >
-        <div className="trip-bottom-sheet">
+        <div className="trip-bottom-sheet" data-desktop-open="true">
           {/* Drag handle + header - matches trip-sheet-header */}
           <div className="trip-sheet-header">
             <div className="trip-drag-handle" />
@@ -82,14 +85,8 @@ export function NewTripSkeleton() {
 
               {/* 2 round icon buttons (Plans + AI Plan) */}
               <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                <Skel w={34} h={34} r={999} delay={0.1} style={{
-                  background: "var(--roam-text, #1a1613)",
-                  opacity: 0.25,
-                }} />
-                <Skel w={34} h={34} r={999} delay={0.15} style={{
-                  background: "rgba(56,189,248,0.12)",
-                  border: "1px solid var(--roam-info)",
-                }} />
+                <Skel w={34} h={34} r={999} delay={0.1} />
+                <Skel w={34} h={34} r={999} delay={0.15} />
               </div>
             </div>
           </div>
@@ -139,11 +136,8 @@ export function NewTripSkeleton() {
 
               {/* Add Stop + Go Now row */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                <Skel w="100%" h={38} r={12} delay={0.25} style={{
-                  background: "var(--brand-eucalypt, #2d6e40)",
-                  opacity: 0.3,
-                }} />
-                <Skel w="100%" h={38} r={12} delay={0.3} />
+                <Skel w="100%" h={38} r={4} delay={0.25} />
+                <Skel w="100%" h={38} r={4} delay={0.3} />
               </div>
             </div>
           </div>

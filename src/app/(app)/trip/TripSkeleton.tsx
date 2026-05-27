@@ -52,9 +52,7 @@ export function TripSkeleton() {
         right: 12,
         zIndex: 25,
       }}>
-        <Skel w={46} h={46} r={16} delay={0.1} style={{
-          background: "linear-gradient(160deg, rgba(26,21,16,0.96) 0%, rgba(16,13,10,0.98) 100%)",
-        }} />
+        <Skel w={46} h={46} r={16} delay={0.1} />
       </div>
 
       {/* ── Side FAB stack (Report) - matches ClientPage ── */}
@@ -68,14 +66,15 @@ export function TripSkeleton() {
         gap: 8,
         alignItems: "flex-end",
       }}>
-        <Skel w={46} h={46} r={16} delay={0.25} style={{
-          background: "linear-gradient(160deg, rgba(26,21,16,0.96) 0%, rgba(16,13,10,0.98) 100%)",
-        }} />
+        <Skel w={46} h={46} r={16} delay={0.25} />
       </div>
 
-      {/* ── Bottom sheet - collapsed position matching ClientPage peek ── */}
+      {/* Sheet shell. data-desktop-open opts into the left-side panel
+          layout on >=900px (position:fixed, left:rail-width, full-height
+          column). Below 900px the inline mobile peek transform applies. */}
       <div
         className="trip-bottom-sheet"
+        data-desktop-open="true"
         style={{
           position: "absolute",
           bottom: -200, left: 0, right: 0,
@@ -84,7 +83,7 @@ export function TripSkeleton() {
           transform: "translateY(calc(100% - 420px - var(--roam-safe-bottom, 0px)))",
         }}
       >
-        {/* Drag handle */}
+        {/* Drag handle (mobile only via globals.css media query) */}
         <div style={{ padding: "16px 20px 6px", touchAction: "none" }}>
           <div className="trip-drag-handle" />
         </div>
@@ -96,18 +95,16 @@ export function TripSkeleton() {
 
             <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
               {[0, 1, 2].map((i) => (
-                <Skel key={i} w={40} h={40} r={10} delay={0.1 + i * 0.05} style={{
-                  background: "var(--roam-text, #1a1613)",
-                  opacity: 0.25,
-                }} />
+                <Skel key={i} w={40} h={40} r={10} delay={0.1 + i * 0.05} />
               ))}
-              {/* Upgrade button - eucalypt green gradient */}
+              {/* Upgrade button placeholder - solid burnt orange to match
+                  the new editorial CTA chrome */}
               <div
                 style={{
                   width: 64,
                   height: 40,
-                  borderRadius: "var(--r-card)",
-                  background: "linear-gradient(135deg, #122d1e 0%, var(--brand-eucalypt-dark, #1f5236) 40%, var(--brand-eucalypt, #2d6e40) 80%, #3d8f54 100%)",
+                  borderRadius: 4,
+                  background: "#A8431F",
                   opacity: 0.35,
                   animation: "trip-skel-pulse 1.6s ease-in-out infinite 0.2s",
                   flexShrink: 0,
@@ -119,7 +116,7 @@ export function TripSkeleton() {
 
         {/* Start navigation button placeholder */}
         <div style={{ padding: "0 20px" }}>
-          <Skel w="100%" h={48} r={14} delay={0.15} />
+          <Skel w="100%" h={48} r={4} delay={0.15} />
         </div>
       </div>
 
