@@ -30,11 +30,11 @@ const FEATURES: { label: string; sub: string }[] = [
 const HERO_COPY = {
   gate: {
     heading: <>Ready to go<br />Untethered?</>,
-    body: "You\u2019ve used your 2 free trips. Go Untethered for a single one-time payment \u2014 no subscription, ever.",
+    body: "You've used your 2 free trips. Go Untethered for a single one-time payment. No subscription, ever.",
   },
   upgrade: {
     heading: <>Go Untethered</>,
-    body: "Unlock every feature and never worry about trip limits again \u2014 one payment, yours forever.",
+    body: "Unlock every feature and never worry about trip limits again. One payment, yours forever.",
   },
 };
 

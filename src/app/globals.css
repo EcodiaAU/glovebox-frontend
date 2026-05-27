@@ -2605,7 +2605,9 @@ input[type="range"]::-moz-range-thumb {
 
   /* ── Left nav rail (was: bottom tab bar) ─────────────────── */
   /* Tabs are vertically centred so the rail reads as a balanced
-     side-nav instead of a top-stacked list. */
+     side-nav instead of a top-stacked list. Opaque background so the
+     rail and the side sheet read as a single continuous surface (no
+     visible page-bg gap between rail right-edge and sheet left-edge). */
   .roam-tabs-wrap {
     top: 0 !important;
     bottom: 0 !important;
@@ -2615,6 +2617,8 @@ input[type="range"]::-moz-range-thumb {
     height: 100vh;
     flex-direction: column;
     z-index: 120 !important;
+    background: var(--roam-surface) !important;
+    border-right: 1px solid var(--roam-border);
   }
   .roam-tabs {
     flex-direction: column;

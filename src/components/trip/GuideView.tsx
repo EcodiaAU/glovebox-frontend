@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import type { PlaceItem } from "@/lib/types/places";
 import type { MouseEvent, SyntheticEvent } from "react";
+import { GloveboxMark } from "@/components/brand/GloveboxMark";
 
 import type {
     GuidePack,
@@ -18,7 +19,7 @@ import { fmtDist, fmtCategory, normalizeUrl, safeOpen, cleanPhone } from "@/lib/
 import type { LucideIcon } from "lucide-react";
 import {
     Search,
-    Sparkles,
+    Sparkles, // still used elsewhere in this file
     MapPin,
     Fuel,
     Tent,
@@ -188,7 +189,7 @@ function ActionPill({
     minWidth: 0,
   };
 
-  // Pill labels wrap to 2 lines instead of truncating with ellipsis — a
+  // Pill labels wrap to 2 lines instead of truncating with ellipsis. A
   // POI name like "Pet Friendly Campground" should be readable in full, not
   // collapse to "Pet Friendly...". The pill height grows to accommodate.
   const labelSpan = (
@@ -1170,7 +1171,7 @@ export function GuideView({
   }, [activeTab]);
 
   // Filter out hidden system prompts (e.g., auto-greeting) from visible thread.
-  // Also collapse consecutive assistant messages with identical content — this
+  // Also collapse consecutive assistant messages with identical content. This
   // can happen when a greeting re-fires after a remount / nav; the user sees
   // the same intro twice, which looks broken.
   const thread = useMemo(() => {
@@ -1314,7 +1315,7 @@ export function GuideView({
   async function handleAsk(text?: string) {
     const msg = (text ?? chatInput).trim();
     if (!msg) return;
-    // Block submission while a previous send is still running — otherwise
+    // Block submission while a previous send is still running. Otherwise
     // racing sends scramble the thread (stale pack closures each append
     // their own text to the same base thread, and the later write wins).
     if (chatBusy || pendingUserMsg) return;
@@ -1417,67 +1418,71 @@ export function GuideView({
 
           {/* Welcome state - when no messages yet */}
           {thread.length === 0 && !pendingUserMsg ? (
-            <div style={{
-              background: "var(--roam-surface)", borderRadius: "var(--r-card)", padding: "20px 16px",
-              border: "1px solid var(--roam-border)",
-            }}>
-              {/* Guide identity header */}
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: "var(--r-card)",
-                  overflow: "hidden",
-                  boxShadow: "var(--shadow-medium)",
-                  flexShrink: 0,
-                }}>
-                  <img src="/img/roam-app-icon.png" alt="Glovebox" width={40} height={40} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ padding: "8px 4px 4px" }}>
+              {/* Editorial guide identity: small ochre mark + italic
+                  Spectral label + italic lede. No card, no border. */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8, marginBottom: 18 }}>
+                <div style={{ color: "var(--roam-accent)" }}>
+                  <GloveboxMark size={28} />
                 </div>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: "var(--roam-text)" }}>
-                    Glovebox Guide
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: "var(--roam-text-muted)" }}>
-                    {guideReady ? "Your AI road trip companion" : "Loading trip data…"}
-                  </div>
+                <div style={{
+                  fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  fontSize: 22,
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.005em",
+                  color: "var(--roam-text)",
+                }}>
+                  Your guide.
+                </div>
+                <div style={{
+                  fontSize: 13,
+                  color: "var(--roam-text-muted)",
+                  lineHeight: 1.5,
+                  maxWidth: "46ch",
+                }}>
+                  {guideReady ? "Ask anything about the road ahead." : "Loading trip data."}
                 </div>
               </div>
 
-              {/* Quick suggestions as cards */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {quickSuggestions.map((s, i) => {
-                  const SI = s.Icon;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => handleAsk(s.query)}
-                      disabled={!guideReady || chatBusy || !isOnline}
-                      style={{
-                        borderRadius: "var(--r-card)", border: "none",
-                        padding: "12px", textAlign: "left",
-                        background: `${s.color}0D`,
-                        cursor: guideReady && !chatBusy && isOnline ? "pointer" : "default",
-                        opacity: !guideReady || chatBusy || !isOnline ? 0.5 : 1,
-                        display: "flex", flexDirection: "column", gap: 6,
-                        transition: "transform 0.1s var(--spring, ease), opacity 0.1s",
-                        WebkitTapHighlightColor: "transparent",
-                      }}
-                    >
-                      <div style={{
-                        width: 30, height: 30, borderRadius: "var(--r-card)",
-                        background: `${s.color}1A`, color: s.color,
-                        display: "grid", placeItems: "center",
-                      }}>
-                        <SI size={15} />
-                      </div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--roam-text)" }}>
-                        {s.label}
-                      </div>
-                      <div style={{ fontSize: 11, fontWeight: 500, color: "var(--roam-text-muted)", lineHeight: 1.3 }}>
-                        {s.desc}
-                      </div>
-                    </button>
-                  );
-                })}
+              {/* Suggestion chips - plain text, no icon squares, no
+                  colored backgrounds. Wrap row, hairline border. */}
+              <div style={{
+                fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+                fontStyle: "italic",
+                fontSize: 12.5,
+                letterSpacing: "0.08em",
+                color: "var(--roam-text-muted)",
+                textTransform: "lowercase",
+                marginBottom: 8,
+              }}>
+                try asking
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {quickSuggestions.map((s, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleAsk(s.query)}
+                    disabled={!guideReady || chatBusy || !isOnline}
+                    style={{
+                      borderRadius: 999,
+                      border: "1px solid var(--roam-border)",
+                      padding: "7px 12px",
+                      background: "transparent",
+                      color: "var(--roam-text)",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      cursor: guideReady && !chatBusy && isOnline ? "pointer" : "default",
+                      opacity: !guideReady || chatBusy || !isOnline ? 0.5 : 1,
+                      transition: "border-color 0.15s ease",
+                      WebkitTapHighlightColor: "transparent",
+                    }}
+                  >
+                    {s.label}
+                  </button>
+                ))}
               </div>
             </div>
           ) : null}
@@ -1506,9 +1511,9 @@ export function GuideView({
                     <div key={`${m.role}_${idx}`} style={{ display: "flex", justifyContent: "flex-end", animation: "guideFadeIn 0.2s ease" }}>
                       <div style={{
                         maxWidth: "85%", padding: "10px 14px", borderRadius: "16px 16px 4px 16px",
-                        background: "var(--brand-sky)", color: "white",
-                        fontSize: 14, fontWeight: 600, lineHeight: 1.4,
-                        boxShadow: "var(--shadow-soft)",
+                        background: "var(--roam-surface-hover)",
+                        color: "var(--roam-text)",
+                        fontSize: 14, fontWeight: 500, lineHeight: 1.45,
                       }}>
                         {m.content}
                       </div>
@@ -1516,27 +1521,25 @@ export function GuideView({
                   );
                 }
 
-                // Guide message
+                // Guide message - editorial: tiny ochre mark inline,
+                // plain text with subtle bg, no border, no shadow.
                 return (
                   <div key={`${m.role}_${idx}`} style={{ animation: "guideFadeIn 0.3s ease" }}>
                     <div style={{
                       maxWidth: "92%",
-                      display: "flex", gap: 8,
+                      display: "flex", gap: 10,
                     }}>
-                      {/* Guide avatar */}
                       <div style={{
-                        width: 28, height: 28, borderRadius: "var(--r-card)", flexShrink: 0, marginTop: 2,
-                        overflow: "hidden",
-                        boxShadow: "var(--shadow-soft)",
+                        flexShrink: 0, marginTop: 4,
+                        color: "var(--roam-accent)",
+                        display: "flex",
                       }}>
-                        <img src="/img/roam-app-icon.png" alt="Glovebox" width={28} height={28} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <GloveboxMark size={20} ariaLabel="Glovebox" />
                       </div>
 
                       <div style={{
-                        flex: 1, padding: "10px 14px", borderRadius: "4px 16px 16px 16px",
-                        background: "var(--roam-surface)",
-                        border: "1px solid var(--roam-border)",
-                        fontSize: 14, fontWeight: 500, lineHeight: 1.45,
+                        flex: 1, padding: "2px 0 6px",
+                        fontSize: 14.5, fontWeight: 400, lineHeight: 1.55,
                         color: "var(--roam-text)",
                       }}>
                         <MarkdownBody text={m.content ?? ""} />
@@ -1580,32 +1583,22 @@ export function GuideView({
                 <div style={{ display: "flex", justifyContent: "flex-end", animation: "guideFadeIn 0.2s ease" }}>
                   <div style={{
                     maxWidth: "85%", padding: "10px 14px", borderRadius: "16px 16px 4px 16px",
-                    background: "var(--brand-sky)", color: "white",
-                    fontSize: 14, fontWeight: 600, lineHeight: 1.4,
-                    boxShadow: "var(--shadow-soft)",
+                    background: "var(--roam-surface-hover)",
+                    color: "var(--roam-text)",
+                    fontSize: 14, fontWeight: 500, lineHeight: 1.45,
                   }}>
                     {pendingUserMsg}
                   </div>
                 </div>
               ) : null}
 
-              {/* Typing indicator */}
+              {/* Typing indicator - mark + dots, no card */}
               {chatBusy ? (
-                <div style={{ display: "flex", gap: 8, animation: "guideFadeIn 0.2s ease" }}>
-                  <div style={{
-                    width: 28, height: 28, borderRadius: "var(--r-card)", flexShrink: 0,
-                    overflow: "hidden",
-                    boxShadow: "var(--shadow-soft)",
-                  }}>
-                    <img src="/img/roam-app-icon.png" alt="Glovebox" width={28} height={28} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 10, animation: "guideFadeIn 0.2s ease", padding: "2px 0" }}>
+                  <div style={{ flexShrink: 0, color: "var(--roam-accent)", display: "flex" }}>
+                    <GloveboxMark size={20} ariaLabel="Glovebox" />
                   </div>
-                  <div style={{
-                    padding: "12px 16px", borderRadius: "4px 16px 16px 16px",
-                    background: "var(--roam-surface)",
-                    border: "1px solid var(--roam-border)",
-                  }}>
-                    <TypingDots />
-                  </div>
+                  <TypingDots />
                 </div>
               ) : null}
 

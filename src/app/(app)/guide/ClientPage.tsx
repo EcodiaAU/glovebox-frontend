@@ -305,7 +305,7 @@ export default function GuideClientPage(props: {
     boot();
     return () => {
       cancelled = true;
-      // Don't reset didGreetRef here — if the effect re-runs (e.g. strict
+      // Don't reset didGreetRef here. If the effect re-runs (e.g. strict
       // mode double-mount, or a ref-changing re-render that drops us into
       // the deps), the greeting would fire twice. The ref guards across
       // the component's lifetime; we only reset if the plan_id changes.
@@ -403,7 +403,7 @@ export default function GuideClientPage(props: {
       setErr(null);
       haptic.medium();
       // Fire in background so the GuideView Add button can flip to "Added"
-      // immediately. We don't navigate away anymore — the user stays on
+      // immediately. We don't navigate away anymore. The user stays on
       // Guide so they can add more places, and the trip updates under
       // them via IDB/sync.
       try {
@@ -587,111 +587,65 @@ export default function GuideClientPage(props: {
         )}
       </div>
 
-      {/* ── PROGRESS BAR (real trip progress, no fake map) ── */}
+      {/* Editorial progress strip - hairline bar + quiet caption, no
+          bordered card, no gradient fill, no marker dots that ride the
+          line. The marker dots and full schematic live on /trip. */}
       {tripProgress && tripProgress.total_km > 0 && (
         <div style={{
-          margin: "8px 16px 0",
-          padding: "12px 14px",
-          borderRadius: 14,
-          background: "var(--c-surface)",
-          border: "1px solid var(--c-border)",
-          boxShadow: "var(--sh-card)",
+          margin: "10px 16px 0",
           flexShrink: 0,
         }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-            <div className="t-mono" style={{
-              fontSize: 10, color: "var(--c-text-muted)",
-              textTransform: "uppercase", letterSpacing: 0.4,
-            }}>Trip progress</div>
-            <div className="t-mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--c-accent)" }}>
-              {Math.round((tripProgress.km_from_start / tripProgress.total_km) * 100)}%
-            </div>
-          </div>
-          <div style={{ position: "relative", height: 8, borderRadius: 4, background: "var(--c-surface-muted)", overflow: "hidden" }}>
+          <div style={{
+            position: "relative", height: 2, borderRadius: 1,
+            background: "var(--roam-border)", overflow: "hidden",
+          }}>
             <div style={{
               position: "absolute", left: 0, top: 0, bottom: 0,
               width: `${Math.min(100, (tripProgress.km_from_start / tripProgress.total_km) * 100)}%`,
-              background: "linear-gradient(90deg, var(--c-accent), var(--c-success))",
+              background: "var(--roam-accent)",
               transition: "width 0.5s ease-out",
             }}/>
-            {(() => {
-              const stops = (navpack?.req?.stops ?? plan.preview?.stops ?? []) as TripStop[];
-              const legs = navpack?.primary?.legs ?? [];
-              if (stops.length < 2 || legs.length === 0) return null;
-              let cumKm = 0;
-              const markers: { pct: number; visited: boolean; name: string }[] = [];
-              markers.push({
-                pct: 0,
-                visited: tripProgress.visited_stop_ids.includes(stops[0]?.id ?? ""),
-                name: stops[0]?.name ?? "",
-              });
-              for (let i = 0; i < legs.length; i++) {
-                cumKm += legs[i].distance_m / 1000;
-                const stop = stops[i + 1];
-                if (stop) markers.push({
-                  pct: (cumKm / tripProgress.total_km) * 100,
-                  visited: tripProgress.visited_stop_ids.includes(stop.id ?? ""),
-                  name: stop.name ?? "",
-                });
-              }
-              return markers.map((m, idx) => (
-                <div key={idx} title={m.name} style={{
-                  position: "absolute",
-                  left: `${Math.min(100, m.pct)}%`, top: -1,
-                  width: 10, height: 10, borderRadius: 999,
-                  background: m.visited ? "var(--c-accent)" : "var(--c-surface)",
-                  border: "2px solid var(--c-border-strong)",
-                  transform: "translateX(-50%)", zIndex: 2,
-                }}/>
-              ));
-            })()}
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-            <div className="t-mono" style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
-              {Math.round(tripProgress.km_from_start)} km done
-            </div>
-            <div className="t-mono" style={{ fontSize: 11, fontWeight: 700, color: "var(--c-text)" }}>
-              {Math.round(tripProgress.km_remaining)} km left
-            </div>
+          <div style={{
+            display: "flex", justifyContent: "space-between", marginTop: 6,
+            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+            fontStyle: "italic",
+            fontSize: 12,
+            color: "var(--roam-text-muted)",
+          }}>
+            <span>{Math.round(tripProgress.km_from_start)} km done.</span>
+            <span>{Math.round(tripProgress.km_remaining)} km to go.</span>
           </div>
         </div>
       )}
 
-      {/* GPS status pill */}
+      {/* GPS status as quiet italic text, no pill, no chrome. */}
       {(geo.loading || geo.error) && (
-        <div style={{ margin: "8px 16px 0", flexShrink: 0 }}>
-          {geo.loading ? (
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              padding: "6px 10px", borderRadius: 999,
-              background: "var(--c-surface)", border: "1px solid var(--c-border)",
-              color: "var(--c-text-muted)", fontSize: 12, fontWeight: 700,
-            }}>
-              <Satellite size={14}/> Getting GPS fix…
-            </div>
-          ) : (
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              padding: "6px 10px", borderRadius: 999,
-              background: "var(--c-warn-bg)", color: "var(--c-warn-text)",
-              fontSize: 12, fontWeight: 700,
-            }}>
-              <AlertTriangle size={14}/> {geo.error}
-            </div>
-          )}
+        <div style={{
+          margin: "8px 16px 0", flexShrink: 0,
+          fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+          fontStyle: "italic",
+          fontSize: 13,
+          color: geo.error ? "var(--roam-warn)" : "var(--roam-text-muted)",
+          display: "inline-flex", alignItems: "center", gap: 8,
+        }}>
+          {geo.loading ? <Satellite size={13}/> : <AlertTriangle size={13}/>}
+          {geo.loading ? "Getting GPS fix." : geo.error}
         </div>
       )}
 
       {err ? (
-        <div style={{
+        <p style={{
           margin: "12px 16px 0",
-          padding: "10px 12px", borderRadius: 12,
-          background: "var(--c-error-bg)", color: "var(--c-error-text)",
-          display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13,
+          fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
+          fontStyle: "italic",
+          fontSize: 14,
+          color: "var(--roam-danger)",
+          display: "inline-flex", alignItems: "center", gap: 8,
         }}>
-          <AlertTriangle size={16}/>
+          <AlertTriangle size={14}/>
           {err}
-        </div>
+        </p>
       ) : null}
 
       {/* ── Editorial intro - shown until guide has messages ───── */}
