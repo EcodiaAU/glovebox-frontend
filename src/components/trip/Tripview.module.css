@@ -204,44 +204,42 @@
   outline-color: var(--roam-border-strong);
 }
 
-/* ── Stop marker (icon circle) ───────────────────────────────── */
-
+/* Editorial marker. Single muted circle for every stop type. Type
+   differentiation is carried by position in the list and the leg-pill
+   text between stops, not by colour-coded marker tints. The old
+   colour scheme (green start, ochre end, amber via, sky POI) read as
+   a chromatic noise field at scale. */
 .stopMarker {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-card);
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--roam-bg);
+  border: 2px solid var(--roam-accent);
   display: grid;
   place-items: center;
   flex-shrink: 0;
   position: relative;
 }
 
-/* Unified muted marker style — type differentiated by subtle tint only */
-.stopMarker[data-type="start"] { background: var(--accent-tint); color: var(--brand-eucalypt); }
-.stopMarker[data-type="end"]   { background: var(--danger-tint); color: var(--brand-ochre); }
-.stopMarker[data-type="via"]   { background: var(--severity-minor-tint); color: var(--brand-amber); }
-.stopMarker[data-type="poi"]   { background: var(--info-tint); color: var(--brand-sky); }
+.stopMarker[data-type="start"],
+.stopMarker[data-type="end"] {
+  background: var(--roam-accent);
+  border-color: var(--roam-accent);
+}
+.stopMarker[data-type="via"]   { background: var(--roam-bg); border-color: var(--roam-accent); }
+.stopMarker[data-type="poi"]   { background: var(--roam-bg); border-color: var(--roam-text-muted); }
 
-/* ── Index badge (small number in corner) ────────────────────── */
-
-.indexBadge {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 15px;
-  height: 15px;
-  border-radius: 999px;
-  background: var(--roam-surface);
-  display: grid;
-  place-items: center;
-  font-size: 8px;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--roam-text-muted);
-  border: 1.5px solid var(--roam-border);
+/* Marker glyphs are hidden inside the minimal dot - the dot itself
+   carries the meaning. Lucide icons / Material symbols rendered
+   inside stopMarker collapse to zero so they don't burst the 16px. */
+.stopMarker > * {
+  display: none;
 }
 
-/* Removed per-type index badge colouring — unified muted style */
+/* Index badge is suppressed: position in the list is the index. */
+.indexBadge {
+  display: none;
+}
 
 /* ── Stop content (name + meta) ──────────────────────────────── */
 
@@ -251,13 +249,13 @@
 }
 
 .stopName {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 14.5px;
+  font-weight: 500;
   color: var(--roam-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: -0.1px;
+  letter-spacing: 0;
 }
 
 .stopMeta {
@@ -361,20 +359,20 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* 14px stopCard padding + 16px to marker center = 30px from left edge */
-  padding-left: 30px;
+  /* 14px stopCard padding + 8px (half of 16px marker) = 22px from card
+     left edge so the line column hits the centre of the marker dot. */
+  padding-left: 22px;
   padding-top: 0;
   padding-bottom: 0;
   gap: 0;
 }
 
 .connectorLine {
-  width: 2.5px;
+  width: 1.5px;
   min-height: 8px;
   flex-shrink: 0;
-  background: var(--c-accent, var(--roam-accent));
-  opacity: 0.45;
-  border-radius: 2px;
+  background: var(--roam-border-strong);
+  border-radius: 1px;
   align-self: stretch;
 }
 
@@ -387,11 +385,10 @@
 }
 
 .connector:has(.legPill) .connectorLine {
-  width: 2.5px;
-  height: 12px;
+  width: 1.5px;
+  height: 10px;
   min-height: unset;
   align-self: unset;
-  opacity: 0.45;
 }
 
 /* Stop cards keep position:relative for the indexBadge inside the marker
@@ -407,12 +404,15 @@
 /* ── Leg time/distance pill ──────────────────────────────────── */
 
 .legPill {
-  font-size: 10px;
-  font-weight: 700;
+  font-family: "Spectral", "Iowan Old Style", Garamond, serif;
+  font-style: italic;
+  font-size: 11.5px;
+  font-weight: 400;
   color: var(--roam-text-muted);
-  background: var(--roam-surface-hover);
-  border-radius: 6px;
-  padding: 2px 7px;
+  background: transparent;
+  border-radius: 0;
+  padding: 2px 0;
+  margin-left: -4px;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
@@ -423,28 +423,35 @@
 
 .addStopBtn {
   margin-top: 8px;
-  padding: 12px 16px;
-  min-height: 48px;
-  border-radius: var(--r-card);
-  border: 1.5px dashed var(--roam-border);
+  padding: 10px 0;
+  min-height: 44px;
+  border-radius: 0;
+  border: none;
   background: transparent;
   color: var(--roam-text-muted);
-  font-size: 13px;
-  font-weight: 700;
+  font-family: "Spectral", "Iowan Old Style", Garamond, serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 400;
   cursor: pointer;
-  text-align: center;
-  transition: border-color 120ms ease, color 120ms ease;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--roam-text-muted) 35%, transparent);
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-.addStopBtn:active:not(:disabled) {
-  border-color: var(--roam-text-muted);
+.addStopBtn:active:not(:disabled),
+.addStopBtn:hover:not(:disabled) {
   color: var(--roam-text);
+  text-decoration-color: var(--roam-text);
 }
 
 .addStopBtn:disabled {
