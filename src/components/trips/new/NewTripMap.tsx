@@ -336,27 +336,31 @@ function ensureDataSources(map: MLMap) {
   }
   if (!map.getSource(STOPS_SOURCE)) {
     map.addSource(STOPS_SOURCE, { type: "geojson", data: EMPTY_FC });
-    // Solid full-opacity accent orb, no rim (Tate 2026-05-27).
+    // Solid full-opacity accent orb with white border (Tate 2026-05-28).
     map.addLayer({
       id: STOPS_LAYER, type: "circle", source: STOPS_SOURCE,
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 7, 14, 9],
         "circle-opacity": 1,
         "circle-color": "#b5452e",
-        "circle-stroke-width": 0,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 1,
+        "circle-stroke-color": "#ffffff",
       },
     });
   }
   if (!map.getSource(PLACES_SOURCE)) {
     map.addSource(PLACES_SOURCE, { type: "geojson", data: EMPTY_FC });
-    // Solid full-opacity orb, no rim (Tate 2026-05-27).
+    // Solid full-opacity orb with white border (Tate 2026-05-28).
     map.addLayer({
       id: PLACES_LAYER, type: "circle", source: PLACES_SOURCE,
       paint: {
         "circle-radius": 4.5,
         "circle-opacity": 1,
         "circle-color": "#34d399",
-        "circle-stroke-width": 0,
+        "circle-stroke-width": 1.5,
+        "circle-stroke-opacity": 1,
+        "circle-stroke-color": "#ffffff",
       },
     });
   }
