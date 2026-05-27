@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import type { RoamPosition } from "@/lib/native/geolocation";
 import type { TripStop } from "@/lib/types/trip";
-import { roamNotify } from "@/lib/native/notifications";
-import { haptic } from "@/lib/native/haptics";
 
 /** Radius in meters - triggers notification when user is within this distance */
 const PROXIMITY_RADIUS_M = 150;
@@ -76,13 +74,11 @@ export function useStopProximity(opts: {
         if (lastNotified && now - lastNotified < COOLDOWN_MS) continue;
 
         notifiedRef.current.set(stopId, now);
-        const stopName = stop.name?.trim() || `Stop ${i + 1}`;
 
-        // Fire notification
-        roamNotify.stopArrived(stopName);
-        haptic.success();
-
-        // Callback to parent
+        // Arrival push notification removed (Tate 2026-05-27): the
+        // "you've arrived at <stop>" prompt is no longer relevant. The
+        // proximity detection + onArrival callback stay wired for any
+        // consumer that wants the event, but no notification fires.
         onArrival?.({
           stop,
           stopIndex: i,

@@ -370,11 +370,10 @@ function makeIconSVG(pathD: string, bgColor: string, sizePx: number, iconColor: 
   // Icon is drawn in a 24x24 viewbox, scaled and centered within the circle
   const iconScale = (sizePx * 0.38) / 24;
   const iconOff = (sizePx - 24 * iconScale) / 2;
-  // Crisp markers: solid fill, opaque, single thin white ring, no drop-shadow
-  // or gaussian blur. The previous translucent + blurred + soft-shadow stack
-  // read as "fuzzy" on retina; this version is pixel-sharp at every zoom.
+  // Crisp markers: solid fill, opaque, no ring (white rim removed per Tate
+  // 2026-05-27), no drop-shadow or gaussian blur. Pixel-sharp at every zoom.
   return `<svg width="${sizePx}" height="${sizePx}" viewBox="0 0 ${sizePx} ${sizePx}" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="${r}" cy="${r}" r="${r - 1.5}" fill="${bgColor}" stroke="#ffffff" stroke-width="1.75"/>
+    <circle cx="${r}" cy="${r}" r="${r}" fill="${bgColor}"/>
     <g transform="translate(${iconOff},${iconOff}) scale(${iconScale.toFixed(3)})">
       <path d="${pathD}" fill="${iconColor}" fill-rule="evenodd"/>
     </g>
@@ -1609,8 +1608,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       /* ── 1. Route layers - glassmorphic warm outback ─────────────────── */
       addOrUpdateGeoJsonSource(map, ROUTE_SRC, routeFC);
 
-      // Glow removed per visual review - the route now reads crisp.
-      // Casing kept as a thin opaque white halo for legibility on dark tiles.
+      // White casing halo removed per visual review (Tate 2026-05-27): the
+      // route reads as a single solid vector with no outer rim. Layer kept
+      // registered (cleanup/order arrays reference it) but rendered invisible.
       if (!map.getLayer(ROUTE_CASING)) {
         map.addLayer({
           id: ROUTE_CASING,
@@ -1618,9 +1618,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: ROUTE_SRC,
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
-            "line-color": "rgba(255,255,255,0.95)",
-            "line-width": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 6.5, 14, 9.5],
-            "line-opacity": 1,
+            "line-color": "rgba(255,255,255,0)",
+            "line-width": 0,
+            "line-opacity": 0,
           },
         });
       }
@@ -1931,8 +1931,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           paint: {
             "circle-color": ["step", ["get", "point_count"], "#22804a", 10, "#1e7342", 30, "#186338", 80, "#145530"],
             "circle-radius": ["step", ["get", "point_count"], 12, 10, 14, 30, 16, 80, 20],
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": 2,
+            "circle-stroke-width": 0,
             "circle-opacity": 1,
             "circle-blur": 0,
           },
@@ -1973,8 +1972,10 @@ export const TripMap = React.memo(function TripMap(props: Props) {
               ["match", ["get", "sizeClass"], "lg", 19, "md", 16, 14],
             ],
             "circle-color": ["get", "color"],
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": ["case", ["==", ["get", "id"], props.focusedSuggestionId ?? ""], 3, 2],
+            // No white rim. Focused place gets a thin same-hue darker ring
+            // for affordance; unfocused orbs are bare solid colour.
+            "circle-stroke-color": "rgba(0,0,0,0.35)",
+            "circle-stroke-width": ["case", ["==", ["get", "id"], props.focusedSuggestionId ?? ""], 2.5, 0],
             "circle-opacity": 1,
             "circle-blur": 0,
           },
@@ -2125,7 +2126,10 @@ export const TripMap = React.memo(function TripMap(props: Props) {
         });
       }
 
-      // Outer ring - frosted glass border (translucent white with accent stroke)
+      // Stop orb - single solid full-opacity circle. The frosted white
+      // outer rim + translucent fill were removed (Tate 2026-05-27): orbs
+      // now read as solid coloured dots with no white rim. This OUTER layer
+      // is the orb body at full opacity, no stroke.
       if (!map.getLayer(STOPS_OUTER)) {
         map.addLayer({
           id: STOPS_OUTER,
@@ -2134,15 +2138,15 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           minzoom: 3,
           paint: {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 6, 6, 8, 10, 12, 14, 16, 17, 22],
-            "circle-color": "rgba(250,246,239,0.18)",
-            "circle-stroke-color": ["match", ["get", "type"], "start", "rgba(45,110,64,0.7)", "end", "rgba(181,69,46,0.7)", "via", "rgba(122,61,153,0.7)", "rgba(26,111,166,0.7)"],
-            "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1.5, 10, 2.5, 14, 3.5],
+            "circle-color": ["match", ["get", "type"], "start", "#2d6e40", "end", "#b5452e", "via", "#7a3d99", "#1a6fa6"],
+            "circle-stroke-width": 0,
             "circle-opacity": 1,
           },
         });
       }
 
-      // Inner filled circle - frosted accent with glass translucency
+      // Inner core - a slightly deeper concentric for depth, full opacity,
+      // no white stroke. Reads as a two-tone solid orb, zero white.
       if (!map.getLayer(STOPS_INNER)) {
         map.addLayer({
           id: STOPS_INNER,
@@ -2151,9 +2155,8 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           minzoom: 3,
           paint: {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 6, 5.5, 10, 8.5, 14, 12, 17, 16],
-            "circle-color": ["match", ["get", "type"], "start", "rgba(45,110,64,0.85)", "end", "rgba(181,69,46,0.85)", "via", "rgba(122,61,153,0.85)", "rgba(26,111,166,0.85)"],
-            "circle-stroke-color": "rgba(255,255,255,0.3)",
-            "circle-stroke-width": 1,
+            "circle-color": ["match", ["get", "type"], "start", "#235730", "end", "#933722", "via", "#612f7a", "#155884"],
+            "circle-stroke-width": 0,
             "circle-opacity": 1,
           },
         });

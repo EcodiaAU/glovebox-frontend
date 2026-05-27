@@ -1915,6 +1915,68 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     setDragOffset(0);
   }, [dragOffset]);
 
+  // ── Overscroll-to-close (Tate 2026-05-27) ──────────────────────
+  // When the inner scroll box is at its top edge and the user keeps
+  // pulling down, the excess gesture drags the whole sheet and snaps it
+  // down one level (full → expanded → peek) instead of doing nothing.
+  // Engages only at the top edge pulling down, so normal scrolling is
+  // untouched. Imperative listeners (passive:false) so we can
+  // preventDefault the rubber-band while we drive the sheet transform.
+  const scrollElRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = scrollElRef.current;
+    if (!el) return;
+    let startY = 0;
+    let engaged = false;
+    let lastDelta = 0;
+
+    function onStart(ev: TouchEvent) {
+      startY = ev.touches[0].clientY;
+      engaged = false;
+      lastDelta = 0;
+    }
+    function onMove(ev: TouchEvent) {
+      const el2 = scrollElRef.current;
+      if (!el2) return;
+      const dy = ev.touches[0].clientY - startY;
+      if (!engaged) {
+        // Only hand the gesture to the sheet when at the top edge and
+        // the finger is travelling DOWN (the close direction).
+        if (el2.scrollTop <= 0 && dy > 8) {
+          engaged = true;
+          isDragging.current = true;
+          setIsDraggingState(true);
+        } else {
+          return; // native scroll
+        }
+      }
+      ev.preventDefault();
+      lastDelta = Math.max(0, dy);
+      setDragOffset(lastDelta);
+    }
+    function onEnd() {
+      if (!engaged) return;
+      engaged = false;
+      isDragging.current = false;
+      setIsDraggingState(false);
+      if (lastDelta > 60) {
+        setSheetSnap((s) => (s === "full" ? "expanded" : s === "expanded" ? "peek" : "peek"));
+        haptic.tap();
+      }
+      setDragOffset(0);
+    }
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd, { passive: true });
+    el.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+    };
+  }, []);
+
   // ── Derived values ─────────────────────────────────────────────
   // Snap positions (translateY values).
   // The sheet extends 300px below the viewport to absorb spring bounce,
@@ -2171,14 +2233,16 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         onClose={() => setMapQuickMenu(null)}
       />
 
-      {/* ── Report FAB ── only shown at peek; tucked above the sheet's visible top
-           so it never sits on top of the sheet content. Hidden at expanded/full
-           where the sheet covers the map and the action bar handles primary actions. */}
+      {/* ── Report FAB ── only shown at peek. Docked to the top-right map
+           control rail directly beneath the layer-menu button (MapStyleSwitcher
+           at safe-top+12 h44, overlay-layer toggle at safe-top+64 h44), so it
+           reads as part of the rail rather than floating mid-map. Hidden at
+           expanded/full where the sheet covers the map. */}
       {!activeNav.isActive && sheetSnap === "peek" && (
         <div className="trip-report-fab" style={{
           position: "absolute",
-          bottom: "calc(var(--roam-tab-h, 80px) + var(--roam-safe-bottom, 0px) + 360px)",
-          right: 12,
+          top: "calc(env(safe-area-inset-top, 0px) + 116px)",
+          right: 10,
           zIndex: 18,
           display: "flex",
           flexDirection: "column",
@@ -2408,29 +2472,34 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       >
         {/* Elevation strip removed from sheet per redesign — lives in T-b-T ProgressCard only. */}
 
+        {/* Grab zone: handle + title + distance/time are ONE large draggable
+            target (Tate 2026-05-27 - the thin-handle-only hitbox was too small
+            on mobile). The action-pill row below is intentionally outside the
+            drag zone so taps don't get swallowed by the drag handler. */}
         <div
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           style={{
-            padding: elevation?.profile ? "8px 20px 6px" : "10px 20px 6px",
             touchAction: "none",
             cursor: "grab",
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+            paddingBottom: 4,
           }}
         >
-          {/* Drag handle (prototype style) */}
           <div style={{
-            width: 36, height: 4, borderRadius: 4,
-            background: "var(--c-border-strong)",
-          }}/>
-        </div>
+            padding: elevation?.profile ? "8px 20px 6px" : "10px 20px 6px",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+          }}>
+            {/* Drag handle (prototype style) */}
+            <div style={{
+              width: 36, height: 4, borderRadius: 4,
+              background: "var(--c-border-strong)",
+            }}/>
+          </div>
 
-        {/* Header (prototype CardHeader: star + title + subtitle + 2nd-row actions) */}
-        <div style={{ padding: "2px 20px 12px" }}>
-          {/* Row 1: star icon + title + subtitle */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+          {/* Row 1: star icon + title + distance/time (now part of grab zone) */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "2px 20px 10px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--c-accent)" style={{ flexShrink: 0, marginTop: 2 }}>
               <path d="M12 3l2.7 5.5L21 9.4l-4.5 4.4 1 6.2L12 17l-5.5 3 1-6.2L3 9.4l6.3-.9L12 3z"/>
             </svg>
@@ -2466,7 +2535,10 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
               </div>
             </div>
           </div>
+        </div>
 
+        {/* Header actions (outside the drag zone) */}
+        <div style={{ padding: "0 20px 12px" }}>
           {/* Row 2: action row — each pill takes flex:1 so the row stretches edge-to-edge,
                matching the StatRow chips below visually. Upgrade pinned right when shown. */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -2640,6 +2712,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         {/* Scrollable content */}
         <div style={{ flex: 1, overflow: "hidden", touchAction: "pan-y" }}>
           <div
+            ref={scrollElRef}
             className="roam-scroll"
             style={{
               height: "100%",
@@ -2851,7 +2924,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           bottom: 0,
           padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
           display: "flex", gap: 8, alignItems: "center",
-          background: "var(--c-surface)",
+          // Match the bottom tab bar surface, not the sheet, so the action
+          // bar reads as part of the nav chrome (Tate 2026-05-27).
+          background: "var(--tab-bar-bg, var(--c-surface))",
           borderTop: "1px solid var(--c-border)",
           zIndex: 22, // above sheet (20) but below modals
           transition: "transform var(--dur-normal) ease, opacity var(--dur-fast) ease",

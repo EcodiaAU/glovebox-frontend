@@ -329,36 +329,34 @@ function ensureDataSources(map: MLMap) {
       id: ROUTE_LAYER, type: "line", source: ROUTE_SOURCE,
       paint: {
         "line-width": ["interpolate", ["linear"], ["zoom"], 4, 3, 10, 5, 14, 8],
-        "line-opacity": 0.9,
+        "line-opacity": 1,
         "line-color": "#2e7cf6",
       },
     });
   }
   if (!map.getSource(STOPS_SOURCE)) {
     map.addSource(STOPS_SOURCE, { type: "geojson", data: EMPTY_FC });
+    // Solid full-opacity accent orb, no rim (Tate 2026-05-27).
     map.addLayer({
       id: STOPS_LAYER, type: "circle", source: STOPS_SOURCE,
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 7, 14, 9],
-        "circle-opacity": 0.95,
-        "circle-color": "#ffffff",
-        "circle-stroke-width": 2,
-        "circle-stroke-opacity": 0.9,
-        "circle-stroke-color": "#111827",
+        "circle-opacity": 1,
+        "circle-color": "#b5452e",
+        "circle-stroke-width": 0,
       },
     });
   }
   if (!map.getSource(PLACES_SOURCE)) {
     map.addSource(PLACES_SOURCE, { type: "geojson", data: EMPTY_FC });
+    // Solid full-opacity orb, no rim (Tate 2026-05-27).
     map.addLayer({
       id: PLACES_LAYER, type: "circle", source: PLACES_SOURCE,
       paint: {
         "circle-radius": 4.5,
-        "circle-opacity": 0.85,
+        "circle-opacity": 1,
         "circle-color": "#34d399",
-        "circle-stroke-width": 1,
-        "circle-stroke-opacity": 0.8,
-        "circle-stroke-color": "#0b1220",
+        "circle-stroke-width": 0,
       },
     });
   }

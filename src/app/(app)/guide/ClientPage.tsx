@@ -543,8 +543,8 @@ export default function GuideClientPage(props: {
             borderBottom: "1px solid var(--roam-border)",
           }}>
             {([
-              { key: "discoveries" as const, label: "Found", badge: guideTabBar.discoveredCount > 0 ? guideTabBar.discoveredCount : null },
               { key: "chat" as const, label: "Chat", badge: null },
+              { key: "discoveries" as const, label: "Found", badge: guideTabBar.discoveredCount > 0 ? guideTabBar.discoveredCount : null },
             ]).map((tab) => {
               const active = guideTabBar.activeTab === tab.key;
               return (

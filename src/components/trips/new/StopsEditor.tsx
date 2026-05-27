@@ -508,6 +508,62 @@ export function StopsEditor(props: {
     setDragOffset(0);
   };
 
+  // ── Overscroll-to-close (Tate 2026-05-27) ──────────────────────
+  // Pulling down past the top edge of the content scroll drags the whole
+  // sheet and snaps it from expanded back to peek, instead of doing
+  // nothing. Engages only at the top edge travelling down.
+  const scrollElRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = scrollElRef.current;
+    if (!el) return;
+    let startY = 0;
+    let engaged = false;
+    let lastDelta = 0;
+    function onStart(ev: TouchEvent) {
+      startY = ev.touches[0].clientY;
+      engaged = false;
+      lastDelta = 0;
+    }
+    function onMove(ev: TouchEvent) {
+      const el2 = scrollElRef.current;
+      if (!el2 || isBuilding) return;
+      const dy = ev.touches[0].clientY - startY;
+      if (!engaged) {
+        if (el2.scrollTop <= 0 && dy > 8) {
+          engaged = true;
+          isDragging.current = true;
+          setIsDraggingState(true);
+        } else {
+          return;
+        }
+      }
+      ev.preventDefault();
+      lastDelta = Math.max(0, dy);
+      setDragOffset(lastDelta);
+    }
+    function onEnd() {
+      if (!engaged) return;
+      engaged = false;
+      isDragging.current = false;
+      setIsDraggingState(false);
+      if (lastDelta > 60) {
+        setSnapState("peek");
+        haptic.tap();
+      }
+      setDragOffset(0);
+    }
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd, { passive: true });
+    el.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+    };
+  }, [isBuilding]);
+
   // Peek shows ~280px of content (higher than /trip since we need stops + buttons visible)
   const peekY = `calc(100% - 680px - var(--roam-safe-bottom, 0px))`;
   const expandedY = "0px";
@@ -615,6 +671,7 @@ export function StopsEditor(props: {
 
         {/* CONTENT */}
         <div
+          ref={scrollElRef}
           className="trip-sheet-content"
         >
           {isBuilding ? (
