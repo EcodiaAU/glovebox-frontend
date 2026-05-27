@@ -1,0 +1,52 @@
+/* Glovebox CarPlay user-facing strings.
+ *
+ * Keys mirror those used in NSLocalizedString call-sites in the iOS Swift
+ * source. The `value:` parameter on each call-site is the canonical English
+ * source string; this file provides the explicit English copy. Future
+ * translations land as siblings (e.g. fr.lproj/Localizable.strings).
+ *
+ * Compliance note: Apple's CarPlay HIG asks for NSLocalizedString-wrapped
+ * strings on user-visible CarPlay surfaces even for English-only apps so
+ * non-English vehicle systems can render correctly when CarPlay is set to a
+ * different locale than the phone.
+ */
+
+"carplay.plans.template.title" = "Plans";
+"carplay.plans.section.header.empty" = "Plans";
+"carplay.plans.section.header.active" = "Active trip";
+"carplay.plans.empty.title" = "No saved trips";
+"carplay.plans.empty.detail" = "Plan a trip in Glovebox on your phone; it will show here.";
+
+"carplay.trip.start" = "Start";
+"carplay.trip.overview" = "Overview";
+
+"carplay.origin.currentLocation" = "Current location";
+
+"carplay.alert.ok" = "OK";
+"carplay.alert.acknowledge" = "Acknowledge";
+
+"carplay.alert.noGps.title" = "Cannot plan route";
+"carplay.alert.noGps.detail" = "Waiting for GPS fix. Try again once the map shows your position.";
+
+"carplay.alert.routeUnavailable.title" = "Route unavailable";
+"carplay.alert.routeUnavailable.detail" = "Could not reach Glovebox to plan this route. Check signal and try again.";
+
+"carplay.alert.fuel.title" = "Fuel ahead";
+"carplay.alert.fuel.reason.lastChance" = "Last fuel before next stretch.";
+"carplay.alert.fuel.reason.rangeLow" = "Fuel range low.";
+"carplay.alert.fuel.detailFormat" = "%@ in %.0f km. %@";
+
+"carplay.hazard.type.flood" = "Flood";
+"carplay.hazard.type.fire" = "Fire";
+"carplay.hazard.type.closure" = "Road closure";
+"carplay.hazard.type.wildlife" = "Wildlife zone";
+"carplay.hazard.type.weather" = "Severe weather";
+"carplay.hazard.type.surface" = "Road surface warning";
+"carplay.hazard.type.generic" = "Hazard";
+
+"carplay.info.title" = "About Glovebox";
+"carplay.info.routing" = "Routing: Glovebox backend + OSRM.";
+"carplay.info.maps" = "Maps: Apple MapKit.";
+"carplay.info.hazards" = "Hazards: state transport authorities (QLD TMR, NSW TfNSW, VicTraffic, SA DIT, WA Main Roads, NT DIPL, Tas DSG), Bureau of Meteorology, NAFI, DEA satellite imagery.";
+"carplay.info.fuel" = "Fuel pricing: state-published fuel-pricing feeds.";
+"carplay.info.weather" = "Weather: Open-Meteo.";

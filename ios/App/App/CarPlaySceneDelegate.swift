@@ -15,9 +15,12 @@
 
 import CarPlay
 import UIKit
+import os.log
 
 @available(iOS 14.0, *)
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+
+    private static let logger = Logger(subsystem: "au.ecodia.roam", category: "carplay.scene")
 
     var interfaceController: CPInterfaceController?
     var carWindow: UIWindow?
@@ -28,6 +31,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
+        Self.logger.info("scene.didConnect.windowed")
         self.interfaceController = interfaceController
         self.carWindow = window
 
@@ -72,6 +76,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         didDisconnectInterfaceController interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
+        Self.logger.info("scene.didDisconnect.windowed")
         CarPlayNavigationCoordinator.shared.sceneDidDisconnect()
         self.carWindow = nil
         self.mapViewController = nil
@@ -99,9 +104,12 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         let plansButton = CPBarButton(image: UIImage(systemName: "list.bullet") ?? UIImage()) { [weak self] _ in
             self?.presentPlansListTemplate()
         }
+        let infoButton = CPBarButton(image: UIImage(systemName: "info.circle") ?? UIImage()) { [weak self] _ in
+            self?.presentInformationTemplate()
+        }
 
         mapTemplate.leadingNavigationBarButtons = [searchButton]
-        mapTemplate.trailingNavigationBarButtons = [plansButton]
+        mapTemplate.trailingNavigationBarButtons = [plansButton, infoButton]
 
         return mapTemplate
     }
@@ -109,11 +117,16 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     private func presentSearchTemplate() {
         let search = CPSearchTemplate()
         search.delegate = CarPlayNavigationCoordinator.shared
-        interfaceController?.pushTemplate(search, animated: true, completion: nil)
+        CarPlayNavigationCoordinator.shared.pushTemplate(search)
     }
 
     private func presentPlansListTemplate() {
         let list = CarPlayNavigationCoordinator.shared.plansListTemplate()
-        interfaceController?.pushTemplate(list, animated: true, completion: nil)
+        CarPlayNavigationCoordinator.shared.pushTemplate(list)
+    }
+
+    private func presentInformationTemplate() {
+        let info = CarPlayNavigationCoordinator.shared.informationTemplate()
+        CarPlayNavigationCoordinator.shared.pushTemplate(info)
     }
 }

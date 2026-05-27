@@ -1,13 +1,33 @@
 import UIKit
 import Capacitor
+import AVFoundation
+import os.log
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    private static let logger = Logger(subsystem: "au.ecodia.roam", category: "app")
+
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Configure the shared audio session so future CarPlay voice maneuvers
+        // and any TTS playback route through the car speakers via the .playback
+        // category, duck other audio rather than interrupt it, and continue to
+        // play when the screen is locked (combined with UIBackgroundModes audio
+        // in Info.plist).
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(
+                .playback,
+                mode: .spokenAudio,
+                options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers]
+            )
+            try session.setActive(true, options: [])
+            Self.logger.info("audio.session.configured category=playback mode=spokenAudio")
+        } catch {
+            Self.logger.error("audio.session.configure_failed err=\(error.localizedDescription, privacy: .public)")
+        }
         return true
     }
 

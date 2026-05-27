@@ -19,11 +19,21 @@
 import CarPlay
 import Foundation
 import MapKit
+import os.log
+import AVFoundation
 
 @available(iOS 14.0, *)
 final class CarPlayNavigationCoordinator: NSObject {
 
     static let shared = CarPlayNavigationCoordinator()
+
+    // Structured logging filterable in Console.app on a real device.
+    // Filter on subsystem au.ecodia.roam + category carplay.
+    static let logger = Logger(subsystem: "au.ecodia.roam", category: "carplay")
+
+    // Apple caps nav-app template depth at 5 (root + 4 pushes).
+    // Push attempts past the cap are dropped with an assert in debug.
+    static let templateDepthCap = 5
 
     // Scene-owned references handed in via sceneDidConnect.
     private(set) var isSceneConnected = false
@@ -224,8 +234,12 @@ final class CarPlayNavigationCoordinator: NSObject {
         guard let mapTemplate = activeMapTemplate else { return }
         guard let originLoc = RoamCarPlaySharedState.shared.driverLocation else {
             presentTransientAlert(
-                title: "Cannot plan route",
-                detail: "Waiting for GPS fix. Try again once the map shows your position."
+                title: NSLocalizedString("carplay.alert.noGps.title",
+                                         value: "Cannot plan route",
+                                         comment: "Title shown on CarPlay when planning is attempted without a GPS fix."),
+                detail: NSLocalizedString("carplay.alert.noGps.detail",
+                                          value: "Waiting for GPS fix. Try again once the map shows your position.",
+                                          comment: "Detail shown on CarPlay when planning is attempted without a GPS fix.")
             )
             return
         }
@@ -253,8 +267,12 @@ final class CarPlayNavigationCoordinator: NSObject {
                   let route = try? JSONDecoder().decode(RouteResponseBody.self, from: data) else {
                 DispatchQueue.main.async {
                     self?.presentTransientAlert(
-                        title: "Route unavailable",
-                        detail: "Could not reach Roam to plan this route. Check signal and try again."
+                        title: NSLocalizedString("carplay.alert.routeUnavailable.title",
+                                                 value: "Route unavailable",
+                                                 comment: "Title shown on CarPlay when the routing backend is unreachable."),
+                        detail: NSLocalizedString("carplay.alert.routeUnavailable.detail",
+                                                  value: "Could not reach Glovebox to plan this route. Check signal and try again.",
+                                                  comment: "Detail shown on CarPlay when the routing backend is unreachable.")
                     )
                 }
                 return
@@ -265,7 +283,9 @@ final class CarPlayNavigationCoordinator: NSObject {
                 let destCoord = CLLocationCoordinate2D(latitude: lat, longitude: lng)
 
                 let originItem = MKMapItem(placemark: MKPlacemark(coordinate: originCoord))
-                originItem.name = "Current location"
+                originItem.name = NSLocalizedString("carplay.origin.currentLocation",
+                                                    value: "Current location",
+                                                    comment: "Map item name for the driver's current location.")
                 let destItem = MKMapItem(placemark: MKPlacemark(coordinate: destCoord))
                 destItem.name = name
 
@@ -286,9 +306,13 @@ final class CarPlayNavigationCoordinator: NSObject {
                 self.activeCPTrip = trip
 
                 let textConfig = CPTripPreviewTextConfiguration(
-                    startButtonTitle: "Start",
+                    startButtonTitle: NSLocalizedString("carplay.trip.start",
+                                                       value: "Start",
+                                                       comment: "Start-navigation button on CarPlay trip preview."),
                     additionalRoutesButtonTitle: nil,
-                    overviewButtonTitle: "Overview"
+                    overviewButtonTitle: NSLocalizedString("carplay.trip.overview",
+                                                          value: "Overview",
+                                                          comment: "Overview button on CarPlay trip preview.")
                 )
                 mapTemplate.showTripPreviews([trip], textConfiguration: textConfig)
                 self.mapViewController?.renderRoute(polyline6: route.geometry_polyline6)
@@ -410,11 +434,17 @@ final class CarPlayNavigationCoordinator: NSObject {
               next.id != lastAnnouncedHazardId else { return }
         lastAnnouncedHazardId = next.id
 
+        let isCritical = (next.severity == "critical")
         let alert = CPNavigationAlert(
             titleVariants: [next.headline],
-            subtitleVariants: [next.detail ?? next.typeLabel],
+            subtitleVariants: [next.detail ?? Self.localizedHazardTypeLabel(next.typeLabel)],
             image: Self.hazardSymbol(for: next.typeLabel),
-            primaryAction: CPAlertAction(title: "Acknowledge", style: .default) { _ in
+            primaryAction: CPAlertAction(
+                title: NSLocalizedString("carplay.alert.acknowledge",
+                                         value: "Acknowledge",
+                                         comment: "Primary action on a CarPlay navigation alert."),
+                style: .default
+            ) { _ in
                 NotificationCenter.default.post(
                     name: RoamCarPlayBridgePlugin.hazardAcknowledgedNotification,
                     object: nil,
@@ -422,8 +452,9 @@ final class CarPlayNavigationCoordinator: NSObject {
                 )
             },
             secondaryAction: nil,
-            duration: 30
+            duration: isCritical ? 30 : 15
         )
+        Self.logger.info("hazard.alert.present id=\(next.id, privacy: .public) type=\(next.typeLabel, privacy: .public) severity=\(next.severity, privacy: .public)")
         activeMapTemplate?.present(navigationAlert: alert, animated: true)
     }
 
@@ -451,28 +482,56 @@ final class CarPlayNavigationCoordinator: NSObject {
         lastFuelWarningId = next.id
 
         let distKm = distanceToStop / 1000.0
-        let detail = String(format: "%@ in %.0f km. %@",
-                            next.brand ?? next.name, distKm,
-                            next.isLastChance ? "Last fuel before next stretch." : "Fuel range low.")
+        let reasonKey = next.isLastChance
+            ? "carplay.alert.fuel.reason.lastChance"
+            : "carplay.alert.fuel.reason.rangeLow"
+        let reasonFallback = next.isLastChance
+            ? "Last fuel before next stretch."
+            : "Fuel range low."
+        let reason = NSLocalizedString(reasonKey, value: reasonFallback,
+                                       comment: "Reason a fuel alert is firing.")
+        let detailFormat = NSLocalizedString("carplay.alert.fuel.detailFormat",
+                                             value: "%@ in %.0f km. %@",
+                                             comment: "Detail format: brand-or-name, distance km, reason.")
+        let detail = String(format: detailFormat, next.brand ?? next.name, distKm, reason)
         let alert = CPNavigationAlert(
-            titleVariants: ["Fuel ahead"],
+            titleVariants: [NSLocalizedString("carplay.alert.fuel.title",
+                                              value: "Fuel ahead",
+                                              comment: "Title for the CarPlay fuel-stop alert.")],
             subtitleVariants: [detail],
             image: UIImage(systemName: "fuelpump.fill"),
-            primaryAction: CPAlertAction(title: "Acknowledge", style: .default) { _ in },
+            primaryAction: CPAlertAction(
+                title: NSLocalizedString("carplay.alert.acknowledge",
+                                         value: "Acknowledge",
+                                         comment: "Primary action on a CarPlay navigation alert."),
+                style: .default
+            ) { _ in },
             secondaryAction: nil,
-            duration: 30
+            duration: next.isLastChance ? 30 : 15
         )
+        Self.logger.info("fuel.alert.present id=\(next.id, privacy: .public) lastChance=\(next.isLastChance, privacy: .public) distKm=\(distKm, privacy: .public)")
         activeMapTemplate?.present(navigationAlert: alert, animated: true)
     }
 
     // MARK: - Transient alerts (no nav session)
 
     private func presentTransientAlert(title: String, detail: String) {
-        let action = CPAlertAction(title: "OK", style: .default) { [weak self] _ in
+        let action = CPAlertAction(
+            title: NSLocalizedString("carplay.alert.ok",
+                                     value: "OK",
+                                     comment: "Dismiss action for a transient CarPlay alert."),
+            style: .default
+        ) { [weak self] _ in
             self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
         }
-        let alert = CPAlertTemplate(titleVariants: [title, detail], actions: [action])
-        interfaceController?.presentTemplate(alert, animated: true, completion: nil)
+        // CPAlertTemplate.titleVariants takes length variants of the SAME
+        // headline (Apple picks the longest that fits). We compose a longer
+        // single-string variant that carries the detail and provide the
+        // title alone as the shorter variant.
+        let combined = "\(title). \(detail)"
+        let alert = CPAlertTemplate(titleVariants: [combined, title], actions: [action])
+        Self.logger.info("transient.alert.present title=\(title, privacy: .public)")
+        pushTemplate(alert, asModal: true)
     }
 
     // MARK: - Plans list (saved trips from shared state)
@@ -498,17 +557,30 @@ final class CarPlayNavigationCoordinator: NSObject {
         let header: String
         if items.isEmpty {
             let placeholder = CPListItem(
-                text: "No saved trips",
-                detailText: "Plan a trip in Roam on your phone; it will show here."
+                text: NSLocalizedString("carplay.plans.empty.title",
+                                        value: "No saved trips",
+                                        comment: "CarPlay plans list empty-state row title."),
+                detailText: NSLocalizedString("carplay.plans.empty.detail",
+                                              value: "Plan a trip in Glovebox on your phone; it will show here.",
+                                              comment: "CarPlay plans list empty-state row detail.")
             )
             items.append(placeholder)
-            header = "Plans"
+            header = NSLocalizedString("carplay.plans.section.header.empty",
+                                       value: "Plans",
+                                       comment: "Plans section header when there is no active trip.")
         } else {
-            header = "Active trip"
+            header = NSLocalizedString("carplay.plans.section.header.active",
+                                       value: "Active trip",
+                                       comment: "Plans section header when an active trip exists.")
         }
 
         let section = CPListSection(items: items, header: header, sectionIndexTitle: nil)
-        return CPListTemplate(title: "Plans", sections: [section])
+        return CPListTemplate(
+            title: NSLocalizedString("carplay.plans.template.title",
+                                     value: "Plans",
+                                     comment: "Navigation bar title for the CarPlay plans list template."),
+            sections: [section]
+        )
     }
 
     // MARK: - Helpers
@@ -535,6 +607,89 @@ final class CarPlayNavigationCoordinator: NSObject {
         case "roundabout":   return UIImage(systemName: "arrow.triangle.2.circlepath")
         default:             return UIImage(systemName: "arrow.up")
         }
+    }
+
+    /// Localized user-facing label for a hazard typeLabel. Hazard typeLabel
+    /// arrives from the backend as a short technical token ("flood", "fire",
+    /// etc.) and gets shown to the driver when no richer detail string is
+    /// present; localizing it keeps the surface clean across locales.
+    static func localizedHazardTypeLabel(_ raw: String) -> String {
+        switch raw {
+        case "flood":
+            return NSLocalizedString("carplay.hazard.type.flood", value: "Flood",
+                                     comment: "Hazard type label shown on CarPlay.")
+        case "fire":
+            return NSLocalizedString("carplay.hazard.type.fire", value: "Fire",
+                                     comment: "Hazard type label shown on CarPlay.")
+        case "closure":
+            return NSLocalizedString("carplay.hazard.type.closure", value: "Road closure",
+                                     comment: "Hazard type label shown on CarPlay.")
+        case "wildlife":
+            return NSLocalizedString("carplay.hazard.type.wildlife", value: "Wildlife zone",
+                                     comment: "Hazard type label shown on CarPlay.")
+        case "weather":
+            return NSLocalizedString("carplay.hazard.type.weather", value: "Severe weather",
+                                     comment: "Hazard type label shown on CarPlay.")
+        case "surface":
+            return NSLocalizedString("carplay.hazard.type.surface", value: "Road surface warning",
+                                     comment: "Hazard type label shown on CarPlay.")
+        default:
+            return NSLocalizedString("carplay.hazard.type.generic", value: "Hazard",
+                                     comment: "Generic hazard label shown on CarPlay.")
+        }
+    }
+
+    /// Push a template onto the CarPlay nav stack with a depth-cap guard,
+    /// or present it as a modal overlay that doesn't count toward the stack
+    /// (alerts, search). Centralising keeps the 5-template cap enforced in
+    /// one place.
+    func pushTemplate(_ template: CPTemplate, asModal: Bool = false) {
+        guard let ic = interfaceController else {
+            Self.logger.error("pushTemplate.no_interface_controller")
+            return
+        }
+        if asModal {
+            ic.presentTemplate(template, animated: true, completion: nil)
+            return
+        }
+        let depth = ic.templates.count
+        if depth >= Self.templateDepthCap {
+            Self.logger.error("template.stack.cap depth=\(depth) cap=\(Self.templateDepthCap) - dropping push")
+            assertionFailure("CarPlay nav-app template depth cap (\(Self.templateDepthCap)) hit")
+            return
+        }
+        ic.pushTemplate(template, animated: true, completion: nil)
+    }
+
+    /// CPInformationTemplate listing upstream data sources for the maps,
+    /// hazard, fuel, and routing data. Apple's HIG asks for attribution
+    /// surfaces for navigation apps; this is the place.
+    func informationTemplate() -> CPInformationTemplate {
+        let title = NSLocalizedString("carplay.info.title", value: "About Glovebox",
+                                      comment: "Title of the CarPlay attribution screen.")
+        let lines: [String] = [
+            NSLocalizedString("carplay.info.routing",
+                              value: "Routing: Glovebox backend + OSRM.",
+                              comment: "Attribution line."),
+            NSLocalizedString("carplay.info.maps",
+                              value: "Maps: Apple MapKit.",
+                              comment: "Attribution line."),
+            NSLocalizedString("carplay.info.hazards",
+                              value: "Hazards: state transport authorities (QLD TMR, NSW TfNSW, VicTraffic, SA DIT, WA Main Roads, NT DIPL, Tas DSG), Bureau of Meteorology, NAFI, DEA satellite imagery.",
+                              comment: "Attribution line."),
+            NSLocalizedString("carplay.info.fuel",
+                              value: "Fuel pricing: state-published fuel-pricing feeds.",
+                              comment: "Attribution line."),
+            NSLocalizedString("carplay.info.weather",
+                              value: "Weather: Open-Meteo.",
+                              comment: "Attribution line."),
+        ]
+        let items: [CPInformationItem] = lines.map { CPInformationItem(title: nil, detail: $0) }
+        let info = CPInformationTemplate(title: title,
+                                         layout: .leading,
+                                         items: items,
+                                         actions: [])
+        return info
     }
 
     private static func hazardSymbol(for type: String) -> UIImage? {

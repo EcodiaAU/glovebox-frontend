@@ -25,6 +25,7 @@
 
 import Foundation
 import Capacitor
+import os.log
 
 @available(iOS 14.0, *)
 @objc(RoamCarPlayBridgePlugin)
@@ -41,6 +42,19 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "setDriverLocation", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "isCarPlayConnected", returnType: CAPPluginReturnPromise),
     ]
+
+    private static let logger = Logger(subsystem: "au.ecodia.roam", category: "carplay.bridge")
+
+    // Location-update rate limit. The phone-side JS layer can push raw
+    // CoreLocation updates at up to 10Hz; each push fans out into hazard
+    // proximity, fuel range, maneuver refresh, and map region update on
+    // the CarPlay side. We coalesce sub-second pushes into the most-recent
+    // value, with a 1s minimum interval between bridge writes.
+    private static let locationDebounceInterval: TimeInterval = 1.0
+    private let locationQueue = DispatchQueue(label: "au.ecodia.roam.carplay.bridge.location")
+    private var lastLocationWriteTs: TimeInterval = 0
+    private var pendingLocation: RoamCarPlaySharedState.DriverLocation?
+    private var pendingFlushScheduled = false
 
     // MARK: - Setup
 
@@ -208,8 +222,43 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             speedMps: call.getDouble("speedMps"),
             timestampMs: ts
         )
-        RoamCarPlaySharedState.shared.setDriverLocation(loc)
+        submitDebouncedLocation(loc)
         call.resolve()
+    }
+
+    /// Coalesce high-frequency JS location pushes into at most one
+    /// shared-state write per `locationDebounceInterval`. If a push arrives
+    /// within the window, it overwrites the pending value (newest wins) and
+    /// schedules a single trailing flush at the next allowed write time.
+    private func submitDebouncedLocation(_ loc: RoamCarPlaySharedState.DriverLocation) {
+        locationQueue.async { [weak self] in
+            guard let self = self else { return }
+            let now = Date().timeIntervalSince1970
+            let elapsed = now - self.lastLocationWriteTs
+
+            if elapsed >= Self.locationDebounceInterval {
+                self.lastLocationWriteTs = now
+                self.pendingLocation = nil
+                self.pendingFlushScheduled = false
+                RoamCarPlaySharedState.shared.setDriverLocation(loc)
+                return
+            }
+
+            self.pendingLocation = loc
+            if self.pendingFlushScheduled { return }
+            self.pendingFlushScheduled = true
+
+            let delay = max(0, Self.locationDebounceInterval - elapsed)
+            self.locationQueue.asyncAfter(deadline: .now() + delay) { [weak self] in
+                guard let self = self else { return }
+                self.pendingFlushScheduled = false
+                guard let toFlush = self.pendingLocation else { return }
+                self.pendingLocation = nil
+                self.lastLocationWriteTs = Date().timeIntervalSince1970
+                Self.logger.debug("location.flush.coalesced")
+                RoamCarPlaySharedState.shared.setDriverLocation(toFlush)
+            }
+        }
     }
 
     @objc func isCarPlayConnected(_ call: CAPPluginCall) {
