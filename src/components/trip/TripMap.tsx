@@ -1608,9 +1608,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       /* ── 1. Route layers - glassmorphic warm outback ─────────────────── */
       addOrUpdateGeoJsonSource(map, ROUTE_SRC, routeFC);
 
-      // White casing halo removed per visual review (Tate 2026-05-27): the
-      // route reads as a single solid vector with no outer rim. Layer kept
-      // registered (cleanup/order arrays reference it) but rendered invisible.
+      // White casing halo restored (Tate 2026-05-28). Thin opaque white
+      // ring under the blue route line for legibility on dark tiles and
+      // visual parity with the white-bordered orbs.
       if (!map.getLayer(ROUTE_CASING)) {
         map.addLayer({
           id: ROUTE_CASING,
@@ -1618,9 +1618,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: ROUTE_SRC,
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
-            "line-color": "rgba(255,255,255,0)",
-            "line-width": 0,
-            "line-opacity": 0,
+            "line-color": "rgba(255,255,255,0.95)",
+            "line-width": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 6.5, 14, 9.5],
+            "line-opacity": 1,
           },
         });
       }
