@@ -281,6 +281,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setSession(null);
     planSync.stop();
+    // Clear paywall caches so the next user does not inherit the previous
+    // user's unlock state - the local roam_unlimited_unlocked flag was
+    // surviving signout and re-locking Apple-SSO sign-ins via the gate's
+    // local fallback cycle (Tate 2026-05-28).
+    try {
+      localStorage.removeItem("glovebox_trips_used");
+      localStorage.removeItem("roam_unlimited_unlocked");
+    } catch {}
   }, []);
 
   const deleteAccount = useCallback(async (): Promise<{ error: string | null }> => {

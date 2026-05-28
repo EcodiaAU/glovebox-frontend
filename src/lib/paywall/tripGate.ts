@@ -131,13 +131,17 @@ async function fetchUnlockFromSupabase(): Promise<boolean | null> {
 
 async function fetchTripCountFromSupabase(): Promise<number | null> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    // getSession (localStorage-cached), not getUser (network round-trip) - the
+    // latter races against the post-sign-in session-hydration window and
+    // transiently returns null even when the session is in place.
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+    if (!userId) return null;
 
     const { data, error } = await supabase
       .from("user_trip_counts")
       .select("trips_used")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     if (error) return null;
@@ -207,14 +211,25 @@ async function syncUnlockFromRC(): Promise<boolean> {
 
 async function markEntitlementInSupabase(source: "revenuecat" | "stripe" | "manual"): Promise<void> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("user_entitlements").upsert(
-      { user_id: user.id, source },
+    // getSession (localStorage-cached), not getUser (network round-trip).
+    // syncUnlockFromRC fires immediately after sign-in and getUser races
+    // against the session-hydration window, transiently returning null. The
+    // upsert then silently no-ops, no row is ever written, and subsequent
+    // fetchUnlockFromSupabase reads return false even though RC said yes -
+    // the paywall locks the user out on every page navigation (Tate 2026-05-28
+    // on TestFlight 1.1.1(1): logout-then-Apple-SSO cycle).
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+    if (!userId) return;
+    const { error } = await supabase.from("user_entitlements").upsert(
+      { user_id: userId, source },
       { onConflict: "user_id,source" }
     );
-  } catch {
-    // Non-fatal: webhook will also write this
+    if (error) {
+      console.warn(`[tripGate] markEntitlementInSupabase upsert failed: ${error.message}`);
+    }
+  } catch (e) {
+    console.warn(`[tripGate] markEntitlementInSupabase threw:`, e);
   }
 }
 
@@ -354,9 +369,24 @@ export async function incrementTripsUsed(): Promise<number> {
 }
 
 export async function isUnlocked(): Promise<boolean> {
+  // Server-confirmed unlock is the strongest signal: trust it.
+  // If server says no OR the query failed (null), fall back to the local
+  // cache - the RC sync sets that flag the moment StoreKit confirms a
+  // purchase, so it survives transient Supabase races on the entitlements
+  // row (the markEntitlementInSupabase write can lose the post-sign-in
+  // hydration race; without this fallback the user gets re-locked every
+  // page change). Local cache is cleared on sign-out in AuthGate.
   const server = await fetchUnlockFromSupabase();
-  if (server !== null) return server;
+  if (server === true) return true;
   return localGet(KEY_UNLOCKED) === "1";
+}
+
+/** Clear the local unlock cache. Called on sign-out so the next user does
+ *  not inherit the previous user's entitlement. */
+export function clearLocalUnlock(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(KEY_UNLOCKED);
+  localStorage.removeItem(KEY_TRIPS_USED);
 }
 
 /**

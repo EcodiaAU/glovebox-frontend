@@ -184,7 +184,9 @@ const USER_LOC_HEADING = "glovebox-user-loc-heading";
 const FUEL_SRC = "glovebox-fuel-src";
 const FUEL_CLUSTER_CIRCLE = "glovebox-fuel-cluster-circle";
 const FUEL_CLUSTER_COUNT = "glovebox-fuel-cluster-count";
-const FUEL_CIRCLE_LAYER = "glovebox-fuel-circle";
+// FUEL_CIRCLE_LAYER ("glovebox-fuel-circle") was dropped 2026-05-28 - the
+// soft amber halo behind each unclustered fuel icon read as fuzzy on
+// device. Icon alone is the visual indicator now.
 const FUEL_ICON_LAYER = "glovebox-fuel-icon";
 const FUEL_LABEL_LAYER = "glovebox-fuel-label";
 
@@ -253,7 +255,7 @@ const ROADKILL_DOT_LAYER = "glovebox-roadkill-dot";
 const LAYER_GROUPS = {
   stops: [STOPS_SHADOW, STOPS_OUTER, STOPS_INNER, STOP_PULSE, STOP_ICON_LAYER, STOP_LABELS, STOP_FOCUS_RING],
   places: [SUG_CLUSTER_CIRCLE, SUG_CLUSTER_COUNT, SUG_UNCLUSTERED, SUG_ICON_LAYER, SUG_LABEL_LAYER, SUG_FOCUS_RING, SUG_FOCUS_PING, SUG_FOCUS_DOT],
-  fuel: [FUEL_CLUSTER_CIRCLE, FUEL_CLUSTER_COUNT, FUEL_CIRCLE_LAYER, FUEL_ICON_LAYER, FUEL_LABEL_LAYER, EV_CLUSTER_CIRCLE, EV_CLUSTER_COUNT, EV_ICON_LAYER, EV_LABEL_LAYER],
+  fuel: [FUEL_CLUSTER_CIRCLE, FUEL_CLUSTER_COUNT, FUEL_ICON_LAYER, FUEL_LABEL_LAYER, EV_CLUSTER_CIRCLE, EV_CLUSTER_COUNT, EV_ICON_LAYER, EV_LABEL_LAYER],
   traffic: [TRAFFIC_POLY_LAYER, TRAFFIC_LINE_CASING, TRAFFIC_LINE_LAYER, TRAFFIC_PULSE_LAYER, TRAFFIC_POINT_LAYER],
   hazards: [HAZARD_POLY_LAYER, HAZARD_POLY_OUTLINE, HAZARD_ICON_LAYER, ALERT_HIGHLIGHT_RING, ALERT_HIGHLIGHT_PING],
   wildlife: [WILDLIFE_FILL_LAYER, WILDLIFE_LABEL_LAYER],
@@ -2308,9 +2310,13 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           paint: {
             "circle-color": ["step", ["get", "point_count"], "#b8872a", 10, "#a87824", 30, "#916520", 80, "#7a551a"],
             "circle-radius": ["step", ["get", "point_count"], 12, 10, 14, 30, 16, 80, 20],
-            "circle-stroke-color": "rgba(255,255,255,0.55)",
+            // Opaque white rim + opaque fill match the Google-Maps cluster
+            // treatment - sharp disc with a hard white ring, no fade into
+            // the basemap. Prior 0.55 stroke / 0.95 fill read as fuzzy
+            // (Tate 2026-05-28).
+            "circle-stroke-color": "#ffffff",
             "circle-stroke-width": 2.5,
-            "circle-opacity": 0.95,
+            "circle-opacity": 1,
             "circle-blur": 0,
           },
         });
@@ -2331,21 +2337,12 @@ export const TripMap = React.memo(function TripMap(props: Props) {
         });
       }
 
-      if (!map.getLayer(FUEL_CIRCLE_LAYER)) {
-        map.addLayer({
-          id: FUEL_CIRCLE_LAYER,
-          type: "circle",
-          source: FUEL_SRC,
-          filter: ["!", ["has", "point_count"]],
-          paint: {
-            "circle-radius": 14,
-            "circle-color": "rgba(184,135,42,0.18)",
-            "circle-stroke-color": "rgba(255,255,255,0.25)",
-            "circle-stroke-width": 1.5,
-            "circle-blur": 0.4,
-          },
-        });
-      }
+      // FUEL_CIRCLE_LAYER (the soft amber halo behind each individual fuel
+      // icon) was dropped 2026-05-28 - it read as fuzzy on TestFlight per
+      // Tate. The FUEL_ICON_LAYER (sharp icon) below now stands alone, which
+      // is how Google Maps treats unclustered POIs. If a visual indicator
+      // around individual stations is needed later, restore as opaque thin
+      // ring (no blur, no alpha) rather than the soft halo this replaced.
 
       if (!map.getLayer(FUEL_ICON_LAYER)) {
         map.addLayer({
