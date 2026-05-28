@@ -614,9 +614,16 @@ function loadStopIcons(map: MLMap): Promise<void> {
 
 function loadSVGImage(map: MLMap, id: string, svg: string, px: number): Promise<void> {
   return new Promise<void>((resolve) => {
-    const img = new Image(px, px);
+    // Rasterize the SVG at devicePixelRatio so MapLibre has a high-DPI source
+    // for Retina iPhones (DPR 2 or 3). Without this, the SVG is rasterised at
+    // logical pixel size and MapLibre upscales it 2-3x at render time =
+    // fuzzy fuel pumps / EV bolts / stop pins (Tate 2026-05-28 on 1.1.1(2)).
+    // Floor at 2 so even on a 1x display the asset has some headroom.
+    const dpr = Math.max(typeof window !== "undefined" ? window.devicePixelRatio : 1, 2);
+    const renderPx = Math.round(px * dpr);
+    const img = new Image(renderPx, renderPx);
     img.onload = () => {
-      if (!map.hasImage(id)) map.addImage(id, img, { sdf: false });
+      if (!map.hasImage(id)) map.addImage(id, img, { sdf: false, pixelRatio: dpr });
       resolve();
     };
     img.onerror = () => resolve();
@@ -2451,8 +2458,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           paint: {
             "circle-color": "#2563eb",
             "circle-radius": ["step", ["get", "point_count"], 14, 10, 18, 50, 22],
-            "circle-opacity": 0.95,
-            "circle-stroke-color": "rgba(255,255,255,0.55)",
+            // Opaque fill + hard white rim, matches the fuel cluster treatment.
+            "circle-opacity": 1,
+            "circle-stroke-color": "#ffffff",
             "circle-stroke-width": 2.5,
             "circle-blur": 0,
           },

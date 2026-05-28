@@ -110,6 +110,17 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
     haptic.medium();
     setError(null);
 
+    // Both surfaces require an authenticated session - the purchase must be
+    // linked to an account or the device's existing StoreKit receipt will
+    // silently re-unlock anyone using the same Apple ID, even without an
+    // account (Tate 2026-05-28 on 1.1.1(2): logged-out user could "buy" and
+    // get the entitlement because StoreKit returned the prior receipt and
+    // the local cache got set without a backing user_id).
+    if (!session) {
+      router("/login?next=upgrade");
+      return;
+    }
+
     if (isNative) {
       // iOS / Android - RevenueCat native sheet
       setBuying(true);
@@ -127,12 +138,6 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
       return;
     }
 
-    // Web - must be signed in so the payment can be linked to the account
-    if (!session) {
-      router("/login?next=checkout");
-      return;
-    }
-
     // Signed in - redirect to Stripe Checkout (does not return on success)
     setBuying(true);
     try {
@@ -145,6 +150,14 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
 
   const handleRestore = useCallback(async () => {
     haptic.light();
+    // Restore must also be gated on auth - same root cause as purchase:
+    // RC returns the device's existing receipt regardless of session, the
+    // upsert silently skips when no user_id, and the local cache gets set
+    // without a backing account.
+    if (!session) {
+      router("/login?next=upgrade");
+      return;
+    }
     setRestoring(true);
     setError(null);
     try {
@@ -158,7 +171,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
     } finally {
       setRestoring(false);
     }
-  }, [onUnlocked]);
+  }, [session, router, onUnlocked]);
 
   if (!mounted || anim === "closed") return null;
 
