@@ -136,12 +136,19 @@ export default function LoginPage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding:
-          "env(safe-area-inset-top, 24px) 20px max(24px, env(safe-area-inset-bottom, 24px))",
+        paddingTop: "env(safe-area-inset-top, 24px)",
+        paddingLeft: 20,
+        paddingRight: 20,
+        // Bottom padding grows when the on-screen keyboard is open so the
+        // email/password inputs scroll above the keyboard instead of staying
+        // pinned behind it (Tate 2026-05-28). The keyboard var is updated by
+        // the Capacitor Keyboard plugin on willShow/willHide.
+        paddingBottom: "max(24px, env(safe-area-inset-bottom, 24px), var(--glovebox-keyboard-h, 0px))",
         // Auto-scroll only kicks in when content actually overflows
         // (short mobile viewport with on-screen keyboard). On desktop
         // the column fits the viewport via the tighter editorial rhythm.
         overflowY: "auto",
+        transition: "padding-bottom 220ms cubic-bezier(0.32, 0, 0.34, 1)",
       }}
     >
       <div className="ed-column" style={{ paddingTop: "clamp(32px, 6vh, 80px)", gap: 14, alignItems: "stretch" }}>

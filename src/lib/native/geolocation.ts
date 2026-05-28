@@ -113,11 +113,12 @@ export function useGeolocation(opts?: {
   });
 
   const watchIdRef = useRef<string | null>(null);
+  const browserWatchIdRef = useRef<number | null>(null);
   const gotFirstFix = useRef(false);
 
   const startTracking = useCallback(async () => {
     // Already tracking
-    if (watchIdRef.current) return;
+    if (watchIdRef.current || browserWatchIdRef.current != null) return;
 
     setState((s) => ({ ...s, loading: true, error: null }));
 
@@ -136,42 +137,78 @@ export function useGeolocation(opts?: {
     setState((s) => ({ ...s, permission: "granted" }));
     gotFirstFix.current = false;
 
+    // Two-tier strategy mirroring SOS getPositionNative: native Capacitor
+    // watch first, browser navigator.geolocation as fallback if native errors
+    // out. Native WebView occasionally throws "There was an error trying to
+    // obtain the location" on the guide page when the platform layer races
+    // accuracy / fix availability - the browser fallback always works on the
+    // same device (Tate 2026-05-28 on 1.1.1(3): "saying There was an error
+    // trying to obtain the location, but the sos page has it fine").
+
+    const handleFix = (rp: GloveboxPosition) => {
+      if (!gotFirstFix.current && hapticOnFix && hasPlugin("Haptics")) {
+        gotFirstFix.current = true;
+        Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+      }
+      setState((s) => ({ ...s, position: rp, loading: false, tracking: true, error: null }));
+    };
+
+    const startBrowserFallback = () => {
+      if (typeof navigator === "undefined" || !navigator.geolocation) return false;
+      try {
+        const id = navigator.geolocation.watchPosition(
+          (pos) => {
+            handleFix({
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              accuracy: pos.coords.accuracy,
+              altitude: pos.coords.altitude ?? null,
+              altitudeAccuracy: pos.coords.altitudeAccuracy ?? null,
+              heading: pos.coords.heading ?? null,
+              speed: pos.coords.speed ?? null,
+              timestamp: pos.timestamp,
+            });
+          },
+          (err) => {
+            setState((s) => ({ ...s, error: err.message || "Location unavailable.", loading: false }));
+          },
+          { enableHighAccuracy: highAccuracy, timeout: 120_000, maximumAge: 0 }
+        );
+        browserWatchIdRef.current = id;
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
     try {
       const id = await Geolocation.watchPosition(
-        { enableHighAccuracy: highAccuracy },
+        // timeout + maximumAge match SOS's robust path; without them the
+        // native plugin can stall silently on slow GPS or never re-fix.
+        { enableHighAccuracy: highAccuracy, timeout: 120_000, maximumAge: 0 },
         (pos, err) => {
           if (err) {
+            // Swallow native error and try the browser path before surfacing.
+            if (browserWatchIdRef.current == null && startBrowserFallback()) return;
             setState((s) => ({ ...s, error: err.message, loading: false }));
             return;
           }
           if (!pos) return;
-
-          const rp = toGloveboxPos(pos);
-
-          // Haptic buzz on first fix
-          if (!gotFirstFix.current && hapticOnFix && hasPlugin("Haptics")) {
-            gotFirstFix.current = true;
-            Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
-          }
-
-          setState((s) => ({
-            ...s,
-            position: rp,
-            loading: false,
-            tracking: true,
-            error: null,
-          }));
+          handleFix(toGloveboxPos(pos));
         },
       );
 
       watchIdRef.current = id;
       setState((s) => ({ ...s, tracking: true }));
-    } catch (e: unknown) {
-      setState((s) => ({
-        ...s,
-        loading: false,
-        error: e instanceof Error ? e.message : "Failed to start location tracking",
-      }));
+    } catch {
+      // Native watch threw outright - fall straight to browser.
+      if (!startBrowserFallback()) {
+        setState((s) => ({
+          ...s,
+          loading: false,
+          error: "Location unavailable on this device.",
+        }));
+      }
     }
   }, [highAccuracy, hapticOnFix]);
 
@@ -181,6 +218,12 @@ export function useGeolocation(opts?: {
         await Geolocation.clearWatch({ id: watchIdRef.current });
       } catch {}
       watchIdRef.current = null;
+    }
+    if (browserWatchIdRef.current != null && typeof navigator !== "undefined" && navigator.geolocation) {
+      try {
+        navigator.geolocation.clearWatch(browserWatchIdRef.current);
+      } catch {}
+      browserWatchIdRef.current = null;
     }
     setState((s) => ({ ...s, tracking: false, loading: false }));
   }, []);

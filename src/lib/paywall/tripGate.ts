@@ -369,23 +369,24 @@ export async function incrementTripsUsed(): Promise<number> {
 }
 
 export async function isUnlocked(): Promise<boolean> {
-  // Server-confirmed unlock is the strongest signal: trust it.
-  // If server says no OR the query failed (null), fall back to the local
-  // cache - the RC sync sets that flag the moment StoreKit confirms a
-  // purchase, so it survives transient Supabase races on the entitlements
-  // row (the markEntitlementInSupabase write can lose the post-sign-in
-  // hydration race; without this fallback the user gets re-locked every
-  // page change). Local cache is cleared on sign-out in AuthGate.
+  // Device-first per Tate 2026-05-28 reframe: an Apple-ID purchase is
+  // bound to the device's StoreKit account, not to whichever Supabase
+  // user happens to be signed in. The local KEY_UNLOCKED flag is set by
+  // syncUnlockFromRC the moment RC confirms the purchase on this device,
+  // so it survives sign-out / sign-in cycles. We only consult the server
+  // entitlement row as a BACKUP - that path matters on fresh installs
+  // where local cache is gone but the user re-signs in with an account
+  // that has the entitlement attached.
+  if (localGet(KEY_UNLOCKED) === "1") return true;
   const server = await fetchUnlockFromSupabase();
-  if (server === true) return true;
-  return localGet(KEY_UNLOCKED) === "1";
+  return server === true;
 }
 
-/** Clear the local unlock cache. Called on sign-out so the next user does
- *  not inherit the previous user's entitlement. */
+/** Clear the local trip-count cache only. The unlock flag is device-bound
+ *  (StoreKit owns it) and intentionally survives sign-out per Tate's
+ *  device-driven entitlement model. */
 export function clearLocalUnlock(): void {
   if (typeof window === "undefined") return;
-  localStorage.removeItem(KEY_UNLOCKED);
   localStorage.removeItem(KEY_TRIPS_USED);
 }
 

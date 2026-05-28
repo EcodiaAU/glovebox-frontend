@@ -1041,6 +1041,17 @@ export function GuideView({
   // on tap so the button confirms right away even though addPlaceToTrip is
   // a heavy flow (reroute + corridor + IDB writes).
   const [savedPlaceIds, setSavedPlaceIds] = useState<Set<string>>(() => new Set());
+  // Mobile breakpoint - 3 suggestion pills fit cleanly on phones, 4 on desktop.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  const suggestionCap = isMobile ? 3 : 4;
   const handleAddStopOptimistic = (place: PlaceItem) => {
     setSavedPlaceIds((prev) => {
       if (prev.has(place.id)) return prev;
@@ -1401,7 +1412,14 @@ export function GuideView({
 
       {/* ── TAB: CHAT (Guide) ─────────────────────────────── */}
       <div style={{ width: "50%", minWidth: 0 }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{
+          display: "flex", flexDirection: "column", gap: 12,
+          // Fill the viewport so the sticky input bar (and the spacer below
+          // the welcome state when empty) actually have somewhere to push
+          // against. Without minHeight, an empty thread lets the input
+          // ride up to the middle of the screen (Tate 2026-05-28).
+          minHeight: "calc(100dvh - 200px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px))",
+        }}>
 
           {/* Offline banner */}
           {!isOnline && (
@@ -1448,19 +1466,8 @@ export function GuideView({
 
               {/* Suggestion chips - plain text, no icon squares, no
                   colored backgrounds. Wrap row, hairline border. */}
-              <div style={{
-                fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-                fontStyle: "italic",
-                fontSize: 12.5,
-                letterSpacing: "0.08em",
-                color: "var(--glovebox-text-muted)",
-                textTransform: "lowercase",
-                marginBottom: 8,
-              }}>
-                try asking
-              </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {quickSuggestions.map((s, i) => (
+                {quickSuggestions.slice(0, suggestionCap).map((s, i) => (
                   <button
                     key={i}
                     type="button"
@@ -1487,6 +1494,13 @@ export function GuideView({
             </div>
           ) : null}
 
+          {/* Spacer pushes the sticky input bar to the bottom of the viewport
+               in the welcome state. When a thread exists, the thread itself
+               consumes the space and this spacer is skipped. */}
+          {thread.length === 0 && !pendingUserMsg ? (
+            <div style={{ flex: 1, minHeight: 16 }} aria-hidden />
+          ) : null}
+
           {/* Thread - chat messages.
                Desktop max-width applied via .guide-chat-thread CSS so the
                reading column stays comfortable on wide screens. */}
@@ -1496,6 +1510,10 @@ export function GuideView({
               // Deduct: sticky header (~120px incl. progress bar) + tab switcher (42px) +
               // input bar (50px) + gaps (36px) + bottom nav + safe-area notch
               maxHeight: "calc(100dvh - 270px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px) - var(--glovebox-keyboard-h, 0px))",
+              // Match the iOS native keyboard show/hide easing so the thread
+              // pane shrinks/grows in sync with the keyboard rather than
+              // jumping in two discrete reflows (Tate 2026-05-28).
+              transition: "max-height 260ms cubic-bezier(0.32, 0, 0.34, 1)",
               overflowY: "auto", paddingRight: 2,
               // Bottom padding so the sticky input bar doesn't overlay the last
               // message. Matches input height (~60px) + suggestion row (~36px)
@@ -1617,6 +1635,10 @@ export function GuideView({
             display: "flex",
             flexDirection: "column",
             gap: 8,
+            // Smooth the paddingBottom + transform shift when the keyboard
+            // opens/closes so the input glides with the keyboard rather than
+            // snapping (Tate 2026-05-28).
+            transition: "padding-bottom 260ms cubic-bezier(0.32, 0, 0.34, 1), transform 260ms cubic-bezier(0.32, 0, 0.34, 1)",
           }}>
             <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8 }}>
               <div style={{
@@ -1659,7 +1681,7 @@ export function GuideView({
             {/* Quick suggestions - compact row when thread has messages */}
             {(thread.length > 0 || pendingUserMsg) && !chatBusy ? (
               <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2, WebkitOverflowScrolling: "touch" }}>
-                {quickSuggestions.slice(0, 4).map((s, i) => {
+                {quickSuggestions.slice(0, suggestionCap).map((s, i) => {
                   const SI = s.Icon;
                   return (
                     <button

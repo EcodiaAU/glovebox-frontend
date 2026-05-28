@@ -281,14 +281,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setSession(null);
     planSync.stop();
-    // Clear paywall caches so the next user does not inherit the previous
-    // user's unlock state - the local roam_unlimited_unlocked flag was
-    // surviving signout and re-locking Apple-SSO sign-ins via the gate's
-    // local fallback cycle (Tate 2026-05-28).
-    try {
-      localStorage.removeItem("glovebox_trips_used");
-      localStorage.removeItem("roam_unlimited_unlocked");
-    } catch {}
+    // Clear the per-account trial counter on signOut. Intentionally do NOT
+    // clear roam_unlimited_unlocked - per Tate's device-driven entitlement
+    // reframe 2026-05-28, an Apple-ID purchase is bound to the device and
+    // should survive sign-out so the user is never re-paywalled for a
+    // purchase StoreKit still owns.
+    try { localStorage.removeItem("glovebox_trips_used"); } catch {}
   }, []);
 
   const deleteAccount = useCallback(async (): Promise<{ error: string | null }> => {

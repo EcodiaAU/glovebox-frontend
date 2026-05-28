@@ -110,19 +110,13 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
     haptic.medium();
     setError(null);
 
-    // Both surfaces require an authenticated session - the purchase must be
-    // linked to an account or the device's existing StoreKit receipt will
-    // silently re-unlock anyone using the same Apple ID, even without an
-    // account (Tate 2026-05-28 on 1.1.1(2): logged-out user could "buy" and
-    // get the entitlement because StoreKit returned the prior receipt and
-    // the local cache got set without a backing user_id).
-    if (!session) {
-      router("/login?next=upgrade");
-      return;
-    }
-
     if (isNative) {
-      // iOS / Android - RevenueCat native sheet
+      // iOS / Android - RevenueCat native sheet. No session gate on native
+      // per Tate's 2026-05-28 device-driven entitlement reframe: StoreKit
+      // owns the Apple-ID purchase, the device unlocks regardless of which
+      // (or no) Supabase user is signed in, and the upsert in tripGate
+      // will write the account backup if a session exists. Web still
+      // gates because Stripe Checkout needs a Supabase user to attach to.
       setBuying(true);
       try {
         const result = await purchaseUnlimited();
@@ -138,6 +132,13 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
       return;
     }
 
+    // Web only - must be signed in so the Stripe Checkout session attaches
+    // to a Supabase user_id.
+    if (!session) {
+      router("/login?next=upgrade");
+      return;
+    }
+
     // Signed in - redirect to Stripe Checkout (does not return on success)
     setBuying(true);
     try {
@@ -150,14 +151,11 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
 
   const handleRestore = useCallback(async () => {
     haptic.light();
-    // Restore must also be gated on auth - same root cause as purchase:
-    // RC returns the device's existing receipt regardless of session, the
-    // upsert silently skips when no user_id, and the local cache gets set
-    // without a backing account.
-    if (!session) {
-      router("/login?next=upgrade");
-      return;
-    }
+    // No session gate - device-driven model (Tate 2026-05-28). StoreKit
+    // restoreCompletedTransactions works against the Apple-ID regardless
+    // of Supabase session; if a session is present, the upsert in tripGate
+    // will write the account backup, otherwise the device's local cache
+    // is sufficient.
     setRestoring(true);
     setError(null);
     try {
@@ -171,7 +169,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
     } finally {
       setRestoring(false);
     }
-  }, [session, router, onUnlocked]);
+  }, [onUnlocked]);
 
   if (!mounted || anim === "closed") return null;
 
