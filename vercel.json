@@ -1,6 +1,15 @@
 {
   "outputDirectory": "out",
   "rewrites": [
-    { "source": "/((?!_next|assets|api|robots\\.txt|sitemap\\.xml|llms\\.txt|manifest\\.webmanifest|favicon|og\\.png|icon).*)", "destination": "/index.html" }
+    { "source": "/((?!_next|assets|api|robots\\.txt|sitemap\\.xml|llms\\.txt|manifest\\.webmanifest|favicon|og\\.png|icon|\\.well-known).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
   ]
 }

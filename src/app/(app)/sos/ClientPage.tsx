@@ -688,45 +688,60 @@ export default function EmergencyClientPage() {
           </button>
         </div>
 
-        {/* INLINE EDITOR (real flow: __new__ + existing edit) */}
-        {editingId ? (
-          <div style={{
-            padding: 12, borderRadius: 16,
-            background: "var(--c-surface)", border: "1.5px solid var(--c-accent)",
-            boxShadow: "var(--sh-card)", marginBottom: 12,
-          }}>
+        {/* INLINE EDITOR (real flow: __new__ + existing edit).
+             Smooth expand/collapse via grid-template-rows 0fr -> 1fr trick -
+             animates auto-height without measuring. The card content is
+             always in the DOM (collapses to 0 height when closed) so the
+             page above doesn't jolt back when the user taps Cancel/Save.
+             (Tate 2026-05-28: "doesnt have a nice animation for the add
+             contact card which is really jarring + when you click cancel
+             or save on the contact card then it jolts back".) */}
+        <div style={{
+          display: "grid",
+          gridTemplateRows: editingId ? "1fr" : "0fr",
+          opacity: editingId ? 1 : 0,
+          marginBottom: editingId ? 12 : 0,
+          transition: "grid-template-rows 280ms cubic-bezier(0.32, 0, 0.34, 1), opacity 220ms ease, margin-bottom 280ms cubic-bezier(0.32, 0, 0.34, 1)",
+        }}>
+          <div style={{ overflow: "hidden", minHeight: 0 }}>
             <div style={{
-              fontWeight: 700, fontSize: 15, marginBottom: 8,
-              color: "var(--c-text)",
+              padding: 12, borderRadius: 16,
+              background: "var(--c-surface)", border: "1.5px solid var(--c-accent)",
+              boxShadow: "var(--sh-card)",
             }}>
-              {editingId === "__new__" ? "Add contact" : "Edit contact"}
-            </div>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name (e.g. Mum)" style={sosInputStyle()}/>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (e.g. +61 412 …)" inputMode="tel" style={{ ...sosInputStyle(), fontFamily: "var(--font-mono)" }}/>
-            <input value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Relationship (optional)" style={sosInputStyle()}/>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Notes (optional)" style={{ ...sosInputStyle(), resize: "none", minHeight: 56 }}/>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={cancelEdit} style={{
-                flex: 1, height: 44, borderRadius: 10,
-                background: "var(--c-surface-muted)", color: "var(--c-text)",
-                fontWeight: 600, fontSize: 14,
-              }}>Cancel</button>
-              {editingId !== "__new__" && (
-                <button onClick={() => remove(editingId!)} disabled={busy === "delete"} style={{
-                  width: 44, height: 44, borderRadius: 10,
-                  background: "var(--c-error-bg)", color: "var(--c-error-text)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}><Icon name="trash" size={16}/></button>
-              )}
-              <button onClick={save} disabled={busy === "save" || !name.trim() || !phone.trim()} style={{
-                flex: 1, height: 44, borderRadius: 10,
-                background: "var(--c-accent)", color: "white",
-                fontWeight: 700, fontSize: 14,
-                opacity: !name.trim() || !phone.trim() ? 0.55 : 1,
-              }}>Save</button>
+              <div style={{
+                fontWeight: 700, fontSize: 15, marginBottom: 8,
+                color: "var(--c-text)",
+              }}>
+                {editingId === "__new__" ? "Add contact" : "Edit contact"}
+              </div>
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name (e.g. Mum)" style={sosInputStyle()}/>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (e.g. +61 412 …)" inputMode="tel" style={{ ...sosInputStyle(), fontFamily: "var(--font-mono)" }}/>
+              <input value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Relationship (optional)" style={sosInputStyle()}/>
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Notes (optional)" style={{ ...sosInputStyle(), resize: "none", minHeight: 56 }}/>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={cancelEdit} style={{
+                  flex: 1, height: 44, borderRadius: 10,
+                  background: "var(--c-surface-muted)", color: "var(--c-text)",
+                  fontWeight: 600, fontSize: 14,
+                }}>Cancel</button>
+                {editingId && editingId !== "__new__" && (
+                  <button onClick={() => remove(editingId)} disabled={busy === "delete"} style={{
+                    width: 44, height: 44, borderRadius: 10,
+                    background: "var(--c-error-bg)", color: "var(--c-error-text)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}><Icon name="trash" size={16}/></button>
+                )}
+                <button onClick={save} disabled={busy === "save" || !name.trim() || !phone.trim()} style={{
+                  flex: 1, height: 44, borderRadius: 10,
+                  background: "var(--c-accent)", color: "white",
+                  fontWeight: 700, fontSize: 14,
+                  opacity: !name.trim() || !phone.trim() ? 0.55 : 1,
+                }}>Save</button>
+              </div>
             </div>
           </div>
-        ) : null}
+        </div>
 
         {/* CONTACTS LIST */}
         {items.length === 0 ? (

@@ -1986,24 +1986,22 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   // Snap positions (translateY values).
   // The sheet extends 300px below the viewport to absorb spring bounce,
   // so peek/nav snaps add 300px to compensate.
-  //   full:      calc(safe-top - 80) - sheet pulled up by the 80px top-gap so it covers screen
-  //   expanded:  0px (sheet fills from 80px down)
-  //   peek:      calc(100% - 660px - safe-bottom)   shows ~280px of sheet content above
-  //              the persistent action bar (which sits at bottom: tab-h).
-  //              That's enough room for drag handle + CardHeader + action row +
-  //              StatRow without overlapping the action bar.
+  //   full:      sheet covers screen
+  //   expanded:  full editor with stats + actions + scrollable trip view
+  //   peek:      drag handle + title + distance/time ONLY (Tate 2026-05-29).
+  //              Action chips (Plans/Invite/Share/Pro), StatRow, and
+  //              scrollable TripView all hide at peek so the sheet head sits
+  //              flush above the persistent action bar.
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
       case "full":      return "calc(var(--glovebox-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
-      // peek sits slightly lower (660 -> 620, Tate 2026-05-28) so the bottom
-      // of the sheet head meets the top of the action section rather than
-      // floating above it. Exact value may want one device-confirmed tweak.
       case "peek":
-      default:          return `calc(100% - 620px - var(--glovebox-safe-bottom, 0px))`;
+      default:          return `calc(100% - 310px - var(--glovebox-safe-bottom, 0px))`;
     }
   })();
+  const isPeek = sheetSnap === "peek" && !activeNav.isActive;
   const sheetTransform = isDraggingState
     ? `translateY(calc(${snapY} + ${dragOffset}px))`
     : `translateY(${snapY})`;
@@ -2536,17 +2534,35 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                   const stops = plan.preview?.stops ?? [];
                   const stopCount = stops.length;
                   const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
-                  return distKm
-                    ? <><strong style={{ color: "var(--c-text)" }}>{distKm} km</strong> · {stopCount} stops</>
-                    : <>{stopCount} stops</>;
+                  const durSec = navpack?.primary?.duration_s ?? null;
+                  const drive = durSec ? (() => {
+                    const h = Math.floor(durSec / 3600);
+                    const m = Math.round((durSec % 3600) / 60);
+                    return h > 0 ? `${h}h ${m.toString().padStart(2, "0")}m` : `${m}m`;
+                  })() : null;
+                  const parts: React.ReactNode[] = [];
+                  if (distKm != null) parts.push(<strong key="d" style={{ color: "var(--c-text)" }}>{distKm} km</strong>);
+                  if (drive != null) parts.push(<strong key="t" style={{ color: "var(--c-text)" }}>{drive}</strong>);
+                  parts.push(<span key="s">{stopCount} stops</span>);
+                  return parts.reduce<React.ReactNode[]>((acc, node, i) => {
+                    if (i > 0) acc.push(<span key={`sep-${i}`}> · </span>);
+                    acc.push(node);
+                    return acc;
+                  }, []);
                 })()}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Header actions (outside the drag zone) */}
-        <div style={{ padding: "0 20px 12px" }}>
+        {/* Header actions (outside the drag zone) - hidden at peek per Tate 2026-05-29:
+             peek shows ONLY drag handle + title + distance/time. */}
+        <div style={{
+          padding: "0 20px 12px",
+          opacity: isPeek ? 0 : 1,
+          pointerEvents: isPeek ? "none" : "auto",
+          transition: "opacity 200ms ease",
+        }}>
           {/* Row 2: action row - each pill takes flex:1 so the row stretches edge-to-edge,
                matching the StatRow chips below visually. Upgrade pinned right when shown. */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -2656,7 +2672,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           </div>
         </div>
 
-        {/* StatRow (prototype: 3 chips below header - km / drive / surface) */}
+        {/* StatRow (prototype: 3 chips below header - km / drive / surface).
+             Hidden at peek - the title row already carries the distance/time
+             summary, and peek must stay tight. */}
         {(() => {
           const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
           const durSec = navpack?.primary?.duration_s ?? null;
@@ -2671,6 +2689,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             <div style={{
               padding: "0 20px 12px", display: "flex", gap: 8,
               borderBottom: "1px solid var(--c-border)",
+              opacity: isPeek ? 0 : 1,
+              pointerEvents: isPeek ? "none" : "auto",
+              transition: "opacity 200ms ease",
             }}>
               {distKm != null && (
                 <div style={{
@@ -2717,8 +2738,15 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           );
         })()}
 
-        {/* Scrollable content */}
-        <div style={{ flex: 1, overflow: "hidden", touchAction: "pan-y" }}>
+        {/* Scrollable content - hidden at peek so the sheet head sits flush
+             above the persistent action bar with only drag handle + title +
+             distance/time visible. */}
+        <div style={{
+          flex: 1, overflow: "hidden", touchAction: "pan-y",
+          opacity: isPeek ? 0 : 1,
+          pointerEvents: isPeek ? "none" : "auto",
+          transition: "opacity 200ms ease",
+        }}>
           <div
             ref={scrollElRef}
             className="glovebox-scroll"
@@ -2930,7 +2958,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           position: "absolute",
           left: 0, right: 0,
           bottom: 0,
-          padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
+          padding: "7px 14px calc(7px + env(safe-area-inset-bottom, 0px))",
           display: "flex", gap: 8, alignItems: "center",
           // EXACT match to the bottom tab bar fill (BottomTabBar.tsx uses
           // color-mix(--glovebox-bg 92%, transparent), NOT --tab-bar-bg) so the
@@ -2952,15 +2980,15 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             aria-label="Add stops"
             onClick={() => { haptic.selection(); setSuggestionsOpen(true); }}
             style={{
-              flex: "0 0 auto", height: 48, padding: "0 14px",
-              borderRadius: 14,
+              flex: "0 0 auto", height: 44, padding: "0 13px",
+              borderRadius: 12,
               background: "var(--c-accent-tint)", color: "var(--c-accent)",
               border: 0,
               fontWeight: 700, fontSize: 13,
               display: "inline-flex", alignItems: "center", gap: 6,
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14M5 12h14"/>
             </svg>
             Stops
@@ -2972,19 +3000,19 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
               onClick={handleStartNavigation}
               disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
               style={{
-                flex: 1, minHeight: 56,
-                padding: "0 22px",
-                borderRadius: 14,
+                flex: 1, minHeight: 48,
+                padding: "0 18px",
+                borderRadius: 12,
                 background: "var(--grad-cta)", color: "white",
                 border: 0,
-                fontWeight: 700, fontSize: 16,
+                fontWeight: 700, fontSize: 15,
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
                 boxShadow: "var(--sh-card)",
                 letterSpacing: 0.2,
                 opacity: navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0) ? 1 : 0.55,
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 11l18-7-7 18-2-8-9-3z"/>
               </svg>
               Start navigation

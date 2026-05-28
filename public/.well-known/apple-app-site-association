@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["86PUY7393S.au.ecodia.roam"],
+        "components": [
+          {
+            "/": "/auth/callback",
+            "comment": "Supabase OAuth callback - opens Glovebox directly instead of bouncing through Safari"
+          },
+          {
+            "/": "/auth/callback/*",
+            "comment": "Supabase OAuth callback subpaths"
+          }
+        ]
+      }
+    ]
+  }
+}

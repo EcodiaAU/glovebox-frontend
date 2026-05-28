@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useLocation } from "react-router";
 import type { PlaceItem } from "@/lib/types/places";
 import type { MouseEvent, SyntheticEvent } from "react";
 import { GloveboxMark } from "@/components/brand/GloveboxMark";
@@ -1036,6 +1037,13 @@ export function GuideView({
   const { openPlace } = usePlaceDetail();
   const [chatInput, setChatInput] = useState("");
   const [activeTab, setActiveTab] = useState<ViewTab>(initialTab ?? "chat");
+  // Trip page is persistent-mounted across all tabs (Home/Trip/Guide/SOS) so
+  // GuideView lives in DOM even when user is on /home etc. The chat input
+  // portal targets document.body, which is shared across all pages - without
+  // a pathname guard the portal would surface on every page. Only render the
+  // portal when the trip page is the active route. (Tate 2026-05-29 on 1.1.1(6).)
+  const { pathname } = useLocation();
+  const isTripPageActive = pathname === "/trip" || pathname === "/trip/";
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingUserMsg, setPendingUserMsg] = useState<string | null>(null);
   // Optimistic "Added" state for stop-row buttons. We flip this immediately
@@ -1416,10 +1424,10 @@ export function GuideView({
         <div style={{
           display: "flex", flexDirection: "column", gap: 12,
           // Bottom padding reserves space for the portal-mounted input bar
-          // (lives at document.body level, fixed to bottom). Without this
-          // the last chat message or welcome lede would slide under the
-          // input. ~140px = input bar + suggestions row + margin.
-          paddingBottom: "calc(140px + var(--bottom-nav-height, 80px) + var(--glovebox-keyboard-h, 0px))",
+          // (lives at document.body level, fixed to bottom). KeyboardResize.Body
+          // already shrinks the viewport when the keyboard opens, so we don't
+          // add var(--glovebox-keyboard-h) here (double-counted).
+          paddingBottom: "calc(140px + var(--bottom-nav-height, 80px))",
         }}>
 
           {/* Offline banner */}
@@ -1501,12 +1509,10 @@ export function GuideView({
           {(thread.length > 0 || pendingUserMsg) ? (
             <div className="guide-chat-thread" style={{
               display: "flex", flexDirection: "column", gap: 8,
-              // Deduct: sticky header (~120px incl. progress bar) + tab switcher (42px) +
-              // input bar (50px) + gaps (36px) + bottom nav + safe-area notch
-              maxHeight: "calc(100dvh - 270px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px) - var(--glovebox-keyboard-h, 0px))",
-              // Match the iOS native keyboard show/hide easing so the thread
-              // pane shrinks/grows in sync with the keyboard rather than
-              // jumping in two discrete reflows (Tate 2026-05-28).
+              // 100dvh already responds to KeyboardResize.Body viewport
+              // shrinkage; don't subtract --glovebox-keyboard-h on top of
+              // that or the thread pane double-shrinks. (Tate 2026-05-29.)
+              maxHeight: "calc(100dvh - 270px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px))",
               transition: "max-height 260ms cubic-bezier(0.32, 0, 0.34, 1)",
               overflowY: "auto", paddingRight: 2,
               // Bottom padding so the sticky input bar doesn't overlay the last
@@ -1627,12 +1633,18 @@ export function GuideView({
               the bottom nav if keyboard is closed). Only mounted when the
               chat tab is active so the discoveries tab doesn't get a
               phantom input bar. (Tate 2026-05-28 on 1.1.1(4) -> 1.1.1(6).) */}
-          {activeTab === "chat" && typeof document !== "undefined" && createPortal(
+          {activeTab === "chat" && isTripPageActive && typeof document !== "undefined" && createPortal(
           <div style={{
             position: "fixed",
             left: 0,
             right: 0,
-            bottom: "calc(var(--bottom-nav-height, 80px) + var(--glovebox-keyboard-h, 0px))",
+            // Capacitor KeyboardResize.Body shrinks the WebView when the
+            // keyboard opens, so position:fixed bottom:80px naturally sits
+            // above the keyboard without our own keyboard-h compensation.
+            // The previous calc(80 + keyboard-h) double-shifted the input
+            // to ~2*keyboardHeight above where it belonged. (Tate
+            // 2026-05-29 on 1.1.1(6).)
+            bottom: "var(--bottom-nav-height, 80px)",
             zIndex: 50,
             background: "var(--glovebox-bg)",
             paddingTop: 8,
