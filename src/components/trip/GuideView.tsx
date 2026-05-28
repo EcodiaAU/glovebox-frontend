@@ -1,6 +1,7 @@
 // src/components/trip/GuideView.tsx
 
 import { useMemo, useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { PlaceItem } from "@/lib/types/places";
 import type { MouseEvent, SyntheticEvent } from "react";
 import { GloveboxMark } from "@/components/brand/GloveboxMark";
@@ -1414,11 +1415,11 @@ export function GuideView({
       <div style={{ width: "50%", minWidth: 0 }}>
         <div style={{
           display: "flex", flexDirection: "column", gap: 12,
-          // Fill the viewport so the sticky input bar (and the spacer below
-          // the welcome state when empty) actually have somewhere to push
-          // against. Without minHeight, an empty thread lets the input
-          // ride up to the middle of the screen (Tate 2026-05-28).
-          minHeight: "calc(100dvh - 200px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px))",
+          // Bottom padding reserves space for the portal-mounted input bar
+          // (lives at document.body level, fixed to bottom). Without this
+          // the last chat message or welcome lede would slide under the
+          // input. ~140px = input bar + suggestions row + margin.
+          paddingBottom: "calc(140px + var(--bottom-nav-height, 80px) + var(--glovebox-keyboard-h, 0px))",
         }}>
 
           {/* Offline banner */}
@@ -1492,13 +1493,6 @@ export function GuideView({
                 ))}
               </div>
             </div>
-          ) : null}
-
-          {/* Spacer pushes the sticky input bar to the bottom of the viewport
-               in the welcome state. When a thread exists, the thread itself
-               consumes the space and this spacer is skipped. */}
-          {thread.length === 0 && !pendingUserMsg ? (
-            <div style={{ flex: 1, minHeight: 16 }} aria-hidden />
           ) : null}
 
           {/* Thread - chat messages.
@@ -1624,21 +1618,33 @@ export function GuideView({
             </div>
           ) : null}
 
-          {/* Input bar - sticky so keyboard pushes it up */}
+          {/* Input bar lives in a Portal to document.body - the swipe-track
+              parent has transform: translateX which creates a containing
+              block for fixed-positioned descendants, so position:fixed
+              inside the track would be track-relative, not viewport-relative.
+              Portal escapes the transform. Bottom anchor tracks keyboard
+              height so the input always sits just above the keyboard (or
+              the bottom nav if keyboard is closed). Only mounted when the
+              chat tab is active so the discoveries tab doesn't get a
+              phantom input bar. (Tate 2026-05-28 on 1.1.1(4) -> 1.1.1(6).) */}
+          {activeTab === "chat" && typeof document !== "undefined" && createPortal(
           <div style={{
-            position: "sticky",
-            bottom: 0,
-            zIndex: 10,
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: "calc(var(--bottom-nav-height, 80px) + var(--glovebox-keyboard-h, 0px))",
+            zIndex: 50,
             background: "var(--glovebox-bg)",
-            paddingTop: 4,
-            paddingBottom: "var(--bottom-nav-height, calc(80px + env(safe-area-inset-bottom, 0px)))",
+            paddingTop: 8,
+            paddingBottom: 8,
+            paddingLeft: 16,
+            paddingRight: 16,
             display: "flex",
             flexDirection: "column",
             gap: 8,
-            // Smooth the paddingBottom + transform shift when the keyboard
-            // opens/closes so the input glides with the keyboard rather than
-            // snapping (Tate 2026-05-28).
-            transition: "padding-bottom 260ms cubic-bezier(0.32, 0, 0.34, 1), transform 260ms cubic-bezier(0.32, 0, 0.34, 1)",
+            borderTop: "1px solid var(--glovebox-border)",
+            transition: "bottom 260ms cubic-bezier(0.32, 0, 0.34, 1)",
+            pointerEvents: "auto",
           }}>
             <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8 }}>
               <div style={{
@@ -1704,7 +1710,9 @@ export function GuideView({
                 })}
               </div>
             ) : null}
-          </div>
+          </div>,
+          document.body
+          )}
         </div>
       </div>{/* end chat panel */}
 
