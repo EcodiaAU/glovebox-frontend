@@ -2,7 +2,7 @@
 
 import type { TripStop } from "@/lib/types/trip";
 import type { NavPack, NavLeg } from "@/lib/types/navigation";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { TripProgress } from "@/lib/types/guide";
 import { haversineKm } from "@/lib/nav/snapToRoute";
 
@@ -153,7 +153,7 @@ function updateVisitedStops(
 // ──────────────────────────────────────────────────────────────
 
 export type ComputeProgressArgs = {
-  position: RoamPosition;
+  position: GloveboxPosition;
   stops: TripStop[];
   navpack: NavPack | null;
   prevProgress: TripProgress | null;

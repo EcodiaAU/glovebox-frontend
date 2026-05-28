@@ -14,7 +14,7 @@ import type { AlertHighlightEvent } from "@/components/trip/TripAlertsPanel";
 import { InviteCodeModal } from "@/components/plans/InviteCodeModal";
 import { PlanDrawer } from "@/components/trip/PlanDrawer";
 import { FuelPressureIndicator } from "@/components/fuel/FuelPressureIndicator";
-import { BottomSheet as SuggestionsBottomSheet, Icon as SuggestionsIcon, PrimaryBtn as SuggestionsPrimaryBtn } from "@/components/roam-ui-v2/shared";
+import { BottomSheet as SuggestionsBottomSheet, Icon as SuggestionsIcon, PrimaryBtn as SuggestionsPrimaryBtn } from "@/components/glovebox-ui-v2/shared";
 import { FuelLastChanceToast } from "@/components/fuel/FuelLastChanceToast";
 import { VehicleFuelSettings } from "@/components/fuel/VehicleFuelSettings";
 
@@ -41,7 +41,7 @@ import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { useObservations } from "@/lib/hooks/useObservations";
 import type { InterpolatedPosition } from "@/lib/nav/gpsInterpolator";
 import { useCarPlayBridgeSync } from "@/lib/native/carPlay";
-import type { CarPlayHazard, CarPlayFuelStop, CarPlayVehicle } from "@/plugins/roam-carplay-bridge";
+import type { CarPlayHazard, CarPlayFuelStop, CarPlayVehicle } from "@/plugins/glovebox-carplay-bridge";
 
 import { haptic } from "@/lib/native/haptics";
 import { useStopProximity } from "@/lib/hooks/useStopProximity";
@@ -258,8 +258,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   const [baseMode, setBaseMode] = useState<MapBaseMode>("hybrid");
   const [vectorTheme, setVectorTheme] = useState<VectorTheme>("bright");
   const styleId = useMemo(() => {
-    if (baseMode === "hybrid") return "roam-basemap-hybrid";
-    return vectorTheme === "dark" ? "roam-basemap-vector-dark" : "roam-basemap-vector-bright";
+    if (baseMode === "hybrid") return "glovebox-basemap-hybrid";
+    return vectorTheme === "dark" ? "glovebox-basemap-vector-dark" : "glovebox-basemap-vector-bright";
   }, [baseMode, vectorTheme]);
 
   // Stop-added toast
@@ -323,7 +323,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   const sheetRef = useRef<HTMLDivElement>(null);
   type SheetSnap = "expanded" | "peek" | "full";
   const [sheetSnap, setSheetSnap] = useState<SheetSnap>("peek");
-  // Reflect snap to <body> so .roam-tabs-wrap can slide out when the
+  // Reflect snap to <body> so .glovebox-tabs-wrap can slide out when the
   // sheet covers everything. Without this the bottom tab bar overlays
   // the lowest 80px of the expanded sheet (route summary, stop list).
   useEffect(() => {
@@ -462,7 +462,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       // 2. Update user puck GeoJSON source directly (bypass React)
       const map = mapInstanceRef.current;
       if (!map) return;
-      const locSrc = map.getSource("roam-user-loc-src") as GeoJSONSource | undefined;
+      const locSrc = map.getSource("glovebox-user-loc-src") as GeoJSONSource | undefined;
       if (locSrc) {
         locSrc.setData({
           type: "FeatureCollection",
@@ -474,7 +474,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         });
       }
       // 3. Update heading cone source directly
-      const headSrc = map.getSource("roam-user-loc-heading-src") as GeoJSONSource | undefined;
+      const headSrc = map.getSource("glovebox-user-loc-heading-src") as GeoJSONSource | undefined;
       if (headSrc) {
         if (pos.speed > 0.5) {
           headSrc.setData({
@@ -869,7 +869,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     setReportMarker(null);
   }, [isPlacing, activeNav.isActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Build a synthetic RoamPosition from the marker for the placement bar
+  // Build a synthetic GloveboxPosition from the marker for the placement bar
   const reportPosition = useMemo(() => {
     if (!reportMarker) return effectivePosition;
     return {
@@ -881,7 +881,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       heading: effectivePosition?.heading ?? null,
       speed: null,
       timestamp: Date.now(),
-    } satisfies import("@/lib/native/geolocation").RoamPosition;
+    } satisfies import("@/lib/native/geolocation").GloveboxPosition;
   }, [reportMarker, effectivePosition]);
 
   // Cache decoded polyline + cumulative km - only recompute when the route changes,
@@ -1977,7 +1977,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     };
     // Depend on `plan` so the listeners (re)attach once the real sheet
     // content mounts. The component returns <TripSkeleton/> before `plan`
-    // loads, so an empty-deps effect ran when .roam-scroll did not exist yet
+    // loads, so an empty-deps effect ran when .glovebox-scroll did not exist yet
     // and never re-bound - which is why overscroll-to-close did nothing.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plan]);
@@ -1995,13 +1995,13 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
-      case "full":      return "calc(var(--roam-safe-top, 0px) - 80px)";
+      case "full":      return "calc(var(--glovebox-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       // peek sits slightly lower (660 -> 620, Tate 2026-05-28) so the bottom
       // of the sheet head meets the top of the action section rather than
       // floating above it. Exact value may want one device-confirmed tweak.
       case "peek":
-      default:          return `calc(100% - 620px - var(--roam-safe-bottom, 0px))`;
+      default:          return `calc(100% - 620px - var(--glovebox-safe-bottom, 0px))`;
     }
   })();
   const sheetTransform = isDraggingState
@@ -2066,17 +2066,17 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     // No plans + paywalled: show empty state with paywall modal (no bootError means this case)
     const isPaywallEmpty = !bootError && paywallOpen;
     return (
-      <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--roam-bg)", color: "var(--roam-text)", padding: 32, textAlign: "center" }}>
+      <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--glovebox-bg)", color: "var(--glovebox-text)", padding: 32, textAlign: "center" }}>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 950, color: isPaywallEmpty ? "var(--roam-text)" : "var(--roam-danger)", marginBottom: 12 }}>
+          <div style={{ fontSize: 16, fontWeight: 950, color: isPaywallEmpty ? "var(--glovebox-text)" : "var(--glovebox-danger)", marginBottom: 12 }}>
             {isPaywallEmpty ? "No trips yet" : "Failed to load trip"}
           </div>
-          {bootError && <div style={{ fontSize: 13, color: "var(--roam-text-muted)", marginBottom: 20 }}>{bootError}</div>}
+          {bootError && <div style={{ fontSize: 13, color: "var(--glovebox-text-muted)", marginBottom: 20 }}>{bootError}</div>}
           {isPaywallEmpty ? (
             <button
               type="button"
               className="trip-interactive"
-              style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--roam-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
+              style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--glovebox-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
               onClick={() => { setPaywallVariant("gate"); setPaywallOpen(true); }}
             >
               Upgrade to create more trips
@@ -2085,7 +2085,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             <button
               type="button"
               className="trip-interactive"
-              style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--roam-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
+              style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--glovebox-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
               onClick={() => router("/new", { replace: true })}
             >
               Build a Trip
@@ -2180,7 +2180,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           className="trip-top-toast"
           style={{
             position: "absolute",
-            top: "calc(var(--roam-safe-top, 0px) + 8px)",
+            top: "calc(var(--glovebox-safe-top, 0px) + 8px)",
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 30,
@@ -2206,7 +2206,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           className="trip-top-toast"
           style={{
             position: "absolute",
-            top: "calc(var(--roam-safe-top, 0px) + 8px)",
+            top: "calc(var(--glovebox-safe-top, 0px) + 8px)",
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 30,
@@ -2224,7 +2224,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             alignItems: "center",
             gap: 6,
             boxShadow: "var(--shadow-heavy)",
-            animation: "roam-fadeIn 0.2s ease",
+            animation: "glovebox-fadeIn 0.2s ease",
           }}
         >
           <Plus size={13} strokeWidth={2.5} />
@@ -2296,7 +2296,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       {isPlacing && typeof reportPhase === "object" && (
         <div className="trip-report-placement" style={{
           position: "absolute",
-          bottom: "calc(220px + var(--roam-safe-bottom, 0px) + 16px)",
+          bottom: "calc(220px + var(--glovebox-safe-bottom, 0px) + 16px)",
           left: 12, right: 12,
           zIndex: 25,
           display: "flex",
@@ -2413,22 +2413,22 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             }}>
               <div style={{
                 width: 56, height: 56, borderRadius: "50%",
-                background: "var(--roam-surface-hover, rgba(26,22,19,0.05))",
+                background: "var(--glovebox-surface-hover, rgba(26,22,19,0.05))",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <WifiOff size={28} strokeWidth={1.8} style={{ color: "var(--roam-text-muted, #7a7067)" }} />
+                <WifiOff size={28} strokeWidth={1.8} style={{ color: "var(--glovebox-text-muted, #7a7067)" }} />
               </div>
 
               <h2 style={{
                 margin: 0, fontSize: 18, fontWeight: 800,
-                color: "var(--roam-text, #1a1613)",
+                color: "var(--glovebox-text, #1a1613)",
               }}>
                 You&apos;re offline
               </h2>
 
               <p style={{
                 margin: 0, fontSize: 14, fontWeight: 500,
-                color: "var(--roam-text-muted, #7a7067)",
+                color: "var(--glovebox-text-muted, #7a7067)",
                 lineHeight: 1.5,
               }}>
                 Needs internet to plan a trip.
@@ -2441,7 +2441,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                 onClick={() => { haptic.light(); setOfflineModalOpen(false); }}
                 style={{
                   width: "100%",
-                  background: "var(--roam-accent)",
+                  background: "var(--glovebox-accent)",
                   color: "var(--on-color, #faf6ef)",
                   border: "none",
                   padding: "14px",
@@ -2721,7 +2721,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         <div style={{ flex: 1, overflow: "hidden", touchAction: "pan-y" }}>
           <div
             ref={scrollElRef}
-            className="roam-scroll"
+            className="glovebox-scroll"
             style={{
               height: "100%",
               overflowY: "auto",
@@ -2735,7 +2735,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                 padding: "10px 14px",
                 borderRadius: "var(--r-card)",
                 background: "rgba(239,68,68,0.1)",
-                border: "1px solid var(--roam-danger)",
+                border: "1px solid var(--glovebox-danger)",
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
@@ -2745,10 +2745,10 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                   <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: "var(--roam-danger)" }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: "var(--glovebox-danger)" }}>
                     Flood Warning on Route
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "var(--roam-text-muted)", marginTop: 2 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "var(--glovebox-text-muted)", marginTop: 2 }}>
                     Your route passes through an active flood warning catchment. Check conditions before travel.
                   </div>
                 </div>
@@ -2762,7 +2762,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                 padding: "10px 14px",
                 borderRadius: "var(--r-card)",
                 background: "rgba(245,158,11,0.1)",
-                border: "1px solid var(--roam-warn)",
+                border: "1px solid var(--glovebox-warn)",
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
@@ -2770,7 +2770,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                   <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                 </svg>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text)", lineHeight: 1.4 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", lineHeight: 1.4 }}>
                   {w.message}
                 </div>
               </div>
@@ -2933,17 +2933,17 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
           display: "flex", gap: 8, alignItems: "center",
           // EXACT match to the bottom tab bar fill (BottomTabBar.tsx uses
-          // color-mix(--roam-bg 92%, transparent), NOT --tab-bar-bg) so the
+          // color-mix(--glovebox-bg 92%, transparent), NOT --tab-bar-bg) so the
           // action section and the tab bar read as one continuous surface
           // (Tate 2026-05-28).
-          background: "color-mix(in srgb, var(--roam-bg) 92%, transparent)",
+          background: "color-mix(in srgb, var(--glovebox-bg) 92%, transparent)",
           borderTop: "1px solid var(--c-border)",
           zIndex: 22, // above sheet (20) but below modals
           transition: "transform var(--dur-normal) ease, opacity var(--dur-fast) ease",
           transform:
-            sheetSnap === "full"     ? "translateY(calc(100% + var(--roam-tab-h, 80px)))" :
+            sheetSnap === "full"     ? "translateY(calc(100% + var(--glovebox-tab-h, 80px)))" :
             sheetSnap === "expanded" ? "translateY(0)" :
-                                       "translateY(calc(-1 * var(--roam-tab-h, 80px)))",
+                                       "translateY(calc(-1 * var(--glovebox-tab-h, 80px)))",
           opacity: sheetSnap === "full" ? 0 : 1,
           pointerEvents: sheetSnap === "full" ? "none" : "auto",
         }}>
@@ -3068,15 +3068,15 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       <style>{`
         .map-fab-btn {
           background: linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(244,239,230,0.96) 100%);
-          color: var(--roam-text);
-          border: 1px solid var(--roam-border);
+          color: var(--glovebox-text);
+          border: 1px solid var(--glovebox-border);
           box-shadow: var(--shadow-medium);
         }
         [data-theme="tactical-night"] {
           .map-fab-btn {
             background: linear-gradient(160deg, rgba(26,21,16,0.96) 0%, rgba(16,13,10,0.98) 100%);
             color: var(--on-color);
-            border: 1px solid var(--roam-border);
+            border: 1px solid var(--glovebox-border);
             box-shadow: var(--shadow-medium);
           }
         }

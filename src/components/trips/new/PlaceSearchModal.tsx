@@ -106,11 +106,11 @@ export function PlaceSearchModal(props: {
           {q.length > 0 && (
             <button type="button"
               onClick={() => { haptic.tap(); setQ(""); reset(); inputRef.current?.focus(); }}
-              className="trip-interactive" style={{ background: "none", border: "none", color: "var(--roam-text-muted)", fontSize: "1.2rem", padding: "8px" }}>✕</button>
+              className="trip-interactive" style={{ background: "none", border: "none", color: "var(--glovebox-text-muted)", fontSize: "1.2rem", padding: "8px" }}>✕</button>
           )}
         </div>
 
-        {loading && <div style={{ height: 3, background: "var(--roam-accent)", borderRadius: 2, animation: "roam-pulse 1s ease-in-out infinite", marginTop: 4 }} />}
+        {loading && <div style={{ height: 3, background: "var(--glovebox-accent)", borderRadius: 2, animation: "glovebox-pulse 1s ease-in-out infinite", marginTop: 4 }} />}
         {err && <div className="trip-err-box" style={{ marginTop: 8 }}>{err}</div>}
 
         <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", marginTop: 12, WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"], overscrollBehaviorX: "contain", touchAction: "pan-y" }}>
@@ -135,7 +135,7 @@ export function PlaceSearchModal(props: {
             return (
               <button key={it.id} type="button" className="trip-interactive trip-list-row" onClick={() => handlePick(it)}>
                 <div className="trip-h2">{it.name}</div>
-                <div className="trip-muted-small roam-wrap-2" style={{ marginTop: 6 }}>
+                <div className="trip-muted-small glovebox-wrap-2" style={{ marginTop: 6 }}>
                   {subtitle}
                 </div>
               </button>

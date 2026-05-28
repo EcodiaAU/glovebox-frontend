@@ -50,7 +50,7 @@ export function AmenityGrid({ items, maxItems = 4, variant = "default" }: Amenit
             style={{
               fontSize: 20,
               lineHeight: 1,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               flexShrink: 0,
             }}
           >
@@ -62,7 +62,7 @@ export function AmenityGrid({ items, maxItems = 4, variant = "default" }: Amenit
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: "0.08em",
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               lineHeight: 1.2,
             }}
           >
@@ -85,8 +85,8 @@ export function AmenityGrid({ items, maxItems = 4, variant = "default" }: Amenit
             padding: "4px 10px",
             borderRadius: "var(--r-pill)",
             border: "none",
-            background: "var(--roam-surface-hover)",
-            color: "var(--roam-text-muted)",
+            background: "var(--glovebox-surface-hover)",
+            color: "var(--glovebox-text-muted)",
             fontSize: 10,
             fontWeight: 800,
             textTransform: "uppercase",

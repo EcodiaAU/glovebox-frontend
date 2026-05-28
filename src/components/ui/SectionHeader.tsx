@@ -29,9 +29,9 @@ export function LiveDot({
           width: 6,
           height: 6,
           borderRadius: "50%",
-          background: "var(--roam-accent)",
+          background: "var(--glovebox-accent)",
           opacity: 0.6,
-          animation: "roam-pulse 2s ease-in-out infinite",
+          animation: "glovebox-pulse 2s ease-in-out infinite",
           flexShrink: 0,
         }}
       />
@@ -42,7 +42,7 @@ export function LiveDot({
           fontWeight: 800,
           textTransform: "uppercase" as const,
           letterSpacing: "0.12em",
-          color: "var(--roam-text-muted)",
+          color: "var(--glovebox-text-muted)",
         }}
       >
         {label}
@@ -77,7 +77,7 @@ export function SectionHeader({
   className,
 }: SectionHeaderProps) {
   const accentColor =
-    variant === "muted" ? "var(--roam-text-muted)" : "var(--roam-accent)";
+    variant === "muted" ? "var(--glovebox-text-muted)" : "var(--glovebox-accent)";
 
   return (
     <div
@@ -139,7 +139,7 @@ export function SectionHeader({
             fontSize: "clamp(1.75rem, 5vw, 3rem)",
             letterSpacing: "-0.025em",
             lineHeight: 1.1,
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             margin: 0,
           }}
         >

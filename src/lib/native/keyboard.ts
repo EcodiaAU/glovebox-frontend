@@ -67,7 +67,7 @@ export async function configureKeyboard(): Promise<void> {
     // Use keyboardWillShow for CSS class + height variable (instant visual response)
     await Keyboard.addListener("keyboardWillShow", (info) => {
       document.documentElement.style.setProperty(
-        "--roam-keyboard-h",
+        "--glovebox-keyboard-h",
         `${info.keyboardHeight}px`,
       );
       document.documentElement.classList.add("keyboard-open");
@@ -80,7 +80,7 @@ export async function configureKeyboard(): Promise<void> {
     });
 
     await Keyboard.addListener("keyboardWillHide", () => {
-      document.documentElement.style.setProperty("--roam-keyboard-h", "0px");
+      document.documentElement.style.setProperty("--glovebox-keyboard-h", "0px");
       document.documentElement.classList.remove("keyboard-open");
     });
 

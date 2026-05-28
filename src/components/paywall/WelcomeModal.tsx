@@ -35,8 +35,8 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
 
   return createPortal(
     <div
-      className="roam-modal-backdrop"
-      data-roam-modal="welcome"
+      className="glovebox-modal-backdrop"
+      data-glovebox-modal="welcome"
       style={{
         position: "fixed",
         inset: 0,
@@ -140,7 +140,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
               fontStyle: "italic",
               fontSize: 12.5,
               letterSpacing: "0.08em",
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               textTransform: "lowercase",
               marginBottom: 8,
             }}>
@@ -159,10 +159,10 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
                 <span style={{
                   width: 6, height: 6, flexShrink: 0,
                   borderRadius: "50%",
-                  background: "var(--roam-accent)",
+                  background: "var(--glovebox-accent)",
                   alignSelf: "center",
                 }} aria-hidden="true" />
-                <span style={{ fontSize: 14.5, fontWeight: 500, color: "var(--roam-text)", lineHeight: 1.45 }}>
+                <span style={{ fontSize: 14.5, fontWeight: 500, color: "var(--glovebox-text)", lineHeight: 1.45 }}>
                   {text}
                 </span>
               </div>
@@ -201,7 +201,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
               fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
               fontStyle: "italic",
               fontSize: 13, fontWeight: 400,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               lineHeight: 1.5,
             }}>
               After 2 free trips, go Untethered for $19.99. One-time, no subscription.

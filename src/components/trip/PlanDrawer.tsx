@@ -122,11 +122,11 @@ function InlineRename({
         }}
       >
         <span
-          className="roam-wrap-2"
+          className="glovebox-wrap-2"
           style={{
             fontSize: 14,
             fontWeight: 700,
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             lineHeight: 1.25,
             textAlign: "left",
           }}
@@ -137,7 +137,7 @@ function InlineRename({
           size={14}
           style={{
             flexShrink: 0,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             opacity: 0.5,
             marginTop: 2,
           }}
@@ -166,8 +166,8 @@ function InlineRename({
           flex: 1,
           fontSize: 14,
           fontWeight: 700,
-          color: "var(--roam-text)",
-          background: "var(--roam-surface-raised, var(--roam-surface))",
+          color: "var(--glovebox-text)",
+          background: "var(--glovebox-surface-raised, var(--glovebox-surface))",
           border: "1.5px solid var(--brand-sky)",
           borderRadius: "var(--r-card)",
           padding: "6px 10px",
@@ -187,7 +187,7 @@ function InlineRename({
           width: 44,
           height: 44,
           borderRadius: "var(--r-card)",
-          background: "var(--roam-accent)",
+          background: "var(--glovebox-accent)",
           color: "var(--on-color)",
           flexShrink: 0,
           touchAction: "manipulation",
@@ -208,9 +208,9 @@ function InlineRename({
           width: 44,
           height: 44,
           borderRadius: "var(--r-card)",
-          background: "var(--roam-surface)",
-          border: "1px solid var(--roam-border)",
-          color: "var(--roam-text-muted)",
+          background: "var(--glovebox-surface)",
+          border: "1px solid var(--glovebox-border)",
+          color: "var(--glovebox-text-muted)",
           flexShrink: 0,
           touchAction: "manipulation",
           WebkitTapHighlightColor: "transparent",
@@ -227,10 +227,10 @@ function InlineRename({
 function StatusDot({ status }: { status?: string }) {
   const color =
     status === "ready"
-      ? "var(--roam-success)"
+      ? "var(--glovebox-success)"
       : status === "error"
-        ? "var(--roam-danger)"
-        : "var(--roam-text-muted)";
+        ? "var(--glovebox-danger)"
+        : "var(--glovebox-text-muted)";
 
   return (
     <span
@@ -277,11 +277,11 @@ function PlanCard({
   return (
     <div
       style={{
-        background: "var(--roam-card-bg, var(--roam-surface))",
+        background: "var(--glovebox-card-bg, var(--glovebox-surface))",
         borderRadius: "var(--r-card)",
         border: isCurrent
           ? "2px solid var(--brand-sky)"
-          : "1px solid var(--roam-border)",
+          : "1px solid var(--glovebox-border)",
         overflow: "hidden",
         transition: "border-color 0.2s, box-shadow 0.2s",
         boxShadow: isCurrent
@@ -296,7 +296,7 @@ function PlanCard({
         style={{
           width: 4,
           flexShrink: 0,
-          background: isCurrent ? "var(--brand-sky)" : "var(--roam-border)",
+          background: isCurrent ? "var(--brand-sky)" : "var(--glovebox-border)",
           borderRadius: "16px 0 0 16px",
         }}
       />
@@ -379,7 +379,7 @@ function PlanCard({
             alignItems: "center",
             gap: simple ? 14 : 10,
             fontSize: simple ? 14 : 11,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             fontWeight: simple ? 700 : 600,
           }}
         >
@@ -408,7 +408,7 @@ function PlanCard({
               gap: 8,
               marginTop: 8,
               fontSize: 10,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               fontWeight: 500,
             }}
           >
@@ -425,7 +425,7 @@ function PlanCard({
       {/* ── Actions bar ──────────────────────────────── */}
       <div
         className="plan-card-actions"
-        style={{ borderTop: "1px solid var(--roam-border)" }}
+        style={{ borderTop: "1px solid var(--glovebox-border)" }}
       >
         {!isCurrent && (
           <button
@@ -451,7 +451,7 @@ function PlanCard({
             e.stopPropagation();
             onOpen();
           }}
-          style={{ color: "var(--roam-text)" }}
+          style={{ color: "var(--glovebox-text)" }}
         >
           <Navigation size={16} />
           <span className="plan-card-action-label">Open</span>
@@ -704,7 +704,7 @@ export function PlanDrawer({
             inset: 0,
             background: "var(--overlay-bg, rgba(0,0,0,0.3))",
             zIndex: 39,
-            animation: "roam-fadeIn 0.2s ease",
+            animation: "glovebox-fadeIn 0.2s ease",
             WebkitTapHighlightColor: "transparent",
           }}
           onClick={onClose}
@@ -720,7 +720,7 @@ export function PlanDrawer({
           right: 0,
           bottom: 0,
           width: "min(100%, 360px)",
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           zIndex: 40,
           boxShadow: open ? "-4px 0 16px rgba(0,0,0,0.2)" : "none",
           transform: open ? "translateX(0)" : "translateX(100%)",
@@ -734,8 +734,8 @@ export function PlanDrawer({
           style={{
             padding: "16px 16px 12px",
             paddingTop: "max(16px, env(safe-area-inset-top, 0px) + 16px)",
-            borderBottom: "1px solid var(--roam-border)",
-            background: "var(--roam-surface)",
+            borderBottom: "1px solid var(--glovebox-border)",
+            background: "var(--glovebox-surface)",
             flexShrink: 0,
           }}
         >
@@ -751,7 +751,7 @@ export function PlanDrawer({
               style={{
                 fontSize: 18,
                 fontWeight: 900,
-                color: "var(--roam-text)",
+                color: "var(--glovebox-text)",
                 margin: 0,
               }}
             >
@@ -769,8 +769,8 @@ export function PlanDrawer({
                 width: 44,
                 height: 44,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
-                color: "var(--roam-text)",
+                background: "var(--glovebox-surface-hover)",
+                color: "var(--glovebox-text)",
                 WebkitTapHighlightColor: "transparent",
                 touchAction: "manipulation",
               }}
@@ -794,9 +794,9 @@ export function PlanDrawer({
                 gap: 6,
                 height: 48,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
-                border: "1px solid var(--roam-border)",
-                color: "var(--roam-text)",
+                background: "var(--glovebox-surface-hover)",
+                border: "1px solid var(--glovebox-border)",
+                color: "var(--glovebox-text)",
                 fontSize: 13,
                 fontWeight: 700,
                 touchAction: "manipulation",
@@ -820,7 +820,7 @@ export function PlanDrawer({
                   gap: 6,
                   height: 48,
                   borderRadius: "var(--r-card)",
-                  background: "var(--roam-surface-hover)",
+                  background: "var(--glovebox-surface-hover)",
                   border: "1px solid var(--brand-sky)",
                   color: "var(--brand-sky)",
                   fontSize: 13,
@@ -850,7 +850,7 @@ export function PlanDrawer({
                 gap: 6,
                 height: 48,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-accent)",
+                background: "var(--glovebox-accent)",
                 color: "var(--on-color)",
                 fontSize: 13,
                 fontWeight: 700,
@@ -880,7 +880,7 @@ export function PlanDrawer({
         {/* Plans list */}
         <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
           <div
-            className="roam-scroll"
+            className="glovebox-scroll"
             style={{
               height: "100%",
               overflowY: "auto",
@@ -902,7 +902,7 @@ export function PlanDrawer({
                   justifyContent: "center",
                   textAlign: "center",
                   padding: "24px 12px",
-                  color: "var(--roam-text-muted)",
+                  color: "var(--glovebox-text-muted)",
                   fontSize: 13,
                 }}
               >
@@ -970,7 +970,7 @@ export function PlanDrawer({
         />
       )}
 
-      {/* fadeIn animation now handled by roam-fade-in in globals.css */}
+      {/* fadeIn animation now handled by glovebox-fade-in in globals.css */}
     </>
   );
 }

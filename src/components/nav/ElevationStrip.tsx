@@ -198,11 +198,11 @@ export const ElevationStrip = memo(function ElevationStrip({
     <div
       className="elev-strip"
       style={{
-        background: "color-mix(in srgb, var(--roam-bg) 92%, transparent)",
+        background: "color-mix(in srgb, var(--glovebox-bg) 92%, transparent)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        borderTop: "1px solid var(--roam-border)",
-        borderBottom: "1px solid var(--roam-border)",
+        borderTop: "1px solid var(--glovebox-border)",
+        borderBottom: "1px solid var(--glovebox-border)",
         overflow: "hidden",
         transition: "height 0.25s cubic-bezier(0.4,0,0.2,1)",
         height: isCollapsed ? 36 : CHART_H + 36,
@@ -223,7 +223,7 @@ export const ElevationStrip = memo(function ElevationStrip({
           background: "none",
           border: "none",
           cursor: "pointer",
-          color: "var(--roam-text)",
+          color: "var(--glovebox-text)",
           WebkitTapHighlightColor: "transparent",
         }}
       >
@@ -233,7 +233,7 @@ export const ElevationStrip = memo(function ElevationStrip({
             ELEVATION
           </span>
           <span style={{
-            fontSize: 11, fontWeight: 600, color: "var(--roam-text-muted)",
+            fontSize: 11, fontWeight: 600, color: "var(--glovebox-text-muted)",
             fontVariantNumeric: "tabular-nums",
           }}>
             {Math.round(minElev)}–{Math.round(maxElev)}m
@@ -247,7 +247,7 @@ export const ElevationStrip = memo(function ElevationStrip({
             ↑{Math.round(profile.total_ascent_m)}m
           </span>
           <span style={{
-            fontSize: 11, fontWeight: 700, color: "var(--roam-danger)",
+            fontSize: 11, fontWeight: 700, color: "var(--glovebox-danger)",
             fontVariantNumeric: "tabular-nums",
           }}>
             ↓{Math.round(profile.total_descent_m)}m
@@ -399,15 +399,15 @@ export const ElevationStrip = memo(function ElevationStrip({
               position: "absolute",
               top: 4,
               left: `clamp(4px, calc(${(hoverData.x / VB_W) * 100}% - 36px), calc(100% - 76px))`,
-              background: "color-mix(in srgb, var(--roam-surface) 95%, transparent)",
+              background: "color-mix(in srgb, var(--glovebox-surface) 95%, transparent)",
               borderRadius: "var(--r-card)",
               padding: "3px 7px",
               fontSize: 10,
               fontWeight: 700,
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               pointerEvents: "none",
               whiteSpace: "nowrap",
-              border: "1px solid var(--roam-border-strong)",
+              border: "1px solid var(--glovebox-border-strong)",
               zIndex: 2,
             }}
           >
@@ -423,7 +423,7 @@ export const ElevationStrip = memo(function ElevationStrip({
             left: 6,
             fontSize: 9,
             fontWeight: 700,
-            color: "var(--roam-text-muted)", opacity: 0.5,
+            color: "var(--glovebox-text-muted)", opacity: 0.5,
             pointerEvents: "none",
           }}
         >
@@ -436,7 +436,7 @@ export const ElevationStrip = memo(function ElevationStrip({
             right: 6,
             fontSize: 9,
             fontWeight: 700,
-            color: "var(--roam-text-muted)", opacity: 0.5,
+            color: "var(--glovebox-text-muted)", opacity: 0.5,
             pointerEvents: "none",
           }}
         >

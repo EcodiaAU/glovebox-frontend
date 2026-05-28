@@ -13,7 +13,7 @@ import { useToggle } from "@/lib/hooks/useToggle";
 
 const settingsBtn: React.CSSProperties = {
   ...btnReset,
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   fontSize: 0,
   fontWeight: 700,
   transition: "color 0.2s",
@@ -44,7 +44,7 @@ const expandBtn: React.CSSProperties = {
   gap: 4,
   fontSize: 11,
   fontWeight: 700,
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   cursor: "pointer",
   touchAction: "manipulation",
   WebkitTapHighlightColor: "transparent",
@@ -55,26 +55,26 @@ const fuelStripBar: React.CSSProperties = {
   height: 6,
   borderRadius: 3,
   overflow: "hidden",
-  background: "var(--roam-border-strong)",
+  background: "var(--glovebox-border-strong)",
 };
 
 const stationDot: React.CSSProperties = {
   width: 5,
   height: 5,
   borderRadius: "50%",
-  border: "1.5px solid var(--roam-surface)",
+  border: "1.5px solid var(--glovebox-surface)",
   position: "absolute" as const,
   top: 0.5,
   transform: "translateX(-2.5px)",
-  background: "var(--roam-text)",
+  background: "var(--glovebox-text)",
 };
 
 /* ── Color helpers ────────────────────────────────────────────────────── */
 
 function rangeStatusColor(analysis: FuelAnalysis): string {
   if (analysis.has_critical_gaps) return "var(--text-error)";
-  if (analysis.warnings.some((w) => w.severity === "warn")) return "var(--roam-warn)";
-  return "var(--roam-success)";
+  if (analysis.warnings.some((w) => w.severity === "warn")) return "var(--glovebox-warn)";
+  return "var(--glovebox-success)";
 }
 
 function rangeStatusLabel(analysis: FuelAnalysis): string {
@@ -143,10 +143,10 @@ export function FuelSummaryCard({
         aria-label={`Fuel: ${statusLabel}, ${stations.length} stations, tap for details`}
       >
         <Fuel size={13} strokeWidth={2.2} style={{ color: statusColor, flexShrink: 0 }} />
-        <span style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text)", flex: 1, minWidth: 0 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", flex: 1, minWidth: 0 }}>
           Fuel · {stations.length} station{stations.length !== 1 ? "s" : ""} · {profile.tank_range_km}km range
         </span>
-        <ChevronDown size={12} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
+        <ChevronDown size={12} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
       </button>
     );
   }
@@ -173,11 +173,11 @@ export function FuelSummaryCard({
           <span style={{ ...pillBase, background: `${statusColor}15`, color: statusColor, fontSize: 10, padding: "2px 7px" }}>
             {statusLabel}
           </span>
-          <span style={{ ...pillBase, background: "var(--roam-surface-hover)", color: "var(--roam-text)", fontSize: 10, padding: "2px 7px" }}>
+          <span style={{ ...pillBase, background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text)", fontSize: 10, padding: "2px 7px" }}>
             {profile.tank_range_km}km
           </span>
           {profile.fuel_type !== "unleaded" && (
-            <span style={{ ...pillBase, background: "var(--roam-surface-hover)", color: "var(--roam-text)", fontSize: 10, padding: "2px 7px" }}>
+            <span style={{ ...pillBase, background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text)", fontSize: 10, padding: "2px 7px" }}>
               {profile.fuel_type.toUpperCase()}
             </span>
           )}
@@ -236,7 +236,7 @@ export function FuelSummaryCard({
             })}
           </div>
           {worstGap && max_gap_km > profile.reserve_warn_km && (
-            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--roam-text-muted)", marginTop: 4, textAlign: "center" as const }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--glovebox-text-muted)", marginTop: 4, textAlign: "center" as const }}>
               Longest gap: {Math.round(worstGap.km)}km ({worstGap.from} → {worstGap.to})
             </div>
           )}
@@ -279,7 +279,7 @@ export function FuelSummaryCard({
           <div style={{ fontSize: 11, fontWeight: 900, color: "var(--text-error)", marginBottom: 2 }}>
             Recommendation
           </div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text)", lineHeight: "1.35" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", lineHeight: "1.35" }}>
             Fill up and carry a 20L jerry can from {worstGap.from}. The {Math.round(worstGap.km)}km gap
             {worstGap.km > profile.tank_range_km
               ? ` exceeds your ${profile.tank_range_km}km range.`

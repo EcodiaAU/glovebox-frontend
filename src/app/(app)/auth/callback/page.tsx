@@ -66,7 +66,7 @@ export default function AuthCallbackPage() {
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Signing you in…</div>
-        <div style={{ color: "var(--roam-muted, #888)" }}>Please wait</div>
+        <div style={{ color: "var(--glovebox-muted, #888)" }}>Please wait</div>
       </div>
     </div>
   );

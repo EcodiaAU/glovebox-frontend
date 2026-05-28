@@ -192,8 +192,8 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
 
   const modalContent = (
     <div
-      className="roam-modal-backdrop"
-      data-roam-modal="invite"
+      className="glovebox-modal-backdrop"
+      data-glovebox-modal="invite"
       onClick={handleClose}
       style={{
         position: "fixed",
@@ -222,7 +222,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: "var(--roam-surface, #1a1a1a)",
+          backgroundColor: "var(--glovebox-surface, #1a1a1a)",
           borderRadius: "var(--r-card)",
           padding: 24,
           width: "100%",
@@ -246,7 +246,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
             fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
             fontStyle: "italic",
             fontSize: 24, fontWeight: 400, margin: 0,
-            color: "var(--roam-text, #eee)",
+            color: "var(--glovebox-text, #eee)",
             letterSpacing: "-0.005em",
           }}>
             {mode === "create" ? "Share plan." : "Join plan."}
@@ -262,11 +262,11 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
               cursor: "pointer",
               width: 44, height: 44,
               borderRadius: "50%",
-              background: "var(--roam-surface-raised, #222)",
+              background: "var(--glovebox-surface-raised, #222)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "var(--roam-text, #eee)",
+              color: "var(--glovebox-text, #eee)",
               opacity: 0.6,
               flexShrink: 0,
               boxSizing: "border-box",
@@ -287,7 +287,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                 <div
                   className="t-mono"
                   style={{
-                    fontSize: 11, color: "var(--c-text-muted, var(--roam-text-muted))",
+                    fontSize: 11, color: "var(--c-text-muted, var(--glovebox-text-muted))",
                     textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8,
                   }}
                 >
@@ -315,7 +315,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                   <div
                     style={{
                       fontSize: 12, marginTop: 8,
-                      color: "var(--c-text-muted, var(--roam-text-muted))",
+                      color: "var(--c-text-muted, var(--glovebox-text-muted))",
                     }}
                   >
                     Share this code to add travelers to your plan
@@ -331,7 +331,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                     borderRadius: 14,
                     border: copied
                       ? "1px solid var(--brand-eucalypt, #2d6e40)"
-                      : "1px solid var(--roam-border)",
+                      : "1px solid var(--glovebox-border)",
                     background: copied
                       ? "rgba(45, 110, 64, 0.12)"
                       : "transparent",
@@ -339,7 +339,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                     cursor: "pointer",
                     color: copied
                       ? "var(--brand-eucalypt, #2d6e40)"
-                      : "var(--roam-text, #eee)",
+                      : "var(--glovebox-text, #eee)",
                     transition: "all 0.2s ease",
                     WebkitTapHighlightColor: "transparent",
                   }}
@@ -349,7 +349,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
               </div>
             ) : (
               <div style={{ textAlign: "center", padding: "16px 0" }}>
-                <div style={{ fontSize: 13, color: "var(--roam-text-muted)", marginBottom: 16 }}>
+                <div style={{ fontSize: 13, color: "var(--glovebox-text-muted)", marginBottom: 16 }}>
                   Generate a 6-character code so your partner can view and edit this trip plan on their device.
                 </div>
                 <button
@@ -380,7 +380,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
         ) : (
           /* ── Redeem mode ────────────────────────────────────────── */
           <div style={{ padding: "8px 0" }}>
-            <div style={{ fontSize: 13, color: "var(--roam-text-muted)", marginBottom: 12 }}>
+            <div style={{ fontSize: 13, color: "var(--glovebox-text-muted)", marginBottom: 12 }}>
               Enter the 6-character code from your travel partner
             </div>
             <input
@@ -406,14 +406,14 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
                 padding: "14px",
                 minHeight: 56,
                 borderRadius: "var(--r-card)",
-                border: "1.5px solid var(--roam-border, #333)",
-                background: "var(--roam-surface-raised, #222)",
-                color: "var(--roam-text, #eee)",
+                border: "1.5px solid var(--glovebox-border, #333)",
+                background: "var(--glovebox-surface-raised, #222)",
+                color: "var(--glovebox-text, #eee)",
                 outline: "none",
                 transition: "border-color 0.15s, box-shadow 0.15s",
               }}
               onFocus={(e) => { e.currentTarget.style.borderColor = "var(--brand-sky, #3b82f6)"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59,130,246,0.15)"; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--roam-border, #333)"; e.currentTarget.style.boxShadow = "none"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--glovebox-border, #333)"; e.currentTarget.style.boxShadow = "none"; }}
             />
             <button
               type="button"
@@ -453,7 +453,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
         )}
       </div>
 
-      {/* Animations handled by roam-spin in globals.css */}
+      {/* Animations handled by glovebox-spin in globals.css */}
     </div>
   );
 

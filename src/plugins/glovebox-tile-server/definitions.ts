@@ -1,6 +1,6 @@
-// src/plugins/roam-tile-server/definitions.ts
+// src/plugins/glovebox-tile-server/definitions.ts
 //
-// Capacitor plugin: RoamTileServer
+// Capacitor plugin: GloveboxTileServer
 // Serves PMTiles, glyphs, sprites from device storage via localhost HTTP
 // with proper Range/206 support for offline MapLibre rendering.
 
@@ -78,7 +78,7 @@ export interface DeleteBasemapOptions {
   region: string;
 }
 
-export interface RoamTileServerPlugin {
+export interface GloveboxTileServerPlugin {
   /**
    * Start the local HTTP file server.
    * Serves files from `rootPath` with Range/206 support.
@@ -99,7 +99,7 @@ export interface RoamTileServerPlugin {
   /**
    * Download a file (typically PMTiles) to device storage.
    * Fires 'downloadProgress' events during download.
-   * Saves to: {app_data}/roam/basemaps/{region}/{filename}
+   * Saves to: {app_data}/glovebox/basemaps/{region}/{filename}
    */
   downloadFile(options: DownloadOptions): Promise<DownloadResult>;
 

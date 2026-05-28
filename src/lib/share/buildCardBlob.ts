@@ -87,7 +87,7 @@ let cachedIconUrl: string | null = null;
 export async function loadIconDataUrl(): Promise<string | null> {
   if (cachedIconUrl) return cachedIconUrl;
   try {
-    const res = await fetch("/img/roam-app-icon.png");
+    const res = await fetch("/img/glovebox-app-icon.png");
     const blob = await res.blob();
     const img = await loadImage(URL.createObjectURL(blob));
     const c = document.createElement("canvas"); c.width = 64; c.height = 64;
@@ -162,7 +162,7 @@ export async function nativeShareBlob(blob: Blob, label: string): Promise<void> 
     reader.onerror = rej;
     reader.readAsDataURL(blob);
   });
-  const fname = `roam-trip-${Date.now()}.png`;
+  const fname = `glovebox-trip-${Date.now()}.png`;
   await Filesystem.writeFile({ path: fname, data: du.split(",")[1], directory: Directory.Cache });
   const { uri } = await Filesystem.getUri({ path: fname, directory: Directory.Cache });
   await Share.share({ title: label, url: uri, dialogTitle: "Share your trip" });
@@ -181,7 +181,7 @@ export async function shareBlob(blob: Blob, label: string, mode: "share" | "save
       await nativeShareBlob(blob, label);
       return;
     }
-    const file = new File([blob], "roam-trip.png", { type: "image/png" });
+    const file = new File([blob], "glovebox-trip.png", { type: "image/png" });
     if (navigator.canShare?.({ files: [file] })) {
       await navigator.share({ files: [file], title: label });
       return;
@@ -190,6 +190,6 @@ export async function shareBlob(blob: Blob, label: string, mode: "share" | "save
   // Fallback: download
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url; a.download = `roam-trip-${Date.now()}.png`; a.click();
+  a.href = url; a.download = `glovebox-trip-${Date.now()}.png`; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

@@ -21,7 +21,7 @@ export function NotFoundClient() {
         style={{ 
           width: 80, 
           height: 80, 
-          backgroundColor: "var(--roam-surface-hover)", 
+          backgroundColor: "var(--glovebox-surface-hover)", 
           borderRadius: "50%", 
           display: "grid", 
           placeItems: "center",

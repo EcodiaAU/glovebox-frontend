@@ -1,12 +1,12 @@
-// android/app/src/main/java/com/ecodia/roam/plugins/RoamTileServerPlugin.kt
+// android/app/src/main/java/com/ecodia/glovebox/plugins/GloveboxTileServerPlugin.kt
 //
-// Capacitor plugin: RoamTileServer (Android)
+// Capacitor plugin: GloveboxTileServer (Android)
 // Manages a local HTTP file server with Range/206 support
 // and handles large file downloads to device storage.
 //
-// Place in: android/app/src/main/java/com/ecodia/roam/plugins/
+// Place in: android/app/src/main/java/com/ecodia/glovebox/plugins/
 
-package com.ecodia.roam.plugins
+package com.ecodia.glovebox.plugins
 
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -33,8 +33,8 @@ import java.net.URL
 import java.security.MessageDigest
 import kotlin.concurrent.thread
 
-@CapacitorPlugin(name = "RoamTileServer")
-class RoamTileServerPlugin : Plugin() {
+@CapacitorPlugin(name = "GloveboxTileServer")
+class GloveboxTileServerPlugin : Plugin() {
 
     private var fileServer: LocalFileServer? = null
     private val activeDownloads = mutableMapOf<String, Thread>()
@@ -42,7 +42,7 @@ class RoamTileServerPlugin : Plugin() {
 
     private val basemapsRoot: File
         get() {
-            val dir = File(context.filesDir, "roam/basemaps")
+            val dir = File(context.filesDir, "glovebox/basemaps")
             dir.mkdirs()
             return dir
         }
@@ -116,7 +116,7 @@ class RoamTileServerPlugin : Plugin() {
 
         cancelledRegions.remove(region)
 
-        val downloadThread = thread(name = "roam-download-$region") {
+        val downloadThread = thread(name = "glovebox-download-$region") {
             try {
                 val url = URL(urlString)
                 val conn = url.openConnection() as HttpURLConnection
@@ -314,12 +314,12 @@ class LocalFileServer(
         actualPort = socket.localPort
         isRunning = true
 
-        serverThread = thread(name = "roam-file-server", isDaemon = true) {
+        serverThread = thread(name = "glovebox-file-server", isDaemon = true) {
             println("[LocalFileServer] ✅ Listening on http://127.0.0.1:$actualPort")
             while (isRunning) {
                 try {
                     val client = socket.accept()
-                    thread(name = "roam-client", isDaemon = true) {
+                    thread(name = "glovebox-client", isDaemon = true) {
                         handleClient(client)
                     }
                 } catch (e: Exception) {

@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Map as MLMap } from "maplibre-gl";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { BBox4 } from "@/lib/types/geo";
 import type { InterpolatedPosition } from "@/lib/nav/gpsInterpolator";
 import { useDeviceHeading } from "@/lib/hooks/useDeviceHeading";
@@ -33,7 +33,7 @@ export type MapNavMode = {
 type Opts = {
   mapRef: React.RefObject<MLMap | null>;
   /** Smoothed GPS position for entry/recenter animations (still ~1 Hz) */
-  position: RoamPosition | null;
+  position: GloveboxPosition | null;
   active: boolean;
   bbox: BBox4 | null;
 };
@@ -82,7 +82,7 @@ function adaptiveZoom(speed: number): number {
 }
 
 function userBearing(
-  pos: RoamPosition,
+  pos: GloveboxPosition,
   compassHeading: number | null,
   fallback: number,
 ): number {

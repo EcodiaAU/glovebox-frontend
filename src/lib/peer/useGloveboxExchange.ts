@@ -1,7 +1,7 @@
-// src/lib/peer/useRoamExchange.ts
+// src/lib/peer/useGloveboxExchange.ts
 
 /**
- * useRoamExchange
+ * useGloveboxExchange
  *
  * Orchestrates the full peer-to-peer data exchange flow:
  *
@@ -27,12 +27,12 @@
  */
 
 import { useCallback, useRef, useState } from "react";
-import { encodeFrame, decodeFrame, type EncodableItem } from "./roamCodec";
+import { encodeFrame, decodeFrame, type EncodableItem } from "./gloveboxCodec";
 import { collectRelevantData, getMyRouteGeometry } from "./filterRelevantData";
 import { transmit, receive, estimateTransferSeconds, type TransmitProgress, type ReceiveProgress } from "./ultrasonicTransfer";
 import { haptic } from "@/lib/native/haptics";
 import { toErrorMessage } from "@/lib/utils/errors";
-import { roamNotify } from "@/lib/native/notifications";
+import { gloveboxNotify } from "@/lib/native/notifications";
 
 // ── State types ──────────────────────────────────────────────
 
@@ -78,7 +78,7 @@ const INITIAL_STATE: ExchangeState = {
 
 // ── Hook ─────────────────────────────────────────────────────
 
-export function useRoamExchange() {
+export function useGloveboxExchange() {
   const [state, setState] = useState<ExchangeState>(INITIAL_STATE);
   const abortRef = useRef<AbortController | null>(null);
   const receivedItemsRef = useRef<EncodableItem[]>([]);
@@ -228,7 +228,7 @@ async function _doListen(
     await idbPut("meta", merged.slice(-500), "peer:ultrasonic_received");
 
     haptic.success();
-    roamNotify.peerSyncComplete(items.length);
+    gloveboxNotify.peerSyncComplete(items.length);
 
     setState((s) => ({
       ...s,

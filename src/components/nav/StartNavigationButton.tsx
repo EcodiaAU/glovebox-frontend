@@ -39,7 +39,7 @@ export function StartNavigationButton({ onStart, disabled }: Props) {
         gap: 8,
         padding: "15px 24px",
         minHeight: 52,
-        border: loading || disabled ? "none" : "2px solid var(--roam-success)",
+        border: loading || disabled ? "none" : "2px solid var(--glovebox-success)",
         borderRadius: "var(--r-card)",
         cursor: loading || disabled ? "default" : "pointer",
         fontSize: 15,
@@ -68,7 +68,7 @@ export function StartNavigationButton({ onStart, disabled }: Props) {
       }}
     >
       {loading ? (
-        <Loader2 size={20} style={{ animation: "roam-spin 0.6s linear infinite" }} />
+        <Loader2 size={20} style={{ animation: "glovebox-spin 0.6s linear infinite" }} />
       ) : (
         <Navigation size={20} />
       )}

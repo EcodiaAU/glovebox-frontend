@@ -43,7 +43,7 @@ export function BasemapDownloadCard({ region = "australia", onReady, className }
       {status.state === "downloading" && (
         <div style={styles.container}>
           <button onClick={() => { haptic.tap(); cancel(); }} style={styles.pill} title="Tap to cancel">
-            <Loader2 size={16} className="roam-spin" style={{ opacity: 0.7 }} />
+            <Loader2 size={16} className="glovebox-spin" style={{ opacity: 0.7 }} />
             <span>Saving offline map…</span>
           </button>
         </div>
@@ -52,7 +52,7 @@ export function BasemapDownloadCard({ region = "australia", onReady, className }
       {/* 4. Error state */}
       {status.state === "error" && (
         <div style={styles.container}>
-          <button onClick={() => { haptic.tap(); handleDownload(); }} style={{ ...styles.pill, color: "var(--roam-danger, #ef4444)" }}>
+          <button onClick={() => { haptic.tap(); handleDownload(); }} style={{ ...styles.pill, color: "var(--glovebox-danger, #ef4444)" }}>
             <AlertTriangle size={16} />
             <span>Map download failed. Tap to retry.</span>
           </button>
@@ -63,7 +63,7 @@ export function BasemapDownloadCard({ region = "australia", onReady, className }
       {(status.state === "not_installed" || !status.state) && (
         <div style={styles.container}>
           <div style={styles.pill}>
-            <Loader2 size={16} className="roam-spin" style={{ opacity: 0.7 }} />
+            <Loader2 size={16} className="glovebox-spin" style={{ opacity: 0.7 }} />
             <span>Preparing offline map…</span>
           </div>
         </div>
@@ -88,7 +88,7 @@ const styles: Record<string, React.CSSProperties> = {
     backdropFilter: "blur(12px)",
     WebkitBackdropFilter: "blur(12px)",
     boxShadow: "var(--shadow-heavy)",
-    border: "1px solid var(--roam-border)",
+    border: "1px solid var(--glovebox-border)",
   },
   pill: {
     position: "relative",

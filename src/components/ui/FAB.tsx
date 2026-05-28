@@ -17,7 +17,7 @@ interface FABProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "childr
 
 const variantBg: Record<FABVariant, string> = {
   primary: "var(--cta-gradient)",
-  danger: "linear-gradient(135deg, var(--roam-danger), var(--roam-danger))",
+  danger: "linear-gradient(135deg, var(--glovebox-danger), var(--glovebox-danger))",
   eucalypt: "linear-gradient(135deg, var(--brand-eucalypt-dark), var(--brand-eucalypt))",
 };
 
@@ -50,7 +50,7 @@ export const FAB = forwardRef<HTMLButtonElement, FABProps>(
             height: 64,
             borderRadius: 20,
             background: variantBg[variant],
-            border: "4px solid var(--roam-bg)",
+            border: "4px solid var(--glovebox-bg)",
             boxShadow: "var(--shadow-heavy)",
             color: "var(--on-color)",
             display: "grid",
@@ -62,7 +62,7 @@ export const FAB = forwardRef<HTMLButtonElement, FABProps>(
             pointerEvents: "auto",
             ...style,
           }}
-          className="roam-fab-press"
+          className="glovebox-fab-press"
           {...props}
         >
           <span
@@ -80,7 +80,7 @@ export const FAB = forwardRef<HTMLButtonElement, FABProps>(
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: "0.05em",
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               textAlign: "center",
               whiteSpace: "nowrap",
               pointerEvents: "none",

@@ -2,7 +2,7 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 
 /* ==========================================================================
-   ROAM - Australian Road Trip Navigation
+   GLOVEBOX - Australian Road Trip Navigation
    Design System: "Terra Nomad"
    ========================================================================== */
 
@@ -28,11 +28,11 @@
    1. SHARED TOKENS (mode-independent)
    ========================================================================== */
 :root {
-  --roam-keyboard-h: 0px;
-  --roam-safe-top: env(safe-area-inset-top, 0px);
-  --roam-safe-bottom: env(safe-area-inset-bottom, 0px);
-  --roam-safe-left: env(safe-area-inset-left, 0px);
-  --roam-safe-right: env(safe-area-inset-right, 0px);
+  --glovebox-keyboard-h: 0px;
+  --glovebox-safe-top: env(safe-area-inset-top, 0px);
+  --glovebox-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --glovebox-safe-left: env(safe-area-inset-left, 0px);
+  --glovebox-safe-right: env(safe-area-inset-right, 0px);
 
   --r-card: 6px;
   --r-btn: 4px;
@@ -42,8 +42,8 @@
   --radius-sm: 2px;
 
   --tap-target: 48px;
-  --roam-tab-h: 80px;
-  --bottom-nav-height: calc(var(--roam-tab-h) + var(--roam-safe-bottom));
+  --glovebox-tab-h: 80px;
+  --bottom-nav-height: calc(var(--glovebox-tab-h) + var(--glovebox-safe-bottom));
 
   --ff-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --ff-body: "Public Sans", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -135,21 +135,21 @@
 
   --on-color: #FFFFFF;
 
-  --roam-bg: var(--bg-sand);
-  --roam-surface: var(--surface-card);
-  --roam-surface-hover: var(--surface-muted);
-  --roam-surface-raised: var(--surface-raised);
-  --roam-text: var(--text-main);
-  --roam-text-muted: var(--text-muted);
+  --glovebox-bg: var(--bg-sand);
+  --glovebox-surface: var(--surface-card);
+  --glovebox-surface-hover: var(--surface-muted);
+  --glovebox-surface-raised: var(--surface-raised);
+  --glovebox-text: var(--text-main);
+  --glovebox-text-muted: var(--text-muted);
 
-  --roam-accent: var(--brand-ochre);
-  --roam-danger: var(--terra-red);
-  --roam-success: var(--brand-eucalypt);
-  --roam-info: var(--brand-sky);
-  --roam-warn: var(--brand-amber);
+  --glovebox-accent: var(--brand-ochre);
+  --glovebox-danger: var(--terra-red);
+  --glovebox-success: var(--brand-eucalypt);
+  --glovebox-info: var(--brand-sky);
+  --glovebox-warn: var(--brand-amber);
 
-  --roam-border: rgba(19, 19, 19, 0.12);
-  --roam-border-strong: rgba(19, 19, 19, 0.25);
+  --glovebox-border: rgba(19, 19, 19, 0.12);
+  --glovebox-border-strong: rgba(19, 19, 19, 0.25);
 
   --bg-error: #FDECEA;
   --text-error: #922018;
@@ -196,7 +196,7 @@
   --severity-minor-tint: rgba(255, 182, 147, 0.15);
 
   --glass-bg: var(--surface-card);
-  --glass-border: var(--roam-border-strong);
+  --glass-border: var(--glovebox-border-strong);
   --glass-blur: none;
 
   /* CTA gradient — "machined" ochre depth */
@@ -234,21 +234,21 @@
 
   --on-color: #FFFFFF;
 
-  --roam-bg: var(--bg-sand);
-  --roam-surface: var(--surface-card);
-  --roam-surface-hover: var(--surface-muted);
-  --roam-surface-raised: var(--surface-raised);
-  --roam-text: var(--text-main);
-  --roam-text-muted: var(--text-muted);
+  --glovebox-bg: var(--bg-sand);
+  --glovebox-surface: var(--surface-card);
+  --glovebox-surface-hover: var(--surface-muted);
+  --glovebox-surface-raised: var(--surface-raised);
+  --glovebox-text: var(--text-main);
+  --glovebox-text-muted: var(--text-muted);
 
-  --roam-accent: var(--brand-ochre);
-  --roam-danger: var(--terra-red);
-  --roam-success: var(--brand-eucalypt);
-  --roam-info: var(--brand-sky);
-  --roam-warn: var(--brand-amber);
+  --glovebox-accent: var(--brand-ochre);
+  --glovebox-danger: var(--terra-red);
+  --glovebox-success: var(--brand-eucalypt);
+  --glovebox-info: var(--brand-sky);
+  --glovebox-warn: var(--brand-amber);
 
-  --roam-border: rgba(255, 255, 255, 0.08);
-  --roam-border-strong: rgba(255, 255, 255, 0.16);
+  --glovebox-border: rgba(255, 255, 255, 0.08);
+  --glovebox-border-strong: rgba(255, 255, 255, 0.16);
 
   --bg-error: rgba(198, 40, 40, 0.15);
   --text-error: #FFAB91;
@@ -307,27 +307,27 @@
    1c. PROTOTYPE ALIASES + MAP TOKENS (2026-05-19 redesign)
    --------------------------------------------------------------------------
    The 2026-05-19 redesign prototype uses a shorter --c-* token namespace plus
-   a few map-specific tokens. Map them to existing --roam-* tokens so both
+   a few map-specific tokens. Map them to existing --glovebox-* tokens so both
    themes get covered for free. New tokens (--map-*, --c-cat-water, etc.)
    defined here and overridden per-theme below.
    ========================================================================== */
 :root {
-  --c-bg: var(--roam-bg);
-  --c-surface: var(--roam-surface);
-  --c-surface-muted: var(--roam-surface-hover);
-  --c-surface-raised: var(--roam-surface-raised);
+  --c-bg: var(--glovebox-bg);
+  --c-surface: var(--glovebox-surface);
+  --c-surface-muted: var(--glovebox-surface-hover);
+  --c-surface-raised: var(--glovebox-surface-raised);
   --c-nav-card: var(--nav-card-bg);
-  --c-text: var(--roam-text);
-  --c-text-muted: var(--roam-text-muted);
-  --c-border: var(--roam-border);
-  --c-border-strong: var(--roam-border-strong);
-  --c-accent: var(--roam-accent);
+  --c-text: var(--glovebox-text);
+  --c-text-muted: var(--glovebox-text-muted);
+  --c-border: var(--glovebox-border);
+  --c-border-strong: var(--glovebox-border-strong);
+  --c-accent: var(--glovebox-accent);
   --c-accent-tint: var(--accent-tint);
-  --c-success: var(--roam-success);
+  --c-success: var(--glovebox-success);
   --c-success-dark: var(--brand-eucalypt-dark);
-  --c-danger: var(--roam-danger);
+  --c-danger: var(--glovebox-danger);
   --c-danger-tint: var(--danger-tint);
-  --c-info: var(--roam-info);
+  --c-info: var(--glovebox-info);
   --c-info-tint: var(--info-tint);
   --c-warn-bg: var(--bg-warn);
   --c-warn-text: var(--text-warn);
@@ -356,14 +356,14 @@
   /* Map-surface tokens (day defaults; night override below) */
   --map-bg: #ede4d2;
   --map-ridge: rgba(122, 84, 43, 0.18);
-  --map-route: var(--roam-accent);
+  --map-route: var(--glovebox-accent);
   --map-route-cased: rgba(255, 255, 255, 0.85);
 }
 [data-theme="tactical-night"] {
   --c-cat-water: #4DB8F0;
   --map-bg: #1f1a14;
   --map-ridge: rgba(255, 182, 147, 0.16);
-  --map-route: var(--roam-accent);
+  --map-route: var(--glovebox-accent);
   --map-route-cased: rgba(0, 0, 0, 0.55);
 }
 
@@ -380,7 +380,7 @@
 .t-display { font-family: var(--ff-display); }
 .t-mono    { font-family: var(--ff-mono); font-variant-numeric: tabular-nums; }
 .t-num     { font-variant-numeric: tabular-nums; }
-.t-muted   { color: var(--roam-text-muted); }
+.t-muted   { color: var(--glovebox-text-muted); }
 .scroll-y  { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 /* ==========================================================================
@@ -391,8 +391,8 @@ html, body {
   width: 100%;
   color-scheme: light dark;
 
-  background-color: var(--roam-bg);
-  color: var(--roam-text);
+  background-color: var(--glovebox-bg);
+  color: var(--glovebox-text);
   font-family: var(--ff-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -402,7 +402,7 @@ html, body {
 }
 
 /* Native app shell lock - applied by (app) layout only, not marketing pages */
-html.roam-shell {
+html.glovebox-shell {
   overflow: hidden;
   position: fixed;
   width: 100%;
@@ -410,7 +410,7 @@ html.roam-shell {
   overscroll-behavior: none;
   overscroll-behavior-y: none;
 }
-html.roam-shell body {
+html.glovebox-shell body {
   overflow: hidden;
   position: fixed;
   width: 100%;
@@ -428,7 +428,7 @@ input, textarea, [contenteditable] {
 /* Text selection color - warm, on-brand */
 ::selection {
   background: var(--accent-tint);
-  color: var(--roam-text);
+  color: var(--glovebox-text);
 }
 
 /* ── Topographic texture overlay ──────────────────────────────
@@ -459,7 +459,7 @@ input, textarea, [contenteditable] {
 
 /* Accessible focus ring - only on keyboard nav */
 :focus-visible {
-  outline: 2.5px solid var(--roam-accent);
+  outline: 2.5px solid var(--glovebox-accent);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -467,22 +467,22 @@ input, textarea, [contenteditable] {
 
 /* App shell - fills the fixed-locked body, safe-area padding top/sides only.
    Bottom is handled by the fixed tab bar + its ::after safe-area leg. */
-.roam-shell {
+.glovebox-shell {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: var(--roam-safe-top);
-  padding-left: var(--roam-safe-left);
-  padding-right: var(--roam-safe-right);
+  padding-top: var(--glovebox-safe-top);
+  padding-left: var(--glovebox-safe-left);
+  padding-right: var(--glovebox-safe-right);
   padding-bottom: 0;
 }
 
 
 /* ── Global 44px touch target for buttons ── */
-.roam-shell button,
-.roam-shell [role="button"] {
+.glovebox-shell button,
+.glovebox-shell [role="button"] {
   -webkit-user-select: none;
   user-select: none;
   min-height: 44px;
@@ -490,7 +490,7 @@ input, textarea, [contenteditable] {
 }
 
 /* ── Individual tab items ─────────────────────────────────── */
-.roam-tab, .roam-tab-item {
+.glovebox-tab, .glovebox-tab-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -512,18 +512,18 @@ input, textarea, [contenteditable] {
   z-index: 1;
 }
 
-.roam-tab:active,
-.roam-tab-item:active {
+.glovebox-tab:active,
+.glovebox-tab-item:active {
   transform: scale(0.90);
   transition: transform 60ms ease-out;
 }
 
-.roam-tab[data-active="true"],
-.roam-tab-active {
+.glovebox-tab[data-active="true"],
+.glovebox-tab-active {
   color: var(--tab-active-color);
 }
 
-.roam-tab-icon {
+.glovebox-tab-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -531,14 +531,14 @@ input, textarea, [contenteditable] {
   height: 28px;
   transition: transform var(--dur-normal) var(--ease-spring);
 }
-.roam-tab-icon svg { width: 100%; height: 100%; }
+.glovebox-tab-icon svg { width: 100%; height: 100%; }
 
-.roam-tab[data-active="true"] .roam-tab-icon,
-.roam-tab-active .roam-tab-icon {
+.glovebox-tab[data-active="true"] .glovebox-tab-icon,
+.glovebox-tab-active .glovebox-tab-icon {
   transform: translateY(-1px) scale(1.05);
 }
 
-.roam-tab-label {
+.glovebox-tab-label {
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -546,7 +546,7 @@ input, textarea, [contenteditable] {
 }
 
 /* ── Center "Trip" raised button ──────────────────────────── */
-.roam-tab.roam-tab-center {
+.glovebox-tab.glovebox-tab-center {
   position: relative;
   /* Pull the raised pill up above the bar top edge */
   margin-top: -14px;
@@ -554,16 +554,16 @@ input, textarea, [contenteditable] {
   justify-content: flex-start;
   z-index: 2;
 }
-.roam-tab.roam-tab-center:active .roam-tab-inner {
+.glovebox-tab.glovebox-tab-center:active .glovebox-tab-inner {
   transform: scale(0.90);
   transition: transform 60ms ease-out;
 }
 
-.roam-tab-bump {
+.glovebox-tab-bump {
   display: none;
 }
 
-.roam-tab-inner {
+.glovebox-tab-inner {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -576,49 +576,49 @@ input, textarea, [contenteditable] {
               box-shadow var(--dur-normal) ease;
 }
 /* Night mode: gradient active tab (metallic ochre per Stitch spec) */
-[data-theme="tactical-night"] .roam-tab-inner {
+[data-theme="tactical-night"] .glovebox-tab-inner {
   background: var(--cta-gradient);
 }
 
-.roam-tab.roam-tab-center .roam-tab-icon {
+.glovebox-tab.glovebox-tab-center .glovebox-tab-icon {
   color: var(--tab-center-icon);
   width: 24px; height: 24px;
 }
-.roam-tab.roam-tab-center .roam-tab-label {
+.glovebox-tab.glovebox-tab-center .glovebox-tab-label {
   color: var(--tab-inactive-color);
 }
-.roam-tab.roam-tab-center[data-active="true"] .roam-tab-label {
+.glovebox-tab.glovebox-tab-center[data-active="true"] .glovebox-tab-label {
   color: var(--tab-active-color);
 }
 
 /* ── SOS tab emphasis ─────────────────────────────────────── */
-.roam-tab-sos { color: var(--roam-danger); }
-.roam-tab-sos.roam-tab-active { color: var(--roam-danger); }
-.roam-tab-sos .roam-tab-icon {
+.glovebox-tab-sos { color: var(--glovebox-danger); }
+.glovebox-tab-sos.glovebox-tab-active { color: var(--glovebox-danger); }
+.glovebox-tab-sos .glovebox-tab-icon {
   background: var(--danger-tint);
   border-radius: var(--r-card);
   padding: 2px;
 }
 
 /* ── Simple mode: bigger tab labels + icons ───────────────── */
-.roam-tabs-wrap[data-simple="true"] .roam-tab-label {
+.glovebox-tabs-wrap[data-simple="true"] .glovebox-tab-label {
   font-size: 12px;
   font-weight: 800;
 }
-.roam-tabs-wrap[data-simple="true"] .roam-tab-icon {
+.glovebox-tabs-wrap[data-simple="true"] .glovebox-tab-icon {
   width: 28px;
   height: 28px;
 }
 
 /* ── Keyboard open: hide tab bar ──────────────────────────── */
-.keyboard-open .roam-tab-bar,
-.keyboard-open .roam-tabs-wrap {
+.keyboard-open .glovebox-tab-bar,
+.keyboard-open .glovebox-tabs-wrap {
   transform: translateY(100%);
   pointer-events: none;
   opacity: 0;
   transition: transform var(--dur-normal) ease, opacity var(--dur-fast) ease;
 }
-.keyboard-open .roam-main {
+.keyboard-open .glovebox-main {
   padding-bottom: 0 !important;
   /* Collapse tab-bar offset so pages using bottom: var(--bottom-nav-height)
      reclaim the space when the keyboard hides the tab bar. */
@@ -626,7 +626,7 @@ input, textarea, [contenteditable] {
 }
 
 /* ── Keyboard open: scroll containers know about the obstructed bottom.
-   --roam-keyboard-h is set live by lib/native/keyboard.ts on
+   --glovebox-keyboard-h is set live by lib/native/keyboard.ts on
    keyboardWillShow. Scroll-padding-bottom is the right primitive here:
    it tells `scrollIntoView({block: 'center'})` to treat the keyboard
    region as off-limits when picking a scroll position, so the focused
@@ -646,8 +646,8 @@ input, textarea, [contenteditable] {
 .keyboard-open .sos-scroll,
 .keyboard-open .scroll-y,
 .keyboard-open .place-detail-sheet > div:last-child {
-  scroll-padding-bottom: calc(var(--roam-keyboard-h, 0px) + 24px);
-  padding-bottom: calc(var(--roam-keyboard-h, 0px) + 24px) !important;
+  scroll-padding-bottom: calc(var(--glovebox-keyboard-h, 0px) + 24px);
+  padding-bottom: calc(var(--glovebox-keyboard-h, 0px) + 24px) !important;
 }
 
 /* The /login wrapper vertically centres its card while the keyboard is
@@ -666,10 +666,10 @@ input, textarea, [contenteditable] {
    and the route summary / first stop on /trip. The sheet provides
    its own action surface when expanded, so the tab bar is redundant.
    Mirror the keyboard-open easing so the transitions feel identical. */
-body[data-trip-sheet="expanded"] .roam-tab-bar,
-body[data-trip-sheet="expanded"] .roam-tabs-wrap,
-body[data-trip-sheet="full"] .roam-tab-bar,
-body[data-trip-sheet="full"] .roam-tabs-wrap {
+body[data-trip-sheet="expanded"] .glovebox-tab-bar,
+body[data-trip-sheet="expanded"] .glovebox-tabs-wrap,
+body[data-trip-sheet="full"] .glovebox-tab-bar,
+body[data-trip-sheet="full"] .glovebox-tabs-wrap {
   transform: translateY(100%);
   pointer-events: none;
   opacity: 0;
@@ -683,32 +683,32 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 .trip-app-container {
   /* Fixed to viewport so the map fills under the status bar like a native app,
      escaping the shell's padding-top safe area. Overlay controls use
-     var(--roam-safe-top) internally to position themselves below the notch. */
+     var(--glovebox-safe-top) internally to position themselves below the notch. */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background: var(--roam-bg);
-  color: var(--roam-text);
+  background: var(--glovebox-bg);
+  color: var(--glovebox-text);
   -webkit-tap-highlight-color: transparent;
 }
 
 .trip-wrap-center {
   display: grid;
   place-items: center;
-  /* Use 100% (fill flex parent roam-main) rather than 100vh.
+  /* Use 100% (fill flex parent glovebox-main) rather than 100vh.
      100vh on iOS native exceeds the actual usable area inside the fixed shell,
      causing the content to overflow and appear pushed down. */
   height: 100%;
   min-height: 0;
   padding: 20px;
-  background: var(--roam-bg);
+  background: var(--glovebox-bg);
 }
 
 .trip-card {
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   border-radius: var(--r-card);
   padding: 24px;
   box-shadow: var(--shadow-heavy);
@@ -746,13 +746,13 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 }
 .trip-muted {
   font-size: 0.875rem;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   font-weight: 600;
   line-height: 1.4;
 }
 .trip-muted-small {
   font-size: 0.78rem;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   font-weight: 600;
   line-height: 1.4;
 }
@@ -835,7 +835,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 @media (hover: hover) {
   .side-card:hover {
-    background: var(--roam-surface-hover) !important;
+    background: var(--glovebox-surface-hover) !important;
   }
 
   .side-card:hover .side-card__thumb {
@@ -899,7 +899,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   top: 20%;
   height: 60%;
   width: 1px;
-  background: var(--roam-border);
+  background: var(--glovebox-border);
   pointer-events: none;
 }
 
@@ -914,14 +914,14 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 /* ── States ── */
 .plan-card-action-btn:not(:disabled):active {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   transform: scale(0.92);
   opacity: 0.8;
 }
 
 @media (hover: hover) {
   .plan-card-action-btn:not(:disabled):hover {
-    background: var(--roam-surface-hover);
+    background: var(--glovebox-surface-hover);
   }
 }
 
@@ -933,7 +933,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 /* Danger variant — red tint on press */
 .plan-card-action-danger {
-  color: var(--roam-danger);
+  color: var(--glovebox-danger);
 }
 
 .plan-card-action-danger:not(:disabled):active {
@@ -1001,8 +1001,8 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 }
 
 .trip-btn-danger {
-  background: var(--roam-surface-hover);
-  color: var(--roam-danger);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-danger);
 }
 
 /* ── Small button ─────────────────────────────────────────── */
@@ -1011,8 +1011,8 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   align-items: center;
   gap: 6px;
   border-radius: var(--r-btn);
-  background: var(--roam-surface-hover);
-  color: var(--roam-text);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text);
   padding: 0 14px;
   font-size: 0.85rem;
   font-weight: 800;
@@ -1042,13 +1042,13 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 /* ── Icon button (square, minimal) ────────────────────────── */
 .trip-btn-icon {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   border: none;
   display: grid;
   place-items: center;
   width: 44px; height: 44px;
   border-radius: var(--r-btn);
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   font-size: 1.1rem;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -1059,28 +1059,28 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 }
 
 /* ── Reusable Button component press state ───────────────── */
-.roam-btn-press:active:not(:disabled) {
+.glovebox-btn-press:active:not(:disabled) {
   transform: scale(0.95);
   filter: brightness(0.88);
   box-shadow: none !important;
 }
-.roam-fab-press:active:not(:disabled) {
+.glovebox-fab-press:active:not(:disabled) {
   transform: scale(0.90);
   box-shadow: var(--shadow-soft) !important;
 }
 
 /* ── WatermarkCard backgrounds ─────────────────────────── */
 .watermark-card-bg {
-  background: var(--roam-text);
+  background: var(--glovebox-text);
   box-shadow: var(--shadow-heavy);
 }
 [data-theme="tactical-night"] .watermark-card-bg {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.50);
 }
 
 /* ── Glass-morphism surfaces in Tactical Night mode ─────── */
-[data-theme="tactical-night"] .roam-card-glass {
+[data-theme="tactical-night"] .glovebox-card-glass {
   background: rgba(26, 26, 26, 0.72) !important;
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
@@ -1089,7 +1089,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 [data-theme="tactical-night"] .trip-card {
   backdrop-filter: blur(20px) saturate(1.3);
   -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
 }
 
 
@@ -1103,12 +1103,12 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   outline: none;
   font-size: 1rem;
   font-weight: 700;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   padding: 8px 0;
 }
 .trip-input::placeholder,
 .trip-search::placeholder {
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   opacity: 0.55;
 }
 
@@ -1117,12 +1117,12 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   border: none;
   outline: none;
   font-weight: 800;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   font-size: 0.95rem;
 }
 
 .trip-search-box {
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   box-shadow: var(--shadow-soft);
   border-radius: var(--r-card);
   display: flex;
@@ -1142,14 +1142,14 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   gap: 0;
   height: 44px;
   border-radius: var(--r-card);
-  background: var(--roam-surface-hover);
-  border: 1px solid var(--roam-border);
+  background: var(--glovebox-surface-hover);
+  border: 1px solid var(--glovebox-border);
   overflow: hidden;
   transition: border-color 120ms ease, background 120ms ease;
 }
 .trip-stop-input:focus-within {
-  border-color: color-mix(in srgb, var(--brand-eucalypt) 60%, var(--roam-border));
-  background: var(--roam-surface);
+  border-color: color-mix(in srgb, var(--brand-eucalypt) 60%, var(--glovebox-border));
+  background: var(--glovebox-surface);
 }
 .trip-stop-input .trip-stop-input-leading {
   flex-shrink: 0;
@@ -1157,7 +1157,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   place-items: center;
   width: 36px;
   height: 100%;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
 }
 .trip-stop-input input {
   flex: 1;
@@ -1167,12 +1167,12 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   outline: none;
   font-size: 15px;
   font-weight: 700;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   height: 100%;
   padding: 0 4px 0 0;
 }
 .trip-stop-input input::placeholder {
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   opacity: 0.7;
   font-weight: 600;
 }
@@ -1187,15 +1187,15 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   min-width: 44px;
   padding: 0 12px;
   cursor: pointer;
-  color: var(--roam-text-muted);
-  border-left: 1px solid var(--roam-border);
+  color: var(--glovebox-text-muted);
+  border-left: 1px solid var(--glovebox-border);
   background: transparent;
   transition: background 120ms ease, color 120ms ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.trip-stop-input-action:hover { background: var(--roam-surface-raised); color: var(--roam-text); }
-.trip-stop-input-action:active { background: var(--roam-surface); }
+.trip-stop-input-action:hover { background: var(--glovebox-surface-raised); color: var(--glovebox-text); }
+.trip-stop-input-action:active { background: var(--glovebox-surface); }
 .trip-stop-input-action[disabled] { opacity: 0.55; cursor: default; }
 .trip-stop-input-action .trip-stop-input-action-label {
   font-size: 12px;
@@ -1223,10 +1223,10 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 .trip-map-switcher {
   position: absolute;
-  top: calc(var(--roam-safe-top) + 24px);
+  top: calc(var(--glovebox-safe-top) + 24px);
   right: 14px;
   z-index: 10;
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   border-radius: var(--r-pill);
   padding: 4px;
   box-shadow: var(--shadow-heavy);
@@ -1240,14 +1240,14 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   font-size: 0.85rem;
   font-weight: 800;
   border-radius: var(--r-pill);
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 .trip-pill-btn[data-active="true"] {
-  background: var(--roam-surface-hover);
-  color: var(--roam-text);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text);
   box-shadow: var(--shadow-soft);
 }
 
@@ -1271,10 +1271,10 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 .trip-fab:active { transform: scale(0.88); }
 
 .trip-fab-locate {
-  bottom: calc(220px + var(--roam-safe-bottom) + 12px);
+  bottom: calc(220px + var(--glovebox-safe-bottom) + 12px);
   right: 12px;
-  background: var(--roam-surface);
-  color: var(--roam-info);
+  background: var(--glovebox-surface);
+  color: var(--glovebox-info);
 }
 
 /* ── Map overlay FAB (exchange, report, layer toggle) ─────── */
@@ -1283,8 +1283,8 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   width: 46px; height: 46px;
   border-radius: var(--r-card);
   background: linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(244,239,230,0.96) 100%);
-  color: var(--roam-text);
-  border: 1px solid var(--roam-border);
+  color: var(--glovebox-text);
+  border: 1px solid var(--glovebox-border);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--shadow-medium);
@@ -1298,12 +1298,12 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   color: var(--on-color);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
   box-shadow: var(--shadow-medium);
 }
 
 /* ── Map blue dot pulse ───────────────────────────────────── */
-@keyframes roam-blue-dot-pulse {
+@keyframes glovebox-blue-dot-pulse {
   0%  { box-shadow: 0 0 0 0 var(--info-pulse-active); }
   70% { box-shadow: 0 0 0 12px var(--info-pulse-clear); }
   100%{ box-shadow: 0 0 0 0 var(--info-pulse-clear); }
@@ -1325,7 +1325,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 .trip-bottom-sheet {
   height: 100%;
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   border-radius: 22px 22px 0 0;
   box-shadow: var(--shadow-sheet);
   pointer-events: auto;
@@ -1358,7 +1358,7 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 
 .trip-drag-handle {
   width: 36px; height: 5px;
-  background: var(--roam-border-strong);
+  background: var(--glovebox-border-strong);
   border-radius: var(--r-pill);
   margin: 0 auto 8px auto;
   opacity: 0.6;
@@ -1390,14 +1390,14 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   grid-template-columns: auto 1fr auto;
   gap: 12px;
   align-items: center;
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   box-shadow: var(--shadow-soft);
   border-radius: var(--r-card);
   padding: 12px 14px;
   transition: transform var(--dur-fast) var(--spring), outline 80ms;
 }
 .trip-editor-row[data-focused="true"] {
-  outline: 2.5px solid var(--roam-info);
+  outline: 2.5px solid var(--glovebox-info);
   outline-offset: -2.5px;
 }
 .trip-stop-row:active {
@@ -1419,12 +1419,12 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
 }
 /* Tonal shift separator — alternating rows get subtle bg instead of lines */
 .trip-list-row:nth-child(even) {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   border-radius: var(--radius-sm);
   padding: 16px 12px;
 }
 .trip-list-row[data-focused="true"] {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   border-radius: var(--r-card);
   padding: 16px 14px;
 }
@@ -1456,11 +1456,11 @@ body[data-trip-sheet="full"] .roam-tabs-wrap {
   white-space: nowrap;
   line-height: 1;
 }
-.trip-badge-blue { background: var(--roam-info); color: var(--on-color); }
-.trip-badge-soft { background: var(--roam-surface-hover); color: var(--roam-text); }
-.trip-badge-ok   { background: var(--roam-success); color: var(--on-color); }
-.trip-badge-bad  { background: var(--roam-danger); color: var(--on-color); }
-.trip-badge-warn { background: var(--roam-warn); color: var(--on-color); }
+.trip-badge-blue { background: var(--glovebox-info); color: var(--on-color); }
+.trip-badge-soft { background: var(--glovebox-surface-hover); color: var(--glovebox-text); }
+.trip-badge-ok   { background: var(--glovebox-success); color: var(--on-color); }
+.trip-badge-bad  { background: var(--glovebox-danger); color: var(--on-color); }
+.trip-badge-warn { background: var(--glovebox-warn); color: var(--on-color); }
 
 /* Range slider — 28px visual thumb, 44px touch target.
    The TRACK is rendered via pseudo-elements at 8px so it stays narrower
@@ -1480,13 +1480,13 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-runnable-track {
   height: 8px;
   border-radius: 999px;
-  background: var(--slider-fill, var(--roam-border, #d1d5db));
+  background: var(--slider-fill, var(--glovebox-border, #d1d5db));
   border: none;
 }
 input[type="range"]::-moz-range-track {
   height: 8px;
   border-radius: 999px;
-  background: var(--slider-fill, var(--roam-border, #d1d5db));
+  background: var(--slider-fill, var(--glovebox-border, #d1d5db));
   border: none;
 }
 input[type="range"]::-webkit-slider-thumb {
@@ -1528,7 +1528,7 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  animation: roam-fadeIn var(--dur-normal) ease-out forwards;
+  animation: glovebox-fadeIn var(--dur-normal) ease-out forwards;
   overflow: hidden;
   will-change: opacity;
   /* Do NOT use height: 100dvh - it uses the "large" (pre-keyboard) viewport on iOS
@@ -1537,7 +1537,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .trip-modal {
-  background: var(--roam-bg);
+  background: var(--glovebox-bg);
   border-radius: var(--r-card) var(--r-card) 0 0;
   padding: 24px 20px calc(var(--bottom-nav-height) + 20px) 20px;
   will-change: transform;
@@ -1548,7 +1548,7 @@ input[type="range"]::-moz-range-thumb {
   flex-direction: column;
   gap: 16px;
   box-shadow: var(--shadow-heavy);
-  animation: roam-slideUp var(--dur-slow) var(--spring) forwards;
+  animation: glovebox-slideUp var(--dur-slow) var(--spring) forwards;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
@@ -1583,7 +1583,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .trip-panel {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   padding: 18px;
   border-radius: var(--r-card);
   display: flex;
@@ -1595,13 +1595,13 @@ input[type="range"]::-moz-range-thumb {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   padding: 14px;
   border-radius: var(--r-card);
 }
 .trip-kv { display: flex; flex-direction: column; }
 .trip-kv-k {
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   text-transform: uppercase;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -1609,7 +1609,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.72rem;
 }
 .trip-kv-v {
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   font-weight: 800;
   font-family: var(--ff-mono);
   font-size: 0.85rem;
@@ -1625,7 +1625,7 @@ input[type="range"]::-moz-range-thumb {
 
 /* Page entrance */
 .trip-page-transition {
-  animation: roam-pageIn var(--dur-slow) cubic-bezier(0.22, 1, 0.36, 1);
+  animation: glovebox-pageIn var(--dur-slow) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Spinner */
@@ -1634,41 +1634,41 @@ input[type="range"]::-moz-range-thumb {
   border: 2.5px solid var(--spinner-track);
   border-radius: 50%;
   border-top-color: var(--spinner-head);
-  animation: roam-spin 0.75s ease-in-out infinite;
+  animation: glovebox-spin 0.75s ease-in-out infinite;
   display: inline-block;
 }
 
-.roam-spin { animation: roam-spin 2.5s linear infinite; }
+.glovebox-spin { animation: glovebox-spin 2.5s linear infinite; }
 
-/* Keyframes (prefixed with roam- to avoid collisions) */
-@keyframes roam-slideUp {
+/* Keyframes (prefixed with glovebox- to avoid collisions) */
+@keyframes glovebox-slideUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
 }
-@keyframes roam-fadeIn {
+@keyframes glovebox-fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes roam-pageIn {
+@keyframes glovebox-pageIn {
   from { opacity: 0; transform: translateY(10px) scale(0.997); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-@keyframes roam-spin {
+@keyframes glovebox-spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes roam-pulse {
+@keyframes glovebox-pulse {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }
 }
 
-@keyframes roam-pop {
+@keyframes glovebox-pop {
   0% { transform: scale(0.5); opacity: 0; }
   70% { transform: scale(1.15); }
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes roam-fuel-pulse {
+@keyframes glovebox-fuel-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.85; transform: scale(1.03); }
 }
@@ -1682,7 +1682,7 @@ input[type="range"]::-moz-range-thumb {
   to { transform: rotate(360deg); }
 }
 
-@keyframes roam-bounce-hint {
+@keyframes glovebox-bounce-hint {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(4px); }
 }
@@ -1812,7 +1812,7 @@ input[type="range"]::-moz-range-thumb {
    collapses to 2 lines instead of dropping its tail behind an ellipsis.
    Use on titles, place names, alert messages, anything where the END of the
    string matters as much as the start. */
-.roam-wrap-2 {
+.glovebox-wrap-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -1822,7 +1822,7 @@ input[type="range"]::-moz-range-thumb {
   word-break: break-word;
   min-width: 0;
 }
-.roam-wrap-1 {
+.glovebox-wrap-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   line-clamp: 1;
@@ -1832,7 +1832,7 @@ input[type="range"]::-moz-range-thumb {
   word-break: break-word;
   min-width: 0;
 }
-.roam-wrap-3 {
+.glovebox-wrap-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -1845,19 +1845,19 @@ input[type="range"]::-moz-range-thumb {
 
 /* Tight inline stat row: distance · time · stops style. Wraps gracefully on
    narrow screens instead of overflowing or hiding the third stat. */
-.roam-stat-row {
+.glovebox-stat-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm) var(--space-md);
   min-width: 0;
 }
-.roam-stat-row > * { min-width: 0; }
+.glovebox-stat-row > * { min-width: 0; }
 
 /* Map-overlay control group: a single visual container for stacked
    circular HUD buttons so they read as one unit instead of N floating
    icons. Used by NavigationControls. */
-.roam-control-group {
+.glovebox-control-group {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1866,7 +1866,7 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 999px;
   background: var(--surface-card);
   box-shadow: var(--shadow-medium);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
 }
 
 /* Horizontal action cluster: groups secondary icon buttons in sheet
@@ -1874,18 +1874,18 @@ input[type="range"]::-moz-range-thumb {
    they read as a single control bar rather than N orphan circles.
    The capsule provides the background; individual buttons go transparent.
    Used by /new StopsEditor and /trip ClientPage sheet headers. */
-.roam-action-cluster {
+.glovebox-action-cluster {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   padding: 4px;
   border-radius: var(--r-card);
-  background: var(--roam-surface-hover);
-  border: 1px solid var(--roam-border);
+  background: var(--glovebox-surface-hover);
+  border: 1px solid var(--glovebox-border);
   flex-shrink: 0;
 }
-.roam-action-cluster > button,
-.roam-action-cluster > a {
+.glovebox-action-cluster > button,
+.glovebox-action-cluster > a {
   display: grid;
   place-items: center;
   width: 36px;
@@ -1893,33 +1893,33 @@ input[type="range"]::-moz-range-thumb {
   border-radius: calc(var(--r-card) - 2px);
   border: none;
   background: transparent;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   cursor: pointer;
   position: relative;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
 }
-.roam-action-cluster > button:hover,
-.roam-action-cluster > a:hover {
-  background: color-mix(in srgb, var(--roam-text) 8%, transparent);
+.glovebox-action-cluster > button:hover,
+.glovebox-action-cluster > a:hover {
+  background: color-mix(in srgb, var(--glovebox-text) 8%, transparent);
 }
-.roam-action-cluster > button[data-accent="sky"],
-.roam-action-cluster > a[data-accent="sky"] {
+.glovebox-action-cluster > button[data-accent="sky"],
+.glovebox-action-cluster > a[data-accent="sky"] {
   color: var(--brand-sky);
 }
-.roam-action-cluster > button[data-accent="ochre"],
-.roam-action-cluster > a[data-accent="ochre"] {
+.glovebox-action-cluster > button[data-accent="ochre"],
+.glovebox-action-cluster > a[data-accent="ochre"] {
   color: var(--brand-ochre);
 }
-.roam-action-cluster > button[data-accent="eucalypt"],
-.roam-action-cluster > a[data-accent="eucalypt"] {
+.glovebox-action-cluster > button[data-accent="eucalypt"],
+.glovebox-action-cluster > a[data-accent="eucalypt"] {
   color: var(--brand-eucalypt);
 }
 
 
 /* ── Fixed tab bar (glass morphism, pins to viewport bottom) ────────── */
-.roam-tabs-wrap {
+.glovebox-tabs-wrap {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -1931,13 +1931,13 @@ input[type="range"]::-moz-range-thumb {
   flex-direction: column;
 }
 
-.roam-tabs {
+.glovebox-tabs {
   position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-evenly;
   pointer-events: auto;
-  height: var(--roam-tab-h);
+  height: var(--glovebox-tab-h);
   padding-top: 8px;
   padding-bottom: 0;
   border-radius: 0;
@@ -1947,14 +1947,14 @@ input[type="range"]::-moz-range-thumb {
 /* Main content area - flex-fills shell above the fixed tab bar.
    Individual pages add their own padding-bottom: var(--bottom-nav-height)
    as needed. Trip page uses position:fixed to escape this entirely (map). */
-.roam-main {
+.glovebox-main {
   /* Fill the entire shell including the area behind the fixed tab bar,
-     so backdrop-filter on .roam-tabs has actual page pixels to blur.
+     so backdrop-filter on .glovebox-tabs has actual page pixels to blur.
      Pages that need scroll clearance use padding-bottom: var(--bottom-nav-height). */
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background-color: var(--roam-bg);
+  background-color: var(--glovebox-bg);
 }
 
 
@@ -1964,8 +1964,8 @@ input[type="range"]::-moz-range-thumb {
 
 .sos-page {
   height: 100%;
-  background: var(--roam-bg);
-  color: var(--roam-text);
+  background: var(--glovebox-bg);
+  color: var(--glovebox-text);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -1974,7 +1974,7 @@ input[type="range"]::-moz-range-thumb {
      breathing room. The old +56px was clearing a fixed ThemeToggle that
      has since moved into /account, so it became dead space pushing the
      SOS header well below the notch with nothing in it. */
-  padding: calc(var(--roam-safe-top) + 8px) 16px calc(var(--bottom-nav-height) + 24px) 16px;
+  padding: calc(var(--glovebox-safe-top) + 8px) 16px calc(var(--bottom-nav-height) + 24px) 16px;
   display: grid;
   align-content: start;
   gap: 16px;
@@ -2001,7 +2001,7 @@ input[type="range"]::-moz-range-thumb {
 .sos-call-000 {
   width: 100%;
   height: 120px;
-  background: var(--roam-danger);
+  background: var(--glovebox-danger);
   color: var(--on-color);
   border-radius: var(--r-card);
   font-weight: 900;
@@ -2035,7 +2035,7 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--roam-info);
+  color: var(--glovebox-info);
 }
 .sos-footer-hint {
   font-size: 13px;
@@ -2080,8 +2080,8 @@ input[type="range"]::-moz-range-thumb {
   font-size: 14px;
   font-weight: 700;
   border-radius: var(--r-btn);
-  background: var(--roam-surface-hover);
-  color: var(--roam-text);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text);
   border: none;
   cursor: pointer;
   align-self: flex-start;
@@ -2096,7 +2096,7 @@ input[type="range"]::-moz-range-thumb {
 .sos-msg-btn {
   width: 100%;
   height: 88px;
-  background: var(--roam-info);
+  background: var(--glovebox-info);
   color: var(--on-color);
   border-radius: var(--r-card);
   font-weight: 800;
@@ -2121,7 +2121,7 @@ input[type="range"]::-moz-range-thumb {
 .sos-section-title {
   font-size: 22px;
   font-weight: 800;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   margin-top: 8px;
   letter-spacing: -0.3px;
 }
@@ -2130,8 +2130,8 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
   min-height: 64px;
   border-radius: var(--r-btn);
-  background: var(--roam-surface);
-  color: var(--roam-text);
+  background: var(--glovebox-surface);
+  color: var(--glovebox-text);
   font-weight: 800;
   font-size: 18px;
   display: flex;
@@ -2149,7 +2149,7 @@ input[type="range"]::-moz-range-thumb {
 .sos-contact-card {
   padding: 16px;
   border-radius: var(--r-card);
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -2160,19 +2160,19 @@ input[type="range"]::-moz-range-thumb {
 .sos-select-circle {
   width: 48px; height: 48px;
   border-radius: 50%;
-  background: var(--roam-surface-hover);
-  color: var(--roam-text-muted);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2.5px solid var(--roam-border-strong);
+  border: 2.5px solid var(--glovebox-border-strong);
   flex-shrink: 0;
   transition: all var(--dur-normal) var(--spring);
 }
 .sos-select-circle[data-selected="true"] {
-  background: var(--roam-accent);
+  background: var(--glovebox-accent);
   color: var(--on-color);
-  border-color: var(--roam-accent);
+  border-color: var(--glovebox-accent);
   box-shadow: var(--tab-center-glow);
 }
 
@@ -2207,7 +2207,7 @@ input[type="range"]::-moz-range-thumb {
 .sos-editor {
   padding: 20px;
   border-radius: var(--r-card);
-  background: var(--roam-surface);
+  background: var(--glovebox-surface);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -2217,7 +2217,7 @@ input[type="range"]::-moz-range-thumb {
 .sos-label {
   font-size: 14px;
   font-weight: 700;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -2225,8 +2225,8 @@ input[type="range"]::-moz-range-thumb {
 .sos-input {
   height: 52px;
   border-radius: var(--r-btn);
-  background: var(--roam-surface-hover);
-  color: var(--roam-text);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text);
   font-size: 17px;
   font-weight: 700;
   padding: 0 16px;
@@ -2235,13 +2235,13 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
 }
 .sos-input:focus {
-  box-shadow: inset 0 0 0 2px var(--roam-info);
+  box-shadow: inset 0 0 0 2px var(--glovebox-info);
 }
 
 .sos-textarea {
   border-radius: var(--r-btn);
-  background: var(--roam-surface-hover);
-  color: var(--roam-text);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text);
   font-size: 17px;
   font-weight: 700;
   padding: 14px 16px;
@@ -2252,7 +2252,7 @@ input[type="range"]::-moz-range-thumb {
   font-family: inherit;
 }
 .sos-textarea:focus {
-  box-shadow: inset 0 0 0 2px var(--roam-info);
+  box-shadow: inset 0 0 0 2px var(--glovebox-info);
 }
 
 
@@ -2261,7 +2261,7 @@ input[type="range"]::-moz-range-thumb {
    ========================================================================== */
 
 /* Native-feel scroll container */
-.roam-scroll {
+.glovebox-scroll {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
   /* Allow vertical pan so iOS/WKWebView scrolls natively rather than bubbling */
@@ -2269,7 +2269,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* Glass morphism surface */
-.roam-glass {
+.glovebox-glass {
   backdrop-filter: blur(20px) saturate(170%);
   -webkit-backdrop-filter: blur(20px) saturate(170%);
 }
@@ -2277,7 +2277,7 @@ input[type="range"]::-moz-range-thumb {
 /* Paint containment for scrollable list containers — tells the browser
    that children won't affect layout outside this box, enabling faster
    recalc on scroll and DOM mutation. */
-.roam-contain {
+.glovebox-contain {
   contain: layout style paint;
 }
 
@@ -2342,7 +2342,7 @@ input[type="range"]::-moz-range-thumb {
   line-height: 1;
   letter-spacing: -0.5px;
   font-variant-numeric: tabular-nums;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
 }
 .terra-readout-value--sm {
   font-size: var(--terra-value-size-sm);
@@ -2352,7 +2352,7 @@ input[type="range"]::-moz-range-thumb {
   font-weight: var(--terra-label-weight);
   letter-spacing: var(--terra-label-spacing);
   text-transform: uppercase;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   line-height: 1;
 }
 
@@ -2500,8 +2500,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* ── Map dot-grid background ────────────────────────────── */
 .terra-grid {
-  background-color: var(--roam-surface);
-  background-image: radial-gradient(circle at 2px 2px, var(--roam-border) 1px, transparent 0);
+  background-color: var(--glovebox-surface);
+  background-image: radial-gradient(circle at 2px 2px, var(--glovebox-border) 1px, transparent 0);
   background-size: 40px 40px;
 }
 [data-theme="tactical-night"] .terra-grid {
@@ -2594,10 +2594,10 @@ input[type="range"]::-moz-range-thumb {
     --desktop-panel-visible: var(--desktop-panel-w);
     /* Zero out mobile's tab-bar offset so bottom-anchored chrome drops
        to the true viewport bottom on desktop. */
-    --roam-tab-h: 0px;
+    --glovebox-tab-h: 0px;
     --bottom-nav-height: 0px;
-    --roam-safe-bottom: 0px;
-    --roam-safe-top: 0px;
+    --glovebox-safe-bottom: 0px;
+    --glovebox-safe-top: 0px;
   }
   html[data-desktop-panel-open="false"] {
     --desktop-panel-visible: 0px;
@@ -2608,7 +2608,7 @@ input[type="range"]::-moz-range-thumb {
      side-nav instead of a top-stacked list. Opaque background so the
      rail and the side sheet read as a single continuous surface (no
      visible page-bg gap between rail right-edge and sheet left-edge). */
-  .roam-tabs-wrap {
+  .glovebox-tabs-wrap {
     top: 0 !important;
     bottom: 0 !important;
     right: auto !important;
@@ -2617,10 +2617,10 @@ input[type="range"]::-moz-range-thumb {
     height: 100vh;
     flex-direction: column;
     z-index: 120 !important;
-    background: var(--roam-surface) !important;
-    border-right: 1px solid var(--roam-border);
+    background: var(--glovebox-surface) !important;
+    border-right: 1px solid var(--glovebox-border);
   }
-  .roam-tabs {
+  .glovebox-tabs {
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
@@ -2629,20 +2629,20 @@ input[type="range"]::-moz-range-thumb {
     padding: 12px 0;
     gap: 12px;
   }
-  .roam-tabs > * {
+  .glovebox-tabs > * {
     width: 100%;
   }
-  .roam-tab-label { display: none !important; }
-  .roam-tab-center .roam-tab-bump { display: none; }
-  .roam-tab-center { transform: none !important; }
-  /* Base .roam-tab uses `flex: 1; height: 100%` for the mobile bottom
+  .glovebox-tab-label { display: none !important; }
+  .glovebox-tab-center .glovebox-tab-bump { display: none; }
+  .glovebox-tab-center { transform: none !important; }
+  /* Base .glovebox-tab uses `flex: 1; height: 100%` for the mobile bottom
      bar, where each tab fills its share of the row. On the desktop
      column-flex rail that expansion makes every tab a ~290px-tall
      block spread across the viewport. Reset to intrinsic sizing so
-     `justify-content: center` on `.roam-tabs` actually centres a
+     `justify-content: center` on `.glovebox-tabs` actually centres a
      tight stack of icon-sized tap targets. */
-  .roam-tab,
-  .roam-tab-item {
+  .glovebox-tab,
+  .glovebox-tab-item {
     flex: 0 0 auto !important;
     height: auto !important;
     padding: 14px 0 !important;
@@ -2653,15 +2653,15 @@ input[type="range"]::-moz-range-thumb {
      /guide and /sos don't render under it. The trip/new/live pages use
      `.trip-app-container` which is position:fixed and escapes this
      offset, so the map still runs edge-to-edge under the rail. */
-  .roam-main {
+  .glovebox-main {
     left: var(--desktop-rail-w) !important;
     --bottom-nav-height: 0px;
   }
   /* Nav rail is fully opaque on desktop: there's no content behind it
      to blend into, so a translucent fill would just read as a smudge. */
-  .roam-tabs {
-    background-color: var(--roam-bg) !important;
-    border-right: 1px solid color-mix(in srgb, var(--roam-text) 8%, transparent);
+  .glovebox-tabs {
+    background-color: var(--glovebox-bg) !important;
+    border-right: 1px solid color-mix(in srgb, var(--glovebox-text) 8%, transparent);
   }
 
   /* PersistentTabs wrap clips content with overflow:hidden, which would
@@ -2696,7 +2696,7 @@ input[type="range"]::-moz-range-thumb {
     height: 100% !important;
     transition: transform 0.28s cubic-bezier(0.34, 1.12, 0.64, 1) !important;
     border-radius: 0 !important;
-    box-shadow: 2px 0 24px color-mix(in srgb, var(--roam-text) 10%, transparent);
+    box-shadow: 2px 0 24px color-mix(in srgb, var(--glovebox-text) 10%, transparent);
     z-index: 50 !important;
   }
   .trip-bottom-sheet[data-desktop-open="true"]  { transform: translateX(0) !important; }
@@ -2727,11 +2727,11 @@ input[type="range"]::-moz-range-thumb {
     height: 56px;
     align-items: center;
     justify-content: center;
-    background: var(--roam-surface);
-    color: var(--roam-text-muted);
+    background: var(--glovebox-surface);
+    color: var(--glovebox-text-muted);
     border: none;
     border-radius: 0 var(--r-card) var(--r-card) 0;
-    box-shadow: 2px 0 10px color-mix(in srgb, var(--roam-text) 10%, transparent);
+    box-shadow: 2px 0 10px color-mix(in srgb, var(--glovebox-text) 10%, transparent);
     cursor: pointer;
     font-size: 18px;
     font-weight: 800;
@@ -2743,8 +2743,8 @@ input[type="range"]::-moz-range-thumb {
                 color 120ms ease;
   }
   .trip-desktop-panel-toggle:hover {
-    color: var(--roam-text);
-    background: var(--roam-surface-hover);
+    color: var(--glovebox-text);
+    background: var(--glovebox-surface-hover);
   }
 
   /* ── Action bar (Stops + Start navigation) sits flush at the bottom of the
@@ -2812,21 +2812,21 @@ input[type="range"]::-moz-range-thumb {
      as it covers the map on mobile. z-index above the panel. */
   .plan-drawer { z-index: 60 !important; }
 
-  /* ── Generic modal backdrops (opt in via data-roam-modal) ──
+  /* ── Generic modal backdrops (opt in via data-glovebox-modal) ──
      Modals cover the full viewport on every breakpoint — they're
      meant to focus the user on the dialog, so dimming the nav rail
      and side panel is correct. Just centre the inner sheet. */
-  .roam-modal-backdrop[data-roam-modal] {
+  .glovebox-modal-backdrop[data-glovebox-modal] {
     left: 0 !important;
     right: 0 !important;
     justify-content: center !important;
     align-items: center !important;
   }
-  .roam-modal-backdrop[data-roam-modal] > * {
+  .glovebox-modal-backdrop[data-glovebox-modal] > * {
     margin: auto !important;
     border-radius: var(--r-card) !important;
   }
-  .roam-modal-sheet[data-roam-modal="ai-trip"] {
+  .glovebox-modal-sheet[data-glovebox-modal="ai-trip"] {
     left: 50% !important;
     top: 50% !important;
     bottom: auto !important;
@@ -2900,27 +2900,27 @@ input[type="range"]::-moz-range-thumb {
     bottom: 18px !important;
   }
 
-  .roam-nav-hud {
+  .glovebox-nav-hud {
     top: 18px !important;
     left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 80px !important;
   }
-  .roam-nav-offroute {
+  .glovebox-nav-offroute {
     top: 18px !important;
     left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 80px !important;
   }
-  .roam-nav-bar {
+  .glovebox-nav-bar {
     left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
     right: 12px !important;
     bottom: 18px !important;
   }
-  .roam-nav-controls {
+  .glovebox-nav-controls {
     top: 50% !important;
     transform: translateY(-50%) !important;
     right: 18px !important;
   }
-  .roam-compass-hud {
+  .glovebox-compass-hud {
     bottom: 100px !important;
     right: 18px !important;
   }
@@ -2929,8 +2929,8 @@ input[type="range"]::-moz-range-thumb {
      ThemeToggle is `position: fixed; left: 12px` on every breakpoint.
      On desktop the rail occupies 0..72px so the toggle renders inside
      the rail strip and reads as part of it. Slide it past the rail. */
-  .roam-shell > button[aria-label*="Day"],
-  .roam-shell > button[aria-label*="Night"] {
+  .glovebox-shell > button[aria-label*="Day"],
+  .glovebox-shell > button[aria-label*="Night"] {
     left: calc(var(--desktop-rail-w) + 12px) !important;
   }
 
@@ -2941,9 +2941,9 @@ input[type="range"]::-moz-range-thumb {
 
 /* OfflineStatusIndicator centring container clears the rail. Outside
    the main media block because the indicator's containing block is
-   the AppLayout root (not .roam-main). */
+   the AppLayout root (not .glovebox-main). */
 @media (min-width: 900px) {
-  .roam-shell > div:has(> .terra-offline-indicator-enhanced) {
+  .glovebox-shell > div:has(> .terra-offline-indicator-enhanced) {
     left: calc(50% + var(--desktop-rail-w) / 2) !important;
   }
 }
@@ -2978,7 +2978,7 @@ input[type="range"]::-moz-range-thumb {
      The Plans/Invite/Share row and the stat-chip row both share the same
      flex container; let them wrap before they crowd on the 480px panel. */
 @media (min-width: 900px) {
-  .roam-action-cluster { flex-wrap: wrap; }
+  .glovebox-action-cluster { flex-wrap: wrap; }
 }
 
 /* ── SOS page reading column on desktop — cards previously stretched

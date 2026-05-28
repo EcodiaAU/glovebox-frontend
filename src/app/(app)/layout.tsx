@@ -8,15 +8,15 @@ import { SavedPlacesSync } from "@/components/places/SavedPlacesSync";
 import { OfflineStatusIndicator } from "@/components/ui/OfflineStatusIndicator";
 export function AppLayout() {
   useEffect(() => {
-    document.documentElement.classList.add("roam-shell");
-    return () => document.documentElement.classList.remove("roam-shell");
+    document.documentElement.classList.add("glovebox-shell");
+    return () => document.documentElement.classList.remove("glovebox-shell");
   }, []);
 
   return (
     <PlaceDetailProvider>
       {/* Wires useSavedPlaces into PlaceDetailContext so the sheet can toggle bookmarks */}
       <SavedPlacesSync />
-      <div className="roam-shell">
+      <div className="glovebox-shell">
         {/* Persistent offline status - always visible, never dismissable.
             Pinned top-center so it doesn't collide with per-page corner
             controls (MapStyleSwitcher top-right, etc). */}
@@ -32,7 +32,7 @@ export function AppLayout() {
         }}>
           <OfflineStatusIndicator />
         </div>
-        <main className="roam-main">
+        <main className="glovebox-main">
           <PersistentTabs>
             <Outlet />
           </PersistentTabs>

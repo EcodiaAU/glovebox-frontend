@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 type SegmentedBarColor = "primary" | "tertiary" | "danger" | "info";
 
 const colorMap: Record<SegmentedBarColor, string> = {
-  primary: "var(--roam-accent)",
+  primary: "var(--glovebox-accent)",
   tertiary: "var(--brand-eucalypt)",
-  danger: "var(--roam-danger)",
-  info: "var(--roam-info)",
+  danger: "var(--glovebox-danger)",
+  info: "var(--glovebox-info)",
 };
 
 interface SegmentedBarBaseProps {

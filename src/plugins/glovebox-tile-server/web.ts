@@ -1,13 +1,13 @@
-// src/plugins/roam-tile-server/web.ts
+// src/plugins/glovebox-tile-server/web.ts
 //
-// Web fallback for RoamTileServer plugin.
+// Web fallback for GloveboxTileServer plugin.
 // In browser/dev mode there is no native tile server.
 // Tiles load directly from Supabase, glyphs from CDN.
 // This stub lets the rest of the code call the plugin API without errors.
 
 import { WebPlugin } from "@capacitor/core";
 import type {
-  RoamTileServerPlugin,
+  GloveboxTileServerPlugin,
   StartServerOptions,
   StartServerResult,
   ServerStatusResult,
@@ -18,10 +18,10 @@ import type {
   DeleteBasemapOptions,
 } from "./definitions";
 
-export class RoamTileServerWeb extends WebPlugin implements RoamTileServerPlugin {
+export class GloveboxTileServerWeb extends WebPlugin implements GloveboxTileServerPlugin {
   async startServer(_options: StartServerOptions): Promise<StartServerResult> {
     // No local server on web - MapLibre loads tiles from remote URLs
-    console.info("[RoamTileServer/web] startServer no-op (browser mode)");
+    console.info("[GloveboxTileServer/web] startServer no-op (browser mode)");
     return { url: "", port: 0 };
   }
 
@@ -35,7 +35,7 @@ export class RoamTileServerWeb extends WebPlugin implements RoamTileServerPlugin
 
   async downloadFile(_options: DownloadOptions): Promise<DownloadResult> {
     throw new Error(
-      "RoamTileServer.downloadFile is not available in browser. " +
+      "GloveboxTileServer.downloadFile is not available in browser. " +
         "Basemap downloads require a native Capacitor build.",
     );
   }

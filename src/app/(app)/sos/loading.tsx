@@ -3,12 +3,12 @@
 
 export default function SosLoading() {
   return (
-    <div className="sos-page roam-scroll">
+    <div className="sos-page glovebox-scroll">
       {/* WatermarkCard skeleton (CALL 000 + location) */}
       <div
         style={{
           borderRadius: "var(--r-card)",
-          background: "var(--roam-text)",
+          background: "var(--glovebox-text)",
           padding: 20,
           display: "flex",
           flexDirection: "column",
@@ -31,7 +31,7 @@ export default function SosLoading() {
           width: "100%",
           height: 88,
           borderRadius: "var(--r-btn)",
-          background: "var(--roam-info)",
+          background: "var(--glovebox-info)",
           opacity: 0.3,
           animation: "sos-skel-pulse 1.6s ease-in-out infinite 0.1s",
         }}
@@ -43,7 +43,7 @@ export default function SosLoading() {
           width: 110,
           height: 22,
           borderRadius: "var(--r-card)",
-          background: "var(--roam-surface-hover)",
+          background: "var(--glovebox-surface-hover)",
           animation: "sos-skel-pulse 1.6s ease-in-out infinite 0.2s",
         }}
       />
@@ -54,7 +54,7 @@ export default function SosLoading() {
           width: "100%",
           height: 64,
           borderRadius: "var(--r-btn)",
-          background: "var(--roam-surface-hover)",
+          background: "var(--glovebox-surface-hover)",
           animation: "sos-skel-pulse 1.6s ease-in-out infinite 0.25s",
         }}
       />
@@ -66,7 +66,7 @@ export default function SosLoading() {
           style={{
             padding: 16,
             borderRadius: "var(--r-card)",
-            background: "var(--roam-surface)",
+            background: "var(--glovebox-surface)",
             display: "flex",
             flexDirection: "column",
             gap: 12,
@@ -79,7 +79,7 @@ export default function SosLoading() {
                 width: 48,
                 height: 48,
                 borderRadius: "50%",
-                background: "var(--roam-surface-hover)",
+                background: "var(--glovebox-surface-hover)",
                 flexShrink: 0,
                 animation: `sos-skel-pulse 1.6s ease-in-out infinite ${i * 0.12}s`,
               }}
@@ -89,7 +89,7 @@ export default function SosLoading() {
                 style={{
                   height: 20,
                   borderRadius: "var(--r-card)",
-                  background: "var(--roam-surface-hover)",
+                  background: "var(--glovebox-surface-hover)",
                   width: "60%",
                   animation: `sos-skel-pulse 1.6s ease-in-out infinite ${0.1 + i * 0.12}s`,
                 }}
@@ -98,7 +98,7 @@ export default function SosLoading() {
                 style={{
                   height: 14,
                   borderRadius: "var(--r-card)",
-                  background: "var(--roam-surface-hover)",
+                  background: "var(--glovebox-surface-hover)",
                   width: "80%",
                   animation: `sos-skel-pulse 1.6s ease-in-out infinite ${0.2 + i * 0.12}s`,
                 }}
@@ -109,10 +109,10 @@ export default function SosLoading() {
           {/* Action grid (2×2: Call, Text, Edit, Delete) */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {[
-              { bg: "var(--roam-accent)", delay: 0.3 },
-              { bg: "var(--roam-info)", delay: 0.34 },
-              { bg: "var(--roam-surface-hover)", delay: 0.38 },
-              { bg: "var(--roam-surface-hover)", delay: 0.42 },
+              { bg: "var(--glovebox-accent)", delay: 0.3 },
+              { bg: "var(--glovebox-info)", delay: 0.34 },
+              { bg: "var(--glovebox-surface-hover)", delay: 0.38 },
+              { bg: "var(--glovebox-surface-hover)", delay: 0.42 },
             ].map((btn, j) => (
               <div
                 key={j}

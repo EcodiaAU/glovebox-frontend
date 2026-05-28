@@ -12,7 +12,7 @@ export const presenceApi = {
   ping: (req: PresencePingRequest) =>
     api.post<PresencePingResponse>("/presence/ping", req),
 
-  /** POST /presence/nearby - query dead-reckoned nearby roamers */
+  /** POST /presence/nearby - query dead-reckoned nearby gloveboxers */
   nearby: (req: NearbyQuery) =>
     api.post<NearbyResponse>("/presence/nearby", req),
 };

@@ -8,7 +8,7 @@
 // - PMTiles fall back to Supabase Storage (public bucket) when tile server is not running
 // - Glyphs: bundled in app at /offline/glyphs/ (native), CDN fallback (web/dev)
 //
-// The local tile server (RoamTileServer native plugin) serves files from device
+// The local tile server (GloveboxTileServer native plugin) serves files from device
 // storage with proper Range/206 support for PMTiles streaming.
 
 import {
@@ -98,8 +98,8 @@ export const assetsApi = {
    * Style JSON URL (always bundled, same-origin).
    *
    * Example:
-   *   styleUrl("roam-basemap-vector-bright")
-   *   → /offline/styles/roam-basemap-vector-bright.style.json
+   *   styleUrl("glovebox-basemap-vector-bright")
+   *   → /offline/styles/glovebox-basemap-vector-bright.style.json
    */
   styleUrl(styleId: string): string {
     return `/offline/styles/${safeId(styleId)}.style.json`;

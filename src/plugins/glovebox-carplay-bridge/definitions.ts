@@ -1,6 +1,6 @@
-// src/plugins/roam-carplay-bridge/definitions.ts
+// src/plugins/glovebox-carplay-bridge/definitions.ts
 //
-// Capacitor plugin: RoamCarPlayBridge
+// Capacitor plugin: GloveboxCarPlayBridge
 // Pushes phone-app state to the iOS in-process singleton that the CarPlay
 // scene reads from. The CarPlay scene runs in the same UIApplication
 // process as the Capacitor WebView; state is shared via an in-process
@@ -84,7 +84,7 @@ export interface CarPlayHazardAcknowledgedEvent {
   hazardId: string;
 }
 
-export interface RoamCarPlayBridgePlugin {
+export interface GloveboxCarPlayBridgePlugin {
   setActiveTrip(trip: CarPlayTrip): Promise<void>;
   clearActiveTrip(): Promise<void>;
   setHazards(args: { hazards: CarPlayHazard[] }): Promise<void>;

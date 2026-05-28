@@ -1,9 +1,9 @@
 // CarPlayNavigationCoordinator.swift
 //
-// Singleton bridge between the CarPlay scene and the rest of the Roam
+// Singleton bridge between the CarPlay scene and the rest of the Glovebox
 // runtime. Responsibilities:
 //
-// - Issue search + route requests to the Roam backend (places/search,
+// - Issue search + route requests to the Glovebox backend (places/search,
 //   nav/route).
 // - Build CPListItems and CPTrips from the backend responses.
 // - Own the CPNavigationSession lifecycle once a trip is started.
@@ -48,11 +48,11 @@ final class CarPlayNavigationCoordinator: NSObject {
     private var hazardPollTimer: Timer?
 
     private lazy var apiBaseURL: URL = {
-        if let raw = Bundle.main.object(forInfoDictionaryKey: "RoamApiBaseURL") as? String,
+        if let raw = Bundle.main.object(forInfoDictionaryKey: "GloveboxApiBaseURL") as? String,
            let url = URL(string: raw) {
             return url
         }
-        return URL(string: "https://api.roam.ecodia.au")!
+        return URL(string: "https://api.glovebox.ecodia.au")!
     }()
 
     private lazy var session: URLSession = {
@@ -75,16 +75,16 @@ final class CarPlayNavigationCoordinator: NSObject {
         self.activeMapTemplate = mapTemplate
 
         NotificationCenter.default.post(
-            name: RoamCarPlayBridgePlugin.sceneConnectedNotification, object: nil
+            name: GloveboxCarPlayBridgePlugin.sceneConnectedNotification, object: nil
         )
 
-        if let trip = RoamCarPlaySharedState.shared.activeTrip {
+        if let trip = GloveboxCarPlaySharedState.shared.activeTrip {
             startNavigationFromSharedState(trip: trip, mapTemplate: mapTemplate)
         }
 
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleSharedStateChange(_:)),
-            name: RoamCarPlaySharedState.stateChangedNotification, object: nil
+            name: GloveboxCarPlaySharedState.stateChangedNotification, object: nil
         )
 
         startHazardPollLoop()
@@ -105,21 +105,21 @@ final class CarPlayNavigationCoordinator: NSObject {
 
         NotificationCenter.default.removeObserver(self)
         NotificationCenter.default.post(
-            name: RoamCarPlayBridgePlugin.sceneDisconnectedNotification, object: nil
+            name: GloveboxCarPlayBridgePlugin.sceneDisconnectedNotification, object: nil
         )
     }
 
     // MARK: - Shared-state observer
 
     @objc private func handleSharedStateChange(_ note: Notification) {
-        guard let kindStr = note.userInfo?[RoamCarPlaySharedState.changeKindKey] as? String,
-              let kind = RoamCarPlaySharedState.ChangeKind(rawValue: kindStr) else { return }
+        guard let kindStr = note.userInfo?[GloveboxCarPlaySharedState.changeKindKey] as? String,
+              let kind = GloveboxCarPlaySharedState.ChangeKind(rawValue: kindStr) else { return }
 
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             switch kind {
             case .trip:
-                if let trip = RoamCarPlaySharedState.shared.activeTrip,
+                if let trip = GloveboxCarPlaySharedState.shared.activeTrip,
                    let mapTemplate = self.activeMapTemplate {
                     self.startNavigationFromSharedState(trip: trip, mapTemplate: mapTemplate)
                 }
@@ -127,7 +127,7 @@ final class CarPlayNavigationCoordinator: NSObject {
                 self.endActiveNavigation()
             case .hazards:
                 self.checkHazardProximity()
-                self.mapViewController?.renderHazards(RoamCarPlaySharedState.shared.hazards)
+                self.mapViewController?.renderHazards(GloveboxCarPlaySharedState.shared.hazards)
             case .fuelStops:
                 self.checkFuelWarning()
             case .location:
@@ -170,7 +170,7 @@ final class CarPlayNavigationCoordinator: NSObject {
         }
 
         let center: PlacesRequestBody.Center?
-        if let loc = RoamCarPlaySharedState.shared.driverLocation {
+        if let loc = GloveboxCarPlaySharedState.shared.driverLocation {
             center = .init(lat: loc.lat, lng: loc.lng)
         } else {
             center = nil
@@ -232,7 +232,7 @@ final class CarPlayNavigationCoordinator: NSObject {
 
     private func previewTrip(toLat lat: Double, lng: Double, name: String) {
         guard let mapTemplate = activeMapTemplate else { return }
-        guard let originLoc = RoamCarPlaySharedState.shared.driverLocation else {
+        guard let originLoc = GloveboxCarPlaySharedState.shared.driverLocation else {
             presentTransientAlert(
                 title: NSLocalizedString("carplay.alert.noGps.title",
                                          value: "Cannot plan route",
@@ -245,7 +245,7 @@ final class CarPlayNavigationCoordinator: NSObject {
         }
 
         NotificationCenter.default.post(
-            name: RoamCarPlayBridgePlugin.destinationPickedNotification,
+            name: GloveboxCarPlayBridgePlugin.destinationPickedNotification,
             object: nil,
             userInfo: ["name": name, "lat": lat, "lng": lng]
         )
@@ -322,12 +322,12 @@ final class CarPlayNavigationCoordinator: NSObject {
 
     // MARK: - Navigation session lifecycle
 
-    private func startNavigationFromSharedState(trip: RoamCarPlaySharedState.Trip, mapTemplate: CPMapTemplate) {
+    private func startNavigationFromSharedState(trip: GloveboxCarPlaySharedState.Trip, mapTemplate: CPMapTemplate) {
         mapTemplate.hideTripPreviews()
         activeNavigationSession?.cancelTrip()
 
         let originCoord: CLLocationCoordinate2D
-        if let l = RoamCarPlaySharedState.shared.driverLocation {
+        if let l = GloveboxCarPlaySharedState.shared.driverLocation {
             originCoord = CLLocationCoordinate2D(latitude: l.lat, longitude: l.lng)
         } else if let w = trip.waypoints.first {
             originCoord = CLLocationCoordinate2D(latitude: w.lat, longitude: w.lng)
@@ -364,7 +364,7 @@ final class CarPlayNavigationCoordinator: NSObject {
 
         refreshManeuversAndEstimates()
         mapViewController?.renderRoute(polyline6: trip.geometryPolyline6)
-        mapViewController?.renderHazards(RoamCarPlaySharedState.shared.hazards)
+        mapViewController?.renderHazards(GloveboxCarPlaySharedState.shared.hazards)
     }
 
     func endActiveNavigation() {
@@ -380,8 +380,8 @@ final class CarPlayNavigationCoordinator: NSObject {
 
     private func refreshManeuversAndEstimates() {
         guard let session = activeNavigationSession,
-              let trip = RoamCarPlaySharedState.shared.activeTrip,
-              let loc = RoamCarPlaySharedState.shared.driverLocation else { return }
+              let trip = GloveboxCarPlaySharedState.shared.activeTrip,
+              let loc = GloveboxCarPlaySharedState.shared.driverLocation else { return }
 
         let here = CLLocation(latitude: loc.lat, longitude: loc.lng)
         let upcoming = trip.maneuvers.filter { m in
@@ -430,7 +430,7 @@ final class CarPlayNavigationCoordinator: NSObject {
     }
 
     private func checkHazardProximity() {
-        guard let next = RoamCarPlaySharedState.shared.nextHazardToAnnounce(withinMeters: 8_000),
+        guard let next = GloveboxCarPlaySharedState.shared.nextHazardToAnnounce(withinMeters: 8_000),
               next.id != lastAnnouncedHazardId else { return }
         lastAnnouncedHazardId = next.id
 
@@ -446,7 +446,7 @@ final class CarPlayNavigationCoordinator: NSObject {
                 style: .default
             ) { _ in
                 NotificationCenter.default.post(
-                    name: RoamCarPlayBridgePlugin.hazardAcknowledgedNotification,
+                    name: GloveboxCarPlayBridgePlugin.hazardAcknowledgedNotification,
                     object: nil,
                     userInfo: ["hazardId": next.id]
                 )
@@ -461,9 +461,9 @@ final class CarPlayNavigationCoordinator: NSObject {
     // MARK: - Fuel warnings
 
     private func checkFuelWarning() {
-        guard let next = RoamCarPlaySharedState.shared.nextFuelStop(),
+        guard let next = GloveboxCarPlaySharedState.shared.nextFuelStop(),
               next.id != lastFuelWarningId,
-              let loc = RoamCarPlaySharedState.shared.driverLocation else { return }
+              let loc = GloveboxCarPlaySharedState.shared.driverLocation else { return }
 
         let here = CLLocation(latitude: loc.lat, longitude: loc.lng)
         let stopLoc = CLLocation(latitude: next.lat, longitude: next.lng)
@@ -472,7 +472,7 @@ final class CarPlayNavigationCoordinator: NSObject {
         let shouldFire: Bool
         if next.isLastChance && distanceToStop <= 40_000 {
             shouldFire = true
-        } else if let v = RoamCarPlaySharedState.shared.vehicle,
+        } else if let v = GloveboxCarPlaySharedState.shared.vehicle,
                   v.rangeKm * 1000 < distanceToStop * 1.2 {
             shouldFire = true
         } else {
@@ -538,7 +538,7 @@ final class CarPlayNavigationCoordinator: NSObject {
 
     func plansListTemplate() -> CPListTemplate {
         var items: [CPListItem] = []
-        if let trip = RoamCarPlaySharedState.shared.activeTrip {
+        if let trip = GloveboxCarPlaySharedState.shared.activeTrip {
             let km = trip.distanceMeters / 1000.0
             let detail = String(format: "%.0f km - %@",
                                 km, Self.formatDuration(seconds: trip.durationSeconds))

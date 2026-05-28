@@ -14,7 +14,7 @@ import type { BBox4 } from "@/lib/types/geo";
 import type { TripStop } from "@/lib/types/trip";
 import type { PlaceItem } from "@/lib/types/places";
 import type { TrafficOverlay, HazardOverlay, CorridorGraphPack } from "@/lib/types/navigation";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { FuelStation, FuelTrackingState } from "@/lib/types/fuel";
 import type {
     FloodOverlay,
@@ -71,7 +71,7 @@ type Props = {
   onHazardEventPress?: (eventId: string) => void;
 
   // User location (from native geolocation)
-  userPosition?: RoamPosition | null;
+  userPosition?: GloveboxPosition | null;
 
   // Map tap for placing stops
   onMapLongPress?: (lat: number, lng: number) => void;
@@ -127,127 +127,127 @@ type Props = {
 
 /* ── Layer / source IDs ─────────────────────────────────────────────── */
 
-const CORRIDOR_EDGE_SRC = "roam-corridor-edge-src";
-const CORRIDOR_EDGE_LINE = "roam-corridor-edge-line";
+const CORRIDOR_EDGE_SRC = "glovebox-corridor-edge-src";
+const CORRIDOR_EDGE_LINE = "glovebox-corridor-edge-line";
 
-const ROUTE_SRC = "roam-route-src";
-const ROUTE_GLOW = "roam-route-glow";
-const ROUTE_CASING = "roam-route-casing";
-const ROUTE_LINE = "roam-route-line";
+const ROUTE_SRC = "glovebox-route-src";
+const ROUTE_GLOW = "glovebox-route-glow";
+const ROUTE_CASING = "glovebox-route-casing";
+const ROUTE_LINE = "glovebox-route-line";
 
-const STOPS_SRC = "roam-stops-src";
-const STOPS_SHADOW = "roam-stops-shadow";
-const STOPS_OUTER = "roam-stops-outer";
-const STOPS_INNER = "roam-stops-inner";
-const STOP_PULSE = "roam-stop-pulse";
-const STOP_ICON_LAYER = "roam-stop-icon";
-const STOP_LABELS = "roam-stop-labels";
-const STOP_FOCUS_RING = "roam-stop-focus-ring";
+const STOPS_SRC = "glovebox-stops-src";
+const STOPS_SHADOW = "glovebox-stops-shadow";
+const STOPS_OUTER = "glovebox-stops-outer";
+const STOPS_INNER = "glovebox-stops-inner";
+const STOP_PULSE = "glovebox-stop-pulse";
+const STOP_ICON_LAYER = "glovebox-stop-icon";
+const STOP_LABELS = "glovebox-stop-labels";
+const STOP_FOCUS_RING = "glovebox-stop-focus-ring";
 
-const SUG_SRC = "roam-suggestions-src";
-const SUG_CLUSTER_CIRCLE = "roam-sug-cluster-circle";
-const SUG_CLUSTER_COUNT = "roam-sug-cluster-count";
-const SUG_UNCLUSTERED = "roam-sug-unclustered";
-const SUG_ICON_LAYER = "roam-sug-icon";
-const SUG_LABEL_LAYER = "roam-sug-label";
-const SUG_FOCUS_SRC = "roam-sug-focus-src";
-const SUG_FOCUS_RING = "roam-sug-focus-ring";
-const SUG_FOCUS_PING = "roam-sug-focus-ping";
-const SUG_FOCUS_DOT = "roam-sug-focus-dot";
+const SUG_SRC = "glovebox-suggestions-src";
+const SUG_CLUSTER_CIRCLE = "glovebox-sug-cluster-circle";
+const SUG_CLUSTER_COUNT = "glovebox-sug-cluster-count";
+const SUG_UNCLUSTERED = "glovebox-sug-unclustered";
+const SUG_ICON_LAYER = "glovebox-sug-icon";
+const SUG_LABEL_LAYER = "glovebox-sug-label";
+const SUG_FOCUS_SRC = "glovebox-sug-focus-src";
+const SUG_FOCUS_RING = "glovebox-sug-focus-ring";
+const SUG_FOCUS_PING = "glovebox-sug-focus-ping";
+const SUG_FOCUS_DOT = "glovebox-sug-focus-dot";
 
-const TRAFFIC_POINT_SRC = "roam-traffic-pt-src";
-const TRAFFIC_LINE_SRC = "roam-traffic-line-src";
-const TRAFFIC_POLY_SRC = "roam-traffic-poly-src";
-const TRAFFIC_POLY_LAYER = "roam-traffic-poly";
-const TRAFFIC_LINE_CASING = "roam-traffic-line-casing";
-const TRAFFIC_LINE_LAYER = "roam-traffic-line";
-const TRAFFIC_PULSE_LAYER = "roam-traffic-pulse";
-const TRAFFIC_POINT_LAYER = "roam-traffic-pt";
+const TRAFFIC_POINT_SRC = "glovebox-traffic-pt-src";
+const TRAFFIC_LINE_SRC = "glovebox-traffic-line-src";
+const TRAFFIC_POLY_SRC = "glovebox-traffic-poly-src";
+const TRAFFIC_POLY_LAYER = "glovebox-traffic-poly";
+const TRAFFIC_LINE_CASING = "glovebox-traffic-line-casing";
+const TRAFFIC_LINE_LAYER = "glovebox-traffic-line";
+const TRAFFIC_PULSE_LAYER = "glovebox-traffic-pulse";
+const TRAFFIC_POINT_LAYER = "glovebox-traffic-pt";
 
-const HAZARD_POINT_SRC = "roam-hazard-pt-src";
-const HAZARD_POLY_SRC = "roam-hazard-poly-src";
-const HAZARD_POLY_LAYER = "roam-hazard-poly";
-const HAZARD_POLY_OUTLINE = "roam-hazard-poly-outline";
-const HAZARD_ICON_LAYER = "roam-hazard-icon";
+const HAZARD_POINT_SRC = "glovebox-hazard-pt-src";
+const HAZARD_POLY_SRC = "glovebox-hazard-poly-src";
+const HAZARD_POLY_LAYER = "glovebox-hazard-poly";
+const HAZARD_POLY_OUTLINE = "glovebox-hazard-poly-outline";
+const HAZARD_ICON_LAYER = "glovebox-hazard-icon";
 
-const ALERT_HIGHLIGHT_SRC = "roam-alert-highlight-src";
-const ALERT_HIGHLIGHT_RING = "roam-alert-highlight-ring";
-const ALERT_HIGHLIGHT_PING = "roam-alert-highlight-ping";
+const ALERT_HIGHLIGHT_SRC = "glovebox-alert-highlight-src";
+const ALERT_HIGHLIGHT_RING = "glovebox-alert-highlight-ring";
+const ALERT_HIGHLIGHT_PING = "glovebox-alert-highlight-ping";
 
-const USER_LOC_SRC = "roam-user-loc-src";
-const USER_LOC_ACCURACY = "roam-user-loc-accuracy";
-const USER_LOC_DOT_OUTER = "roam-user-loc-dot-outer";
-const USER_LOC_DOT_INNER = "roam-user-loc-dot-inner";
-const USER_LOC_HEADING_SRC = "roam-user-heading-src";
-const USER_LOC_HEADING = "roam-user-loc-heading";
+const USER_LOC_SRC = "glovebox-user-loc-src";
+const USER_LOC_ACCURACY = "glovebox-user-loc-accuracy";
+const USER_LOC_DOT_OUTER = "glovebox-user-loc-dot-outer";
+const USER_LOC_DOT_INNER = "glovebox-user-loc-dot-inner";
+const USER_LOC_HEADING_SRC = "glovebox-user-heading-src";
+const USER_LOC_HEADING = "glovebox-user-loc-heading";
 
-const FUEL_SRC = "roam-fuel-src";
-const FUEL_CLUSTER_CIRCLE = "roam-fuel-cluster-circle";
-const FUEL_CLUSTER_COUNT = "roam-fuel-cluster-count";
-const FUEL_CIRCLE_LAYER = "roam-fuel-circle";
-const FUEL_ICON_LAYER = "roam-fuel-icon";
-const FUEL_LABEL_LAYER = "roam-fuel-label";
+const FUEL_SRC = "glovebox-fuel-src";
+const FUEL_CLUSTER_CIRCLE = "glovebox-fuel-cluster-circle";
+const FUEL_CLUSTER_COUNT = "glovebox-fuel-cluster-count";
+const FUEL_CIRCLE_LAYER = "glovebox-fuel-circle";
+const FUEL_ICON_LAYER = "glovebox-fuel-icon";
+const FUEL_LABEL_LAYER = "glovebox-fuel-label";
 
-const EV_SRC = "roam-ev-src";
-const EV_CLUSTER_CIRCLE = "roam-ev-cluster-circle";
-const EV_CLUSTER_COUNT = "roam-ev-cluster-count";
-const EV_ICON_LAYER = "roam-ev-icon";
-const EV_LABEL_LAYER = "roam-ev-label";
+const EV_SRC = "glovebox-ev-src";
+const EV_CLUSTER_CIRCLE = "glovebox-ev-cluster-circle";
+const EV_CLUSTER_COUNT = "glovebox-ev-cluster-count";
+const EV_ICON_LAYER = "glovebox-ev-icon";
+const EV_LABEL_LAYER = "glovebox-ev-label";
 
 // ── New overlay sources / layers ─────────────────────────────────────────
-const WILDLIFE_SRC = "roam-wildlife-src";
-const WILDLIFE_FILL_LAYER = "roam-wildlife-fill";
-const WILDLIFE_LABEL_LAYER = "roam-wildlife-label";
+const WILDLIFE_SRC = "glovebox-wildlife-src";
+const WILDLIFE_FILL_LAYER = "glovebox-wildlife-fill";
+const WILDLIFE_LABEL_LAYER = "glovebox-wildlife-label";
 
-const COVERAGE_SRC = "roam-coverage-src";
-const COVERAGE_LINE_LAYER = "roam-coverage-line";
+const COVERAGE_SRC = "glovebox-coverage-src";
+const COVERAGE_LINE_LAYER = "glovebox-coverage-line";
 
-const FLOOD_SRC = "roam-flood-src";
-const FLOOD_CIRCLE_LAYER = "roam-flood-circle";
-const FLOOD_LABEL_LAYER = "roam-flood-label";
-const FLOOD_CATCH_SRC = "roam-flood-catch-src";
-const FLOOD_CATCH_FILL = "roam-flood-catch-fill";
-const FLOOD_CATCH_LINE = "roam-flood-catch-line";
+const FLOOD_SRC = "glovebox-flood-src";
+const FLOOD_CIRCLE_LAYER = "glovebox-flood-circle";
+const FLOOD_LABEL_LAYER = "glovebox-flood-label";
+const FLOOD_CATCH_SRC = "glovebox-flood-catch-src";
+const FLOOD_CATCH_FILL = "glovebox-flood-catch-fill";
+const FLOOD_CATCH_LINE = "glovebox-flood-catch-line";
 
-const REST_AREAS_SRC = "roam-rest-areas-src";
-const REST_AREAS_CLUSTER_CIRCLE = "roam-rest-areas-cluster";
-const REST_AREAS_CLUSTER_COUNT = "roam-rest-areas-cluster-count";
-const REST_AREAS_ICON_LAYER = "roam-rest-areas-icon";
-const REST_AREAS_LABEL_LAYER = "roam-rest-areas-label";
+const REST_AREAS_SRC = "glovebox-rest-areas-src";
+const REST_AREAS_CLUSTER_CIRCLE = "glovebox-rest-areas-cluster";
+const REST_AREAS_CLUSTER_COUNT = "glovebox-rest-areas-cluster-count";
+const REST_AREAS_ICON_LAYER = "glovebox-rest-areas-icon";
+const REST_AREAS_LABEL_LAYER = "glovebox-rest-areas-label";
 
-const WEATHER_SRC = "roam-weather-src";
-const WEATHER_DOT_LAYER = "roam-weather-dot";
-const WEATHER_LABEL_LAYER = "roam-weather-label";
+const WEATHER_SRC = "glovebox-weather-src";
+const WEATHER_DOT_LAYER = "glovebox-weather-dot";
+const WEATHER_LABEL_LAYER = "glovebox-weather-label";
 
-const EMERGENCY_SRC = "roam-emergency-src";
-const EMERGENCY_ICON_LAYER = "roam-emergency-icon";
-const EMERGENCY_LABEL_LAYER = "roam-emergency-label";
+const EMERGENCY_SRC = "glovebox-emergency-src";
+const EMERGENCY_ICON_LAYER = "glovebox-emergency-icon";
+const EMERGENCY_LABEL_LAYER = "glovebox-emergency-label";
 
-const HERITAGE_SRC = "roam-heritage-src";
-const HERITAGE_ICON_LAYER = "roam-heritage-icon";
+const HERITAGE_SRC = "glovebox-heritage-src";
+const HERITAGE_ICON_LAYER = "glovebox-heritage-icon";
 
-const AQI_SRC = "roam-aqi-src";
-const AQI_DOT_LAYER = "roam-aqi-dot";
-const AQI_LABEL_LAYER = "roam-aqi-label";
+const AQI_SRC = "glovebox-aqi-src";
+const AQI_DOT_LAYER = "glovebox-aqi-dot";
+const AQI_LABEL_LAYER = "glovebox-aqi-label";
 
-const BUSHFIRE_SRC = "roam-bushfire-src";
-const BUSHFIRE_ICON_LAYER = "roam-bushfire-icon";
-const BUSHFIRE_HOTSPOT_SRC = "roam-bushfire-hotspot-src";
-const BUSHFIRE_HOTSPOT_LAYER = "roam-bushfire-hotspot";
+const BUSHFIRE_SRC = "glovebox-bushfire-src";
+const BUSHFIRE_ICON_LAYER = "glovebox-bushfire-icon";
+const BUSHFIRE_HOTSPOT_SRC = "glovebox-bushfire-hotspot-src";
+const BUSHFIRE_HOTSPOT_LAYER = "glovebox-bushfire-hotspot";
 
-const CAMERAS_SRC = "roam-cameras-src";
-const CAMERAS_ICON_LAYER = "roam-cameras-icon";
-const BLACKSPOT_SRC = "roam-blackspot-src";
-const BLACKSPOT_LAYER = "roam-blackspot-dot";
+const CAMERAS_SRC = "glovebox-cameras-src";
+const CAMERAS_ICON_LAYER = "glovebox-cameras-icon";
+const BLACKSPOT_SRC = "glovebox-blackspot-src";
+const BLACKSPOT_LAYER = "glovebox-blackspot-dot";
 
-const TOILETS_SRC = "roam-toilets-src";
-const TOILETS_ICON_LAYER = "roam-toilets-icon";
+const TOILETS_SRC = "glovebox-toilets-src";
+const TOILETS_ICON_LAYER = "glovebox-toilets-icon";
 
-const SCHOOL_ZONES_SRC = "roam-school-zones-src";
-const SCHOOL_ZONES_ICON_LAYER = "roam-school-zones-icon";
+const SCHOOL_ZONES_SRC = "glovebox-school-zones-src";
+const SCHOOL_ZONES_ICON_LAYER = "glovebox-school-zones-icon";
 
-const ROADKILL_SRC = "roam-roadkill-src";
-const ROADKILL_DOT_LAYER = "roam-roadkill-dot";
+const ROADKILL_SRC = "glovebox-roadkill-src";
+const ROADKILL_DOT_LAYER = "glovebox-roadkill-dot";
 
 /** Layer groups by category */
 const LAYER_GROUPS = {
@@ -301,7 +301,7 @@ function applyAllOverlayVisibility(map: MLMap, vis: OverlayVisibility) {
   }
 }
 
-const STORAGE_KEY = "roam:overlayVis";
+const STORAGE_KEY = "glovebox:overlayVis";
 
 function readStoredVis(): OverlayVisibility {
   if (typeof window === "undefined") return DEFAULT_VIS;
@@ -471,7 +471,7 @@ const CATEGORY_CONFIG: Record<string, CatConfig> = {
   hospital: { icon: "cross", color: "#dc2626", size: "lg" },
   pharmacy: { icon: "pill", color: "#db2777", size: "lg" },
   // ── Supplies ────────────────────────────────────────────────────────
-  grocery: { icon: "cart", color: "var(--roam-success)", size: "md" },
+  grocery: { icon: "cart", color: "var(--glovebox-success)", size: "md" },
   town: { icon: "town", color: "#a16207", size: "sm" },
   atm: { icon: "pin", color: "#0891b2", size: "sm" },
   laundromat: { icon: "pin", color: "#64748b", size: "sm" },
@@ -505,7 +505,7 @@ const CATEGORY_CONFIG: Record<string, CatConfig> = {
   zoo: { icon: "paw", color: "#22c55e", size: "md" },
   theme_park: { icon: "star", color: "#ec4899", size: "md" },
   dog_park: { icon: "paw", color: "#db2777", size: "sm" },
-  golf: { icon: "flag_end", color: "var(--roam-success)", size: "sm" },
+  golf: { icon: "flag_end", color: "var(--glovebox-success)", size: "sm" },
   cinema: { icon: "star", color: "#4f46e5", size: "sm" },
   // ── Culture & sightseeing ───────────────────────────────────────────
   visitor_info: { icon: "pin", color: "#4f46e5", size: "sm" },
@@ -534,12 +534,12 @@ function getCatConfig(cat: string): CatConfig {
 /* ── Traffic/hazard overlay icon configs ─────────────────────────────── */
 
 const TRAFFIC_ICON_CFG: Record<string, { icon: keyof typeof ICON_PATHS; color: string }> = {
-  closure: { icon: "x_circle", color: "var(--roam-danger)" },
+  closure: { icon: "x_circle", color: "var(--glovebox-danger)" },
   flooding: { icon: "flood_wave", color: "#3b82f6" },
   congestion: { icon: "car", color: "#f59e0b" },
   roadworks: { icon: "cone", color: "#f97316" },
   hazard: { icon: "triangle_alert", color: "#eab308" },
-  incident: { icon: "siren", color: "var(--roam-danger)" },
+  incident: { icon: "siren", color: "var(--glovebox-danger)" },
   unknown: { icon: "question", color: "#64748b" },
 };
 
@@ -547,7 +547,7 @@ const HAZARD_ICON_CFG: Record<string, { icon: keyof typeof ICON_PATHS; color: st
   flood: { icon: "flood_wave", color: "#3b82f6" },
   cyclone: { icon: "cyclone", color: "#7c3aed" },
   storm: { icon: "lightning", color: "var(--brand-shared)" },
-  fire: { icon: "flame", color: "var(--roam-danger)" },
+  fire: { icon: "flame", color: "var(--glovebox-danger)" },
   wind: { icon: "wind", color: "#64748b" },
   heat: { icon: "thermometer", color: "#ea580c" },
   marine: { icon: "anchor", color: "#0ea5e9" },
@@ -562,7 +562,7 @@ const SIZE_PX: Record<CatConfig["size"], number> = { lg: 36, md: 30, sm: 24 };
 function loadCategoryIcons(map: MLMap): Promise<void> {
   const promises: Promise<void>[] = [];
   for (const [cat, cfg] of Object.entries(CATEGORY_CONFIG)) {
-    const imgId = `roam-cat-${cat}`;
+    const imgId = `glovebox-cat-${cat}`;
     if (map.hasImage(imgId)) continue;
     const px = SIZE_PX[cfg.size];
     const pathD = ICON_PATHS[cfg.icon] ?? ICON_PATHS.pin;
@@ -570,9 +570,9 @@ function loadCategoryIcons(map: MLMap): Promise<void> {
     promises.push(loadSVGImage(map, imgId, svg, px));
   }
   // Default
-  if (!map.hasImage("roam-cat-default")) {
+  if (!map.hasImage("glovebox-cat-default")) {
     const svg = makeIconSVG(ICON_PATHS.pin, "#64748b", 24);
-    promises.push(loadSVGImage(map, "roam-cat-default", svg, 24));
+    promises.push(loadSVGImage(map, "glovebox-cat-default", svg, 24));
   }
   return Promise.all(promises).then(() => {});
 }
@@ -580,13 +580,13 @@ function loadCategoryIcons(map: MLMap): Promise<void> {
 function loadOverlayIcons(map: MLMap): Promise<void> {
   const promises: Promise<void>[] = [];
   for (const [k, v] of Object.entries(TRAFFIC_ICON_CFG)) {
-    const id = `roam-traffic-${k}`;
+    const id = `glovebox-traffic-${k}`;
     if (map.hasImage(id)) continue;
     const pathD = ICON_PATHS[v.icon] ?? ICON_PATHS.triangle_alert;
     promises.push(loadSVGImage(map, id, makeIconSVG(pathD, v.color, 32), 32));
   }
   for (const [k, v] of Object.entries(HAZARD_ICON_CFG)) {
-    const id = `roam-hazard-${k}`;
+    const id = `glovebox-hazard-${k}`;
     if (map.hasImage(id)) continue;
     const pathD = ICON_PATHS[v.icon] ?? ICON_PATHS.triangle_alert;
     promises.push(loadSVGImage(map, id, makeIconSVG(pathD, v.color, 32), 32));
@@ -596,10 +596,10 @@ function loadOverlayIcons(map: MLMap): Promise<void> {
 
 function loadStopIcons(map: MLMap): Promise<void> {
   const defs: Array<{ id: string; icon: keyof typeof ICON_PATHS; color: string; px: number }> = [
-    { id: "roam-stop-start", icon: "flag_start", color: "#16a34a", px: 40 },
-    { id: "roam-stop-end", icon: "flag_end", color: "#dc2626", px: 40 },
-    { id: "roam-stop-via", icon: "diamond", color: "#9333ea", px: 34 },
-    { id: "roam-stop-poi", icon: "circle_dot", color: "#2563eb", px: 34 },
+    { id: "glovebox-stop-start", icon: "flag_start", color: "#16a34a", px: 40 },
+    { id: "glovebox-stop-end", icon: "flag_end", color: "#dc2626", px: 40 },
+    { id: "glovebox-stop-via", icon: "diamond", color: "#9333ea", px: 34 },
+    { id: "glovebox-stop-poi", icon: "circle_dot", color: "#2563eb", px: 34 },
   ];
   const promises: Promise<void>[] = [];
   for (const d of defs) {
@@ -624,7 +624,7 @@ function loadSVGImage(map: MLMap, id: string, svg: string, px: number): Promise<
 
 /* ── Heading arrow SVG ───────────────────────────────────────────────── */
 
-const HEADING_ARROW_ID = "roam-heading-arrow";
+const HEADING_ARROW_ID = "glovebox-heading-arrow";
 const HEADING_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
   <defs><linearGradient id="hg" x1="24" y1="4" x2="24" y2="28" gradientUnits="userSpaceOnUse">
     <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.85"/>
@@ -639,9 +639,9 @@ function loadHeadingArrow(map: MLMap): Promise<void> {
 
 function loadFuelIcons(map: MLMap): Promise<void> {
   const defs = [
-    { id: "roam-fuel-ok", color: "#22c55e" },
-    { id: "roam-fuel-warn", color: "#f59e0b" },
-    { id: "roam-fuel-critical", color: "var(--roam-danger)" },
+    { id: "glovebox-fuel-ok", color: "#22c55e" },
+    { id: "glovebox-fuel-warn", color: "#f59e0b" },
+    { id: "glovebox-fuel-critical", color: "var(--glovebox-danger)" },
   ];
   const promises: Promise<void>[] = [];
   for (const d of defs) {
@@ -653,7 +653,7 @@ function loadFuelIcons(map: MLMap): Promise<void> {
 }
 
 function loadEvChargerIcons(map: MLMap): Promise<void> {
-  const id = "roam-ev-charger";
+  const id = "glovebox-ev-charger";
   if (map.hasImage(id)) return Promise.resolve();
   const svg = makeIconSVG(ICON_PATHS.lightning, "#2563eb", 38, "#fff");
   return loadSVGImage(map, id, svg, 38);
@@ -661,15 +661,15 @@ function loadEvChargerIcons(map: MLMap): Promise<void> {
 
 function loadNewOverlayIcons(map: MLMap): Promise<void> {
   const defs = [
-    { id: "roam-flood-minor",    color: "#eab308" },
-    { id: "roam-flood-moderate", color: "#f97316" },
-    { id: "roam-flood-major",    color: "var(--roam-danger)" },
-    { id: "roam-rest-area",      color: "var(--brand-shared)" },
+    { id: "glovebox-flood-minor",    color: "#eab308" },
+    { id: "glovebox-flood-moderate", color: "#f97316" },
+    { id: "glovebox-flood-major",    color: "var(--glovebox-danger)" },
+    { id: "glovebox-rest-area",      color: "var(--brand-shared)" },
   ];
   const promises: Promise<void>[] = [];
   for (const d of defs) {
     if (map.hasImage(d.id)) continue;
-    const svg = makeIconSVG(d.id.startsWith("roam-flood") ? ICON_PATHS.flood_wave : ICON_PATHS.car, d.color, 32, "#fff");
+    const svg = makeIconSVG(d.id.startsWith("glovebox-flood") ? ICON_PATHS.flood_wave : ICON_PATHS.car, d.color, 32, "#fff");
     promises.push(loadSVGImage(map, d.id, svg, 32));
   }
   return Promise.all(promises).then(() => {});
@@ -694,7 +694,7 @@ function stopsGeoJSON(stops: TripStop[]): GeoJSON.FeatureCollection {
         type: s.type ?? "poi",
         name: s.name ?? "",
         idx,
-        iconId: `roam-stop-${s.type ?? "poi"}`,
+        iconId: `glovebox-stop-${s.type ?? "poi"}`,
       },
       geometry: { type: "Point" as const, coordinates: [s.lng, s.lat] },
     })),
@@ -732,7 +732,7 @@ function suggestionsGeoJSON(items: PlaceItem[], allowed?: Set<string> | null, su
             category: p.category ?? "unknown",
             color: cfg.color,
             sizeClass: cfg.size,
-            iconId: CATEGORY_CONFIG[p.category] ? `roam-cat-${p.category}` : "roam-cat-default",
+            iconId: CATEGORY_CONFIG[p.category] ? `glovebox-cat-${p.category}` : "glovebox-cat-default",
           },
           geometry: { type: "Point" as const, coordinates: [p.lng, p.lat] },
         };
@@ -755,7 +755,7 @@ function trafficPointsGeoJSON(overlay: TrafficOverlay | null): GeoJSON.FeatureCo
           type: ev.type ?? "unknown",
           severity: ev.severity ?? "unknown",
           headline: ev.headline,
-          iconId: `roam-traffic-${ev.type ?? "unknown"}`,
+          iconId: `glovebox-traffic-${ev.type ?? "unknown"}`,
         },
         geometry: ev.geometry as unknown as GeoJSON.Geometry,
       })),
@@ -804,7 +804,7 @@ function hazardPointsGeoJSON(overlay: HazardOverlay | null): GeoJSON.FeatureColl
               kind: ev.kind ?? "unknown",
               severity: ev.severity ?? "unknown",
               title: ev.title,
-              iconId: `roam-hazard-${ev.kind ?? "unknown"}`,
+              iconId: `glovebox-hazard-${ev.kind ?? "unknown"}`,
             },
             geometry: ev.geometry as unknown as GeoJSON.Geometry,
           };
@@ -817,7 +817,7 @@ function hazardPointsGeoJSON(overlay: HazardOverlay | null): GeoJSON.FeatureColl
               kind: ev.kind ?? "unknown",
               severity: ev.severity ?? "unknown",
               title: ev.title,
-              iconId: `roam-hazard-${ev.kind ?? "unknown"}`,
+              iconId: `glovebox-hazard-${ev.kind ?? "unknown"}`,
             },
             geometry: { type: "Point", coordinates: [(ev.bbox[0] + ev.bbox[2]) / 2, (ev.bbox[1] + ev.bbox[3]) / 2] },
           };
@@ -1029,7 +1029,7 @@ function restAreasGeoJSON(overlay: RestAreaOverlay | null | undefined): GeoJSON.
 
 /* ── User location GeoJSON ───────────────────────────────────────────── */
 
-function userLocGeoJSON(pos: RoamPosition | null | undefined): GeoJSON.FeatureCollection {
+function userLocGeoJSON(pos: GloveboxPosition | null | undefined): GeoJSON.FeatureCollection {
   if (!pos) return { type: "FeatureCollection", features: [] };
   return {
     type: "FeatureCollection",
@@ -1043,7 +1043,7 @@ function userLocGeoJSON(pos: RoamPosition | null | undefined): GeoJSON.FeatureCo
   };
 }
 
-function headingConeGeoJSON(pos: RoamPosition | null | undefined): GeoJSON.FeatureCollection {
+function headingConeGeoJSON(pos: GloveboxPosition | null | undefined): GeoJSON.FeatureCollection {
   if (!pos || pos.heading == null || pos.speed == null || pos.speed < 0.5) return { type: "FeatureCollection", features: [] };
   return {
     type: "FeatureCollection",
@@ -1136,7 +1136,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
   const [layerMenuMounted, setLayerMenuMounted] = useState(false);
   const [showLayerHint, setShowLayerHint] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("roam:seen_layer_menu") !== "1";
+    return localStorage.getItem("glovebox:seen_layer_menu") !== "1";
   });
   const layerMenuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -1445,7 +1445,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
     return `<div style="font-family:inherit;min-width:160px;max-width:260px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:800;color:var(--roam-text);line-height:1.3;letter-spacing:-0.2px">${escapeHtml(title)}</div>
+          <div style="font-size:13px;font-weight:800;color:var(--glovebox-text);line-height:1.3;letter-spacing:-0.2px">${escapeHtml(title)}</div>
           <span style="display:inline-flex;align-items:center;margin-top:4px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:${sevColor};background:color-mix(in srgb, ${sevColor} 12%, transparent);padding:3px 8px;border-radius:8px;">${escapeHtml(
             severity,
           )}</span>
@@ -1453,7 +1453,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       </div>
       ${
         description
-          ? `<div style="font-size:11px;font-weight:600;color:var(--roam-text-muted);line-height:1.5;margin-top:6px">${escapeHtml(
+          ? `<div style="font-size:11px;font-weight:600;color:var(--glovebox-text-muted);line-height:1.5;margin-top:6px">${escapeHtml(
               description.slice(0, 200),
             )}${description.length > 200 ? "…" : ""}</div>`
           : ""
@@ -2354,7 +2354,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: FUEL_SRC,
           filter: ["!", ["has", "point_count"]],
           layout: {
-            "icon-image": ["match", ["get", "fuel_level"], "warn", "roam-fuel-warn", "critical", "roam-fuel-critical", "roam-fuel-ok"],
+            "icon-image": ["match", ["get", "fuel_level"], "warn", "glovebox-fuel-warn", "critical", "glovebox-fuel-critical", "glovebox-fuel-ok"],
             "icon-size": 1,
             "icon-allow-overlap": true,
             "icon-ignore-placement": true,
@@ -2478,7 +2478,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: EV_SRC,
           filter: ["!", ["has", "point_count"]],
           layout: {
-            "icon-image": "roam-ev-charger",
+            "icon-image": "glovebox-ev-charger",
             "icon-size": 1,
             "icon-allow-overlap": true,
             "icon-ignore-placement": false,
@@ -3862,7 +3862,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
                 onClick={() => {
                   if (showLayerHint) {
                     setShowLayerHint(false);
-                    try { localStorage.setItem("roam:seen_layer_menu", "1"); } catch {}
+                    try { localStorage.setItem("glovebox:seen_layer_menu", "1"); } catch {}
                   }
                   setLayerMenuOpen((v) => !v);
                 }}
@@ -3901,7 +3901,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
                   }}
                 >
                   <span className={`layer-menu-check${allOn ? " layer-menu-check--on" : ""}`}>
-                    {allOn && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--roam-bg, #0f0f0f)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>}
+                    {allOn && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--glovebox-bg, #0f0f0f)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>}
                   </span>
                   All layers
                 </button>
@@ -3952,8 +3952,8 @@ export const TripMap = React.memo(function TripMap(props: Props) {
               {/* Map style switcher */}
               {props.onStyleChange && (() => {
                 const styleId = props.styleId;
-                const mode: MapBaseMode = styleId === "roam-basemap-hybrid" ? "hybrid" : "vector";
-                const vectorTheme: VectorTheme = styleId === "roam-basemap-vector-dark" ? "dark" : "bright";
+                const mode: MapBaseMode = styleId === "glovebox-basemap-hybrid" ? "hybrid" : "vector";
+                const vectorTheme: VectorTheme = styleId === "glovebox-basemap-vector-dark" ? "dark" : "bright";
                 return (
                   <div className="layer-menu-style-section">
                     <span className="layer-menu-style-label">MAP STYLE</span>

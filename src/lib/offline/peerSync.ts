@@ -3,9 +3,9 @@
 /**
  * PeerSync
  *
- * Handles delta exchange of overlay data between roamers.
- * When the app detects a nearby roamer (via BLE or presence API),
- * it can request a delta of overlay data that the other roamer
+ * Handles delta exchange of overlay data between gloveboxers.
+ * When the app detects a nearby gloveboxer (via BLE or presence API),
+ * it can request a delta of overlay data that the other gloveboxer
  * has that is newer than our own cached data.
  *
  * The delta is merged into the local IDB overlay cache,
@@ -28,7 +28,7 @@ type SyncTimestamps = Record<string, string>;
 /**
  * Request a delta from the server and merge it into local IDB.
  * Call this when:
- * 1. A nearby roamer is detected (via BLE handshake → both hit server)
+ * 1. A nearby gloveboxer is detected (via BLE handshake → both hit server)
  * 2. The app regains connectivity (to pull latest crowd data)
  */
 export async function syncPeerDelta(lat: number, lng: number, radiusKm = 200): Promise<PeerSyncDelta | null> {

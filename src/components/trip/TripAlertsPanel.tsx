@@ -12,7 +12,7 @@ import type {
     CapUrgency,
     CapCertainty,
 } from "@/lib/types/navigation";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import { haptic } from "@/lib/native/haptics";
 import { formatDistanceKm } from "@/lib/utils/format";
 import { decodePolyline6AsLngLat } from "@/lib/nav/polyline6";
@@ -112,16 +112,16 @@ export type EnrichedAlert = {
 const T_SEV: Record<TrafficSeverity, { color: string; bg: string; label: string; order: number }> = {
   major:    { color: "var(--severity-major)",    bg: "var(--severity-major-tint)",    label: "Major",    order: 0 },
   moderate: { color: "var(--severity-moderate)",  bg: "var(--severity-moderate-tint)", label: "Moderate", order: 1 },
-  minor:    { color: "var(--roam-info)",          bg: "var(--info-tint)",              label: "Minor",    order: 2 },
-  info:     { color: "var(--roam-text-muted)",    bg: "var(--roam-surface-hover)",     label: "Info",     order: 3 },
-  unknown:  { color: "var(--roam-text-muted)",    bg: "var(--roam-surface-hover)",     label: "Unknown",  order: 4 },
+  minor:    { color: "var(--glovebox-info)",          bg: "var(--info-tint)",              label: "Minor",    order: 2 },
+  info:     { color: "var(--glovebox-text-muted)",    bg: "var(--glovebox-surface-hover)",     label: "Info",     order: 3 },
+  unknown:  { color: "var(--glovebox-text-muted)",    bg: "var(--glovebox-surface-hover)",     label: "Unknown",  order: 4 },
 };
 
 const H_SEV: Record<HazardSeverity, { color: string; bg: string; label: string; order: number }> = {
   high:    { color: "var(--severity-major)",    bg: "var(--severity-major-tint)",    label: "High",    order: 0 },
   medium:  { color: "var(--severity-moderate)",  bg: "var(--severity-moderate-tint)", label: "Medium",  order: 1 },
-  low:     { color: "var(--roam-info)",          bg: "var(--info-tint)",              label: "Low",     order: 2 },
-  unknown: { color: "var(--roam-text-muted)",    bg: "var(--roam-surface-hover)",     label: "Unknown", order: 3 },
+  low:     { color: "var(--glovebox-info)",          bg: "var(--info-tint)",              label: "Low",     order: 2 },
+  unknown: { color: "var(--glovebox-text-muted)",    bg: "var(--glovebox-surface-hover)",     label: "Unknown", order: 3 },
 };
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -129,10 +129,10 @@ const H_SEV: Record<HazardSeverity, { color: string; bg: string; label: string; 
    ══════════════════════════════════════════════════════════════════════ */
 
 const IMPACT_CONFIG: Record<RouteImpact, { label: string; color: string; bg: string; order: number }> = {
-  blocks_route:  { label: "Route blocked", color: "var(--roam-danger)",       bg: "var(--danger-tint)",           order: 0 },
+  blocks_route:  { label: "Route blocked", color: "var(--glovebox-danger)",       bg: "var(--danger-tint)",           order: 0 },
   affects_route: { label: "On route",      color: "var(--severity-moderate)", bg: "var(--severity-moderate-tint)", order: 1 },
   nearby:        { label: "Nearby",        color: "var(--severity-minor)",    bg: "var(--severity-minor-tint)",    order: 2 },
-  informational: { label: "In region",     color: "var(--roam-text-muted)",   bg: "var(--roam-surface-hover)",     order: 3 },
+  informational: { label: "In region",     color: "var(--glovebox-text-muted)",   bg: "var(--glovebox-surface-hover)",     order: 3 },
 };
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -171,22 +171,22 @@ const LUCIDE_ICONS: Record<string, React.ComponentType<{ size?: number; strokeWi
 };
 
 const ICON_COLORS: Record<string, string> = {
-  closure: "var(--roam-danger)",
-  flooding: "var(--roam-info)",
-  congestion: "var(--roam-warn)",
+  closure: "var(--glovebox-danger)",
+  flooding: "var(--glovebox-info)",
+  congestion: "var(--glovebox-warn)",
   roadworks: "var(--severity-moderate)",
-  hazard: "var(--roam-warn)",
-  incident: "var(--roam-danger)",
-  unknown: "var(--roam-text-muted)",
-  flood: "var(--roam-info)",
+  hazard: "var(--glovebox-warn)",
+  incident: "var(--glovebox-danger)",
+  unknown: "var(--glovebox-text-muted)",
+  flood: "var(--glovebox-info)",
   cyclone: "var(--brand-shared)",
   storm: "var(--brand-shared)",
-  fire: "var(--roam-danger)",
-  wind: "var(--roam-text-muted)",
+  fire: "var(--glovebox-danger)",
+  wind: "var(--glovebox-text-muted)",
   heat: "var(--severity-moderate)",
-  marine: "var(--roam-info)",
-  weather_warning: "var(--roam-warn)",
-  h_unknown: "var(--roam-text-muted)",
+  marine: "var(--glovebox-info)",
+  weather_warning: "var(--glovebox-warn)",
+  h_unknown: "var(--glovebox-text-muted)",
 };
 
 function AlertIcon({ iconKey, size = 16 }: { iconKey: string; size?: number }) {
@@ -441,10 +441,10 @@ function timeAgo(iso: string | null | undefined): string {
    ══════════════════════════════════════════════════════════════════════ */
 
 const CONFIDENCE_CONFIG: Record<AlertConfidence, { label: string; color: string }> = {
-  confirmed:  { label: "Confirmed",  color: "var(--roam-success)" },
-  likely:     { label: "Likely",     color: "var(--roam-info)" },
-  possible:   { label: "Possible",   color: "var(--roam-warn)" },
-  unverified: { label: "Unverified", color: "var(--roam-text-muted)" },
+  confirmed:  { label: "Confirmed",  color: "var(--glovebox-success)" },
+  likely:     { label: "Likely",     color: "var(--glovebox-info)" },
+  possible:   { label: "Possible",   color: "var(--glovebox-warn)" },
+  unverified: { label: "Unverified", color: "var(--glovebox-text-muted)" },
 };
 
 function deriveConfidence(
@@ -594,7 +594,7 @@ export function enrichAlerts(
   traffic: TrafficOverlay | null,
   hazards: HazardOverlay | null,
   routeGeometry: string | null | undefined,
-  userPosition: RoamPosition | null | undefined,
+  userPosition: GloveboxPosition | null | undefined,
 ): EnrichedAlert[] {
   const rc = routeGeometry ? (() => { try { return decodePolyline6AsLngLat(routeGeometry); } catch { return null; } })() : null;
 
@@ -679,18 +679,18 @@ function overlayStaleness(createdAt: string | null | undefined): {
   color: string;
   minutesAgo: number;
 } {
-  if (!createdAt) return { level: "expired", label: "No data", color: "var(--roam-text-muted)", minutesAgo: Infinity };
+  if (!createdAt) return { level: "expired", label: "No data", color: "var(--glovebox-text-muted)", minutesAgo: Infinity };
   try {
     const diff = Date.now() - new Date(createdAt).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 5) return { level: "fresh", label: `Updated ${mins < 1 ? "just now" : `${mins}m ago`}`, color: "var(--roam-success)", minutesAgo: mins };
-    if (mins < 30) return { level: "fresh", label: `Updated ${mins}m ago`, color: "var(--roam-success)", minutesAgo: mins };
-    if (mins < 180) return { level: "stale", label: `Updated ${Math.floor(mins / 60)}h ${mins % 60}m ago`, color: "var(--roam-warn)", minutesAgo: mins };
+    if (mins < 5) return { level: "fresh", label: `Updated ${mins < 1 ? "just now" : `${mins}m ago`}`, color: "var(--glovebox-success)", minutesAgo: mins };
+    if (mins < 30) return { level: "fresh", label: `Updated ${mins}m ago`, color: "var(--glovebox-success)", minutesAgo: mins };
+    if (mins < 180) return { level: "stale", label: `Updated ${Math.floor(mins / 60)}h ${mins % 60}m ago`, color: "var(--glovebox-warn)", minutesAgo: mins };
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return { level: "stale", label: `Updated ${hours}h ago - connect to refresh`, color: "var(--roam-danger)", minutesAgo: mins };
-    return { level: "expired", label: `Updated ${Math.floor(hours / 24)}d ago - data may be outdated`, color: "var(--roam-danger)", minutesAgo: mins };
+    if (hours < 24) return { level: "stale", label: `Updated ${hours}h ago - connect to refresh`, color: "var(--glovebox-danger)", minutesAgo: mins };
+    return { level: "expired", label: `Updated ${Math.floor(hours / 24)}d ago - data may be outdated`, color: "var(--glovebox-danger)", minutesAgo: mins };
   } catch {
-    return { level: "expired", label: "Unknown age", color: "var(--roam-text-muted)", minutesAgo: Infinity };
+    return { level: "expired", label: "Unknown age", color: "var(--glovebox-text-muted)", minutesAgo: Infinity };
   }
 }
 
@@ -702,7 +702,7 @@ export function useAlerts(
   traffic: TrafficOverlay | null | undefined,
   hazards: HazardOverlay | null | undefined,
   routeGeometry: string | null | undefined,
-  userPosition: RoamPosition | null | undefined,
+  userPosition: GloveboxPosition | null | undefined,
   stops?: Array<{ lat: number; lng: number }>,
 ) {
   const rc = useMemo(() => {
@@ -934,8 +934,8 @@ export function AlertFiltersBar({
           style={{
             display: "flex", alignItems: "center", gap: 4,
             padding: "4px 10px", borderRadius: "var(--r-card)", border: "none",
-            background: hideBehind ? "var(--info-tint)" : "var(--roam-surface-hover)",
-            color: hideBehind ? "var(--roam-info)" : "var(--roam-text-muted)",
+            background: hideBehind ? "var(--info-tint)" : "var(--glovebox-surface-hover)",
+            color: hideBehind ? "var(--glovebox-info)" : "var(--glovebox-text-muted)",
             fontSize: 10, fontWeight: 900, cursor: "pointer",
             transition: "all 0.12s ease",
           }}
@@ -946,8 +946,8 @@ export function AlertFiltersBar({
       )}
       {dismissedCount > 0 && (
         <span style={{
-          fontSize: 10, fontWeight: 800, color: "var(--roam-text-muted)",
-          padding: "4px 8px", borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)",
+          fontSize: 10, fontWeight: 800, color: "var(--glovebox-text-muted)",
+          padding: "4px 8px", borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)",
         }}>
           {dismissedCount} dismissed
         </span>
@@ -985,7 +985,7 @@ export function RouteBlockedBanner({
       style={{
         padding: "12px 14px", borderRadius: "var(--r-card)", cursor: "pointer",
         background: "var(--danger-tint)",
-        border: "2px solid var(--roam-border-strong)",
+        border: "2px solid var(--glovebox-border-strong)",
         boxShadow: "var(--shadow-soft)",
         transition: "all 0.15s ease",
       }}
@@ -993,17 +993,17 @@ export function RouteBlockedBanner({
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <div style={{
           width: 40, height: 40, borderRadius: "var(--r-card)",
-          background: "var(--danger-tint)", border: "2px solid var(--roam-border-strong)",
+          background: "var(--danger-tint)", border: "2px solid var(--glovebox-border-strong)",
           display: "grid", placeItems: "center", flexShrink: 0,
         }}>
-          <Ban size={20} color="var(--roam-danger)" strokeWidth={2.5} />
+          <Ban size={20} color="var(--glovebox-danger)" strokeWidth={2.5} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 950, color: "var(--roam-danger)", letterSpacing: "-0.2px", lineHeight: 1.2 }}>
+          <div style={{ fontSize: 14, fontWeight: 950, color: "var(--glovebox-danger)", letterSpacing: "-0.2px", lineHeight: 1.2 }}>
             ⛔ Route blocked ahead
           </div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text)", marginTop: 3, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", marginTop: 3, lineHeight: 1.4 }}>
             {primary.headline}
           </div>
           {(() => {
@@ -1013,10 +1013,10 @@ export function RouteBlockedBanner({
             if (ctx) parts.push({ key: "ctx", node: <span>{ctx}</span> });
             if (primary.source) parts.push({ key: "src", node: <span>{primary.source}</span> });
             if (ago) parts.push({ key: "ago", node: <span>{ago}</span> });
-            if (additionalCount > 0) parts.push({ key: "more", node: <span style={{ color: "var(--roam-danger)", fontWeight: 950 }}>+ {additionalCount} more</span> });
+            if (additionalCount > 0) parts.push({ key: "more", node: <span style={{ color: "var(--glovebox-danger)", fontWeight: 950 }}>+ {additionalCount} more</span> });
             if (parts.length === 0) return null;
             return (
-              <div style={{ fontSize: 10, fontWeight: 800, color: "var(--roam-text-muted)", marginTop: 4, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: "var(--glovebox-text-muted)", marginTop: 4, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                 {parts.map((p, i) => (
                   <span key={p.key} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                     {i > 0 && <span aria-hidden style={{ opacity: 0.6 }}>·</span>}
@@ -1034,7 +1034,7 @@ export function RouteBlockedBanner({
               style={{
                 marginTop: 8, padding: "7px 14px", borderRadius: "var(--r-card)",
                 border: "none", cursor: "pointer",
-                background: "var(--roam-danger)", color: "var(--on-color)",
+                background: "var(--glovebox-danger)", color: "var(--on-color)",
                 fontSize: 11, fontWeight: 950, letterSpacing: "0.2px",
                 display: "flex", alignItems: "center", gap: 6,
                 boxShadow: "var(--shadow-soft)", transition: "opacity 0.1s",
@@ -1094,9 +1094,9 @@ export function AlertCard({
 
   const cardBg = isBlocker
     ? highlighted ? "var(--danger-tint)" : "var(--danger-tint)"
-    : highlighted ? `color-mix(in srgb, ${alert.sevColor} 18%, var(--roam-surface))` : alert.sevBg;
+    : highlighted ? `color-mix(in srgb, ${alert.sevColor} 18%, var(--glovebox-surface))` : alert.sevBg;
   const cardBorder = isBlocker
-    ? highlighted ? "var(--roam-danger)" : "var(--roam-border-strong)"
+    ? highlighted ? "var(--glovebox-danger)" : "var(--glovebox-border-strong)"
     : highlighted ? alert.sevColor : `color-mix(in srgb, ${alert.sevColor} 18%, transparent)`;
 
   const hasInsights = !compact && (alert.insight.expectedDelay || alert.insight.recommendation || alert.insight.safetyWarning);
@@ -1116,11 +1116,11 @@ export function AlertCard({
         {/* Icon */}
         <div style={{
           width: compact ? 30 : 34, height: compact ? 30 : 34, borderRadius: compact ? 9 : 10,
-          background: isBlocker ? "var(--danger-tint)" : `color-mix(in srgb, ${alert.sevColor} 12%, var(--roam-surface))`,
-          border: `1px solid ${isBlocker ? "var(--roam-border-strong)" : `color-mix(in srgb, ${alert.sevColor} 15%, transparent)`}`,
+          background: isBlocker ? "var(--danger-tint)" : `color-mix(in srgb, ${alert.sevColor} 12%, var(--glovebox-surface))`,
+          border: `1px solid ${isBlocker ? "var(--glovebox-border-strong)" : `color-mix(in srgb, ${alert.sevColor} 15%, transparent)`}`,
           display: "grid", placeItems: "center", flexShrink: 0,
         }}>
-          {isBlocker ? <Ban size={compact ? 14 : 16} color="var(--roam-danger)" strokeWidth={2.5} /> : <AlertIcon iconKey={alert.iconKey} size={compact ? 14 : 16} />}
+          {isBlocker ? <Ban size={compact ? 14 : 16} color="var(--glovebox-danger)" strokeWidth={2.5} /> : <AlertIcon iconKey={alert.iconKey} size={compact ? 14 : 16} />}
         </div>
 
         {/* Content - uses a 2-column grid for non-compact cards with insights */}
@@ -1128,7 +1128,7 @@ export function AlertCard({
           {alert.contextLabel && (
             <div style={{
               fontSize: compact ? 10 : 11, fontWeight: 950,
-              color: isBlocker ? "var(--roam-danger)" : alert.sevColor,
+              color: isBlocker ? "var(--glovebox-danger)" : alert.sevColor,
               marginBottom: 2, letterSpacing: "0.15px",
             }}>
               {alert.contextLabel}
@@ -1142,9 +1142,9 @@ export function AlertCard({
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               <span
-                className={compact ? "roam-wrap-1" : "roam-wrap-2"}
+                className={compact ? "glovebox-wrap-1" : "glovebox-wrap-2"}
                 style={{
-                  fontSize: compact ? 12 : 13, fontWeight: 950, color: "var(--roam-text)",
+                  fontSize: compact ? 12 : 13, fontWeight: 950, color: "var(--glovebox-text)",
                   lineHeight: 1.3,
                 }}
               >
@@ -1182,7 +1182,7 @@ export function AlertCard({
               ].filter(Boolean) as Array<{ key: string; text: string; capitalize?: boolean }>;
               if (metaParts.length === 0) return null;
               return (
-                <div style={{ display: "flex", gap: 6, marginTop: 3, fontSize: 10, fontWeight: 700, color: "var(--roam-text-muted)", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 6, marginTop: 3, fontSize: 10, fontWeight: 700, color: "var(--glovebox-text-muted)", flexWrap: "wrap" }}>
                   {metaParts.map((p, i) => (
                     <span key={p.key} style={p.capitalize ? { textTransform: "capitalize" } : undefined}>
                       {i > 0 ? `· ${p.text}` : p.text}
@@ -1199,23 +1199,23 @@ export function AlertCard({
               <div style={{
                 display: "flex", flexDirection: "column", gap: 3,
                 marginTop: 6, paddingLeft: 8,
-                borderLeft: `2px solid color-mix(in srgb, ${isBlocker ? "var(--roam-danger)" : alert.sevColor} 22%, transparent)`,
+                borderLeft: `2px solid color-mix(in srgb, ${isBlocker ? "var(--glovebox-danger)" : alert.sevColor} 22%, transparent)`,
               }}>
                 {alert.insight.expectedDelay && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: "var(--roam-text)", lineHeight: 1.35 }}>
-                    <Timer size={11} strokeWidth={2.5} color="var(--roam-text-muted)" style={{ flexShrink: 0 }} />
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: "var(--glovebox-text)", lineHeight: 1.35 }}>
+                    <Timer size={11} strokeWidth={2.5} color="var(--glovebox-text-muted)" style={{ flexShrink: 0 }} />
                     <span style={{ overflowWrap: "anywhere", minWidth: 0 }}>{alert.insight.expectedDelay}</span>
                   </div>
                 )}
                 {alert.insight.recommendation && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: isBlocker ? "var(--roam-danger)" : "var(--roam-text)", lineHeight: 1.35 }}>
-                    <Navigation size={11} strokeWidth={2.5} color={isBlocker ? "var(--roam-danger)" : "var(--roam-info)"} style={{ flexShrink: 0 }} />
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: isBlocker ? "var(--glovebox-danger)" : "var(--glovebox-text)", lineHeight: 1.35 }}>
+                    <Navigation size={11} strokeWidth={2.5} color={isBlocker ? "var(--glovebox-danger)" : "var(--glovebox-info)"} style={{ flexShrink: 0 }} />
                     <span style={{ overflowWrap: "anywhere", minWidth: 0 }}>{alert.insight.recommendation}</span>
                   </div>
                 )}
                 {alert.insight.safetyWarning && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 800, color: "var(--roam-danger)", lineHeight: 1.35 }}>
-                    <ShieldAlert size={11} strokeWidth={2.5} color="var(--roam-danger)" style={{ flexShrink: 0 }} />
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 800, color: "var(--glovebox-danger)", lineHeight: 1.35 }}>
+                    <ShieldAlert size={11} strokeWidth={2.5} color="var(--glovebox-danger)" style={{ flexShrink: 0 }} />
                     <span style={{ overflowWrap: "anywhere", minWidth: 0 }}>{alert.insight.safetyWarning}</span>
                   </div>
                 )}
@@ -1228,7 +1228,7 @@ export function AlertCard({
           </div>
 
           {expanded && alert.description && (
-            <div style={{ marginTop: 6, fontSize: 12, fontWeight: 600, color: "var(--roam-text-muted)", lineHeight: 1.5 }}>
+            <div style={{ marginTop: 6, fontSize: 12, fontWeight: 600, color: "var(--glovebox-text-muted)", lineHeight: 1.5 }}>
               {alert.description}
             </div>
           )}
@@ -1241,26 +1241,26 @@ export function AlertCard({
               onClick={(e) => { e.stopPropagation(); onDismiss(alert.id); }}
               style={{
                 width: 18, height: 18, borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
+                background: "var(--glovebox-surface-hover)",
                 display: "grid", placeItems: "center", cursor: "pointer",
                 transition: "background 0.12s ease",
               }}
             >
-              <XCircle size={11} color="var(--roam-text-muted)" strokeWidth={2} />
+              <XCircle size={11} color="var(--glovebox-text-muted)" strokeWidth={2} />
             </div>
           )}
           {alert.coord && !compact && (
             <div style={{
               width: 7, height: 7, borderRadius: "var(--r-card)",
-              background: highlighted ? (isBlocker ? "var(--roam-danger)" : alert.sevColor) : `color-mix(in srgb, ${isBlocker ? "var(--roam-danger)" : alert.sevColor} 35%, transparent)`,
+              background: highlighted ? (isBlocker ? "var(--glovebox-danger)" : alert.sevColor) : `color-mix(in srgb, ${isBlocker ? "var(--glovebox-danger)" : alert.sevColor} 35%, transparent)`,
               transition: "background 0.2s ease",
-              boxShadow: highlighted ? `0 0 6px ${isBlocker ? "var(--roam-danger)" : alert.sevColor}` : "none",
+              boxShadow: highlighted ? `0 0 6px ${isBlocker ? "var(--glovebox-danger)" : alert.sevColor}` : "none",
             }} />
           )}
           {alert.description && (
             <ChevronDown
               size={14}
-              color="var(--roam-text-muted)"
+              color="var(--glovebox-text-muted)"
               style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.15s ease", marginTop: 2 }}
               onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
             />
@@ -1326,22 +1326,22 @@ export function NextAlertBanner({
         <div style={{
           padding: "10px 14px", borderRadius: "var(--r-card)",
           background: highCount > 0 ? "var(--danger-tint)" : "var(--severity-minor-tint)",
-          border: `1px solid var(--roam-border-strong)`,
+          border: `1px solid var(--glovebox-border-strong)`,
           display: "flex", alignItems: "center", gap: 10,
         }}>
           <div style={{
             width: 30, height: 30, borderRadius: "var(--r-card)",
             background: highCount > 0 ? "var(--danger-tint)" : "var(--severity-minor-tint)",
-            border: `1px solid var(--roam-border)`,
+            border: `1px solid var(--glovebox-border)`,
             display: "grid", placeItems: "center", flexShrink: 0,
           }}>
-            {highCount > 0 ? <Siren size={15} color="var(--roam-danger)" strokeWidth={2.5} /> : <TriangleAlert size={15} color="var(--roam-warn)" strokeWidth={2.5} />}
+            {highCount > 0 ? <Siren size={15} color="var(--glovebox-danger)" strokeWidth={2.5} /> : <TriangleAlert size={15} color="var(--glovebox-warn)" strokeWidth={2.5} />}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 950, color: "var(--roam-text)" }}>
+            <div style={{ fontSize: 13, fontWeight: 950, color: "var(--glovebox-text)" }}>
               {totalCount} alert{totalCount !== 1 ? "s" : ""} on route
             </div>
-            {highCount > 0 && <div style={{ fontSize: 10, fontWeight: 800, color: "var(--roam-danger)", marginTop: 1 }}>{highCount} critical</div>}
+            {highCount > 0 && <div style={{ fontSize: 10, fontWeight: 800, color: "var(--glovebox-danger)", marginTop: 1 }}>{highCount} critical</div>}
           </div>
         </div>
       ) : null}
@@ -1366,7 +1366,7 @@ export function NextAlertBanner({
           onClick={() => { haptic.selection(); setShowAll((v) => !v); }}
           style={{
             padding: "7px 12px", borderRadius: "var(--r-card)", border: "none",
-            background: "var(--roam-surface-hover)", color: "var(--roam-text-muted)",
+            background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text-muted)",
             fontSize: 11, fontWeight: 900, cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
             transition: "all 0.12s ease",
@@ -1411,7 +1411,7 @@ export function LegAlertStrip({
 
   const hasBlocker = alerts.some((a) => a.routeImpact === "blocks_route");
   const worst = alerts.reduce((a, b) => (a.sevOrder < b.sevOrder ? a : b));
-  const displayColor = hasBlocker ? "var(--roam-danger)" : worst.sevColor;
+  const displayColor = hasBlocker ? "var(--glovebox-danger)" : worst.sevColor;
 
   if (alerts.length === 1) {
     return (
@@ -1441,13 +1441,13 @@ export function LegAlertStrip({
           display: "flex", alignItems: "center", gap: 8, transition: "all 0.12s ease",
         }}
       >
-        {hasBlocker ? <Ban size={14} color="var(--roam-danger)" strokeWidth={2.5} /> : <AlertIcon iconKey={worst.iconKey} size={14} />}
+        {hasBlocker ? <Ban size={14} color="var(--glovebox-danger)" strokeWidth={2.5} /> : <AlertIcon iconKey={worst.iconKey} size={14} />}
         <span style={{ fontSize: 11, fontWeight: 950, color: displayColor, flex: 1 }}>
           {alerts.length} alerts on this stretch{hasBlocker && " - route blocked"}
         </span>
         <ChevronDown
           size={13}
-          color="var(--roam-text-muted)"
+          color="var(--glovebox-text-muted)"
           style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.15s ease" }}
         />
       </div>

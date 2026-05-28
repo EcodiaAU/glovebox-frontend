@@ -8,13 +8,13 @@
  * ephemeral (upserts a single row, no accumulation).
  *
  * This enables dead-reckoning proximity awareness: even after
- * the user loses signal, other roamers can project their
+ * the user loses signal, other gloveboxers can project their
  * last-known position forward using speed + heading.
  */
 
 import { presenceApi } from "@/lib/api/presence";
 import { networkMonitor } from "@/lib/offline/networkMonitor";
-import { getCurrentPosition, type RoamPosition } from "@/lib/native/geolocation";
+import { getCurrentPosition, type GloveboxPosition } from "@/lib/native/geolocation";
 
 // Bumped 2026-05-17 from 30s / 15s. The previous values pinged the backend
 // 2-4 times a minute, waking the GPS and modem on a battery-locked phone for
@@ -29,7 +29,7 @@ class PresenceBeaconImpl {
   private _timer: ReturnType<typeof setInterval> | null = null;
   private _started = false;
   private _navigating = false;
-  private _lastPosition: RoamPosition | null = null;
+  private _lastPosition: GloveboxPosition | null = null;
   private _networkUnsub: (() => void) | null = null;
   private _intervalMs = PING_INTERVAL_MS;
 
@@ -101,7 +101,7 @@ class PresenceBeaconImpl {
   }
 
   /** Manually set position (e.g. from existing geolocation watch) */
-  updatePosition(pos: RoamPosition) {
+  updatePosition(pos: GloveboxPosition) {
     this._lastPosition = pos;
   }
 

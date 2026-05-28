@@ -21,34 +21,34 @@ interface BadgeProps {
 
 const variantColors: Record<BadgeVariant, { bg: string; color: string; border: string }> = {
   default: {
-    bg: "var(--roam-surface-hover)",
-    color: "var(--roam-text)",
-    border: "var(--roam-border-strong)",
+    bg: "var(--glovebox-surface-hover)",
+    color: "var(--glovebox-text)",
+    border: "var(--glovebox-border-strong)",
   },
   accent: {
     bg: "var(--accent-tint)",
-    color: "var(--roam-accent)",
-    border: "var(--roam-accent)",
+    color: "var(--glovebox-accent)",
+    border: "var(--glovebox-accent)",
   },
   info: {
     bg: "var(--info-tint)",
-    color: "var(--roam-info)",
-    border: "var(--roam-info)",
+    color: "var(--glovebox-info)",
+    border: "var(--glovebox-info)",
   },
   warn: {
     bg: "var(--severity-minor-tint)",
-    color: "var(--roam-warn)",
-    border: "var(--roam-warn)",
+    color: "var(--glovebox-warn)",
+    border: "var(--glovebox-warn)",
   },
   danger: {
     bg: "var(--danger-tint)",
-    color: "var(--roam-danger)",
-    border: "var(--roam-danger)",
+    color: "var(--glovebox-danger)",
+    border: "var(--glovebox-danger)",
   },
   muted: {
-    bg: "var(--roam-surface-hover)",
-    color: "var(--roam-text-muted)",
-    border: "var(--roam-border)",
+    bg: "var(--glovebox-surface-hover)",
+    color: "var(--glovebox-text-muted)",
+    border: "var(--glovebox-border)",
   },
 };
 
@@ -63,9 +63,9 @@ export function Badge({ children, variant = "default", icon, onPress, active }: 
     height: 44,
     padding: "0 16px",
     borderRadius: "var(--r-pill)",
-    border: `1.5px solid ${active ? colors.border : "var(--roam-border-strong)"}`,
-    background: active ? colors.bg : "var(--roam-surface-hover)",
-    color: active ? colors.color : "var(--roam-text)",
+    border: `1.5px solid ${active ? colors.border : "var(--glovebox-border-strong)"}`,
+    background: active ? colors.bg : "var(--glovebox-surface-hover)",
+    color: active ? colors.color : "var(--glovebox-text)",
     fontSize: "var(--font-sm)",
     fontWeight: 700,
     whiteSpace: "nowrap",
@@ -86,7 +86,7 @@ export function Badge({ children, variant = "default", icon, onPress, active }: 
           haptic.selection();
           onPress();
         }}
-        className="roam-btn-press"
+        className="glovebox-btn-press"
         style={{ ...style, outline: "none" }}
       >
         {icon}

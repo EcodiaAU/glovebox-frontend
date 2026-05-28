@@ -103,7 +103,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
         overflowY: "auto",
         overflowX: "hidden",
         WebkitOverflowScrolling: "touch" as const,
-        background: "var(--roam-bg)",
+        background: "var(--glovebox-bg)",
         display: "flex",
         flexDirection: "column",
       }}
@@ -164,7 +164,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
             width: 44,
             height: 44,
             borderRadius: "50%",
-            border: "1px solid var(--roam-border-strong)",
+            border: "1px solid var(--glovebox-border-strong)",
             background: "rgba(0,0,0,0.15)",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
@@ -203,7 +203,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               borderRadius: 999,
               padding: "6px 14px",
               marginBottom: 20,
-              border: "1px solid var(--roam-border-strong)",
+              border: "1px solid var(--glovebox-border-strong)",
             }}
           >
             <CheckCircle2 size={13} style={{ color: "rgba(255,255,255,0.95)" }} />
@@ -249,7 +249,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               WebkitBackdropFilter: "blur(8px)",
               borderRadius: 999,
               padding: "7px 14px",
-              border: "1px solid var(--roam-border)",
+              border: "1px solid var(--glovebox-border)",
             }}
           >
             <Mail size={13} style={{ color: "rgba(255,255,255,0.7)", flexShrink: 0 }} />
@@ -287,7 +287,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               height: 64,
               marginLeft: "-10%",
               borderRadius: "50% 50% 0 0",
-              background: "var(--roam-bg)",
+              background: "var(--glovebox-bg)",
             }}
           />
         </div>
@@ -307,7 +307,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
             fontWeight: 800,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "var(--roam-text-muted, #7a7067)",
+            color: "var(--glovebox-text-muted, #7a7067)",
           }}
         >
           Your plan
@@ -332,7 +332,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               gap: 16,
               padding: "14px 16px",
               borderRadius: "var(--r-card)",
-              background: "var(--roam-surface, #f4efe6)",
+              background: "var(--glovebox-surface, #f4efe6)",
               opacity: entered ? 1 : 0,
               transform: entered ? "translateY(0)" : "translateY(16px)",
               transition: `opacity 0.5s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.07}s, transform 0.5s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.07}s`,
@@ -364,8 +364,8 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
                   width: 16,
                   height: 16,
                   borderRadius: "50%",
-                  background: "var(--roam-success)",
-                  border: "2px solid var(--roam-surface, #f4efe6)",
+                  background: "var(--glovebox-success)",
+                  border: "2px solid var(--glovebox-surface, #f4efe6)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -381,7 +381,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
                 style={{
                   fontSize: 15,
                   fontWeight: 750,
-                  color: "var(--roam-text, #1a1613)",
+                  color: "var(--glovebox-text, #1a1613)",
                   marginBottom: 2,
                 }}
               >
@@ -390,7 +390,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               <div
                 style={{
                   fontSize: 13,
-                  color: "var(--roam-text-muted, #7a7067)",
+                  color: "var(--glovebox-text-muted, #7a7067)",
                   lineHeight: 1.4,
                 }}
               >
@@ -418,8 +418,8 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
             gap: 6,
             fontSize: 12,
             fontWeight: 700,
-            color: "var(--roam-text-muted, #7a7067)",
-            background: "var(--roam-surface, #f4efe6)",
+            color: "var(--glovebox-text-muted, #7a7067)",
+            background: "var(--glovebox-surface, #f4efe6)",
             borderRadius: 999,
             padding: "8px 16px",
           }}
@@ -467,7 +467,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
           <span key={link.href} style={{ display: "inline-flex", alignItems: "center" }}>
             <a href={link.href} style={footerLink}>{link.label}</a>
             {i < arr.length - 1 && (
-              <span style={{ color: "var(--roam-text-muted, #7a7067)", opacity: 0.35, fontSize: 12, margin: "0 8px" }}>·</span>
+              <span style={{ color: "var(--glovebox-text-muted, #7a7067)", opacity: 0.35, fontSize: 12, margin: "0 8px" }}>·</span>
             )}
           </span>
         ))}
@@ -509,7 +509,7 @@ function PurchasePage({
         overflowY: "auto",
         overflowX: "hidden",
         WebkitOverflowScrolling: "touch" as const,
-        background: "var(--roam-bg)",
+        background: "var(--glovebox-bg)",
         display: "flex",
         flexDirection: "column",
       }}
@@ -567,7 +567,7 @@ function PurchasePage({
             width: 44,
             height: 44,
             borderRadius: "50%",
-            border: "1px solid var(--roam-border-strong)",
+            border: "1px solid var(--glovebox-border-strong)",
             background: "rgba(0,0,0,0.15)",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
@@ -617,7 +617,7 @@ function PurchasePage({
               borderRadius: 999,
               padding: "5px 14px",
               marginBottom: 18,
-              border: "1px solid var(--roam-border)",
+              border: "1px solid var(--glovebox-border)",
             }}
           >
             <span
@@ -682,7 +682,7 @@ function PurchasePage({
               height: 64,
               marginLeft: "-10%",
               borderRadius: "50% 50% 0 0",
-              background: "var(--roam-bg)",
+              background: "var(--glovebox-bg)",
             }}
           />
         </div>
@@ -706,7 +706,7 @@ function PurchasePage({
               gap: 16,
               padding: "14px 16px",
               borderRadius: "var(--r-card)",
-              background: "var(--roam-surface, #f4efe6)",
+              background: "var(--glovebox-surface, #f4efe6)",
               opacity: entered ? 1 : 0,
               transform: entered ? "translateY(0)" : "translateY(16px)",
               transition: `opacity 0.5s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.07}s, transform 0.5s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.07}s`,
@@ -729,10 +729,10 @@ function PurchasePage({
               {<f.Icon size={22} strokeWidth={2.5} />}
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 750, color: "var(--roam-text, #1a1613)", marginBottom: 2 }}>
+              <div style={{ fontSize: 15, fontWeight: 750, color: "var(--glovebox-text, #1a1613)", marginBottom: 2 }}>
                 {f.title}
               </div>
-              <div style={{ fontSize: 13, color: "var(--roam-text-muted, #7a7067)", lineHeight: 1.4 }}>
+              <div style={{ fontSize: 13, color: "var(--glovebox-text-muted, #7a7067)", lineHeight: 1.4 }}>
                 {f.body}
               </div>
             </div>
@@ -759,8 +759,8 @@ function PurchasePage({
               gap: 6,
               fontSize: 12,
               fontWeight: 700,
-              color: "var(--roam-text-muted, #7a7067)",
-              background: "var(--roam-surface, #f4efe6)",
+              color: "var(--glovebox-text-muted, #7a7067)",
+              background: "var(--glovebox-surface, #f4efe6)",
               borderRadius: 999,
               padding: "6px 14px",
             }}
@@ -806,7 +806,7 @@ function PurchasePage({
           <span style={{
             fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
             fontStyle: "italic", fontSize: 42, fontWeight: 400,
-            color: "var(--roam-text)", lineHeight: 1, letterSpacing: "-0.014em",
+            color: "var(--glovebox-text)", lineHeight: 1, letterSpacing: "-0.014em",
           }}>
             $19.99
           </span>
@@ -814,14 +814,14 @@ function PurchasePage({
             <span style={{
               fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
               fontStyle: "italic",
-              fontSize: 13, fontWeight: 400, color: "var(--roam-text-muted)", lineHeight: 1.3,
+              fontSize: 13, fontWeight: 400, color: "var(--glovebox-text-muted)", lineHeight: 1.3,
             }}>
               one-time.
             </span>
             <span style={{
               fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
               fontStyle: "italic",
-              fontSize: 12, fontWeight: 400, color: "var(--roam-text-muted)", opacity: 0.7, lineHeight: 1.3,
+              fontSize: 12, fontWeight: 400, color: "var(--glovebox-text-muted)", opacity: 0.7, lineHeight: 1.3,
             }}>
               yours forever.
             </span>
@@ -871,7 +871,7 @@ function PurchasePage({
         </button>
 
         {!isNative && !session && (
-          <div style={{ textAlign: "center", fontSize: 12, fontWeight: 600, color: "var(--roam-text-muted, #7a7067)", marginTop: 8, opacity: 0.7 }}>
+          <div style={{ textAlign: "center", fontSize: 12, fontWeight: 600, color: "var(--glovebox-text-muted, #7a7067)", marginTop: 8, opacity: 0.7 }}>
             Already have an account?{" "}
             <a
               href="/login?next=/untethered"
@@ -895,11 +895,11 @@ function PurchasePage({
                 type="button"
                 onClick={onRestore}
                 disabled={busy}
-                style={{ all: "unset", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "var(--roam-text-muted, #7a7067)", opacity: busy ? 0.4 : 0.7 }}
+                style={{ all: "unset", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "var(--glovebox-text-muted, #7a7067)", opacity: busy ? 0.4 : 0.7 }}
               >
                 {restoring ? "Restoring..." : "Restore purchase"}
               </button>
-              <span style={{ color: "var(--roam-border-strong)", fontSize: 12 }}>·</span>
+              <span style={{ color: "var(--glovebox-border-strong)", fontSize: 12 }}>·</span>
             </>
           )}
           <a href="/privacy" style={legalLink}>Privacy</a>
@@ -1007,7 +1007,7 @@ export default function UntetheredPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "var(--roam-bg)",
+          background: "var(--glovebox-bg)",
         }}
       />
     );
@@ -1030,7 +1030,7 @@ export default function UntetheredPage() {
 const legalLink: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 600,
-  color: "var(--roam-text-muted, #7a7067)",
+  color: "var(--glovebox-text-muted, #7a7067)",
   opacity: 0.7,
   textDecoration: "none",
 };
@@ -1038,7 +1038,7 @@ const legalLink: React.CSSProperties = {
 const footerLink: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 600,
-  color: "var(--roam-text-muted, #7a7067)",
+  color: "var(--glovebox-text-muted, #7a7067)",
   opacity: 0.7,
   textDecoration: "none",
 };

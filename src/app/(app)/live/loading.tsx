@@ -25,7 +25,7 @@ export default function LiveLoading() {
           right: 0,
           height: "calc(100% - 80px + 200px)",
           zIndex: 20,
-          transform: "translateY(calc(100% - 420px - var(--roam-safe-bottom, 0px)))",
+          transform: "translateY(calc(100% - 420px - var(--glovebox-safe-bottom, 0px)))",
         }}
       >
         {/* Drag handle */}
@@ -41,7 +41,7 @@ export default function LiveLoading() {
                 height: 22,
                 width: 100,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
+                background: "var(--glovebox-surface-hover)",
                 animation: "live-skel-pulse 1.6s ease-in-out infinite 0.05s",
               }}
             />
@@ -62,7 +62,7 @@ export default function LiveLoading() {
               height: 12,
               width: 200,
               borderRadius: "var(--r-card)",
-              background: "var(--roam-surface-hover)",
+              background: "var(--glovebox-surface-hover)",
               animation: "live-skel-pulse 1.6s ease-in-out infinite 0.12s",
             }}
           />
@@ -75,7 +75,7 @@ export default function LiveLoading() {
               width: "100%",
               height: 48,
               borderRadius: "var(--r-card)",
-              background: "var(--roam-surface-hover)",
+              background: "var(--glovebox-surface-hover)",
               animation: "live-skel-pulse 1.6s ease-in-out infinite 0.15s",
             }}
           />

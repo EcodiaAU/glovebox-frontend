@@ -10,7 +10,7 @@ export default function UntetheredLoading() {
         bottom: "var(--bottom-nav-height, 80px)",
         overflowY: "auto",
         WebkitOverflowScrolling: "touch",
-        background: "var(--roam-bg)",
+        background: "var(--glovebox-bg)",
       }}
     >
       {/* Hero gradient section */}
@@ -71,7 +71,7 @@ export default function UntetheredLoading() {
               gap: 14,
               padding: "14px 16px",
               borderRadius: "var(--r-card, 16px)",
-              background: "var(--roam-surface)",
+              background: "var(--glovebox-surface)",
               animation: `unt-skel-pulse 1.6s ease-in-out infinite ${0.1 + i * 0.06}s`,
             }}
           >
@@ -80,13 +80,13 @@ export default function UntetheredLoading() {
                 width: 44,
                 height: 44,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
+                background: "var(--glovebox-surface-hover)",
                 flexShrink: 0,
               }}
             />
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
-              <div style={{ height: 14, borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", width: "50%" }} />
-              <div style={{ height: 11, borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", width: "80%" }} />
+              <div style={{ height: 14, borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", width: "50%" }} />
+              <div style={{ height: 11, borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", width: "80%" }} />
             </div>
           </div>
         ))}

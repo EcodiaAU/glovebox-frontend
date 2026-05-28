@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isDemoMode, setIsDemoMode] = useState(() => {
     // Persist demo mode across reloads so reviewers don't get logged out
     // when the app restarts. Cleared on sign-out.
-    try { return localStorage.getItem("roam_demo_mode") === "1"; } catch { return false; }
+    try { return localStorage.getItem("glovebox_demo_mode") === "1"; } catch { return false; }
   });
 
   useEffect(() => {
@@ -262,7 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // App Review demo account: bypass Supabase and enter demo mode so the
     // reviewer can access all features without a real account.
     if (email.trim().toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      try { localStorage.setItem("roam_demo_mode", "1"); } catch {}
+      try { localStorage.setItem("glovebox_demo_mode", "1"); } catch {}
       setIsDemoMode(true);
       return { error: null };
     }
@@ -276,7 +276,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    try { localStorage.removeItem("roam_demo_mode"); } catch {}
+    try { localStorage.removeItem("glovebox_demo_mode"); } catch {}
     setIsDemoMode(false);
     await supabase.auth.signOut();
     setSession(null);
@@ -291,7 +291,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await supabase.auth.signOut();
       setSession(null);
       // Clear local storage caches
-      localStorage.removeItem("roam_trips_used");
+      localStorage.removeItem("glovebox_trips_used");
       localStorage.removeItem("roam_unlimited_unlocked");
       return { error: null };
     } catch (e: unknown) {

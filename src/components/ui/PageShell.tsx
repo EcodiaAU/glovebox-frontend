@@ -33,7 +33,7 @@ const bannerDot: CSSProperties = {
   width: 6,
   height: 6,
   borderRadius: "50%",
-  background: "var(--roam-text)",
+  background: "var(--glovebox-text)",
   opacity: 0.6,
   animation: "offlinePulse 2s ease-in-out infinite",
 };
@@ -66,7 +66,7 @@ const titleStyle: CSSProperties = {
   textTransform: "uppercase",
   letterSpacing: "0.05em",
   lineHeight: 1.15,
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
   margin: 0,
 };
 
@@ -139,7 +139,7 @@ export const CriticalMetric = memo(function CriticalMetric({
           lineHeight: 1,
           letterSpacing: "-0.02em",
           fontVariantNumeric: "tabular-nums",
-          color: color ?? "var(--roam-text)",
+          color: color ?? "var(--glovebox-text)",
         }}
       >
         {value}
@@ -152,7 +152,7 @@ export const CriticalMetric = memo(function CriticalMetric({
           textTransform: "uppercase",
           letterSpacing: "0.08em",
           lineHeight: 1,
-          color: "var(--roam-text-muted)",
+          color: "var(--glovebox-text-muted)",
         }}
       >
         {unit}
@@ -183,7 +183,7 @@ const sectionTitleStyle: CSSProperties = {
   fontSize: "var(--font-sm)",
   textTransform: "uppercase",
   letterSpacing: "0.06em",
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   margin: 0,
   marginBottom: "var(--space-sm)",
 };
@@ -224,7 +224,7 @@ const shellStyle: CSSProperties = {
   height: "100%",
   width: "100%",
   overflow: "hidden",
-  background: "var(--roam-bg)",
+  background: "var(--glovebox-bg)",
 };
 
 const scrollStyle: CSSProperties = {

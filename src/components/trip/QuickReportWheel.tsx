@@ -43,11 +43,11 @@ import type {
     ObservationSeverity,
     ObservationSubmitRequest,
 } from "@/lib/types/peer";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { LucideIcon } from "lucide-react";
 
 type QuickReportWheelProps = {
-  position: RoamPosition | null;
+  position: GloveboxPosition | null;
   onSubmit: (req: ObservationSubmitRequest) => Promise<unknown>;
   /** When true, renders just the tray (no FAB), always open. Used inside NavigationControls. */
   trayOnly?: boolean;
@@ -63,7 +63,7 @@ type Option = {
 
 const OPTIONS: Option[] = [
   { type: "hazard",         label: "Hazard",  icon: AlertTriangle, severity: "warning", color: "#f59e0b" },
-  { type: "road_closure",   label: "Closed",  icon: CircleSlash,   severity: "danger",  color: "var(--roam-danger)" },
+  { type: "road_closure",   label: "Closed",  icon: CircleSlash,   severity: "danger",  color: "var(--glovebox-danger)" },
   { type: "road_condition",  label: "Road",    icon: Construction,  severity: "caution", color: "#f97316" },
   { type: "speed_trap",     label: "Speed",   icon: Camera,        severity: "caution", color: "#a855f7" },
   { type: "weather",        label: "Weather", icon: CloudRain,     severity: "caution", color: "#3b82f6" },

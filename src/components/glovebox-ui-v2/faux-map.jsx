@@ -1,4 +1,4 @@
-// roam-ui-v2/faux-map.jsx
+// glovebox-ui-v2/faux-map.jsx
 // Stylized SVG placeholder map ported from the prototype.
 // Lives alongside the new screens until MapLibre is wired in v2.
 // Tate approved the prototype visual on 2026-05-19; FauxMap stays in build 30
@@ -51,7 +51,7 @@ export function FauxMap({
   progress = 0,
   showProgress = false,
   showCar = false,
-  showRoamers = 0,
+  showGloveboxers = 0,
   clusterSize = "small",
   aiPois = [],
 }) {
@@ -147,7 +147,7 @@ export function FauxMap({
           );
         })}
 
-        {Array.from({ length: showRoamers }).map((_, i) => {
+        {Array.from({ length: showGloveboxers }).map((_, i) => {
           const cx = (0.5 + Math.cos(i * 1.7) * 0.16) * w;
           const cy = (0.5 + Math.sin(i * 1.7) * 0.16) * h;
           return (

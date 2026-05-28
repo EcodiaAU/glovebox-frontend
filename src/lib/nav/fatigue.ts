@@ -248,10 +248,10 @@ function formatTotalDriveTime(state: FatigueState): string {
  */
 export function fatigueColor(level: FatigueWarningLevel): string {
   switch (level) {
-    case "none":        return "var(--roam-text-muted)";
-    case "suggested":   return "var(--roam-text)";
-    case "recommended": return "var(--roam-warning)";
-    case "urgent":      return "var(--roam-danger)";
+    case "none":        return "var(--glovebox-text-muted)";
+    case "suggested":   return "var(--glovebox-text)";
+    case "recommended": return "var(--glovebox-warning)";
+    case "urgent":      return "var(--glovebox-danger)";
   }
 }
 

@@ -16,7 +16,7 @@ export function StarRating({ value, count }: StarRatingProps) {
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
-        background: "var(--roam-surface-hover)",
+        background: "var(--glovebox-surface-hover)",
         padding: "4px 8px",
         borderRadius: "var(--r-card)",
         lineHeight: 1,
@@ -26,7 +26,7 @@ export function StarRating({ value, count }: StarRatingProps) {
       <Star
         size={14}
         strokeWidth={0}
-        fill="var(--roam-accent)"
+        fill="var(--glovebox-accent)"
         style={{ display: "block", flexShrink: 0 }}
         aria-hidden="true"
       />
@@ -34,7 +34,7 @@ export function StarRating({ value, count }: StarRatingProps) {
         style={{
           fontSize: "var(--font-sm)",
           fontWeight: 800,
-          color: "var(--roam-text)",
+          color: "var(--glovebox-text)",
         }}
       >
         {value}
@@ -44,7 +44,7 @@ export function StarRating({ value, count }: StarRatingProps) {
           style={{
             fontSize: "var(--font-xs)",
             fontWeight: 600,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
           }}
         >
           ({count})

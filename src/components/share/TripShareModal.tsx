@@ -201,7 +201,7 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
               height: 60,
               borderRadius: 14,
               background: "rgba(255,255,255,0.06)",
-              border: "1px solid var(--roam-border)",
+              border: "1px solid var(--glovebox-border)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -257,7 +257,7 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
               <div style={{ position: "absolute", inset: 0,
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <Loader2 size={20} style={{ color: "rgba(255,255,255,0.2)",
-                  animation: "roam-spin 0.75s linear infinite" }} />
+                  animation: "glovebox-spin 0.75s linear infinite" }} />
               </div>
             )}
             {/* SVG overlay (no <image> tag - route + stats + branding only) */}
@@ -298,8 +298,8 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
       {/* ── Error ── */}
       {err && (
         <div style={{ marginTop: 10, padding: "9px 16px", borderRadius: "var(--r-card)",
-          background: "rgba(251,146,60,0.15)", border: "1px solid var(--roam-accent)",
-          color: "var(--roam-accent)", fontSize: 12, fontWeight: 600,
+          background: "rgba(251,146,60,0.15)", border: "1px solid var(--glovebox-accent)",
+          color: "var(--glovebox-accent)", fontSize: 12, fontWeight: 600,
           maxWidth: 380, textAlign: "center", flexShrink: 0 }}>
           {err}
         </div>
@@ -313,11 +313,11 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
           style={{ all: "unset", cursor: !canExport || exporting ? "default" : "pointer",
             flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
             height: 50, borderRadius: "var(--r-card)",
-            background: "rgba(255,255,255,0.07)", border: "1px solid var(--roam-border)",
+            background: "rgba(255,255,255,0.07)", border: "1px solid var(--glovebox-border)",
             color: !canExport || exporting ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.75)",
             fontSize: 14, fontWeight: 600, WebkitTapHighlightColor: "transparent",
             touchAction: "manipulation", transition: "opacity 0.15s" }}>
-          {exporting ? <Loader2 size={15} style={{ animation: "roam-spin 0.75s linear infinite" }} /> : <Download size={15} />}
+          {exporting ? <Loader2 size={15} style={{ animation: "glovebox-spin 0.75s linear infinite" }} /> : <Download size={15} />}
           Save
         </button>
         <button type="button" disabled={exporting || !canExport}
@@ -331,7 +331,7 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
             boxShadow: canExport && !exporting ? "0 4px 20px rgba(74,222,128,0.3)" : "none",
             WebkitTapHighlightColor: "transparent",
             touchAction: "manipulation", transition: "opacity 0.15s, box-shadow 0.15s" }}>
-          {exporting ? <Loader2 size={15} style={{ animation: "roam-spin 0.75s linear infinite" }} /> : <Share2 size={15} />}
+          {exporting ? <Loader2 size={15} style={{ animation: "glovebox-spin 0.75s linear infinite" }} /> : <Share2 size={15} />}
           {isNative ? "Share" : "Download PNG"}
         </button>
       </div>

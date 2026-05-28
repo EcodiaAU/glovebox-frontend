@@ -13,11 +13,11 @@
  *
  * ── Environment variables ─────────────────────────────────────────────────
  *
- * ROAM_TEST_TRIP_ID  — Supabase UUID of a public (or fixture) trip plan.
+ * GLOVEBOX_TEST_TRIP_ID  — Supabase UUID of a public (or fixture) trip plan.
  *                      Required to load the TripMap. Without it this spec skips.
- *                      Example: ROAM_TEST_TRIP_ID=abc123 npm run test:cls
+ *                      Example: GLOVEBOX_TEST_TRIP_ID=abc123 npm run test:cls
  *
- * ROAM_BASE_URL      — Override the target server (default: playwright.config.ts).
+ * GLOVEBOX_BASE_URL      — Override the target server (default: playwright.config.ts).
  *
  * ── How the map route works ───────────────────────────────────────────────
  *
@@ -28,9 +28,9 @@
  *
  * Note: the trip page may require authentication. If your fixture trip is
  * public/shared you may be able to access it without a session. For auth'd
- * trips, inject a Supabase session via ROAM_TEST_SUPABASE_TOKEN (see below).
+ * trips, inject a Supabase session via GLOVEBOX_TEST_SUPABASE_TOKEN (see below).
  *
- * ROAM_TEST_SUPABASE_TOKEN — Optional. Bearer token injected into localStorage
+ * GLOVEBOX_TEST_SUPABASE_TOKEN — Optional. Bearer token injected into localStorage
  *   under the Supabase auth key so the app sees an authenticated session on load.
  *   Set this if your fixture trip requires auth.
  */
@@ -38,15 +38,15 @@
 import { test, expect } from '@playwright/test';
 import { startCLSObserver, stopCLSObserver } from './utils/clsTracer';
 
-const TRIP_ID = process.env.ROAM_TEST_TRIP_ID;
-const SUPABASE_TOKEN = process.env.ROAM_TEST_SUPABASE_TOKEN;
+const TRIP_ID = process.env.GLOVEBOX_TEST_TRIP_ID;
+const SUPABASE_TOKEN = process.env.GLOVEBOX_TEST_SUPABASE_TOKEN;
 
 test.describe('TripMap — CLS Site 2', () => {
   test('map inner container does not introduce CLS during first render', async ({ page }) => {
     if (!TRIP_ID) {
       console.log(
-        '[trip-map] SKIP: set ROAM_TEST_TRIP_ID env var to run this test. ' +
-          'Example: ROAM_TEST_TRIP_ID=<supabase-uuid> npm run test:cls',
+        '[trip-map] SKIP: set GLOVEBOX_TEST_TRIP_ID env var to run this test. ' +
+          'Example: GLOVEBOX_TEST_TRIP_ID=<supabase-uuid> npm run test:cls',
       );
       test.skip();
       return;
@@ -60,7 +60,7 @@ test.describe('TripMap — CLS Site 2', () => {
         // The exact key includes the project ref; use a wildcard-compatible
         // approach by scanning localStorage keys on storage restore.
         // Simpler: store under the well-known key pattern the client expects.
-        localStorage.setItem('roam-supabase-session', token);
+        localStorage.setItem('glovebox-supabase-session', token);
       }, SUPABASE_TOKEN);
     }
 
@@ -77,7 +77,7 @@ test.describe('TripMap — CLS Site 2', () => {
       // Map didn't render — likely auth required. Log and let CLS be 0.
       console.log(
         '[trip-map] .trip-map-inner not found within 15s — ' +
-          'map may require auth. Set ROAM_TEST_SUPABASE_TOKEN if needed.',
+          'map may require auth. Set GLOVEBOX_TEST_SUPABASE_TOKEN if needed.',
       );
     });
 
@@ -94,7 +94,7 @@ test.describe('TripMap — CLS Site 2', () => {
 
   test('trip-map-inner has contain:layout applied', async ({ page }) => {
     if (!TRIP_ID) {
-      console.log('[trip-map] SKIP: set ROAM_TEST_TRIP_ID env var to run this test.');
+      console.log('[trip-map] SKIP: set GLOVEBOX_TEST_TRIP_ID env var to run this test.');
       test.skip();
       return;
     }

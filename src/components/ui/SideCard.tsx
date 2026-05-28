@@ -76,7 +76,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
           position: "relative",
           overflow: "hidden",
           borderRadius: "var(--r-card)",
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           boxShadow: "var(--shadow-soft)",
           cursor: pressable ? "pointer" : undefined,
           WebkitTapHighlightColor: "transparent",
@@ -100,7 +100,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
               fontWeight: 800,
               fontSize: "var(--font-h2)",
               lineHeight: 1,
-              color: "var(--roam-accent)",
+              color: "var(--glovebox-accent)",
               opacity: 0.25,
               letterSpacing: "-0.02em",
               pointerEvents: "none",
@@ -129,7 +129,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
                 borderRadius: "var(--radius-lg)",
                 overflow: "hidden",
                 flexShrink: 0,
-                background: "var(--roam-surface-hover)",
+                background: "var(--glovebox-surface-hover)",
               }}
             >
               {thumbnailSlot ?? (
@@ -155,7 +155,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
                 fontWeight: 700,
                 fontSize: "var(--font-body)",
                 lineHeight: 1.3,
-                color: "var(--roam-text)",
+                color: "var(--glovebox-text)",
                 margin: 0,
                 overflow: "hidden",
                 display: "-webkit-box",
@@ -172,7 +172,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
                   fontWeight: 500,
                   fontSize: "var(--font-sm)",
                   lineHeight: 1.4,
-                  color: "var(--roam-text-muted)",
+                  color: "var(--glovebox-text-muted)",
                   margin: "var(--space-xs) 0 0",
                 }}
               >
@@ -190,7 +190,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
             alignItems: "center",
             justifyContent: "flex-end",
             padding: "var(--space-sm) var(--space-lg)",
-            borderRight: "4px solid color-mix(in srgb, var(--roam-accent) 20%, transparent)",
+            borderRight: "4px solid color-mix(in srgb, var(--glovebox-accent) 20%, transparent)",
           }}
         >
           {pressable && (
@@ -198,7 +198,7 @@ export const SideCard = forwardRef<HTMLDivElement, SideCardProps>(
               size={16}
               className="side-card__arrow"
               style={{
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 opacity: 0.5,
               }}
             />

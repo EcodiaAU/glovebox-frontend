@@ -310,7 +310,7 @@ function GloveboxMark() {
       viewBox="0 0 1024 1024"
       role="img"
       aria-label="Glovebox"
-      style={{ color: "var(--roam-accent)" }}
+      style={{ color: "var(--glovebox-accent)" }}
     >
       <circle cx="512" cy="450" r="133" fill="currentColor" />
       <line

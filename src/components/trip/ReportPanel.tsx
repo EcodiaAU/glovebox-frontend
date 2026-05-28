@@ -35,7 +35,7 @@ import type {
     ObservationSeverity,
     ObservationSubmitRequest,
 } from "@/lib/types/peer";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { LucideIcon } from "lucide-react";
 
 /* ── Shared option definitions ── */
@@ -143,7 +143,7 @@ export function ReportTypePicker({ onTypeSelected, onClose }: TypePickerProps) {
 
 type PlacementBarProps = {
   type: ObservationType;
-  position: RoamPosition | null;
+  position: GloveboxPosition | null;
   onSubmit: (req: ObservationSubmitRequest) => Promise<unknown>;
   onCancel: () => void;
 };
@@ -273,7 +273,7 @@ export function ReportPlacementBar({ type, position, onSubmit, onCancel }: Place
 
 /* ── Legacy wrapper (unused, kept for compat) ── */
 export function ReportPanel(props: {
-  position: RoamPosition | null;
+  position: GloveboxPosition | null;
   onSubmit: (req: ObservationSubmitRequest) => Promise<unknown>;
   onClose: () => void;
 }) {
@@ -317,7 +317,7 @@ const pickerStyles = /* css */ `
     padding: var(--space-lg);
     background: var(--surface-card);
     border-radius: var(--r-card);
-    box-shadow: 0 12px 40px rgba(40,32,20,0.13), 0 0 0 1px color-mix(in srgb, var(--roam-border) 40%, transparent);
+    box-shadow: 0 12px 40px rgba(40,32,20,0.13), 0 0 0 1px color-mix(in srgb, var(--glovebox-border) 40%, transparent);
     width: 100%;
     max-width: 380px;
     min-height: 320px;
@@ -333,7 +333,7 @@ const pickerStyles = /* css */ `
   }
   [data-theme="tactical-night"] {
     .report-panel {
-      box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 0 1px color-mix(in srgb, var(--roam-border) 40%, transparent);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 0 1px color-mix(in srgb, var(--glovebox-border) 40%, transparent);
     }
   }
 
@@ -561,7 +561,7 @@ const barStyles = /* css */ `
     min-width: 0;
     padding: 7px 10px;
     border-radius: var(--r-card);
-    border: 1px solid var(--roam-border);
+    border: 1px solid var(--glovebox-border);
     background: rgba(0,0,0,0.04);
     font-size: 13px;
     color: var(--text-main, #1a1613);

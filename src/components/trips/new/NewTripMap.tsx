@@ -8,32 +8,32 @@ import type { TripStop } from "@/lib/types/trip";
 import type { NavPack, CorridorGraphPack, TrafficOverlay, HazardOverlay } from "@/lib/types/navigation";
 import type { PlacesPack } from "@/lib/types/places";
 import type { NavCoord, BBox4 } from "@/lib/types/geo";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import { assetsApi } from "@/lib/api/assets";
 import { polyline6ToGeoJSONLine } from "@/lib/nav/polyline6";
 import { rewriteStyleForLocalServer, isFullyOfflineCapable } from "@/lib/offline/basemapManager";
 
 /* ── Source / layer IDs ──────────────────────────────────────────────── */
 
-const ROUTE_SOURCE = "roam_route";
-const ROUTE_LAYER = "roam_route_line";
-const STOPS_SOURCE = "roam_stops";
-const STOPS_LAYER = "roam_stops_pts";
-const PLACES_SOURCE = "roam_places";
-const PLACES_LAYER = "roam_places_pts";
-const TRAFFIC_SOURCE = "roam_traffic";
-const TRAFFIC_LAYER = "roam_traffic_pts";
-const HAZARDS_SOURCE = "roam_hazards";
-const HAZARDS_LAYER = "roam_hazards_pts";
+const ROUTE_SOURCE = "glovebox_route";
+const ROUTE_LAYER = "glovebox_route_line";
+const STOPS_SOURCE = "glovebox_stops";
+const STOPS_LAYER = "glovebox_stops_pts";
+const PLACES_SOURCE = "glovebox_places";
+const PLACES_LAYER = "glovebox_places_pts";
+const TRAFFIC_SOURCE = "glovebox_traffic";
+const TRAFFIC_LAYER = "glovebox_traffic_pts";
+const HAZARDS_SOURCE = "glovebox_hazards";
+const HAZARDS_LAYER = "glovebox_hazards_pts";
 
-const USER_LOC_SRC = "roam-user-loc-src";
-const USER_LOC_ACCURACY = "roam-user-loc-accuracy";
-const USER_LOC_DOT_OUTER = "roam-user-loc-dot-outer";
-const USER_LOC_DOT_INNER = "roam-user-loc-dot-inner";
-const USER_LOC_HEADING_SRC = "roam-user-heading-src";
-const USER_LOC_HEADING = "roam-user-loc-heading";
+const USER_LOC_SRC = "glovebox-user-loc-src";
+const USER_LOC_ACCURACY = "glovebox-user-loc-accuracy";
+const USER_LOC_DOT_OUTER = "glovebox-user-loc-dot-outer";
+const USER_LOC_DOT_INNER = "glovebox-user-loc-dot-inner";
+const USER_LOC_HEADING_SRC = "glovebox-user-heading-src";
+const USER_LOC_HEADING = "glovebox-user-loc-heading";
 
-const HEADING_ARROW_ID = "roam-heading-arrow";
+const HEADING_ARROW_ID = "glovebox-heading-arrow";
 const HEADING_ARROW_SVG = `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
   <defs><linearGradient id="hg" x1="24" y1="4" x2="24" y2="28" gradientUnits="userSpaceOnUse">
     <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.85"/>
@@ -70,7 +70,7 @@ function accuracyToPixels(accuracyM: number, lat: number, zoom: number): number 
   return Math.max(12, Math.min(200, accuracyM / mpp));
 }
 
-function userLocGeoJSON(pos: RoamPosition | null | undefined): GeoJSON.FeatureCollection {
+function userLocGeoJSON(pos: GloveboxPosition | null | undefined): GeoJSON.FeatureCollection {
   if (!pos) return EMPTY_FC;
   return {
     type: "FeatureCollection",
@@ -82,7 +82,7 @@ function userLocGeoJSON(pos: RoamPosition | null | undefined): GeoJSON.FeatureCo
   };
 }
 
-function headingGeoJSON(pos: RoamPosition | null | undefined): GeoJSON.FeatureCollection {
+function headingGeoJSON(pos: GloveboxPosition | null | undefined): GeoJSON.FeatureCollection {
   if (!pos || pos.heading == null || pos.speed == null || pos.speed < 0.5) return EMPTY_FC;
   return {
     type: "FeatureCollection",
@@ -162,7 +162,7 @@ export function NewTripMap(props: {
   placesPack?: PlacesPack | null;
   traffic?: TrafficOverlay | null;
   hazards?: HazardOverlay | null;
-  userPosition?: RoamPosition | null;
+  userPosition?: GloveboxPosition | null;
 }) {
   const elRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MLMap | null>(null);
@@ -467,7 +467,7 @@ function syncUserLocation(
   map: MLMap,
   locFC: GeoJSON.FeatureCollection,
   headFC: GeoJSON.FeatureCollection,
-  pos: RoamPosition | null | undefined,
+  pos: GloveboxPosition | null | undefined,
 ) {
   const locSrc = map.getSource(USER_LOC_SRC) as GeoJSONSource | undefined;
   if (locSrc) locSrc.setData(locFC);

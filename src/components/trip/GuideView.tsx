@@ -175,9 +175,9 @@ function ActionPill({
     padding: "8px 14px",
     fontWeight: 700,
     fontSize: 13,
-    border: `1px solid ${muted ? "var(--roam-border)" : accentColor + "30"}`,
+    border: `1px solid ${muted ? "var(--glovebox-border)" : accentColor + "30"}`,
     background: muted ? "transparent" : accentColor + "0D",
-    color: muted ? "var(--roam-text-muted)" : accentColor,
+    color: muted ? "var(--glovebox-text-muted)" : accentColor,
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
@@ -194,7 +194,7 @@ function ActionPill({
   // collapse to "Pet Friendly...". The pill height grows to accommodate.
   const labelSpan = (
     <span
-      className="roam-wrap-2"
+      className="glovebox-wrap-2"
       style={{ maxWidth: 220, textAlign: "left", lineHeight: 1.2 }}
     >
       {label}
@@ -272,8 +272,8 @@ function MessageActionsRow({
             borderRadius: "var(--r-card)",
             overflow: "hidden",
             alignSelf: "flex-start",
-            border: "1px solid var(--roam-border)",
-            background: "var(--roam-surface, rgba(255,255,255,0.04))",
+            border: "1px solid var(--glovebox-border)",
+            background: "var(--glovebox-surface, rgba(255,255,255,0.04))",
           }}
         >
           {group.name ? (
@@ -281,8 +281,8 @@ function MessageActionsRow({
               padding: "6px 10px",
               fontSize: 12,
               fontWeight: 700,
-              color: "var(--roam-text-muted)",
-              borderRight: "1px solid var(--roam-border)",
+              color: "var(--glovebox-text-muted)",
+              borderRight: "1px solid var(--glovebox-border)",
               whiteSpace: "nowrap",
             }}>
               {group.name}
@@ -290,7 +290,7 @@ function MessageActionsRow({
           ) : null}
           {group.actions.map((a, idx) => {
             const isLast = idx === group.actions.length - 1;
-            const dividerStyle = !isLast ? { borderRight: "1px solid var(--roam-border)" } : {};
+            const dividerStyle = !isLast ? { borderRight: "1px solid var(--glovebox-border)" } : {};
             if (a.type === "web" && a.url) {
               return (
                 <button
@@ -302,7 +302,7 @@ function MessageActionsRow({
                     padding: "10px 12px", minHeight: 44, background: "none", border: "none",
                     cursor: isOnline ? "pointer" : "default",
                     fontSize: 13, fontWeight: 700,
-                    color: isOnline ? "var(--roam-text)" : "var(--roam-text-muted)",
+                    color: isOnline ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
                     opacity: isOnline ? 1 : 0.5,
                     ...dividerStyle,
                   }}
@@ -320,7 +320,7 @@ function MessageActionsRow({
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 6,
                     padding: "10px 12px", minHeight: 44, textDecoration: "none",
-                    fontSize: 13, fontWeight: 700, color: "var(--roam-success)",
+                    fontSize: 13, fontWeight: 700, color: "var(--glovebox-success)",
                     ...dividerStyle,
                   }}
                 >
@@ -357,7 +357,7 @@ function MessageActionsRow({
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 6,
                     padding: "10px 12px", minHeight: 44, background: "none", border: "none",
-                    cursor: "pointer", fontSize: 13, fontWeight: 700, color: "var(--roam-success)",
+                    cursor: "pointer", fontSize: 13, fontWeight: 700, color: "var(--glovebox-success)",
                     ...dividerStyle,
                   }}
                 >
@@ -398,8 +398,8 @@ function MessageActionsRow({
           onClick={() => { haptic.selection(); onSwitchToFound(); }}
           style={{
             padding: "10px 14px", minHeight: 44, borderRadius: "var(--r-card)",
-            border: "2px solid var(--roam-success)", background: "var(--roam-surface-hover)",
-            color: "var(--roam-success)", fontSize: "var(--font-sm)", fontWeight: 700, cursor: "pointer",
+            border: "2px solid var(--glovebox-success)", background: "var(--glovebox-surface-hover)",
+            color: "var(--glovebox-success)", fontSize: "var(--font-sm)", fontWeight: 700, cursor: "pointer",
             display: "inline-flex", alignItems: "center", gap: 6, alignSelf: "flex-start",
           }}
         >
@@ -526,9 +526,9 @@ function renderInline(nodes: InlineNode[], keyPrefix: string, inLink = false) {
         }
       } else { out.push(<span key={k}>{n.s}</span>); }
     } else if (n.t === "code") {
-      out.push(<code key={k} style={{ fontFamily: "var(--ff-mono)", fontSize: "0.9em", background: "var(--roam-surface-hover)", padding: "2px 6px", borderRadius: "var(--r-btn)" }}>{n.s}</code>);
+      out.push(<code key={k} style={{ fontFamily: "var(--ff-mono)", fontSize: "0.9em", background: "var(--glovebox-surface-hover)", padding: "2px 6px", borderRadius: "var(--r-btn)" }}>{n.s}</code>);
     } else if (n.t === "strong") {
-      out.push(<strong key={k} style={{ fontWeight: 800, color: "var(--roam-text)" }}>{renderInline(n.c, k, inLink)}</strong>);
+      out.push(<strong key={k} style={{ fontWeight: 800, color: "var(--glovebox-text)" }}>{renderInline(n.c, k, inLink)}</strong>);
     } else if (n.t === "em") {
       out.push(<em key={k} style={{ fontStyle: "italic" }}>{renderInline(n.c, k, inLink)}</em>);
     } else if (n.t === "link") {
@@ -545,10 +545,10 @@ function MarkdownBody({ text }: { text: string }) {
       {nodes.map((n, idx) => {
         const k = `md_${idx}`;
         if (n.t === "codeblock") {
-          return (<pre key={k} style={{ margin: 0, padding: "10px 12px", borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflowX: "auto", fontSize: 12, lineHeight: 1.4 }}><code style={{ fontFamily: "var(--ff-mono)" }}>{n.code}</code></pre>);
+          return (<pre key={k} style={{ margin: 0, padding: "10px 12px", borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflowX: "auto", fontSize: 12, lineHeight: 1.4 }}><code style={{ fontFamily: "var(--ff-mono)" }}>{n.code}</code></pre>);
         }
         if (n.t === "h") {
-          return (<div key={k} style={{ fontSize: n.level === 1 ? 15 : 14, fontWeight: 800, color: "var(--roam-text)", marginTop: 2 }}>{renderInline(n.inl, k)}</div>);
+          return (<div key={k} style={{ fontSize: n.level === 1 ? 15 : 14, fontWeight: 800, color: "var(--glovebox-text)", marginTop: 2 }}>{renderInline(n.inl, k)}</div>);
         }
         if (n.t === "ul" || n.t === "ol") {
           const Tag = n.t === "ul" ? "ul" : "ol";
@@ -726,10 +726,10 @@ function CampAmenities({ place }: { place: PlaceItem }) {
             display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
             padding: "3px 5px", borderRadius: "var(--r-card)", minWidth: 34, opacity: on ? 1 : 0.28,
           }}>
-            <Icon size={13} color={on ? a.trueColor : "var(--roam-text-muted)"} strokeWidth={on ? 2.5 : 1.5} />
+            <Icon size={13} color={on ? a.trueColor : "var(--glovebox-text-muted)"} strokeWidth={on ? 2.5 : 1.5} />
             <span style={{
               fontSize: 8, fontWeight: on ? 700 : 400,
-              color: on ? a.trueColor : "var(--roam-text-muted)",
+              color: on ? a.trueColor : "var(--glovebox-text-muted)",
               whiteSpace: "nowrap", letterSpacing: 0.2,
             }}>{a.label}</span>
           </div>
@@ -812,8 +812,8 @@ function PlaceCard({
         overflow: "hidden",
         borderRadius: "var(--r-card)",
         cursor: "pointer",
-        background: "var(--roam-surface)",
-        border: isFocused ? `2px solid ${cc.accent}` : "1px solid var(--roam-border)",
+        background: "var(--glovebox-surface)",
+        border: isFocused ? `2px solid ${cc.accent}` : "1px solid var(--glovebox-border)",
         transition: "border-color 0.15s, box-shadow 0.15s",
         boxShadow: isFocused ? `0 0 0 3px ${cc.accent}20` : "0 1px 3px rgba(0,0,0,0.06)",
       }}
@@ -842,8 +842,8 @@ function PlaceCard({
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
               <div
-                className="roam-wrap-2"
-                style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text)", flex: 1, lineHeight: 1.25 }}
+                className="glovebox-wrap-2"
+                style={{ fontSize: 14, fontWeight: 700, color: "var(--glovebox-text)", flex: 1, lineHeight: 1.25 }}
               >
                 {place.name}
               </div>
@@ -872,8 +872,8 @@ function PlaceCard({
                     style={{
                       borderRadius: "var(--r-card)", height: 36, minHeight: 44, padding: "0 12px",
                       fontWeight: 700, fontSize: 12,
-                      border: `1px solid var(--roam-border)`,
-                      background: "transparent", color: "var(--roam-text)", cursor: "pointer",
+                      border: `1px solid var(--glovebox-border)`,
+                      background: "transparent", color: "var(--glovebox-text)", cursor: "pointer",
                       display: "inline-flex", alignItems: "center", gap: 5,
                       WebkitTapHighlightColor: "transparent",
                     }}
@@ -884,7 +884,7 @@ function PlaceCard({
                 ) : null}
               </div>
             </div>
-            <div style={{ fontSize: 12, color: "var(--roam-text-muted)", marginTop: 2, display: "flex", gap: 6, flexWrap: "wrap", fontWeight: 500 }}>
+            <div style={{ fontSize: 12, color: "var(--glovebox-text-muted)", marginTop: 2, display: "flex", gap: 6, flexWrap: "wrap", fontWeight: 500 }}>
               <span style={{ color: cc.fg, fontWeight: 600 }}>{fmtCategory(place.category)}</span>
               {typeof suburb === "string" && suburb ? <span>· {suburb.split(",")[0]}</span> : null}
               {dist ? <span style={{ fontWeight: 600 }}>· {dist}</span> : null}
@@ -898,7 +898,7 @@ function PlaceCard({
         {guideDesc ? (
           <div style={{
             fontSize: 13, fontWeight: 500, lineHeight: 1.5,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             padding: "4px 0 2px",
             marginTop: 4, paddingTop: 6,
           }}>
@@ -917,8 +917,8 @@ function PlaceCard({
                 textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center",
                 borderRadius: "var(--r-card)", minHeight: 44, padding: "0 14px",
                 fontWeight: 700, fontSize: 13, gap: 6,
-                border: `1px solid var(--roam-border)`,
-                background: "transparent", color: "var(--roam-success)",
+                border: `1px solid var(--glovebox-border)`,
+                background: "transparent", color: "var(--glovebox-success)",
               }}
             >
               <Phone size={13} />
@@ -934,7 +934,7 @@ function PlaceCard({
               style={{
                 borderRadius: "var(--r-card)", minHeight: 44, padding: "0 14px",
                 fontWeight: 700, fontSize: 13,
-                border: `1px solid var(--roam-border)`,
+                border: `1px solid var(--glovebox-border)`,
                 background: "transparent", color: "var(--brand-sky)", cursor: "pointer",
                 display: "inline-flex", alignItems: "center", gap: 6,
               }}
@@ -1273,7 +1273,7 @@ export function GuideView({
       } else if (hour >= 11 && hour < 14) {
         suggestions.push({ label: "Lunch spot", desc: "Pub meal or bakery", query: "Where should I stop for lunch? I want a proper feed - pub counter meal, bakery, or good cafe.", Icon: Utensils, color: "#f97316" });
       } else if (hour >= 14 && hour < 17) {
-        suggestions.push({ label: "Arvo break", desc: "Stretch & explore", query: "Good spot for an afternoon break? Lookout, swimming hole, or a cold beer somewhere?", Icon: Eye, color: "var(--roam-success)" });
+        suggestions.push({ label: "Arvo break", desc: "Stretch & explore", query: "Good spot for an afternoon break? Lookout, swimming hole, or a cold beer somewhere?", Icon: Eye, color: "var(--glovebox-success)" });
       } else if (hour >= 17 && hour < 20) {
         suggestions.push({ label: "Stay tonight", desc: "Camps, pubs & motels", query: "Where should I stay tonight? Show me the best options - camps, motels, or a pub with rooms.", Icon: Bed, color: "#8b5cf6" });
       } else {
@@ -1294,7 +1294,7 @@ export function GuideView({
 
       // Arriving
       if (kmRemaining < 80 && kmRemaining > 5) {
-        suggestions.push({ label: "Arriving soon", desc: "What's at the destination", query: "I'm nearly there - what should I know about the destination? Where to eat tonight, any tips?", Icon: Target, color: "var(--roam-success)" });
+        suggestions.push({ label: "Arriving soon", desc: "What's at the destination", query: "I'm nearly there - what should I know about the destination? Where to eat tonight, any tips?", Icon: Target, color: "var(--glovebox-success)" });
       }
 
       // Nature / scenic always welcome
@@ -1345,8 +1345,8 @@ export function GuideView({
 
       {/* ── Tab switcher (only rendered when not hoisted externally) ── */}
       {!renderTabBar && (
-        <div style={{ flexShrink: 0, zIndex: 40, background: "var(--roam-bg)", paddingTop: 8, paddingBottom: 4 }}>
-          <div style={{ display: "flex", gap: 2, background: "var(--roam-surface)", borderRadius: "var(--r-card)", padding: 3, border: "1px solid var(--roam-border)" }}>
+        <div style={{ flexShrink: 0, zIndex: 40, background: "var(--glovebox-bg)", paddingTop: 8, paddingBottom: 4 }}>
+          <div style={{ display: "flex", gap: 2, background: "var(--glovebox-surface)", borderRadius: "var(--r-card)", padding: 3, border: "1px solid var(--glovebox-border)" }}>
             {([
               { key: "chat" as ViewTab, label: "Guide", Icon: Sparkles, badge: null },
               { key: "discoveries" as ViewTab, label: "Found", Icon: MapPin, badge: discoveredPlaces.length > 0 ? discoveredPlaces.length : null },
@@ -1362,7 +1362,7 @@ export function GuideView({
                     flex: 1, borderRadius: "var(--r-card)", border: "none", padding: "10px 8px",
                     fontSize: 13, fontWeight: 700,
                     background: active ? "var(--brand-sky)" : "transparent",
-                    color: active ? "white" : "var(--roam-text-muted)",
+                    color: active ? "white" : "var(--glovebox-text-muted)",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                     cursor: "pointer", transition: "all 0.15s ease",
                     WebkitTapHighlightColor: "transparent",
@@ -1407,7 +1407,7 @@ export function GuideView({
           {!isOnline && (
             <div style={{
               background: "var(--bg-warn, rgba(255,180,50,0.08))", borderRadius: "var(--r-card)", padding: "12px 16px",
-              border: "1px solid var(--roam-warn)",
+              border: "1px solid var(--glovebox-warn)",
               display: "flex", alignItems: "center", gap: 10,
               fontSize: 13, fontWeight: 600, color: "var(--text-warn, #e6a040)",
             }}>
@@ -1422,7 +1422,7 @@ export function GuideView({
               {/* Editorial guide identity: small ochre mark + italic
                   Spectral label + italic lede. No card, no border. */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8, marginBottom: 18 }}>
-                <div style={{ color: "var(--roam-accent)" }}>
+                <div style={{ color: "var(--glovebox-accent)" }}>
                   <GloveboxMark size={28} />
                 </div>
                 <div style={{
@@ -1432,13 +1432,13 @@ export function GuideView({
                   fontSize: 22,
                   lineHeight: 1.2,
                   letterSpacing: "-0.005em",
-                  color: "var(--roam-text)",
+                  color: "var(--glovebox-text)",
                 }}>
                   Your guide.
                 </div>
                 <div style={{
                   fontSize: 13,
-                  color: "var(--roam-text-muted)",
+                  color: "var(--glovebox-text-muted)",
                   lineHeight: 1.5,
                   maxWidth: "46ch",
                 }}>
@@ -1453,7 +1453,7 @@ export function GuideView({
                 fontStyle: "italic",
                 fontSize: 12.5,
                 letterSpacing: "0.08em",
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 textTransform: "lowercase",
                 marginBottom: 8,
               }}>
@@ -1468,10 +1468,10 @@ export function GuideView({
                     disabled={!guideReady || chatBusy || !isOnline}
                     style={{
                       borderRadius: 999,
-                      border: "1px solid var(--roam-border)",
+                      border: "1px solid var(--glovebox-border)",
                       padding: "7px 12px",
                       background: "transparent",
-                      color: "var(--roam-text)",
+                      color: "var(--glovebox-text)",
                       fontSize: 13,
                       fontWeight: 500,
                       cursor: guideReady && !chatBusy && isOnline ? "pointer" : "default",
@@ -1495,7 +1495,7 @@ export function GuideView({
               display: "flex", flexDirection: "column", gap: 8,
               // Deduct: sticky header (~120px incl. progress bar) + tab switcher (42px) +
               // input bar (50px) + gaps (36px) + bottom nav + safe-area notch
-              maxHeight: "calc(100dvh - 270px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px) - var(--roam-keyboard-h, 0px))",
+              maxHeight: "calc(100dvh - 270px - var(--bottom-nav-height, 80px) - env(safe-area-inset-bottom, 0px) - var(--glovebox-keyboard-h, 0px))",
               overflowY: "auto", paddingRight: 2,
               // Bottom padding so the sticky input bar doesn't overlay the last
               // message. Matches input height (~60px) + suggestion row (~36px)
@@ -1511,8 +1511,8 @@ export function GuideView({
                     <div key={`${m.role}_${idx}`} style={{ display: "flex", justifyContent: "flex-end", animation: "guideFadeIn 0.2s ease" }}>
                       <div style={{
                         maxWidth: "85%", padding: "10px 14px", borderRadius: "16px 16px 4px 16px",
-                        background: "var(--roam-surface-hover)",
-                        color: "var(--roam-text)",
+                        background: "var(--glovebox-surface-hover)",
+                        color: "var(--glovebox-text)",
                         fontSize: 14, fontWeight: 500, lineHeight: 1.45,
                       }}>
                         {m.content}
@@ -1531,7 +1531,7 @@ export function GuideView({
                     }}>
                       <div style={{
                         flexShrink: 0, marginTop: 4,
-                        color: "var(--roam-accent)",
+                        color: "var(--glovebox-accent)",
                         display: "flex",
                       }}>
                         <GloveboxMark size={20} ariaLabel="Glovebox" />
@@ -1540,7 +1540,7 @@ export function GuideView({
                       <div style={{
                         flex: 1, padding: "2px 0 6px",
                         fontSize: 14.5, fontWeight: 400, lineHeight: 1.55,
-                        color: "var(--roam-text)",
+                        color: "var(--glovebox-text)",
                       }}>
                         <MarkdownBody text={m.content ?? ""} />
                         {!mine ? (
@@ -1561,7 +1561,7 @@ export function GuideView({
                         onClick={() => { haptic.selection(); setActiveTab("discoveries"); }}
                         style={{
                           marginTop: 6, marginLeft: 36, padding: "6px 12px",
-                          borderRadius: "var(--r-card)", border: "1px solid var(--roam-info)",
+                          borderRadius: "var(--r-card)", border: "1px solid var(--glovebox-info)",
                           background: "rgba(59,130,246,0.06)",
                           color: "var(--brand-sky)",
                           fontSize: 12, fontWeight: 700, cursor: "pointer",
@@ -1583,8 +1583,8 @@ export function GuideView({
                 <div style={{ display: "flex", justifyContent: "flex-end", animation: "guideFadeIn 0.2s ease" }}>
                   <div style={{
                     maxWidth: "85%", padding: "10px 14px", borderRadius: "16px 16px 4px 16px",
-                    background: "var(--roam-surface-hover)",
-                    color: "var(--roam-text)",
+                    background: "var(--glovebox-surface-hover)",
+                    color: "var(--glovebox-text)",
                     fontSize: 14, fontWeight: 500, lineHeight: 1.45,
                   }}>
                     {pendingUserMsg}
@@ -1595,7 +1595,7 @@ export function GuideView({
               {/* Typing indicator - mark + dots, no card */}
               {chatBusy ? (
                 <div style={{ display: "flex", alignItems: "center", gap: 10, animation: "guideFadeIn 0.2s ease", padding: "2px 0" }}>
-                  <div style={{ flexShrink: 0, color: "var(--roam-accent)", display: "flex" }}>
+                  <div style={{ flexShrink: 0, color: "var(--glovebox-accent)", display: "flex" }}>
                     <GloveboxMark size={20} ariaLabel="Glovebox" />
                   </div>
                   <TypingDots />
@@ -1611,7 +1611,7 @@ export function GuideView({
             position: "sticky",
             bottom: 0,
             zIndex: 10,
-            background: "var(--roam-bg)",
+            background: "var(--glovebox-bg)",
             paddingTop: 4,
             paddingBottom: "var(--bottom-nav-height, calc(80px + env(safe-area-inset-bottom, 0px)))",
             display: "flex",
@@ -1621,8 +1621,8 @@ export function GuideView({
             <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8 }}>
               <div style={{
                 flex: 1, display: "flex", alignItems: "center",
-                background: "var(--roam-surface)", borderRadius: "var(--r-card)",
-                border: "1px solid var(--roam-border)",
+                background: "var(--glovebox-surface)", borderRadius: "var(--r-card)",
+                border: "1px solid var(--glovebox-border)",
                 padding: "0 4px 0 16px",
                 transition: "border-color 0.15s",
               }}>
@@ -1635,7 +1635,7 @@ export function GuideView({
                   style={{
                     flex: 1, padding: "13px 0", border: "none", outline: "none",
                     fontSize: 14, fontWeight: 500, background: "transparent",
-                    color: "var(--roam-text)",
+                    color: "var(--glovebox-text)",
                   }}
                 />
                 <button
@@ -1644,7 +1644,7 @@ export function GuideView({
                   style={{
                     width: 44, height: 44, borderRadius: "var(--r-card)", border: "none",
                     background: chatInput.trim() && isOnline ? "var(--brand-sky)" : "transparent",
-                    color: chatInput.trim() && isOnline ? "white" : "var(--roam-text-muted)",
+                    color: chatInput.trim() && isOnline ? "white" : "var(--glovebox-text-muted)",
                     cursor: chatInput.trim() && isOnline ? "pointer" : "default",
                     display: "grid", placeItems: "center",
                     transition: "all 0.15s ease",
@@ -1701,8 +1701,8 @@ export function GuideView({
         }}>
           {discoveredPlaces.length === 0 ? (
             <div style={{
-              background: "var(--roam-surface)", borderRadius: "var(--r-card)", padding: 32, textAlign: "center",
-              border: "1px solid var(--roam-border)",
+              background: "var(--glovebox-surface)", borderRadius: "var(--r-card)", padding: 32, textAlign: "center",
+              border: "1px solid var(--glovebox-border)",
             }}>
               <div style={{
                 width: 52, height: 52, borderRadius: "var(--r-card)", margin: "0 auto 14px",
@@ -1711,10 +1711,10 @@ export function GuideView({
               }}>
                 <Search size={24} />
               </div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "var(--roam-text)", marginBottom: 6 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "var(--glovebox-text)", marginBottom: 6 }}>
                 No discoveries yet
               </div>
-              <div style={{ fontSize: 13, fontWeight: 500, color: "var(--roam-text-muted)", lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
+              <div style={{ fontSize: 13, fontWeight: 500, color: "var(--glovebox-text-muted)", lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
                 Ask about fuel, camps, food or scenic stops along your route.
               </div>
               <button
@@ -1736,15 +1736,15 @@ export function GuideView({
             <>
               {/* Summary header */}
               <div style={{
-                background: "var(--roam-surface)", borderRadius: "var(--r-card)", padding: "12px 16px",
-                border: "1px solid var(--roam-border)",
+                background: "var(--glovebox-surface)", borderRadius: "var(--r-card)", padding: "12px 16px",
+                border: "1px solid var(--glovebox-border)",
                 display: "flex", alignItems: "center", justifyContent: "space-between",
               }}>
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "var(--roam-text)" }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "var(--glovebox-text)" }}>
                     {discoveredPlaces.length} places found
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: "var(--roam-text-muted)", marginTop: 2 }}>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: "var(--glovebox-text-muted)", marginTop: 2 }}>
                     {discoveryGroups.length} categories · nearest first
                   </div>
                 </div>
@@ -1752,7 +1752,7 @@ export function GuideView({
                   type="button"
                   onClick={() => { haptic.selection(); setActiveTab("chat"); }}
                   style={{
-                    borderRadius: "var(--r-card)", border: "1px solid var(--roam-border)",
+                    borderRadius: "var(--r-card)", border: "1px solid var(--glovebox-border)",
                     padding: "7px 12px", fontSize: 12, fontWeight: 700,
                     background: "transparent", color: "var(--brand-sky)",
                     cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,

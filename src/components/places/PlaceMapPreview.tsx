@@ -46,7 +46,7 @@ export default function PlaceMapPreview({ lat, lng, color = "#3b82f6", height = 
     let cancelled = false;
 
     async function init() {
-      const styleUrl = assetsApi.styleUrl(styleId ?? "roam-basemap-vector-bright");
+      const styleUrl = assetsApi.styleUrl(styleId ?? "glovebox-basemap-vector-bright");
       let style = await fetch(styleUrl).then((r) => r.json()) as StyleSpecification;
       if (isFullyOfflineCapable()) {
         style = rewriteStyleForLocalServer(style) as StyleSpecification;
@@ -100,7 +100,7 @@ export default function PlaceMapPreview({ lat, lng, color = "#3b82f6", height = 
         height,
         borderRadius: radius,
         overflow: "hidden",
-        background: "var(--roam-surface-hover)",
+        background: "var(--glovebox-surface-hover)",
       }}
     />
   );

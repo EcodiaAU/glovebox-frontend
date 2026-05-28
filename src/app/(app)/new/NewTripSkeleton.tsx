@@ -22,7 +22,7 @@ function Skel({
         width: w,
         height: h,
         borderRadius: r,
-        background: "var(--roam-surface-hover)",
+        background: "var(--glovebox-surface-hover)",
         animation: `trip-skel-pulse 1.6s ease-in-out infinite ${delay}s`,
         flexShrink: 0,
         ...style,
@@ -53,7 +53,7 @@ export function NewTripSkeleton() {
         className="trip-bottom-sheet-wrap"
         data-desktop-open="true"
         style={{
-          transform: `translateY(calc(100% - 260px - 400px - var(--roam-safe-bottom, 0px)))`,
+          transform: `translateY(calc(100% - 260px - 400px - var(--glovebox-safe-bottom, 0px)))`,
         }}
       >
         <div className="trip-bottom-sheet" data-desktop-open="true">
@@ -68,7 +68,7 @@ export function NewTripSkeleton() {
                   style={{
                     fontSize: "1.5rem",
                     fontWeight: 800,
-                    color: "var(--roam-text)",
+                    color: "var(--glovebox-text)",
                     letterSpacing: "-0.3px",
                     lineHeight: 1.2,
                   }}
@@ -100,7 +100,7 @@ export function NewTripSkeleton() {
                   key={i}
                   style={{
                     borderRadius: "var(--r-card)",
-                    background: "var(--roam-surface-hover)",
+                    background: "var(--glovebox-surface-hover)",
                     padding: "14px 16px",
                     display: "flex",
                     alignItems: "center",
@@ -114,13 +114,13 @@ export function NewTripSkeleton() {
                       width: 32,
                       height: 32,
                       borderRadius: "var(--r-card)",
-                      background: "var(--roam-surface)",
+                      background: "var(--glovebox-surface)",
                       flexShrink: 0,
                     }}
                   />
                   <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div style={{ height: 14, borderRadius: "var(--r-card)", background: "var(--roam-surface)", width: i === 0 ? "40%" : "55%" }} />
-                    <div style={{ height: 11, borderRadius: "var(--r-card)", background: "var(--roam-surface)", width: "65%" }} />
+                    <div style={{ height: 14, borderRadius: "var(--r-card)", background: "var(--glovebox-surface)", width: i === 0 ? "40%" : "55%" }} />
+                    <div style={{ height: 11, borderRadius: "var(--r-card)", background: "var(--glovebox-surface)", width: "65%" }} />
                   </div>
                 </div>
               ))}

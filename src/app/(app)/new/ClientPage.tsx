@@ -116,8 +116,8 @@ export default function NewTripClientPage() {
   }, []);
 
   const styleId = useMemo(() => {
-    if (baseMode === "hybrid") return "roam-basemap-hybrid";
-    return vectorTheme === "dark" ? "roam-basemap-vector-dark" : "roam-basemap-vector-bright";
+    if (baseMode === "hybrid") return "glovebox-basemap-hybrid";
+    return vectorTheme === "dark" ? "glovebox-basemap-vector-dark" : "glovebox-basemap-vector-bright";
   }, [baseMode, vectorTheme]);
 
   const canRoute = useMemo(() => {
@@ -160,7 +160,7 @@ export default function NewTripClientPage() {
 
   /* ── Auto-route: pre-fetch route as soon as stops are valid ────────── */
   // This populates navPack in the background so that when the user taps
-  // "Start Roaming", the route is already cached - making navigation instant.
+  // "Start Gloveboxing", the route is already cached - making navigation instant.
   useEffect(() => {
     if (!canRoute || navPack || routing) return;
     requestRoute();
@@ -267,7 +267,7 @@ export default function NewTripClientPage() {
     try {
       // If we already have a route, navigate instantly
       if (navPack) {
-        sessionStorage.setItem("roam_live_navpack", JSON.stringify(navPack));
+        sessionStorage.setItem("glovebox_live_navpack", JSON.stringify(navPack));
         router("/live", { replace: true });
         return;
       }
@@ -279,7 +279,7 @@ export default function NewTripClientPage() {
         stops: draft.stops,
         depart_at: effectiveDepartAt,
       });
-      sessionStorage.setItem("roam_live_navpack", JSON.stringify(pack));
+      sessionStorage.setItem("glovebox_live_navpack", JSON.stringify(pack));
       router("/live", { replace: true });
     } catch (e: unknown) {
       setRouteError(toErrorMessage(e, "Failed to get route"));

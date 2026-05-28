@@ -1,11 +1,11 @@
-// RoamCarPlayBridge.swift
+// GloveboxCarPlayBridge.swift
 //
-// Capacitor plugin exposing the in-process RoamCarPlaySharedState to the
+// Capacitor plugin exposing the in-process GloveboxCarPlaySharedState to the
 // phone-app JS layer. The phone app pushes trip / route / hazard / fuel /
 // vehicle / location state in; the CarPlay scene observes the resulting
 // NotificationCenter notifications and re-renders.
 //
-// JS plugin name: RoamCarPlayBridge
+// JS plugin name: GloveboxCarPlayBridge
 // JS API:
 //   setActiveTrip({routeKey, geometryPolyline6, distanceMeters,
 //                  durationSeconds, originName, destinationName,
@@ -28,11 +28,11 @@ import Capacitor
 import os.log
 
 @available(iOS 14.0, *)
-@objc(RoamCarPlayBridgePlugin)
-public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
+@objc(GloveboxCarPlayBridgePlugin)
+public class GloveboxCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
 
-    public let identifier = "RoamCarPlayBridgePlugin"
-    public let jsName = "RoamCarPlayBridge"
+    public let identifier = "GloveboxCarPlayBridgePlugin"
+    public let jsName = "GloveboxCarPlayBridge"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "setActiveTrip", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "clearActiveTrip", returnType: CAPPluginReturnPromise),
@@ -53,7 +53,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
     private static let locationDebounceInterval: TimeInterval = 1.0
     private let locationQueue = DispatchQueue(label: "au.ecodia.roam.carplay.bridge.location")
     private var lastLocationWriteTs: TimeInterval = 0
-    private var pendingLocation: RoamCarPlaySharedState.DriverLocation?
+    private var pendingLocation: GloveboxCarPlaySharedState.DriverLocation?
     private var pendingFlushScheduled = false
 
     // MARK: - Setup
@@ -62,28 +62,28 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
         // Forward CarPlay scene lifecycle + driver picks back to JS.
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleSceneConnected),
-            name: RoamCarPlayBridgePlugin.sceneConnectedNotification, object: nil
+            name: GloveboxCarPlayBridgePlugin.sceneConnectedNotification, object: nil
         )
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleSceneDisconnected),
-            name: RoamCarPlayBridgePlugin.sceneDisconnectedNotification, object: nil
+            name: GloveboxCarPlayBridgePlugin.sceneDisconnectedNotification, object: nil
         )
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleDestinationPicked(_:)),
-            name: RoamCarPlayBridgePlugin.destinationPickedNotification, object: nil
+            name: GloveboxCarPlayBridgePlugin.destinationPickedNotification, object: nil
         )
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleHazardAcknowledged(_:)),
-            name: RoamCarPlayBridgePlugin.hazardAcknowledgedNotification, object: nil
+            name: GloveboxCarPlayBridgePlugin.hazardAcknowledgedNotification, object: nil
         )
     }
 
     // MARK: - CarPlay scene -> JS notifications (posted from the scene delegate)
 
-    static let sceneConnectedNotification = Notification.Name("RoamCarPlaySceneConnected")
-    static let sceneDisconnectedNotification = Notification.Name("RoamCarPlaySceneDisconnected")
-    static let destinationPickedNotification = Notification.Name("RoamCarPlayDestinationPicked")
-    static let hazardAcknowledgedNotification = Notification.Name("RoamCarPlayHazardAcknowledged")
+    static let sceneConnectedNotification = Notification.Name("GloveboxCarPlaySceneConnected")
+    static let sceneDisconnectedNotification = Notification.Name("GloveboxCarPlaySceneDisconnected")
+    static let destinationPickedNotification = Notification.Name("GloveboxCarPlayDestinationPicked")
+    static let hazardAcknowledgedNotification = Notification.Name("GloveboxCarPlayHazardAcknowledged")
 
     @objc private func handleSceneConnected() {
         notifyListeners("carPlayConnected", data: [:])
@@ -113,19 +113,19 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
-        let waypoints = (call.getArray("waypoints") as? [[String: Any]] ?? []).compactMap { dict -> RoamCarPlaySharedState.Waypoint? in
+        let waypoints = (call.getArray("waypoints") as? [[String: Any]] ?? []).compactMap { dict -> GloveboxCarPlaySharedState.Waypoint? in
             guard let name = dict["name"] as? String,
                   let lat = dict["lat"] as? Double,
                   let lng = dict["lng"] as? Double else { return nil }
-            return RoamCarPlaySharedState.Waypoint(name: name, lat: lat, lng: lng)
+            return GloveboxCarPlaySharedState.Waypoint(name: name, lat: lat, lng: lng)
         }
 
-        let maneuvers = (call.getArray("maneuvers") as? [[String: Any]] ?? []).compactMap { dict -> RoamCarPlaySharedState.Maneuver? in
+        let maneuvers = (call.getArray("maneuvers") as? [[String: Any]] ?? []).compactMap { dict -> GloveboxCarPlaySharedState.Maneuver? in
             guard let instruction = dict["instruction"] as? String,
                   let lat = dict["lat"] as? Double,
                   let lng = dict["lng"] as? Double,
                   let dist = dict["distanceFromStartMeters"] as? Double else { return nil }
-            return RoamCarPlaySharedState.Maneuver(
+            return GloveboxCarPlaySharedState.Maneuver(
                 instruction: instruction,
                 lat: lat, lng: lng,
                 distanceFromStartMeters: dist,
@@ -133,7 +133,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             )
         }
 
-        let trip = RoamCarPlaySharedState.Trip(
+        let trip = GloveboxCarPlaySharedState.Trip(
             routeKey: routeKey,
             geometryPolyline6: geometry,
             distanceMeters: distance,
@@ -143,45 +143,45 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             waypoints: waypoints,
             maneuvers: maneuvers
         )
-        RoamCarPlaySharedState.shared.setActiveTrip(trip)
+        GloveboxCarPlaySharedState.shared.setActiveTrip(trip)
         call.resolve()
     }
 
     @objc func clearActiveTrip(_ call: CAPPluginCall) {
-        RoamCarPlaySharedState.shared.clearActiveTrip()
+        GloveboxCarPlaySharedState.shared.clearActiveTrip()
         call.resolve()
     }
 
     @objc func setHazards(_ call: CAPPluginCall) {
         let raw = call.getArray("hazards") as? [[String: Any]] ?? []
-        let mapped = raw.compactMap { dict -> RoamCarPlaySharedState.Hazard? in
+        let mapped = raw.compactMap { dict -> GloveboxCarPlaySharedState.Hazard? in
             guard let id = dict["id"] as? String,
                   let lat = dict["lat"] as? Double,
                   let lng = dict["lng"] as? Double,
                   let typeLabel = dict["typeLabel"] as? String,
                   let severity = dict["severity"] as? String,
                   let headline = dict["headline"] as? String else { return nil }
-            return RoamCarPlaySharedState.Hazard(
+            return GloveboxCarPlaySharedState.Hazard(
                 id: id, lat: lat, lng: lng,
                 typeLabel: typeLabel, severity: severity, headline: headline,
                 detail: dict["detail"] as? String,
                 distanceAlongRouteMeters: dict["distanceAlongRouteMeters"] as? Double
             )
         }
-        RoamCarPlaySharedState.shared.setHazards(mapped)
+        GloveboxCarPlaySharedState.shared.setHazards(mapped)
         call.resolve()
     }
 
     @objc func setFuelStops(_ call: CAPPluginCall) {
         let raw = call.getArray("fuelStops") as? [[String: Any]] ?? []
-        let mapped = raw.compactMap { dict -> RoamCarPlaySharedState.FuelStop? in
+        let mapped = raw.compactMap { dict -> GloveboxCarPlaySharedState.FuelStop? in
             guard let id = dict["id"] as? String,
                   let name = dict["name"] as? String,
                   let lat = dict["lat"] as? Double,
                   let lng = dict["lng"] as? Double,
                   let dist = dict["distanceAlongRouteMeters"] as? Double,
                   let last = dict["isLastChance"] as? Bool else { return nil }
-            return RoamCarPlaySharedState.FuelStop(
+            return GloveboxCarPlaySharedState.FuelStop(
                 id: id, name: name,
                 brand: dict["brand"] as? String,
                 lat: lat, lng: lng,
@@ -189,7 +189,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
                 isLastChance: last
             )
         }
-        RoamCarPlaySharedState.shared.setFuelStops(mapped)
+        GloveboxCarPlaySharedState.shared.setFuelStops(mapped)
         call.resolve()
     }
 
@@ -200,12 +200,12 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("Missing vehicle fields")
             return
         }
-        let v = RoamCarPlaySharedState.Vehicle(
+        let v = GloveboxCarPlaySharedState.Vehicle(
             litresPer100Km: litres100,
             tankCapacityLitres: tank,
             currentFuelLitres: current
         )
-        RoamCarPlaySharedState.shared.setVehicle(v)
+        GloveboxCarPlaySharedState.shared.setVehicle(v)
         call.resolve()
     }
 
@@ -216,7 +216,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("Missing location fields")
             return
         }
-        let loc = RoamCarPlaySharedState.DriverLocation(
+        let loc = GloveboxCarPlaySharedState.DriverLocation(
             lat: lat, lng: lng,
             headingDegrees: call.getDouble("headingDegrees"),
             speedMps: call.getDouble("speedMps"),
@@ -230,7 +230,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
     /// shared-state write per `locationDebounceInterval`. If a push arrives
     /// within the window, it overwrites the pending value (newest wins) and
     /// schedules a single trailing flush at the next allowed write time.
-    private func submitDebouncedLocation(_ loc: RoamCarPlaySharedState.DriverLocation) {
+    private func submitDebouncedLocation(_ loc: GloveboxCarPlaySharedState.DriverLocation) {
         locationQueue.async { [weak self] in
             guard let self = self else { return }
             let now = Date().timeIntervalSince1970
@@ -240,7 +240,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
                 self.lastLocationWriteTs = now
                 self.pendingLocation = nil
                 self.pendingFlushScheduled = false
-                RoamCarPlaySharedState.shared.setDriverLocation(loc)
+                GloveboxCarPlaySharedState.shared.setDriverLocation(loc)
                 return
             }
 
@@ -256,7 +256,7 @@ public class RoamCarPlayBridgePlugin: CAPPlugin, CAPBridgedPlugin {
                 self.pendingLocation = nil
                 self.lastLocationWriteTs = Date().timeIntervalSince1970
                 Self.logger.debug("location.flush.coalesced")
-                RoamCarPlaySharedState.shared.setDriverLocation(toFlush)
+                GloveboxCarPlaySharedState.shared.setDriverLocation(toFlush)
             }
         }
     }

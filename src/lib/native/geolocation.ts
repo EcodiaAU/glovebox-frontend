@@ -7,7 +7,7 @@ import { hasPlugin, isNative } from "./platform";
 
 /* ── Types ───────────────────────────────────────────────────────────── */
 
-export type RoamPosition = {
+export type GloveboxPosition = {
   lat: number;
   lng: number;
   accuracy: number;       // meters
@@ -20,7 +20,7 @@ export type RoamPosition = {
 
 export type GeoState = {
   /** Latest position (null until first fix) */
-  position: RoamPosition | null;
+  position: GloveboxPosition | null;
   /** True while waiting for first fix */
   loading: boolean;
   /** Permission status */
@@ -31,7 +31,7 @@ export type GeoState = {
   tracking: boolean;
 };
 
-function toRoamPos(p: Position): RoamPosition {
+function toGloveboxPos(p: Position): GloveboxPosition {
   const c = p.coords;
 
   return {
@@ -71,12 +71,12 @@ export async function requestLocationPermission(): Promise<"granted" | "denied" 
 
 /* ── One-shot position ───────────────────────────────────────────────── */
 
-export async function getCurrentPosition(): Promise<RoamPosition> {
+export async function getCurrentPosition(): Promise<GloveboxPosition> {
   const pos = await Geolocation.getCurrentPosition({
     enableHighAccuracy: true,
     timeout: 15000,
   });
-  return toRoamPos(pos);
+  return toGloveboxPos(pos);
 }
 
 /* ── Hook: useGeolocation ────────────────────────────────────────────── */
@@ -146,7 +146,7 @@ export function useGeolocation(opts?: {
           }
           if (!pos) return;
 
-          const rp = toRoamPos(pos);
+          const rp = toGloveboxPos(pos);
 
           // Haptic buzz on first fix
           if (!gotFirstFix.current && hapticOnFix && hasPlugin("Haptics")) {

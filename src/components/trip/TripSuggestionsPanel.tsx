@@ -345,9 +345,9 @@ export function TripSuggestionsPanel(props: {
                 fontSize: 13,
                 fontWeight: 950,
                 background: isActive
-                  ? "var(--roam-surface-hover)"
-                  : "var(--roam-surface)",
-                color: isActive ? "var(--roam-text)" : "var(--roam-text-muted)",
+                  ? "var(--glovebox-surface-hover)"
+                  : "var(--glovebox-surface)",
+                color: isActive ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
                 boxShadow: isActive
                   ? "var(--shadow-button)"
                   : "var(--shadow-soft)",
@@ -366,8 +366,8 @@ export function TripSuggestionsPanel(props: {
                   style={{
                     fontSize: 10,
                     fontWeight: 950,
-                    background: isActive ? "var(--roam-accent)" : "var(--roam-border-strong)",
-                    color: isActive ? "var(--on-color)" : "var(--roam-text-muted)",
+                    background: isActive ? "var(--glovebox-accent)" : "var(--glovebox-border-strong)",
+                    color: isActive ? "var(--on-color)" : "var(--glovebox-text-muted)",
                     borderRadius: 999,
                     padding: "1px 5px",
                     minWidth: 16,
@@ -434,7 +434,7 @@ export function TripSuggestionsPanel(props: {
                       width: 30,
                       height: 30,
                       borderRadius: "var(--r-card)",
-                      background: "var(--roam-surface-hover)",
+                      background: "var(--glovebox-surface-hover)",
                       display: "grid",
                       placeItems: "center",
                       flexShrink: 0,
@@ -443,8 +443,8 @@ export function TripSuggestionsPanel(props: {
                     <CatIcon size={15} />
                   </div>
                   <div className="trip-list-row-content" style={{ minWidth: 0 }}>
-                    <div className="trip-title roam-wrap-2">{p.name}</div>
-                    <div className="trip-muted-small roam-wrap-1 trip-mt-xs">
+                    <div className="trip-title glovebox-wrap-2">{p.name}</div>
+                    <div className="trip-muted-small glovebox-wrap-1 trip-mt-xs">
                       {fmtCat(p.category)}
                       {suburb
                         ? ` · ${typeof suburb === "string" ? suburb.split(",")[0] : suburb}`

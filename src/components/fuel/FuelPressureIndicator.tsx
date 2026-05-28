@@ -8,7 +8,7 @@ import type { FuelTrackingState } from "@/lib/types/fuel";
 
 const pillBase: React.CSSProperties = {
   position: "absolute",
-  bottom: "calc(var(--roam-tab-h, 72px) + 14px)",
+  bottom: "calc(var(--glovebox-tab-h, 72px) + 14px)",
   left: 14,
   zIndex: 25,
   display: "flex",
@@ -43,9 +43,9 @@ const LEVEL_STYLES: Record<PressureLevel, {
   text: string;
   icon: string;
 }> = {
-  ok:       { bg: "var(--roam-success)", text: "var(--on-color)", icon: "var(--on-color)" },
-  warn:     { bg: "var(--roam-warn)",    text: "var(--on-color)", icon: "var(--on-color)" },
-  critical: { bg: "var(--roam-danger)",  text: "var(--on-color)", icon: "var(--on-color)" },
+  ok:       { bg: "var(--glovebox-success)", text: "var(--on-color)", icon: "var(--on-color)" },
+  warn:     { bg: "var(--glovebox-warn)",    text: "var(--on-color)", icon: "var(--on-color)" },
+  critical: { bg: "var(--glovebox-danger)",  text: "var(--on-color)", icon: "var(--on-color)" },
 };
 
 /* ── Component ────────────────────────────────────────────────────────── */

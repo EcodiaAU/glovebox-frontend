@@ -17,7 +17,7 @@ export type PresencePingResponse = {
   ok: boolean;
 };
 
-export type NearbyRoamer = {
+export type NearbyGloveboxer = {
   user_id: string;
   predicted_lat: number;
   predicted_lng: number;
@@ -36,7 +36,7 @@ export type NearbyQuery = {
 };
 
 export type NearbyResponse = {
-  roamers: NearbyRoamer[];
+  gloveboxers: NearbyGloveboxer[];
 };
 
 // ──────────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ export type NearbyObservationsResponse = {
 };
 
 // ──────────────────────────────────────────────────────────────
-// Peer Sync (overlay delta exchange between roamers)
+// Peer Sync (overlay delta exchange between gloveboxers)
 // ──────────────────────────────────────────────────────────────
 
 export type PeerSyncRequest = {

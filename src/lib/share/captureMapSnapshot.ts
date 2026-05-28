@@ -21,7 +21,7 @@ const SNAP_H = 693 * 2;
 
 export async function captureMapSnapshot(
   bounds: SnapshotBounds,
-  styleId = "roam-basemap-hybrid",
+  styleId = "glovebox-basemap-hybrid",
   timeoutMs = 8000,
 ): Promise<string | null> {
   const container = document.createElement("div");

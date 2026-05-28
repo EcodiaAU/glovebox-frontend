@@ -22,15 +22,15 @@ interface StatusIndicatorProps {
 
 const statusColors: Record<StatusLevel, { solid: string; tint: string }> = {
   nominal: {
-    solid: "var(--roam-success)",   // Potable Green (eucalypt)
+    solid: "var(--glovebox-success)",   // Potable Green (eucalypt)
     tint: "var(--accent-tint)",
   },
   warning: {
-    solid: "var(--roam-warn)",      // Solar Amber
+    solid: "var(--glovebox-warn)",      // Solar Amber
     tint: "var(--severity-minor-tint)",
   },
   critical: {
-    solid: "var(--roam-danger)",    // Emergency Red (ochre)
+    solid: "var(--glovebox-danger)",    // Emergency Red (ochre)
     tint: "var(--danger-tint)",
   },
 };

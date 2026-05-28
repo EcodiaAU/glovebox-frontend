@@ -2,7 +2,7 @@
  * CLS Regression: Site 1 — NavigationHUD outer wrapper
  * File: src/components/nav/NavigationHUD.tsx
  *
- * Fix shipped (da1f01c): The outer .roam-nav-hud wrapper has
+ * Fix shipped (da1f01c): The outer .glovebox-nav-hud wrapper has
  *   minHeight: cs + pad * 2
  * so the reserved space is held even when the inner nav-hud-unroll is at
  * scale(0) during entrance animation. Without this, the wrapper collapsed to

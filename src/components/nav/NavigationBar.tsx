@@ -19,10 +19,10 @@ type Props = {
 // Theme-aware: NavigationBar now uses the same theme-swapped surface as the
 // HUD/PlanSheet (var(--c-nav-card)). Was previously hardcoded #242220, which
 // stayed dark even when the app was set to bright mode.
-const BAR_BG = "var(--c-nav-card, var(--roam-surface, #fff))";
-const BAR_FG_PRIMARY = "var(--c-text, var(--roam-text))";
-const BAR_FG_MUTED = "var(--c-text-muted, var(--roam-text-muted))";
-const BAR_BORDER = "var(--c-border, var(--roam-border))";
+const BAR_BG = "var(--c-nav-card, var(--glovebox-surface, #fff))";
+const BAR_FG_PRIMARY = "var(--c-text, var(--glovebox-text))";
+const BAR_FG_MUTED = "var(--c-text-muted, var(--glovebox-text-muted))";
+const BAR_BORDER = "var(--c-border, var(--glovebox-border))";
 
 /** Split "2:45 PM" → { time: "2:45", ampm: "PM" } */
 function splitEta(eta: string): { time: string; ampm: string } {
@@ -73,10 +73,10 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
 
   return (
     <div
-      className="roam-nav-bar"
+      className="glovebox-nav-bar"
       style={{
         position: "absolute",
-        bottom: "calc(env(safe-area-inset-bottom, 0px) + var(--roam-tab-h, 64px) + 14px)",
+        bottom: "calc(env(safe-area-inset-bottom, 0px) + var(--glovebox-tab-h, 64px) + 14px)",
         left: 12,
         right: 12,
         zIndex: 30,

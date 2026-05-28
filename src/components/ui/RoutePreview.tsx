@@ -113,7 +113,7 @@ export function RoutePreview({
         <path
           d={path}
           fill="none"
-          stroke="var(--roam-accent)"
+          stroke="var(--glovebox-accent)"
           strokeWidth={2}
           strokeDasharray="8,8"
           strokeLinecap="round"
@@ -122,12 +122,12 @@ export function RoutePreview({
         />
 
         {/* Start marker */}
-        <circle cx={first.x} cy={first.y} r={4} fill="var(--roam-text-muted)" opacity={0.4} />
+        <circle cx={first.x} cy={first.y} r={4} fill="var(--glovebox-text-muted)" opacity={0.4} />
 
         {/* End marker (diamond) */}
         <polygon
           points={`${last.x},${last.y - 5} ${last.x + 5},${last.y} ${last.x},${last.y + 5} ${last.x - 5},${last.y}`}
-          fill="var(--roam-accent)"
+          fill="var(--glovebox-accent)"
           opacity={0.6}
         />
 
@@ -138,7 +138,7 @@ export function RoutePreview({
               cx={currentPx.x}
               cy={currentPx.y}
               r={10}
-              fill="var(--roam-accent)"
+              fill="var(--glovebox-accent)"
               opacity={0.15}
               className="terra-route-pulse"
             />
@@ -146,7 +146,7 @@ export function RoutePreview({
               cx={currentPx.x}
               cy={currentPx.y}
               r={6}
-              fill="var(--roam-accent)"
+              fill="var(--glovebox-accent)"
             />
           </>
         )}

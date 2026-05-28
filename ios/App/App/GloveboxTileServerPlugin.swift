@@ -1,6 +1,6 @@
-// ios/App/App/RoamTileServerPlugin.swift
+// ios/App/App/GloveboxTileServerPlugin.swift
 //
-// Capacitor plugin for RoamTileServer.
+// Capacitor plugin for GloveboxTileServer.
 // Manages a local HTTP file server with Range/206 support
 // and handles large file downloads (PMTiles) to device storage.
 //
@@ -9,11 +9,11 @@
 import Foundation
 import Capacitor
 
-@objc(RoamTileServerPlugin)
-public class RoamTileServerPlugin: CAPPlugin, CAPBridgedPlugin {
+@objc(GloveboxTileServerPlugin)
+public class GloveboxTileServerPlugin: CAPPlugin, CAPBridgedPlugin {
 
-    public let identifier = "RoamTileServerPlugin"
-    public let jsName = "RoamTileServer"
+    public let identifier = "GloveboxTileServerPlugin"
+    public let jsName = "GloveboxTileServer"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "startServer", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "stopServer", returnType: CAPPluginReturnPromise),
@@ -34,7 +34,7 @@ public class RoamTileServerPlugin: CAPPlugin, CAPBridgedPlugin {
 
     private var basemapsRoot: URL {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        return docs.appendingPathComponent("roam/basemaps", isDirectory: true)
+        return docs.appendingPathComponent("glovebox/basemaps", isDirectory: true)
     }
 
     private func ensureDirectory(_ url: URL) throws {
@@ -287,7 +287,7 @@ private class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
                 if verified == false {
                     try? FileManager.default.removeItem(at: destURL)
                     onComplete(.failure(NSError(
-                        domain: "RoamTileServer",
+                        domain: "GloveboxTileServer",
                         code: 1,
                         userInfo: [NSLocalizedDescriptionKey: "SHA-256 mismatch: expected \(expected), got \(actual ?? "nil")"]
                     )))

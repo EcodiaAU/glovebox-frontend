@@ -29,7 +29,7 @@ interface ThemeContextValue {
   setMode: (m: ThemeMode) => void;
 }
 
-const STORAGE_KEY = "roam-theme-mode";
+const STORAGE_KEY = "glovebox-theme-mode";
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 

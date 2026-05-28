@@ -168,8 +168,8 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
 
   return createPortal(
     <div
-      className="roam-modal-backdrop"
-      data-roam-modal="paywall"
+      className="glovebox-modal-backdrop"
+      data-glovebox-modal="paywall"
       onClick={handleClose}
       style={{
         position: "fixed",
@@ -299,7 +299,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               fontStyle: "italic",
               fontSize: 12.5,
               letterSpacing: "0.08em",
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               textTransform: "lowercase",
               marginBottom: 8,
             }}>
@@ -316,14 +316,14 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
                 <span style={{
                   width: 6, height: 6, flexShrink: 0,
                   borderRadius: "50%",
-                  background: "var(--roam-accent)",
+                  background: "var(--glovebox-accent)",
                   alignSelf: "center",
                 }} aria-hidden="true" />
                 <div>
-                  <div style={{ fontSize: 14.5, fontWeight: 600, color: "var(--roam-text)", marginBottom: 2 }}>
+                  <div style={{ fontSize: 14.5, fontWeight: 600, color: "var(--glovebox-text)", marginBottom: 2 }}>
                     {f.label}
                   </div>
-                  <div style={{ fontSize: 12.5, color: "var(--roam-text-muted)", lineHeight: 1.45 }}>
+                  <div style={{ fontSize: 12.5, color: "var(--glovebox-text-muted)", lineHeight: 1.45 }}>
                     {f.sub}
                   </div>
                 </div>
@@ -349,7 +349,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               style={{
                 color: "var(--brand-ochre, #b5452e)",
                 opacity: 0.55,
-                animation: "roam-bounce-hint 1.4s ease-in-out infinite",
+                animation: "glovebox-bounce-hint 1.4s ease-in-out infinite",
               }}
             />
           </div>
@@ -368,7 +368,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               fontStyle: "italic",
               fontSize: 34,
               fontWeight: 400,
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               lineHeight: 1,
               letterSpacing: "-0.01em",
             }}>
@@ -379,7 +379,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               fontStyle: "italic",
               fontSize: 13,
               fontWeight: 400,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
             }}>
               one-time. yours forever.
             </span>
@@ -447,13 +447,13 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
                     all: "unset",
                     cursor: "pointer",
                     fontSize: 12, fontWeight: 600,
-                    color: "var(--roam-text-muted, #7a7067)",
+                    color: "var(--glovebox-text-muted, #7a7067)",
                     opacity: busy ? 0.4 : 0.8,
                   }}
                 >
                   {restoring ? "Restoring…" : "Restore purchase"}
                 </button>
-                <span style={{ color: "var(--roam-border-strong)", fontSize: 12 }}>·</span>
+                <span style={{ color: "var(--glovebox-border-strong)", fontSize: 12 }}>·</span>
               </>
             )}
             <>
@@ -465,23 +465,23 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
                   all: "unset",
                   cursor: "pointer",
                   fontSize: 12, fontWeight: 600,
-                  color: "var(--roam-text-muted, #7a7067)",
+                  color: "var(--glovebox-text-muted, #7a7067)",
                   opacity: busy ? 0.4 : 0.8,
                 }}
               >
                 Sign in
               </button>
-              <span style={{ color: "var(--roam-border-strong)", fontSize: 12 }}>·</span>
+              <span style={{ color: "var(--glovebox-border-strong)", fontSize: 12 }}>·</span>
             </>
             <a
               href="/privacy"
-              style={{ fontSize: 12, fontWeight: 600, color: "var(--roam-text-muted, #7a7067)", opacity: 0.8 }}
+              style={{ fontSize: 12, fontWeight: 600, color: "var(--glovebox-text-muted, #7a7067)", opacity: 0.8 }}
             >
               Privacy
             </a>
             <a
               href="/terms"
-              style={{ fontSize: 12, fontWeight: 600, color: "var(--roam-text-muted, #7a7067)", opacity: 0.8 }}
+              style={{ fontSize: 12, fontWeight: 600, color: "var(--glovebox-text-muted, #7a7067)", opacity: 0.8 }}
             >
               Terms
             </a>

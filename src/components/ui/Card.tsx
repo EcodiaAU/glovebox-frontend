@@ -1,7 +1,7 @@
 // src/components/ui/Card.tsx
 // Core card component with Terra Nomad design tokens.
 // Light mode: solid fills with heavy warm shadows.
-// Dark mode: subtle backdrop-blur glass-morphism (via .roam-card-glass CSS class).
+// Dark mode: subtle backdrop-blur glass-morphism (via .glovebox-card-glass CSS class).
 // 4px border-radius as specified.
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
@@ -18,7 +18,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ pressable, header, noPadding, children, style, className = "", ...props }, ref) => {
     const classes = [
-      "roam-card-glass",
+      "glovebox-card-glass",
       pressable ? "trip-interactive" : "",
       className,
     ]
@@ -30,7 +30,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={classes}
         style={{
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           borderRadius: "var(--r-card)",
           padding: noPadding ? 0 : "var(--space-lg)",
           boxShadow: "var(--shadow-heavy)",

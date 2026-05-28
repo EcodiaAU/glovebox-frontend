@@ -9,20 +9,20 @@
  *
  * Site 4 — drag zone is pre-sized to 150px.
  *   Fix shipped (da1f01c): .place-detail-drag-zone has
- *     height: 150, background: var(--roam-surface-hover), overflow: hidden
+ *     height: 150, background: var(--glovebox-surface-hover), overflow: hidden
  *   so the space is reserved before the PlaceMapPreview lazy chunk loads.
  *   Without this the container collapsed to 0px then jumped to 150px as the
  *   Suspense resolved — a ~0.04 CLS score on a standard mobile viewport.
  *
  * ── Environment variables ─────────────────────────────────────────────────
  *
- * ROAM_TEST_LAT          — Latitude of a fixture place (e.g. -26.85)
- * ROAM_TEST_LNG          — Longitude of a fixture place (e.g. 152.98)
- * ROAM_TEST_PLACE_NAME   — Display name for the fixture place (e.g. "Maleny")
+ * GLOVEBOX_TEST_LAT          — Latitude of a fixture place (e.g. -26.85)
+ * GLOVEBOX_TEST_LNG          — Longitude of a fixture place (e.g. 152.98)
+ * GLOVEBOX_TEST_PLACE_NAME   — Display name for the fixture place (e.g. "Maleny")
  *
  * All three are required for the sheet tests. Skip if unset.
  *
- * ROAM_TEST_SUPABASE_TOKEN — Optional auth token (same as trip-map.spec.ts).
+ * GLOVEBOX_TEST_SUPABASE_TOKEN — Optional auth token (same as trip-map.spec.ts).
  *
  * ── Triggering the sheet from Playwright ─────────────────────────────────
  *
@@ -45,10 +45,10 @@
 import { test, expect } from '@playwright/test';
 import { startCLSObserver, stopCLSObserver } from './utils/clsTracer';
 
-const LAT   = process.env.ROAM_TEST_LAT;
-const LNG   = process.env.ROAM_TEST_LNG;
-const PLACE = process.env.ROAM_TEST_PLACE_NAME ?? 'Fixture Place';
-const SUPABASE_TOKEN = process.env.ROAM_TEST_SUPABASE_TOKEN;
+const LAT   = process.env.GLOVEBOX_TEST_LAT;
+const LNG   = process.env.GLOVEBOX_TEST_LNG;
+const PLACE = process.env.GLOVEBOX_TEST_PLACE_NAME ?? 'Fixture Place';
+const SUPABASE_TOKEN = process.env.GLOVEBOX_TEST_SUPABASE_TOKEN;
 
 /** Returns true if the fixture env vars required to open a sheet are set. */
 function fixtureReady(): boolean {
@@ -59,7 +59,7 @@ test.describe('PlaceDetailSheet — CLS Sites 3 & 4', () => {
   test.beforeEach(async ({ page }) => {
     if (SUPABASE_TOKEN) {
       await page.addInitScript((token: string) => {
-        localStorage.setItem('roam-supabase-session', token);
+        localStorage.setItem('glovebox-supabase-session', token);
       }, SUPABASE_TOKEN);
     }
   });
@@ -69,7 +69,7 @@ test.describe('PlaceDetailSheet — CLS Sites 3 & 4', () => {
   test('place-detail-backdrop is position:fixed (Site 3 audit)', async ({ page }) => {
     if (!fixtureReady()) {
       console.log(
-        '[place-detail] SKIP: set ROAM_TEST_LAT and ROAM_TEST_LNG env vars to run this test. ' +
+        '[place-detail] SKIP: set GLOVEBOX_TEST_LAT and GLOVEBOX_TEST_LNG env vars to run this test. ' +
           'Also add window.__openPlace hook to AppLayout (see spec header).',
       );
       test.skip();
@@ -127,7 +127,7 @@ test.describe('PlaceDetailSheet — CLS Sites 3 & 4', () => {
   }) => {
     if (!fixtureReady()) {
       console.log(
-        '[place-detail] SKIP: set ROAM_TEST_LAT and ROAM_TEST_LNG env vars to run this test.',
+        '[place-detail] SKIP: set GLOVEBOX_TEST_LAT and GLOVEBOX_TEST_LNG env vars to run this test.',
       );
       test.skip();
       return;
@@ -203,7 +203,7 @@ test.describe('PlaceDetailSheet — CLS Sites 3 & 4', () => {
   }) => {
     if (!fixtureReady()) {
       console.log(
-        '[place-detail] SKIP: set ROAM_TEST_LAT and ROAM_TEST_LNG env vars to run this test.',
+        '[place-detail] SKIP: set GLOVEBOX_TEST_LAT and GLOVEBOX_TEST_LNG env vars to run this test.',
       );
       test.skip();
       return;

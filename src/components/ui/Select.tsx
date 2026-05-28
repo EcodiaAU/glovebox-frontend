@@ -22,8 +22,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         background: "var(--surface-muted)",
         borderRadius: "var(--r-btn)",
         border: error
-          ? "2px solid var(--roam-danger)"
-          : "2px solid var(--roam-border)",
+          ? "2px solid var(--glovebox-danger)"
+          : "2px solid var(--glovebox-border)",
         padding: "0 var(--space-lg)",
         minHeight: 52,
         transition: "border-color 200ms var(--ease-out)",
@@ -34,7 +34,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       {icon && (
         <span
           style={{
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             display: "flex",
             flexShrink: 0,
           }}
@@ -51,7 +51,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           outline: "none",
           fontSize: "var(--font-body)",
           fontWeight: 800,
-          color: "var(--roam-text)",
+          color: "var(--glovebox-text)",
           padding: "14px 0",
           cursor: "pointer",
           appearance: "none",
@@ -67,7 +67,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         height="16"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="var(--roam-text-muted)"
+        stroke="var(--glovebox-text-muted)"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"

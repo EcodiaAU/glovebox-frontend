@@ -34,7 +34,7 @@ import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
 import { GuideView, type GuideTabBarProps } from "@/components/trip/GuideView";
 
 import { Satellite, AlertTriangle } from "lucide-react";
-import { NetworkPill, AccountBtn } from "@/components/roam-ui-v2/shared";
+import { NetworkPill, AccountBtn } from "@/components/glovebox-ui-v2/shared";
 import { GuideSkeleton } from "./GuideSkeleton";
 
 import type { GuideBootstrap } from "@/lib/guide/guideEngine";
@@ -461,8 +461,8 @@ export default function GuideClientPage(props: {
         <div
           style={{
             height: "100%",
-            background: "var(--roam-bg)",
-            color: "var(--roam-text)",
+            background: "var(--glovebox-bg)",
+            color: "var(--glovebox-text)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -479,7 +479,7 @@ export default function GuideClientPage(props: {
             style={{
               padding: "10px 24px",
               borderRadius: 999,
-              background: "var(--roam-accent)",
+              background: "var(--glovebox-accent)",
               color: "var(--on-color)",
               fontSize: 14,
               fontWeight: 700,
@@ -499,8 +499,8 @@ export default function GuideClientPage(props: {
     <div
       style={{
         height: "100%",
-        background: "var(--roam-bg)",
-        color: "var(--roam-text)",
+        background: "var(--glovebox-bg)",
+        color: "var(--glovebox-text)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -523,7 +523,7 @@ export default function GuideClientPage(props: {
             fontWeight: 400,
             fontSize: 24,
             letterSpacing: "-0.005em",
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             maxWidth: "60%",
           }}>{headerTitle}</div>
@@ -539,7 +539,7 @@ export default function GuideClientPage(props: {
         {guideTabBar && (
           <div style={{
             display: "flex", gap: 24, paddingTop: 4,
-            borderBottom: "1px solid var(--roam-border)",
+            borderBottom: "1px solid var(--glovebox-border)",
           }}>
             {([
               { key: "chat" as const, label: "Chat", badge: null },
@@ -554,14 +554,14 @@ export default function GuideClientPage(props: {
                   style={{
                     minHeight: 40,
                     background: "transparent",
-                    color: active ? "var(--roam-text)" : "var(--roam-text-muted)",
+                    color: active ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
                     fontWeight: active ? 600 : 500,
                     fontSize: 14,
                     letterSpacing: "0.01em",
                     display: "inline-flex", alignItems: "center", gap: 8,
                     border: "none",
                     borderBottom: active
-                      ? "1.5px solid var(--roam-accent)"
+                      ? "1.5px solid var(--glovebox-accent)"
                       : "1.5px solid transparent",
                     paddingBottom: 8,
                     marginBottom: -1,
@@ -574,8 +574,8 @@ export default function GuideClientPage(props: {
                       fontSize: 11, fontWeight: 600,
                       padding: "0 6px", minWidth: 18, height: 18,
                       borderRadius: 999,
-                      background: active ? "var(--roam-accent)" : "var(--roam-surface-hover)",
-                      color: active ? "var(--on-color)" : "var(--roam-text-muted)",
+                      background: active ? "var(--glovebox-accent)" : "var(--glovebox-surface-hover)",
+                      color: active ? "var(--on-color)" : "var(--glovebox-text-muted)",
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
                     }}>{tab.badge}</span>
                   )}
@@ -596,12 +596,12 @@ export default function GuideClientPage(props: {
         }}>
           <div style={{
             position: "relative", height: 2, borderRadius: 1,
-            background: "var(--roam-border)", overflow: "hidden",
+            background: "var(--glovebox-border)", overflow: "hidden",
           }}>
             <div style={{
               position: "absolute", left: 0, top: 0, bottom: 0,
               width: `${Math.min(100, (tripProgress.km_from_start / tripProgress.total_km) * 100)}%`,
-              background: "var(--roam-accent)",
+              background: "var(--glovebox-accent)",
               transition: "width 0.5s ease-out",
             }}/>
           </div>
@@ -610,7 +610,7 @@ export default function GuideClientPage(props: {
             fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
             fontStyle: "italic",
             fontSize: 12,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
           }}>
             <span>{Math.round(tripProgress.km_from_start)} km done.</span>
             <span>{Math.round(tripProgress.km_remaining)} km to go.</span>
@@ -625,7 +625,7 @@ export default function GuideClientPage(props: {
           fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
           fontStyle: "italic",
           fontSize: 13,
-          color: geo.error ? "var(--roam-warn)" : "var(--roam-text-muted)",
+          color: geo.error ? "var(--glovebox-warn)" : "var(--glovebox-text-muted)",
           display: "inline-flex", alignItems: "center", gap: 8,
         }}>
           {geo.loading ? <Satellite size={13}/> : <AlertTriangle size={13}/>}
@@ -639,7 +639,7 @@ export default function GuideClientPage(props: {
           fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
           fontStyle: "italic",
           fontSize: 14,
-          color: "var(--roam-danger)",
+          color: "var(--glovebox-danger)",
           display: "inline-flex", alignItems: "center", gap: 8,
         }}>
           <AlertTriangle size={14}/>

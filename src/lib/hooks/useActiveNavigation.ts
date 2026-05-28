@@ -42,7 +42,7 @@ import { type GpsSmoother, createGpsSmoother, smoothPosition } from "@/lib/nav/g
 import { GpsInterpolator } from "@/lib/nav/gpsInterpolator";
 import { cumulativeKm, buildPolylineIndex, type PolylineIndex } from "@/lib/nav/snapToRoute";
 import type { NavPack } from "@/lib/types/navigation";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 
 // ──────────────────────────────────────────────────────────────
 // Weather → FatigueConditions mapping
@@ -98,7 +98,7 @@ export type ActiveNavigationHook = {
   /** Reset after a corridor reroute with a new navpack */
   applyReroute: (newNavpack: NavPack) => void;
   /** Last smoothed GPS position (~1 Hz, for nav state machine + fallback) */
-  lastPosition: RoamPosition | null;
+  lastPosition: GloveboxPosition | null;
   /** The 60 fps GPS interpolator instance (for map camera + puck rendering) */
   interpolator: GpsInterpolator;
 };
@@ -113,7 +113,7 @@ export function useActiveNavigation(
   weather?: WeatherOverlay | null,
 ): ActiveNavigationHook {
   const [nav, setNav] = useState<ActiveNavState>(initialActiveNavState);
-  const [lastPosition, setLastPosition] = useState<RoamPosition | null>(null);
+  const [lastPosition, setLastPosition] = useState<GloveboxPosition | null>(null);
   const [isMuted, setIsMuted] = useState(false);
 
   // Refs for values that change every tick (avoid stale closures)
@@ -188,7 +188,7 @@ export function useActiveNavigation(
   }, [flatSteps, routeData, legBoundaries]);
 
   // ── GPS tick handler (~1 Hz from background GPS) ──
-  const handlePosition = useCallback((pos: RoamPosition) => {
+  const handlePosition = useCallback((pos: GloveboxPosition) => {
     // Apply Kalman smoothing before any processing
     const { smoothed, smoother } = smoothPosition(gpsSmootherRef.current, pos);
     gpsSmootherRef.current = smoother;

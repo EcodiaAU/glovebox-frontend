@@ -1,7 +1,7 @@
-// src/lib/peer/roamCodec.ts
+// src/lib/peer/gloveboxCodec.ts
 // ──────────────────────────────────────────────────────────────
 // Glovebox Binary Codec - ultra-compact encoding for ultrasonic
-// peer-to-peer data transfer between roamers.
+// peer-to-peer data transfer between gloveboxers.
 //
 // Design principle: both phones have the same "codebook" -
 // the overlay type system, severity enums, predefined messages.
@@ -20,7 +20,7 @@
 
 // ── Magic + version ──────────────────────────────────────────
 
-const MAGIC = 0x524d; // "RM" for RoaM
+const MAGIC = 0x524d; // legacy magic bytes (0x52 0x4d), kept for codec back-compat
 const VERSION = 1;
 
 // ── Item type IDs ────────────────────────────────────────────

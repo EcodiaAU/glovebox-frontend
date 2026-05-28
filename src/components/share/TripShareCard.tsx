@@ -374,7 +374,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
           );
         })()}
 
-        {/* ── BRANDING: icon + ROAM in Syne, centered below stats ─────── */}
+        {/* ── BRANDING: icon + GLOVEBOX in Syne, centered below stats ─────── */}
         {!isOverlay && (() => {
           const iconSize = 24;
           const gap = 7;

@@ -10,10 +10,10 @@ import { haptic } from "@/lib/native/haptics";
 type ToggleColor = "primary" | "tertiary" | "info" | "danger";
 
 const colorMap: Record<ToggleColor, string> = {
-  primary: "var(--roam-accent)",
+  primary: "var(--glovebox-accent)",
   tertiary: "var(--brand-eucalypt)",
-  info: "var(--roam-info)",
-  danger: "var(--roam-danger)",
+  info: "var(--glovebox-info)",
+  danger: "var(--glovebox-danger)",
 };
 
 export interface IconToggleItem {
@@ -60,7 +60,7 @@ function ToggleCard({ item, onToggle }: { item: IconToggleItem; onToggle: () => 
     <button
       type="button"
       onClick={onToggle}
-      className="roam-btn-press"
+      className="glovebox-btn-press"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -70,8 +70,8 @@ function ToggleCard({ item, onToggle }: { item: IconToggleItem; onToggle: () => 
         padding: 24,
         minHeight: 44,
         background: active
-          ? "var(--roam-surface-hover)"
-          : "var(--roam-surface)",
+          ? "var(--glovebox-surface-hover)"
+          : "var(--glovebox-surface)",
         borderRadius: "var(--r-card)",
         border: "none",
         borderBottom: active
@@ -89,7 +89,7 @@ function ToggleCard({ item, onToggle }: { item: IconToggleItem; onToggle: () => 
         style={{
           fontSize: 0,
           lineHeight: 0,
-          color: active ? cssColor : "var(--roam-text-muted)",
+          color: active ? cssColor : "var(--glovebox-text-muted)",
           transition: "color 200ms var(--ease-out)",
         }}
       >
@@ -103,7 +103,7 @@ function ToggleCard({ item, onToggle }: { item: IconToggleItem; onToggle: () => 
           fontWeight: 800,
           textTransform: "uppercase",
           letterSpacing: "0.08em",
-          color: active ? cssColor : "var(--roam-text-muted)",
+          color: active ? cssColor : "var(--glovebox-text-muted)",
           opacity: active ? 1 : 0.4,
           transition: "color 200ms var(--ease-out), opacity 200ms var(--ease-out)",
           whiteSpace: "nowrap",
@@ -118,7 +118,7 @@ function ToggleCard({ item, onToggle }: { item: IconToggleItem; onToggle: () => 
           fontSize: 10,
           fontWeight: 800,
           letterSpacing: "0.1em",
-          color: active ? cssColor : "var(--roam-text-muted)",
+          color: active ? cssColor : "var(--glovebox-text-muted)",
           opacity: active ? 1 : 0.4,
           transition: "color 200ms var(--ease-out), opacity 200ms var(--ease-out)",
         }}

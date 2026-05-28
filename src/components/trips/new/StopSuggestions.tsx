@@ -46,8 +46,8 @@ function SuggestionCard({
         gap: 5,
         padding: "9px 10px 8px",
         borderRadius: "var(--r-card)",
-        background: "var(--roam-surface)",
-        border: "1px solid var(--roam-border)",
+        background: "var(--glovebox-surface)",
+        border: "1px solid var(--glovebox-border)",
         flexShrink: 0,
         width: 136,
         position: "relative",
@@ -78,7 +78,7 @@ function SuggestionCard({
         style={{
           fontSize: 13,
           fontWeight: 700,
-          color: "var(--roam-text)",
+          color: "var(--glovebox-text)",
           lineHeight: 1.3,
           display: "-webkit-box",
           WebkitLineClamp: 2,
@@ -196,12 +196,12 @@ export function StopSuggestions({ navPack, stops: _stops, onAddSuggestion }: Sto
           paddingLeft: 2,
         }}
       >
-        <Sparkles size={13} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
+        <Sparkles size={13} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
         <span
           style={{
             fontSize: 11,
             fontWeight: 800,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             letterSpacing: "0.07em",
             textTransform: "uppercase",
           }}
@@ -230,8 +230,8 @@ export function StopSuggestions({ navPack, stops: _stops, onAddSuggestion }: Sto
                 width: 136,
                 height: 90,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface)",
-                border: "1px solid var(--roam-border)",
+                background: "var(--glovebox-surface)",
+                border: "1px solid var(--glovebox-border)",
                 flexShrink: 0,
                 display: "flex",
                 alignItems: "center",
@@ -243,8 +243,8 @@ export function StopSuggestions({ navPack, stops: _stops, onAddSuggestion }: Sto
                 <Loader2
                   size={18}
                   style={{
-                    color: "var(--roam-text-muted)",
-                    animation: "roam-spin 0.8s linear infinite",
+                    color: "var(--glovebox-text-muted)",
+                    animation: "glovebox-spin 0.8s linear infinite",
                   }}
                 />
               )}

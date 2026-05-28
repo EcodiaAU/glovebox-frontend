@@ -7,7 +7,7 @@
 // The parent component calls it and dispatches voice/haptic/UI from the result.
 
 import type { NavPack, NavStep } from "@/lib/types/navigation";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { FatigueState } from "@/lib/nav/fatigue";
 import { haversineM, type PolylineIndex, snapToPolylineIndexed } from "@/lib/nav/snapToRoute";
 
@@ -318,7 +318,7 @@ export function buildLegBoundaries(navpack: NavPack): LegBoundary[] {
  */
 export function updateActiveNav(
   prev: ActiveNavState,
-  position: RoamPosition,
+  position: GloveboxPosition,
   navpack: NavPack,
   flatSteps: FlatStep[],
   routePts: [number, number][],

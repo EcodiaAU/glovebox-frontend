@@ -18,7 +18,7 @@
 // The output should drive the map camera and user puck DIRECTLY, bypassing
 // React state for zero-latency updates.
 
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -142,7 +142,7 @@ export class GpsInterpolator {
    * Feed a new Kalman-smoothed GPS fix into the interpolator.
    * Call this from the GPS watch callback (~1 Hz).
    */
-  pushFix(pos: RoamPosition): void {
+  pushFix(pos: GloveboxPosition): void {
     const now = performance.now();
 
     const fix: Fix = {

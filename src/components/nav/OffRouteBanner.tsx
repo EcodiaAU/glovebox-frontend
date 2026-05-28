@@ -16,7 +16,7 @@ export function OffRouteBanner({ visible, distFromRoute_m, hasCorridorGraph, onR
 
   return (
     <div
-      className="roam-nav-offroute"
+      className="glovebox-nav-offroute"
       style={{
         position: "absolute",
         top: "calc(env(safe-area-inset-top, 0px) + 12px)",
@@ -85,8 +85,8 @@ export function OffRouteBanner({ visible, distFromRoute_m, hasCorridorGraph, onR
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 950,
-                color: "var(--roam-danger)",
-                background: "var(--roam-surface)",
+                color: "var(--glovebox-danger)",
+                background: "var(--glovebox-surface)",
                 boxShadow: "var(--shadow-soft)",
               }}
               onPointerDown={(e) => {

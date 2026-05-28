@@ -15,7 +15,7 @@ export default function AppError({
   return (
     <div className="trip-wrap-center">
       <div className="trip-card" style={{ gap: 16, textAlign: "center" }}>
-        <div style={{ fontSize: 40, fontWeight: 800, color: "var(--roam-danger)" }}>!</div>
+        <div style={{ fontSize: 40, fontWeight: 800, color: "var(--glovebox-danger)" }}>!</div>
         <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>
           Something went wrong
         </h2>

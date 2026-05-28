@@ -11,8 +11,8 @@ import { assetsApi } from "@/lib/api/assets";
 import { rewriteStyleForLocalServer, isFullyOfflineCapable } from "@/lib/offline/basemapManager";
 import type { SavedPlace } from "@/lib/offline/savedPlacesStore";
 
-const SAVED_SOURCE = "roam_saved_pins";
-const SAVED_LAYER = "roam_saved_pins_layer";
+const SAVED_SOURCE = "glovebox_saved_pins";
+const SAVED_LAYER = "glovebox_saved_pins_layer";
 
 let pmtilesRegistered = false;
 
@@ -40,7 +40,7 @@ export function SavedPlacesMap({ places, onSelectPlace }: Props) {
     ensurePmtiles();
 
     async function init() {
-      const styleUrl = assetsApi.styleUrl("roam-basemap-vector-bright");
+      const styleUrl = assetsApi.styleUrl("glovebox-basemap-vector-bright");
       let style = await fetch(styleUrl).then((r) => r.json()) as StyleSpecification;
       if (isFullyOfflineCapable()) {
         style = rewriteStyleForLocalServer(style) as StyleSpecification;

@@ -1,4 +1,4 @@
-// roam-ui-v2/sos-screen.jsx
+// glovebox-ui-v2/sos-screen.jsx
 // Ported from prototype sos.jsx. Mock data initially; real services wire in v2.
 
 import { useState } from "react";

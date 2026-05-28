@@ -33,8 +33,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "var(--roam-bg, #0a0a0a)" }}>
-        <div style={{ color: "var(--roam-muted, #888)", fontSize: 14 }}>Loading…</div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "var(--glovebox-bg, #0a0a0a)" }}>
+        <div style={{ color: "var(--glovebox-muted, #888)", fontSize: 14 }}>Loading…</div>
       </div>
     );
   }
@@ -52,7 +52,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
-          background: "var(--roam-bg, #0a0a0a)",
+          background: "var(--glovebox-bg, #0a0a0a)",
           padding: "0 32px",
           gap: 16,
           textAlign: "center",
@@ -63,7 +63,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           height="48"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="var(--roam-muted, #888)"
+          stroke="var(--glovebox-muted, #888)"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -77,10 +77,10 @@ export function AuthGate({ children }: { children: ReactNode }) {
           <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
           <line x1="12" y1="20" x2="12.01" y2="20" />
         </svg>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "var(--roam-text, #f0ece4)" }}>
+        <div style={{ fontSize: 18, fontWeight: 700, color: "var(--glovebox-text, #f0ece4)" }}>
           No connection
         </div>
-        <div style={{ fontSize: 14, color: "var(--roam-muted, #888)", lineHeight: 1.5, maxWidth: 260 }}>
+        <div style={{ fontSize: 14, color: "var(--glovebox-muted, #888)", lineHeight: 1.5, maxWidth: 260 }}>
           Sign in requires internet. Once you&apos;ve signed in once, Glovebox works fully offline.
         </div>
       </div>

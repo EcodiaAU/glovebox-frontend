@@ -5,7 +5,7 @@
 
 /** Standard info card container */
 export const cardBase: React.CSSProperties = {
-  background: "var(--roam-surface-hover)",
+  background: "var(--glovebox-surface-hover)",
   borderRadius: "var(--r-card)",
   padding: "14px",
   marginBottom: 0,
@@ -23,7 +23,7 @@ export const cardHeaderRow: React.CSSProperties = {
 export const cardTitle: React.CSSProperties = {
   fontSize: "var(--font-sm)",
   fontWeight: 800,
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
   letterSpacing: "-0.1px",
 };
 
@@ -31,7 +31,7 @@ export const cardTitle: React.CSSProperties = {
 export const cardSubtitle: React.CSSProperties = {
   fontSize: "var(--font-xxs)",
   fontWeight: 600,
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   marginTop: 1,
 };
 
@@ -51,7 +51,7 @@ export const iconBox36: React.CSSProperties = {
   width: 36,
   height: 36,
   borderRadius: "var(--r-card)",
-  background: "var(--roam-surface-hover)",
+  background: "var(--glovebox-surface-hover)",
   display: "grid",
   placeItems: "center",
   flexShrink: 0,

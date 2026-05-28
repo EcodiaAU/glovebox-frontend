@@ -13,8 +13,8 @@
   position: fixed;
   z-index: 9001;
   min-width: 160px;
-  background: var(--roam-surface);
-  border: 1px solid var(--roam-border);
+  background: var(--glovebox-surface);
+  border: 1px solid var(--glovebox-border);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-heavy);
   padding: 6px;
@@ -41,13 +41,13 @@
 .header {
   font-size: 11px;
   font-weight: 700;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   padding: 4px 10px 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
-  border-bottom: 1px solid var(--roam-border);
+  border-bottom: 1px solid var(--glovebox-border);
   margin-bottom: 3px;
 }
 
@@ -62,7 +62,7 @@
   border-radius: var(--r-card);
   border: none;
   background: transparent;
-  color: var(--roam-text);
+  color: var(--glovebox-text);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -74,7 +74,7 @@
 }
 
 .item:active {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
   transform: scale(0.97);
   transition: background 40ms ease, transform 40ms ease;
 }

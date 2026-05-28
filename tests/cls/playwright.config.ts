@@ -6,7 +6,7 @@
  *   desktop          — Chromium 1280x800
  *
  * Locally: run `npm run dev` first (port 3000), then `npm run test:cls`.
- *          Override with ROAM_BASE_URL if you want to point at a built preview.
+ *          Override with GLOVEBOX_BASE_URL if you want to point at a built preview.
  *
  * CI: the webServer block starts `vite preview` automatically (requires a prior
  *     `npm run build` step in the workflow — see .github/workflows/cls-regression.yml).
@@ -19,7 +19,7 @@ const isCI = !!process.env.CI;
 // Local dev server is on 3000 (see vite.config.ts server.port).
 // CI always tests the built preview on 4173.
 const defaultURL = isCI ? 'http://localhost:4173' : 'http://localhost:3000';
-const baseURL = process.env.ROAM_BASE_URL ?? defaultURL;
+const baseURL = process.env.GLOVEBOX_BASE_URL ?? defaultURL;
 
 export default defineConfig({
   testDir: '.',

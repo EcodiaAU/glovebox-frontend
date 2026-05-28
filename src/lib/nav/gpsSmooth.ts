@@ -8,7 +8,7 @@
 //   - Process noise Q: how much the true position can change per second
 //   - Measurement noise R: how noisy the GPS is (use accuracy_m as proxy)
 
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 
 // ──────────────────────────────────────────────────────────────
 // Kalman filter state per axis
@@ -100,13 +100,13 @@ export function createGpsSmoother(): GpsSmoother {
 
 /**
  * Feed a raw GPS position through the Kalman filter.
- * Returns a smoothed RoamPosition.
+ * Returns a smoothed GloveboxPosition.
  *
  * The original position's metadata (accuracy, altitude, speed, timestamp)
  * are preserved - only lat/lng/heading are smoothed.
  */
-export function smoothPosition(smoother: GpsSmoother, pos: RoamPosition): {
-  smoothed: RoamPosition;
+export function smoothPosition(smoother: GpsSmoother, pos: GloveboxPosition): {
+  smoothed: GloveboxPosition;
   smoother: GpsSmoother;
 } {
   const t = pos.timestamp || Date.now();
@@ -147,7 +147,7 @@ export function smoothPosition(smoother: GpsSmoother, pos: RoamPosition): {
   }
 
   // Reuse a single object for the smoothed position to reduce GC pressure
-  const smoothed: RoamPosition = {
+  const smoothed: GloveboxPosition = {
     ...pos,
     lat: smoother.lat.x,
     lng: smoother.lng.x,

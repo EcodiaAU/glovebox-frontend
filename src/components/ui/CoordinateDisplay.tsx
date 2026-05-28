@@ -67,7 +67,7 @@ export const CoordinateDisplay = memo(function CoordinateDisplay({
         flexDirection: isCompact ? "row" : "column",
         alignItems: isCompact ? "center" : "flex-start",
         gap: isCompact ? 8 : 2,
-        background: "var(--roam-surface, #fff)",
+        background: "var(--glovebox-surface, #fff)",
         borderRadius: "var(--r-card, 6px)",
         padding: isCompact ? "6px 10px" : "8px 12px",
         border: "none",
@@ -89,7 +89,7 @@ export const CoordinateDisplay = memo(function CoordinateDisplay({
             fontWeight: 800,
             textTransform: "uppercase",
             letterSpacing: "0.08em",
-            color: dark ? "rgba(255, 255, 255, 0.5)" : "var(--roam-text-muted, #999)",
+            color: dark ? "rgba(255, 255, 255, 0.5)" : "var(--glovebox-text-muted, #999)",
             lineHeight: 1,
           }}
         >
@@ -101,7 +101,7 @@ export const CoordinateDisplay = memo(function CoordinateDisplay({
           fontFamily: "var(--ff-mono, monospace)",
           fontSize: isCompact ? 13 : 15,
           fontWeight: 700,
-          color: dark ? "rgba(255, 255, 255, 0.95)" : "var(--roam-accent, #B3541E)",
+          color: dark ? "rgba(255, 255, 255, 0.95)" : "var(--glovebox-accent, #B3541E)",
           lineHeight: 1.3,
           fontVariantNumeric: "tabular-nums",
           transition: "opacity 200ms",

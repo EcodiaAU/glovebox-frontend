@@ -34,7 +34,7 @@ import { Radio } from "lucide-react";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 
-const LIVE_NAVPACK_KEY = "roam_live_navpack";
+const LIVE_NAVPACK_KEY = "glovebox_live_navpack";
 // Poll overlays every 5 minutes (see trip/ClientPage.tsx for the same bump rationale).
 const OVERLAY_POLL_INTERVAL_MS = 300_000;
 
@@ -226,7 +226,7 @@ export default function LiveTripClientPage() {
   const effectiveGeom = navpack?.primary?.geometry ?? null;
   const effectivePosition = activeNav.isActive ? activeNav.lastPosition : geo.position;
 
-  const peekBase = `calc(100% - 220px - var(--roam-safe-bottom, 0px))`;
+  const peekBase = `calc(100% - 220px - var(--glovebox-safe-bottom, 0px))`;
   const sheetTransform = activeNav.isActive
     ? `translateY(calc(100% - 60px))`
     : `translateY(clamp(0px, calc(${peekBase} + ${offsetY + dragOffset}px), ${peekBase}))`;
@@ -235,18 +235,18 @@ export default function LiveTripClientPage() {
   // ── Error / loading gates ───────────────────────────────────────
   if (bootError) {
     return (
-      <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--roam-bg)", color: "var(--roam-text)", padding: 32, textAlign: "center" }}>
+      <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--glovebox-bg)", color: "var(--glovebox-text)", padding: 32, textAlign: "center" }}>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 950, color: "var(--roam-danger)", marginBottom: 12 }}>
+          <div style={{ fontSize: 16, fontWeight: 950, color: "var(--glovebox-danger)", marginBottom: 12 }}>
             No route loaded
           </div>
-          <div style={{ fontSize: 13, color: "var(--roam-text-muted)", marginBottom: 20 }}>
+          <div style={{ fontSize: 13, color: "var(--glovebox-text-muted)", marginBottom: 20 }}>
             {bootError}
           </div>
           <button
             type="button"
             className="trip-interactive"
-            style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--roam-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
+            style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--glovebox-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
             onClick={() => router("/new", { replace: true })}
           >
             Plan a Trip
@@ -258,8 +258,8 @@ export default function LiveTripClientPage() {
 
   if (!booted || !navpack || !effectiveGeom || !effectiveBbox) {
     return (
-      <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--roam-bg)" }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text-muted)" }}>Loading route…</div>
+      <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--glovebox-bg)" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--glovebox-text-muted)" }}>Loading route…</div>
       </div>
     );
   }
@@ -270,7 +270,7 @@ export default function LiveTripClientPage() {
       {/* Map Layer */}
       <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
         <TripMap
-          styleId="roam-basemap-hybrid"
+          styleId="glovebox-basemap-hybrid"
           stops={effectiveStops}
           geometry={effectiveGeom}
           bbox={effectiveBbox}
@@ -355,7 +355,7 @@ export default function LiveTripClientPage() {
                 style={{
                   fontSize: 20, fontWeight: 950, margin: 0,
                   display: "flex", alignItems: "center", gap: 10,
-                  color: "var(--roam-text)", letterSpacing: "-0.3px",
+                  color: "var(--glovebox-text)", letterSpacing: "-0.3px",
                 }}
               >
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -364,16 +364,16 @@ export default function LiveTripClientPage() {
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: 4,
                   padding: "2px 8px", borderRadius: 999,
-                  background: "var(--accent-tint)", color: "var(--roam-success)",
+                  background: "var(--accent-tint)", color: "var(--glovebox-success)",
                   fontSize: 11, fontWeight: 800, letterSpacing: "0.04em",
                   textTransform: "uppercase", flexShrink: 0,
-                  border: "1px solid var(--roam-border-strong)",
+                  border: "1px solid var(--glovebox-border-strong)",
                 }}>
                   <Radio size={10} strokeWidth={3} />
                   Live
                 </span>
               </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--roam-text-muted)", marginTop: 2 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--glovebox-text-muted)", marginTop: 2 }}>
                 Online only &middot; not saved to device
               </div>
             </div>
@@ -383,7 +383,7 @@ export default function LiveTripClientPage() {
         {/* Scrollable content */}
         <div style={{ flex: 1, overflow: "hidden", touchAction: "pan-y" }}>
           <div
-            className="roam-scroll"
+            className="glovebox-scroll"
             style={{
               height: "100%",
               overflowY: "auto",
@@ -398,7 +398,7 @@ export default function LiveTripClientPage() {
                   disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
                 />
                 {!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0) && (
-                  <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, color: "var(--roam-text-muted)", textAlign: "center" }}>
+                  <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, color: "var(--glovebox-text-muted)", textAlign: "center" }}>
                     Turn-by-turn data not available.
                   </div>
                 )}

@@ -49,8 +49,8 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
         height: outer,
         position: "relative",
         borderRadius: "50%",
-        border: "2px solid color-mix(in srgb, var(--roam-accent) 20%, transparent)",
-        background: "color-mix(in srgb, var(--roam-surface) 70%, transparent)",
+        border: "2px solid color-mix(in srgb, var(--glovebox-accent) 20%, transparent)",
+        background: "color-mix(in srgb, var(--glovebox-surface) 70%, transparent)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
       }}
@@ -61,7 +61,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
           position: "absolute",
           inset: (outer - inner) / 2 - 2, // account for outer border
           borderRadius: "50%",
-          border: "1px solid color-mix(in srgb, var(--roam-accent) 10%, transparent)",
+          border: "1px solid color-mix(in srgb, var(--glovebox-accent) 10%, transparent)",
         }}
       />
 
@@ -83,7 +83,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
               y={ly}
               textAnchor="middle"
               dominantBaseline="central"
-              fill={primary ? "var(--roam-accent, #B3541E)" : "var(--roam-text-muted, #999)"}
+              fill={primary ? "var(--glovebox-accent, #B3541E)" : "var(--glovebox-text-muted, #999)"}
               fontSize={cardinalFontSize}
               fontWeight={primary ? 700 : 500}
               style={{ userSelect: "none" }}
@@ -112,7 +112,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
             top: cx - needleLen,
             width: 1,
             height: needleLen,
-            background: "linear-gradient(to top, transparent, var(--roam-accent, #B3541E))",
+            background: "linear-gradient(to top, transparent, var(--glovebox-accent, #B3541E))",
             filter: "drop-shadow(0 0 8px rgba(179,84,30,0.4))",
           }}
         />
@@ -124,7 +124,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
             top: cx - needleLen - diamondSize / 2,
             width: diamondSize,
             height: diamondSize,
-            background: "var(--roam-accent, #B3541E)",
+            background: "var(--glovebox-accent, #B3541E)",
             transform: "rotate(45deg)",
             filter: "drop-shadow(0 0 8px rgba(179,84,30,0.4))",
           }}
@@ -147,7 +147,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
           style={{
             fontSize: degFontSize,
             fontWeight: 900,
-            color: "var(--roam-text, #1a1613)",
+            color: "var(--glovebox-text, #1a1613)",
             lineHeight: 1,
             fontVariantNumeric: "tabular-nums",
           }}
@@ -158,7 +158,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
           style={{
             fontSize: cardFontSize,
             fontWeight: 700,
-            color: "var(--roam-accent, #B3541E)",
+            color: "var(--glovebox-accent, #B3541E)",
             lineHeight: 1,
             letterSpacing: "0.1em",
             marginTop: 1,

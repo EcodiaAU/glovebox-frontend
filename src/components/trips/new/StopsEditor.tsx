@@ -87,7 +87,7 @@ const PIPELINE_STEPS: PipelineStep[] = [
     label: "Check road hazards",
     activeLabel: "Looking for road warnings…",
     doneLabel: "All clear",
-    color: "var(--roam-danger)",
+    color: "var(--glovebox-danger)",
   },
   {
     id: "bundle",
@@ -126,7 +126,7 @@ function Spinner({ color, size = 18 }: { color: string; size?: number }) {
       size={size}
       style={{
         color,
-        animation: "roam-spin 0.8s linear infinite",
+        animation: "glovebox-spin 0.8s linear infinite",
       }}
     />
   );
@@ -152,7 +152,7 @@ function ElapsedTimer({ startedAt }: { startedAt: number }) {
       style={{
         fontSize: 12,
         fontWeight: 600,
-        color: "var(--roam-text-muted)",
+        color: "var(--glovebox-text-muted)",
         fontVariantNumeric: "tabular-nums",
       }}
     >
@@ -198,7 +198,7 @@ function BuildProgressView({
       <div style={{ textAlign: "center" }}>
         <div style={{ position: "relative", width: 72, height: 72, margin: "0 auto 14px" }}>
           <svg width={72} height={72} viewBox="0 0 72 72" style={{ transform: "rotate(-90deg)" }}>
-            <circle cx={36} cy={36} r={30} fill="none" stroke="var(--roam-border)" strokeWidth={4} />
+            <circle cx={36} cy={36} r={30} fill="none" stroke="var(--glovebox-border)" strokeWidth={4} />
             <circle
               cx={36}
               cy={36}
@@ -216,13 +216,13 @@ function BuildProgressView({
           </svg>
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
             {isError ? (
-              <X size={26} style={{ color: "var(--roam-danger)" }} />
+              <X size={26} style={{ color: "var(--glovebox-danger)" }} />
             ) : isDone ? (
               <Check
                 size={26}
                 style={{
-                  color: "var(--roam-success)",
-                  animation: "roam-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  color: "var(--glovebox-success)",
+                  animation: "glovebox-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
               />
             ) : (
@@ -230,17 +230,17 @@ function BuildProgressView({
                 size={24}
                 style={{
                   color: "#3b82f6",
-                  animation: "roam-pulse 1.5s ease-in-out infinite",
+                  animation: "glovebox-pulse 1.5s ease-in-out infinite",
                 }}
               />
             )}
           </div>
         </div>
 
-        <div style={{ fontSize: 18, fontWeight: 800, color: "var(--roam-text)", letterSpacing: -0.3 }}>
+        <div style={{ fontSize: 18, fontWeight: 800, color: "var(--glovebox-text)", letterSpacing: -0.3 }}>
           {isError ? "Something went wrong" : isDone ? "You're all set!" : "Building your trip"}
         </div>
-        <div style={{ fontSize: 13, color: "var(--roam-text-muted)", marginTop: 4, fontWeight: 500 }}>
+        <div style={{ fontSize: 13, color: "var(--glovebox-text-muted)", marginTop: 4, fontWeight: 500 }}>
           {isError ? "Go back, check your stops, and try again" : isDone ? "Your trip is saved and works without internet" : "This only takes a moment"}
         </div>
         {!isDone && !isError && (
@@ -278,9 +278,9 @@ function BuildProgressView({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: isDoneStep ? `${step.color}1A` : isActive ? `${step.color}1A` : "var(--roam-surface)",
-                  border: isActive ? `1.5px solid ${step.color}40` : "1px solid var(--roam-border)",
-                  color: isDoneStep || isActive ? step.color : "var(--roam-text-muted)",
+                  background: isDoneStep ? `${step.color}1A` : isActive ? `${step.color}1A` : "var(--glovebox-surface)",
+                  border: isActive ? `1.5px solid ${step.color}40` : "1px solid var(--glovebox-border)",
+                  color: isDoneStep || isActive ? step.color : "var(--glovebox-text-muted)",
                   transition: "all 0.3s",
                   flexShrink: 0,
                 }}
@@ -293,7 +293,7 @@ function BuildProgressView({
                   style={{
                     fontSize: 13,
                     fontWeight: isActive ? 700 : 600,
-                    color: isActive ? "var(--roam-text)" : isDoneStep ? "var(--roam-text)" : "var(--roam-text-muted)",
+                    color: isActive ? "var(--glovebox-text)" : isDoneStep ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
                     transition: "color 0.3s",
                   }}
                 >
@@ -308,7 +308,7 @@ function BuildProgressView({
                   style={{
                     color: step.color,
                     flexShrink: 0,
-                    animation: "roam-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    animation: "glovebox-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                   }}
                 />
               )}
@@ -325,9 +325,9 @@ function BuildProgressView({
             padding: "10px 14px",
             borderRadius: "var(--r-card)",
             background: "var(--danger-tint)",
-            border: "1px solid var(--roam-border-strong)",
+            border: "1px solid var(--glovebox-border-strong)",
             fontSize: 12,
-            color: "var(--roam-danger)",
+            color: "var(--glovebox-danger)",
             fontWeight: 600,
             lineHeight: 1.4,
             wordBreak: "break-word",
@@ -354,9 +354,9 @@ function BuildProgressView({
             borderRadius: "var(--r-card)",
             fontSize: 14,
             fontWeight: 700,
-            color: "var(--roam-text)",
-            background: "var(--roam-surface)",
-            border: "1px solid var(--roam-border)",
+            color: "var(--glovebox-text)",
+            background: "var(--glovebox-surface)",
+            border: "1px solid var(--glovebox-border)",
             WebkitTapHighlightColor: "transparent",
           }}
         >
@@ -565,7 +565,7 @@ export function StopsEditor(props: {
   }, [isBuilding]);
 
   // Peek shows ~280px of content (higher than /trip since we need stops + buttons visible)
-  const peekY = `calc(100% - 680px - var(--roam-safe-bottom, 0px))`;
+  const peekY = `calc(100% - 680px - var(--glovebox-safe-bottom, 0px))`;
   const expandedY = "0px";
   const baseTransform = snapState === "peek" ? peekY : expandedY;
   const finalTransform = isDraggingState
@@ -600,8 +600,8 @@ export function StopsEditor(props: {
 
           <div className="trip-row-between" style={{ alignItems: "center" }}>
             <div style={{ minWidth: 0, flex: 1 }}>
-              <h1 className="trip-h1 roam-wrap-1">{isBuilding ? "Building Trip" : "Plan Trip"}</h1>
-              <div className="trip-muted-small roam-wrap-1" style={{ marginTop: 2 }}>
+              <h1 className="trip-h1 glovebox-wrap-1">{isBuilding ? "Building Trip" : "Plan Trip"}</h1>
+              <div className="trip-muted-small glovebox-wrap-1" style={{ marginTop: 2 }}>
                 {isBuilding ? "Getting your trip ready for the road" : "Add stops. Tap save. Done."}
               </div>
             </div>
@@ -612,7 +612,7 @@ export function StopsEditor(props: {
                 — it's a commercial CTA, not a routine action. */}
             <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
               <div
-                className="roam-action-cluster"
+                className="glovebox-action-cluster"
                 onPointerDown={(e) => e.stopPropagation()}
               >
                 <button
@@ -646,7 +646,7 @@ export function StopsEditor(props: {
                     display: "flex", alignItems: "center", gap: 5,
                     background: "linear-gradient(135deg, #122d1e 0%, var(--brand-eucalypt-dark, #1f5236) 40%, var(--brand-eucalypt, #2d6e40) 80%, #3d8f54 100%)",
                     borderRadius: "var(--r-card)", padding: "0 12px",
-                    height: 44, border: "1px solid var(--roam-border)", cursor: "pointer",
+                    height: 44, border: "1px solid var(--glovebox-border)", cursor: "pointer",
                     boxShadow: "0 2px 12px rgba(31,82,54,0.45), 0 1px 3px rgba(31,82,54,0.20), inset 0 1px 0 rgba(255,255,255,0.10)",
                     overflow: "hidden",
                     WebkitTapHighlightColor: "transparent",
@@ -746,8 +746,8 @@ export function StopsEditor(props: {
                   gap: 6,
                   padding: "2px 0",
                 }}>
-                  <Route size={11} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "var(--roam-text-muted)" }}>
+                  <Route size={11} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "var(--glovebox-text-muted)" }}>
                     {(props.navPack.primary.distance_m / 1000).toFixed(0)} km
                     {" · "}
                     {(() => {
@@ -781,7 +781,7 @@ export function StopsEditor(props: {
                     width: "100%",
                     padding: "13px 24px",
                     borderRadius: "var(--r-card)",
-                    border: "1px solid var(--roam-border-strong)",
+                    border: "1px solid var(--glovebox-border-strong)",
                     background: "linear-gradient(135deg, #5c1a0e 0%, var(--brand-ochre, #b5452e) 40%, #d4664a 70%, #e8956a 100%)",
                     color: "var(--on-color)",
                     fontSize: 15,
@@ -844,9 +844,9 @@ export function StopsEditor(props: {
                       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 5,
                       padding: "9px 12px",
                       borderRadius: "var(--r-card)",
-                      border: "1px solid var(--roam-border)",
-                      background: "var(--roam-surface-hover)",
-                      color: "var(--roam-text-muted)",
+                      border: "1px solid var(--glovebox-border)",
+                      background: "var(--glovebox-surface-hover)",
+                      color: "var(--glovebox-text-muted)",
                       fontSize: 12,
                       fontWeight: 700,
                       cursor: (props.canBuildRoute && !props.goingNow) ? "pointer" : "default",
@@ -855,7 +855,7 @@ export function StopsEditor(props: {
                     }}
                   >
                     {props.goingNow ? (
-                      <Loader2 size={13} style={{ animation: "roam-spin 0.8s linear infinite" }} />
+                      <Loader2 size={13} style={{ animation: "glovebox-spin 0.8s linear infinite" }} />
                     ) : (
                       <Route size={13} />
                     )}

@@ -1,4 +1,4 @@
-// roam-ui-v2/shared.tsx
+// glovebox-ui-v2/shared.tsx
 // Ported from the 2026-05-19 Claude Designs prototype.
 // Icons + pills + sheets + drawers + modals + buttons used by trip / guide / sos.
 

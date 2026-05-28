@@ -44,7 +44,7 @@ export function TripScreen({ tweaks, setTweak }) {
           style={tweaks.mapStyle}
           progress={isNav ? tweaks.navProgress : 0}
           showCar={isNav}
-          showRoamers={tweaks.nearbyRoamers}
+          showGloveboxers={tweaks.nearbyGloveboxers}
           clusterSize={tweaks.clusterSize}
           aiPois={navAiPois}
         />
@@ -278,7 +278,7 @@ export function TerrainChip({ surface }) {
   );
 }
 
-export function NearbyRoamersPill({ count = 0 }) {
+export function NearbyGloveboxersPill({ count = 0 }) {
   return (
     <div style={{
       display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -1080,7 +1080,7 @@ export function ShareTripModal({ onClose }) {
         <FauxMap width={360} height={200} style="terrain" clusterSize="small"/>
         <div style={{ position: 'absolute', left: 12, top: 12, padding: '4px 10px', borderRadius: 999,
           background: 'rgba(0,0,0,0.55)', color: 'white', fontWeight: 700, fontSize: 11 }}>
-          ROAM
+          GLOVEBOX
         </div>
         <div style={{ position: 'absolute', left: 12, bottom: 12, color: 'white', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>
           <div className="t-display" style={{ fontSize: 18, fontWeight: 700 }}>Birdsville → Innamincka</div>
@@ -1299,7 +1299,7 @@ export function TopOverlayRow({ tweaks }) {
       <NetworkPill state={tweaks.networkState} compact/>
       <TerrainChipCompact/>
       <div style={{ flex: 1 }}/>
-      <NearbyRoamersPillCompact count={tweaks.nearbyRoamers}/>
+      <NearbyGloveboxersPillCompact count={tweaks.nearbyGloveboxers}/>
       <AccountBtn/>
     </div>
   );
@@ -1317,7 +1317,7 @@ export function TerrainChipCompact() {
     </div>
   );
 }
-export function NearbyRoamersPillCompact({ count = 0 }) {
+export function NearbyGloveboxersPillCompact({ count = 0 }) {
   return (
     <div style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,

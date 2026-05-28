@@ -1,11 +1,11 @@
-// src/plugins/roam-carplay-bridge/web.ts
+// src/plugins/glovebox-carplay-bridge/web.ts
 //
 // Web fallback - no-ops. CarPlay only exists on iOS so on web (dev) the
 // bridge does nothing. addListener returns a remover that does nothing.
 
 import { WebPlugin } from "@capacitor/core";
 import type {
-  RoamCarPlayBridgePlugin,
+  GloveboxCarPlayBridgePlugin,
   CarPlayTrip,
   CarPlayHazard,
   CarPlayFuelStop,
@@ -13,7 +13,7 @@ import type {
   CarPlayDriverLocation,
 } from "./definitions";
 
-export class RoamCarPlayBridgeWeb extends WebPlugin implements RoamCarPlayBridgePlugin {
+export class GloveboxCarPlayBridgeWeb extends WebPlugin implements GloveboxCarPlayBridgePlugin {
   async setActiveTrip(_trip: CarPlayTrip): Promise<void> {}
   async clearActiveTrip(): Promise<void> {}
   async setHazards(_args: { hazards: CarPlayHazard[] }): Promise<void> {}

@@ -1,32 +1,32 @@
-// src/components/trip/NearbyRoamersIndicator.tsx
+// src/components/trip/NearbyGloveboxersIndicator.tsx
 
 /**
- * NearbyRoamersIndicator
+ * NearbyGloveboxersIndicator
  *
- * Compact dark-glass pill on the trip map showing how many roamers
+ * Compact dark-glass pill on the trip map showing how many gloveboxers
  * are predicted to be nearby. Tapping expands details.
  * Styled to match the map control buttons (layer toggle, FABs).
  */
 
 import { memo, useState } from "react";
-import type { NearbyRoamer } from "@/lib/types/peer";
+import type { NearbyGloveboxer } from "@/lib/types/peer";
 import { cardinalDir } from "@/lib/nav/geo";
 import { haptic } from "@/lib/native/haptics";
 
 type Props = {
-  roamers: NearbyRoamer[];
+  gloveboxers: NearbyGloveboxer[];
 };
 
 function confidenceColor(c: string): string {
   if (c === "high") return "var(--brand-eucalypt)";
   if (c === "medium") return "var(--brand-amber)";
-  return "var(--roam-text-muted)";
+  return "var(--glovebox-text-muted)";
 }
 
-export const NearbyRoamersIndicator = memo(function NearbyRoamersIndicator({ roamers }: Props) {
+export const NearbyGloveboxersIndicator = memo(function NearbyGloveboxersIndicator({ gloveboxers }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  if (roamers.length === 0) return null;
+  if (gloveboxers.length === 0) return null;
 
   return (
     <div style={styles.wrapper}>
@@ -34,14 +34,14 @@ export const NearbyRoamersIndicator = memo(function NearbyRoamersIndicator({ roa
         type="button"
         onClick={() => { haptic.selection(); setExpanded(!expanded); }}
         style={styles.pill}
-        aria-label={`${roamers.length} traveler${roamers.length > 1 ? "s" : ""} nearby`}
+        aria-label={`${gloveboxers.length} traveler${gloveboxers.length > 1 ? "s" : ""} nearby`}
         onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.95)"; }}
         onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = ""; }}
         onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = ""; }}
       >
         <span style={styles.dot} />
         <span style={styles.pillText}>
-          {roamers.length} traveler{roamers.length > 1 ? "s" : ""} nearby
+          {gloveboxers.length} traveler{gloveboxers.length > 1 ? "s" : ""} nearby
         </span>
         <svg
           width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -54,9 +54,9 @@ export const NearbyRoamersIndicator = memo(function NearbyRoamersIndicator({ roa
 
       {expanded && (
         <div style={styles.dropdown}>
-          {roamers.map((r) => (
-            <div key={r.user_id} style={styles.roamerRow}>
-              <div style={styles.roamerInfo}>
+          {gloveboxers.map((r) => (
+            <div key={r.user_id} style={styles.gloveboxerRow}>
+              <div style={styles.gloveboxerInfo}>
                 <span style={styles.distText}>~{r.distance_km}km</span>
                 <span style={styles.dirText}>
                   heading {cardinalDir(r.heading_deg)} at {Math.round(r.speed_kmh)}km/h
@@ -95,7 +95,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "0 14px",
     borderRadius: "var(--r-card)",
     background: "linear-gradient(160deg, rgba(45,110,64,0.92) 0%, rgba(31,82,54,0.96) 100%)",
-    border: "1px solid var(--roam-success)",
+    border: "1px solid var(--glovebox-success)",
     backdropFilter: "blur(16px)",
     WebkitBackdropFilter: "blur(16px)",
     boxShadow: "var(--shadow-medium)",
@@ -123,22 +123,22 @@ const styles: Record<string, React.CSSProperties> = {
     backdropFilter: "blur(20px)",
     WebkitBackdropFilter: "blur(20px)",
     borderRadius: "var(--r-card)",
-    border: "1px solid var(--roam-border)",
+    border: "1px solid var(--glovebox-border)",
     boxShadow: "var(--shadow-heavy)",
     padding: 8,
     minWidth: 220,
     marginTop: 4,
-    animation: "roam-fadeIn 200ms ease-out, roam-slideUp 220ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+    animation: "glovebox-fadeIn 200ms ease-out, glovebox-slideUp 220ms cubic-bezier(0.34, 1.56, 0.64, 1)",
     transformOrigin: "top right",
   },
-  roamerRow: {
+  gloveboxerRow: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "8px 10px",
     marginBottom: 2,
   },
-  roamerInfo: {
+  gloveboxerInfo: {
     display: "flex",
     flexDirection: "column",
     gap: 2,

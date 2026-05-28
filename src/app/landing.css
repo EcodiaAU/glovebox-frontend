@@ -167,16 +167,16 @@
    Sibling vocabulary to .gl-* (marketing page). Used on app surfaces
    that should feel like rooms with the marketing voice: login,
    paywall, guide chat. Opt-in via .ed wrapper on the surface root.
-   Themes via --roam-* tokens so it auto-adapts day / night.
+   Themes via --glovebox-* tokens so it auto-adapts day / night.
    ─────────────────────────────────────────────────────────────────── */
 .ed {
   --ed-font-serif: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
-  --ed-fg: var(--roam-text);
-  --ed-fg-soft: var(--roam-text-muted);
-  --ed-fg-trace: color-mix(in srgb, var(--roam-text) 35%, transparent);
-  --ed-fg-faint: color-mix(in srgb, var(--roam-text) 18%, transparent);
-  --ed-accent: var(--roam-accent);
-  --ed-bg: var(--roam-bg);
+  --ed-fg: var(--glovebox-text);
+  --ed-fg-soft: var(--glovebox-text-muted);
+  --ed-fg-trace: color-mix(in srgb, var(--glovebox-text) 35%, transparent);
+  --ed-fg-faint: color-mix(in srgb, var(--glovebox-text) 18%, transparent);
+  --ed-accent: var(--glovebox-accent);
+  --ed-bg: var(--glovebox-bg);
 
   font-family: var(--ed-font-serif);
   font-feature-settings: "kern", "liga", "dlig", "onum";
@@ -373,7 +373,7 @@
   color: var(--ed-fg-soft);
   line-height: 1.45;
 }
-.ed-notice-err { color: var(--roam-danger); }
+.ed-notice-err { color: var(--glovebox-danger); }
 
 /* Form rhythm: stacked, breathing room, no surrounding card. */
 .ed-form {

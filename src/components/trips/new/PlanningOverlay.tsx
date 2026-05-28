@@ -153,7 +153,7 @@ function Spinner() {
         borderRadius: "50%",
         border: "2px solid rgba(181,69,46,0.20)",
         borderTopColor: "var(--brand-ochre, #b5452e)",
-        animation: "roam-po-spin 0.75s linear infinite",
+        animation: "glovebox-po-spin 0.75s linear infinite",
         flexShrink: 0,
       }}
       aria-hidden
@@ -198,7 +198,7 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-end",
-          animation: "roam-po-fadein 0.3s ease both",
+          animation: "glovebox-po-fadein 0.3s ease both",
         }}
         role="status"
         aria-live="polite"
@@ -216,7 +216,7 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
             display: "flex",
             flexDirection: "column",
             paddingBottom: "var(--bottom-nav-height, calc(80px + env(safe-area-inset-bottom, 0px)))",
-            animation: "roam-po-slideup 0.35s cubic-bezier(0.22, 1, 0.36, 1) both",
+            animation: "glovebox-po-slideup 0.35s cubic-bezier(0.22, 1, 0.36, 1) both",
           }}
         >
           {/* ── Hero band ── */}
@@ -237,13 +237,13 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
             <div style={{
               position: "absolute", top: -60, right: -60,
               width: 200, height: 200, borderRadius: "50%",
-              border: "1px solid var(--roam-border)",
+              border: "1px solid var(--glovebox-border)",
               pointerEvents: "none",
             }} />
             <div style={{
               position: "absolute", top: -30, right: -30,
               width: 130, height: 130, borderRadius: "50%",
-              border: "1px solid var(--roam-border)",
+              border: "1px solid var(--glovebox-border)",
               pointerEvents: "none",
             }} />
 
@@ -329,7 +329,7 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
                       gap: 12,
                       padding: "7px 20px",
                       borderBottom: i < STEPS.length - 1
-                        ? "1px solid var(--roam-border, rgba(26,22,19,0.07))"
+                        ? "1px solid var(--glovebox-border, rgba(26,22,19,0.07))"
                         : "none",
                       opacity: waiting ? 0.32 : 1,
                       background: active ? "rgba(181,69,46,0.05)" : "transparent",
@@ -359,8 +359,8 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
                       <div style={{
                         fontSize: 13, fontWeight: 700,
                         color: done
-                          ? "var(--roam-text-muted, #7a7067)"
-                          : "var(--roam-text, #1a1613)",
+                          ? "var(--glovebox-text-muted, #7a7067)"
+                          : "var(--glovebox-text, #1a1613)",
                         lineHeight: 1.3,
                         letterSpacing: "-0.01em",
                       }}>
@@ -369,10 +369,10 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
                       {active && (
                         <div style={{
                           fontSize: 11, fontWeight: 500,
-                          color: "var(--roam-text-muted, #7a7067)",
+                          color: "var(--glovebox-text-muted, #7a7067)",
                           marginTop: 1,
                           lineHeight: 1.35,
-                          animation: "roam-po-quipin 0.3s ease both",
+                          animation: "glovebox-po-quipin 0.3s ease both",
                         }}>
                           {quip}
                         </div>
@@ -423,18 +423,18 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
 /* ─── Keyframes ──────────────────────────────────────────────────────────── */
 
 const KEYFRAMES = `
-@keyframes roam-po-fadein {
+@keyframes glovebox-po-fadein {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes roam-po-slideup {
+@keyframes glovebox-po-slideup {
   from { transform: translateY(24px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
-@keyframes roam-po-spin {
+@keyframes glovebox-po-spin {
   to { transform: rotate(360deg); }
 }
-@keyframes roam-po-quipin {
+@keyframes glovebox-po-quipin {
   from { opacity: 0; transform: translateY(3px); }
   to   { opacity: 1; transform: translateY(0); }
 }

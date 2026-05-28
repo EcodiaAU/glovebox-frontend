@@ -127,13 +127,13 @@ function CalendarPicker({ value, onChange, onClose }: {
 
   return (
     <div style={{
-      background: "var(--roam-surface)",
+      background: "var(--glovebox-surface)",
       borderRadius: "var(--r-card)",
-      border: "1px solid var(--roam-border)",
+      border: "1px solid var(--glovebox-border)",
       boxShadow: "var(--shadow-heavy)",
       overflow: "hidden",
       width: 280,
-      animation: "roam-fadeIn 0.15s ease-out",
+      animation: "glovebox-fadeIn 0.15s ease-out",
     }}>
       {/* Month/year header */}
       <div style={{
@@ -148,7 +148,7 @@ function CalendarPicker({ value, onChange, onClose }: {
           style={{
             all: "unset", cursor: "pointer", width: 44, height: 44, borderRadius: "var(--r-card)",
             display: "grid", placeItems: "center",
-            background: "var(--roam-surface-hover)", color: "var(--roam-text)",
+            background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text)",
             touchAction: "manipulation", WebkitTapHighlightColor: "transparent",
           }}
           aria-label="Previous month"
@@ -156,7 +156,7 @@ function CalendarPicker({ value, onChange, onClose }: {
           <ChevronLeft size={14} strokeWidth={2.5} />
         </button>
         <div style={{
-          fontSize: 13, fontWeight: 800, color: "var(--roam-text)", letterSpacing: "-0.2px",
+          fontSize: 13, fontWeight: 800, color: "var(--glovebox-text)", letterSpacing: "-0.2px",
         }}>
           {MONTHS[viewMonth]} {viewYear}
         </div>
@@ -166,7 +166,7 @@ function CalendarPicker({ value, onChange, onClose }: {
           style={{
             all: "unset", cursor: "pointer", width: 44, height: 44, borderRadius: "var(--r-card)",
             display: "grid", placeItems: "center",
-            background: "var(--roam-surface-hover)", color: "var(--roam-text)",
+            background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text)",
             touchAction: "manipulation", WebkitTapHighlightColor: "transparent",
           }}
           aria-label="Next month"
@@ -183,7 +183,7 @@ function CalendarPicker({ value, onChange, onClose }: {
         {DAYS_OF_WEEK.map((d) => (
           <div key={d} style={{
             textAlign: "center", fontSize: 9, fontWeight: 700,
-            color: "var(--roam-text-muted)", padding: "2px 0",
+            color: "var(--glovebox-text-muted)", padding: "2px 0",
             letterSpacing: "0.3px",
           }}>
             {d}
@@ -214,7 +214,7 @@ function CalendarPicker({ value, onChange, onClose }: {
                 borderRadius: "var(--r-card)",
                 fontSize: 13,
                 fontWeight: sel ? 900 : 600,
-                color: sel ? "var(--on-color)" : today ? "var(--brand-eucalypt)" : "var(--roam-text)",
+                color: sel ? "var(--on-color)" : today ? "var(--brand-eucalypt)" : "var(--glovebox-text)",
                 background: sel
                   ? "var(--brand-eucalypt)"
                   : today
@@ -281,9 +281,9 @@ function TimeScrollPicker({ value, onChange }: {
     <div style={{
       display: "flex",
       gap: 0,
-      background: "var(--roam-surface)",
+      background: "var(--glovebox-surface)",
       borderRadius: "var(--r-card)",
-      border: "1px solid var(--roam-border)",
+      border: "1px solid var(--glovebox-border)",
       overflow: "hidden",
       height: ITEM_H * 5,
       width: 160,
@@ -310,7 +310,7 @@ function TimeScrollPicker({ value, onChange }: {
           scrollSnapType: "y mandatory",
           position: "relative", zIndex: 1,
         }}
-        className="roam-scroll"
+        className="glovebox-scroll"
       >
         {/* Top/bottom spacers for center alignment */}
         <div style={{ height: ITEM_H * 2 }} />
@@ -329,7 +329,7 @@ function TimeScrollPicker({ value, onChange }: {
               scrollSnapAlign: "center",
               fontSize: hh === hour ? 17 : 14,
               fontWeight: hh === hour ? 900 : 500,
-              color: hh === hour ? "var(--roam-text)" : "var(--roam-text-muted)",
+              color: hh === hour ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
               cursor: "pointer",
               transition: "font-size 100ms, font-weight 100ms, color 100ms",
               fontVariantNumeric: "tabular-nums",
@@ -345,7 +345,7 @@ function TimeScrollPicker({ value, onChange }: {
       {/* Separator */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 18, fontWeight: 900, color: "var(--roam-text)",
+        fontSize: 18, fontWeight: 900, color: "var(--glovebox-text)",
         width: 16, flexShrink: 0, zIndex: 1,
       }}>
         :
@@ -359,7 +359,7 @@ function TimeScrollPicker({ value, onChange }: {
           scrollSnapType: "y mandatory",
           position: "relative", zIndex: 1,
         }}
-        className="roam-scroll"
+        className="glovebox-scroll"
       >
         <div style={{ height: ITEM_H * 2 }} />
         {minuteSlots.map((mm) => (
@@ -377,7 +377,7 @@ function TimeScrollPicker({ value, onChange }: {
               scrollSnapAlign: "center",
               fontSize: mm === minute ? 17 : 14,
               fontWeight: mm === minute ? 900 : 500,
-              color: mm === minute ? "var(--roam-text)" : "var(--roam-text-muted)",
+              color: mm === minute ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
               cursor: "pointer",
               transition: "font-size 100ms, font-weight 100ms, color 100ms",
               fontVariantNumeric: "tabular-nums",
@@ -502,7 +502,7 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
         <span style={{
-          fontSize: 10, fontWeight: 700, color: "var(--roam-text-muted)",
+          fontSize: 10, fontWeight: 700, color: "var(--glovebox-text-muted)",
           textTransform: "uppercase", letterSpacing: "0.04em",
           width: 48, flexShrink: 0,
         }}>
@@ -515,8 +515,8 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
             all: "unset", cursor: "pointer",
             display: "flex", alignItems: "center", gap: 5,
             height: 44, padding: "0 12px", borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
-            color: "var(--roam-text)", fontSize: 12, fontWeight: 700,
+            background: "var(--glovebox-surface-hover)",
+            color: "var(--glovebox-text)", fontSize: 12, fontWeight: 700,
             fontVariantNumeric: "tabular-nums",
             WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
           }}
@@ -531,8 +531,8 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
             all: "unset", cursor: "pointer",
             display: "flex", alignItems: "center", gap: 4,
             height: 44, padding: "0 12px", borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
-            color: "var(--roam-text)", fontSize: 13, fontWeight: 800,
+            background: "var(--glovebox-surface-hover)",
+            color: "var(--glovebox-text)", fontSize: 13, fontWeight: 800,
             fontVariantNumeric: "tabular-nums", letterSpacing: "-0.3px",
             WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
           }}
@@ -552,14 +552,14 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
           position: "fixed",
           top: pos.top, left: pos.left,
           zIndex: 90,
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           borderRadius: "var(--r-card)",
-          border: "1px solid var(--roam-border)",
+          border: "1px solid var(--glovebox-border)",
           boxShadow: "var(--shadow-heavy)",
           padding: "12px 14px",
           display: "flex", flexDirection: "column", gap: 8,
           minWidth: 240,
-          animation: "roam-fadeIn 0.12s ease-out",
+          animation: "glovebox-fadeIn 0.12s ease-out",
         }}
       >
         {showArrive && <FieldRow field="arrive" label="Arrive" />}
@@ -574,7 +574,7 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
             }}
             style={{
               all: "unset", cursor: "pointer",
-              fontSize: 11, fontWeight: 700, color: "var(--roam-danger)",
+              fontSize: 11, fontWeight: 700, color: "var(--glovebox-danger)",
               padding: "4px 0",
               WebkitTapHighlightColor: "transparent",
             }}
@@ -590,7 +590,7 @@ function SchedulePopover({ stop, onEdit, anchorRef, onClose }: {
           position: "fixed",
           top: subPos.top, left: subPos.left,
           zIndex: 100,
-          animation: "roam-fadeIn 0.1s ease-out",
+          animation: "glovebox-fadeIn 0.1s ease-out",
         }}>
           {subPicker.kind === "cal" ? (
             <CalendarPicker
@@ -630,7 +630,7 @@ function StopMarker({ type, idx }: { type?: string; idx?: number }) {
   const palette = (() => {
     if (type === "start") return { bg: "var(--brand-eucalypt)", fg: "var(--on-color)", label: "S" };
     if (type === "end")   return { bg: "var(--brand-ochre)",    fg: "var(--on-color)", label: "E" };
-    return { bg: "var(--roam-surface-hover)", fg: "var(--roam-text)", label: idx != null ? String(idx) : "·" };
+    return { bg: "var(--glovebox-surface-hover)", fg: "var(--glovebox-text)", label: idx != null ? String(idx) : "·" };
   })();
   return (
     <div
@@ -644,7 +644,7 @@ function StopMarker({ type, idx }: { type?: string; idx?: number }) {
         fontSize: 12, fontWeight: 900, lineHeight: 1,
         letterSpacing: "-0.2px",
         marginTop: 8,
-        border: type === "start" || type === "end" ? "none" : "1px solid var(--roam-border)",
+        border: type === "start" || type === "end" ? "none" : "1px solid var(--glovebox-border)",
       }}
     >
       {palette.label}
@@ -767,7 +767,7 @@ export function StopRow(props: {
         display: "flex",
         gap: 10,
         padding: "12px 0",
-        borderBottom: "1px solid var(--roam-border)",
+        borderBottom: "1px solid var(--glovebox-border)",
         alignItems: "flex-start",
         position: "relative",
       }}
@@ -787,7 +787,7 @@ export function StopRow(props: {
           <div className="trip-stop-input">
             <span className="trip-stop-input-leading" aria-hidden>
               {loading
-                ? <Loader2 size={16} style={{ animation: "roam-spin 1s linear infinite" }} />
+                ? <Loader2 size={16} style={{ animation: "glovebox-spin 1s linear infinite" }} />
                 : <Search size={16} />
               }
             </span>
@@ -807,7 +807,7 @@ export function StopRow(props: {
                 aria-label="Use my location"
               >
                 {props.isLocating
-                  ? <Loader2 size={16} style={{ animation: "roam-spin 0.8s linear infinite" }} />
+                  ? <Loader2 size={16} style={{ animation: "glovebox-spin 0.8s linear infinite" }} />
                   : <Crosshair size={16} />
                 }
                 <span className="trip-stop-input-action-label">
@@ -823,8 +823,8 @@ export function StopRow(props: {
               position: "absolute",
               top: "calc(100% + 6px)",
               left: 0, right: 0,
-              background: "var(--roam-surface)",
-              border: "1px solid var(--roam-border)",
+              background: "var(--glovebox-surface)",
+              border: "1px solid var(--glovebox-border)",
               borderRadius: "var(--r-card)",
               boxShadow: "var(--shadow-heavy)",
               zIndex: 50,
@@ -833,7 +833,7 @@ export function StopRow(props: {
               overflowY: "auto",
             }}>
               {results.length === 0 && !loading && (
-                <div style={{ padding: 16, fontSize: 14, color: "var(--roam-text-muted)", textAlign: "center" }}>
+                <div style={{ padding: 16, fontSize: 14, color: "var(--glovebox-text-muted)", textAlign: "center" }}>
                   No places found.
                 </div>
               )}
@@ -849,7 +849,7 @@ export function StopRow(props: {
                     boxSizing: "border-box",
                     background: "transparent",
                     border: "none",
-                    borderBottom: "1px solid var(--roam-border)",
+                    borderBottom: "1px solid var(--glovebox-border)",
                     textAlign: "left",
                     cursor: "pointer",
                     display: "flex",
@@ -859,8 +859,8 @@ export function StopRow(props: {
                     WebkitTapHighlightColor: "transparent",
                   }}
                 >
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "var(--roam-text)" }}>{it.name}</span>
-                  <span className="roam-wrap-1" style={{ fontSize: 12, color: "var(--roam-text-muted)" }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "var(--glovebox-text)" }}>{it.name}</span>
+                  <span className="glovebox-wrap-1" style={{ fontSize: 12, color: "var(--glovebox-text-muted)" }}>
                     {(() => {
                       const extra = it.extra as Record<string, unknown> | undefined;
                       const placeName = extra?.place_name as string | undefined;
@@ -887,7 +887,7 @@ export function StopRow(props: {
                 all: "unset", cursor: "pointer",
                 display: "inline-flex", alignItems: "center", gap: 5,
                 fontSize: 12, fontWeight: 700,
-                color: hasTimes ? "var(--brand-eucalypt)" : "var(--roam-text-muted)",
+                color: hasTimes ? "var(--brand-eucalypt)" : "var(--glovebox-text-muted)",
                 padding: "4px 8px", borderRadius: "var(--r-card)",
                 background: hasTimes ? "var(--accent-tint)" : "transparent",
                 WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
@@ -919,7 +919,7 @@ export function StopRow(props: {
               type="button"
               onClick={() => { haptic.selection(); props.onMoveUp(); }}
               className="trip-interactive trip-btn-icon"
-              style={{ width: 44, height: 44, background: "var(--roam-surface-raised)" }}
+              style={{ width: 44, height: 44, background: "var(--glovebox-surface-raised)" }}
               aria-label="Move up"
             >
               <ChevronUp size={16} />
@@ -930,7 +930,7 @@ export function StopRow(props: {
               type="button"
               onClick={() => { haptic.selection(); props.onMoveDown(); }}
               className="trip-interactive trip-btn-icon"
-              style={{ width: 44, height: 44, background: "var(--roam-surface-raised)" }}
+              style={{ width: 44, height: 44, background: "var(--glovebox-surface-raised)" }}
               aria-label="Move down"
             >
               <ChevronDown size={16} />

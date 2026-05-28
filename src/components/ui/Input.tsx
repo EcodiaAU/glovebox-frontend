@@ -24,8 +24,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         background: "var(--surface-muted)",
         borderRadius: "var(--r-btn)",
         border: error
-          ? "2px solid var(--roam-danger)"
-          : "2px solid var(--roam-border)",
+          ? "2px solid var(--glovebox-danger)"
+          : "2px solid var(--glovebox-border)",
         padding: "0 var(--space-lg)",
         minHeight: 52,
         transition: "border-color 200ms var(--ease-out)",
@@ -35,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       {icon && (
         <span
           style={{
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             display: "flex",
             flexShrink: 0,
           }}
@@ -52,7 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           outline: "none",
           fontSize: "var(--font-body)",
           fontWeight: 700,
-          color: "var(--roam-text)",
+          color: "var(--glovebox-text)",
           padding: "14px 0",
           minWidth: 0,
         }}

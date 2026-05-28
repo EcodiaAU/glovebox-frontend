@@ -109,7 +109,7 @@ export async function buildPlanBundle(args: BuildPlanBundleArgs): Promise<BuildP
     prefs = {},
     avoid = [],
     depart_at = null,
-    styleId = "roam-basemap-vector-bright",
+    styleId = "glovebox-basemap-vector-bright",
     existingNavPack = null,
     buffer_m = 15000,
     max_edges = 350000,

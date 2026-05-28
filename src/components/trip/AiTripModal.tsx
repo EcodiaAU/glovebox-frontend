@@ -8,7 +8,7 @@ import { shortId } from "@/lib/utils/ids";
 import type { TripStop } from "@/lib/types/trip";
 
 /* ── Session storage key (read by /new ClientPage) ─────────────────── */
-export const AI_TRIP_SEED_KEY = "roam_ai_trip_seed";
+export const AI_TRIP_SEED_KEY = "glovebox_ai_trip_seed";
 
 export type AiTripSeed = {
   title: string;
@@ -110,8 +110,8 @@ function StopPreviewRow({
         gap: 10,
         padding: "10px 12px",
         borderRadius: "var(--r-card)",
-        background: "var(--roam-surface-raised, var(--roam-surface))",
-        border: "1px solid var(--roam-border)",
+        background: "var(--glovebox-surface-raised, var(--glovebox-surface))",
+        border: "1px solid var(--glovebox-border)",
         animation: `aitm-stopIn 0.35s cubic-bezier(0.22,1,0.36,1) ${animDelay}ms both`,
       }}
     >
@@ -137,18 +137,18 @@ function StopPreviewRow({
             fontWeight: 800,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             marginBottom: 2,
           }}
         >
           {label}
         </div>
         <div
-          className="roam-wrap-2"
+          className="glovebox-wrap-2"
           style={{
             fontSize: 14,
             fontWeight: 750,
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             marginBottom: reason ? 3 : 0,
             lineHeight: 1.25,
           }}
@@ -159,7 +159,7 @@ function StopPreviewRow({
           <div
             style={{
               fontSize: 12,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               lineHeight: 1.4,
             }}
           >
@@ -182,7 +182,7 @@ function StopPreviewRow({
             width: 44,
             height: 44,
             borderRadius: "var(--r-card)",
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             flexShrink: 0,
             touchAction: "manipulation",
             WebkitTapHighlightColor: "transparent",
@@ -217,7 +217,7 @@ function GeneratingView({ quip }: { quip: string }) {
           width: 56,
           height: 56,
           borderRadius: "50%",
-          background: "var(--roam-surface-hover)",
+          background: "var(--glovebox-surface-hover)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -243,7 +243,7 @@ function GeneratingView({ quip }: { quip: string }) {
           style={{
             fontSize: 16,
             fontWeight: 800,
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             marginBottom: 6,
           }}
         >
@@ -254,7 +254,7 @@ function GeneratingView({ quip }: { quip: string }) {
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             lineHeight: 1.4,
             animation: "aitm-quipIn 0.3s ease both",
           }}
@@ -287,7 +287,7 @@ function BuildingView({ quip }: { quip: string }) {
           width: 56,
           height: 56,
           borderRadius: "50%",
-          background: "var(--roam-surface-hover)",
+          background: "var(--glovebox-surface-hover)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -313,7 +313,7 @@ function BuildingView({ quip }: { quip: string }) {
           style={{
             fontSize: 16,
             fontWeight: 800,
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             marginBottom: 6,
           }}
         >
@@ -324,7 +324,7 @@ function BuildingView({ quip }: { quip: string }) {
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             lineHeight: 1.4,
             animation: "aitm-quipIn 0.3s ease both",
           }}
@@ -339,7 +339,7 @@ function BuildingView({ quip }: { quip: string }) {
           width: "60%",
           height: 3,
           borderRadius: 2,
-          background: "var(--roam-border)",
+          background: "var(--glovebox-border)",
           overflow: "hidden",
           marginTop: 4,
         }}
@@ -348,7 +348,7 @@ function BuildingView({ quip }: { quip: string }) {
           style={{
             height: "100%",
             borderRadius: 2,
-            background: "var(--roam-accent)",
+            background: "var(--glovebox-accent)",
             animation: "aitm-progress 2s ease-in-out infinite",
           }}
         />
@@ -494,8 +494,8 @@ export function AiTripModal({
 
       {/* Backdrop */}
       <div
-        className="roam-modal-backdrop"
-        data-roam-modal="ai-trip"
+        className="glovebox-modal-backdrop"
+        data-glovebox-modal="ai-trip"
         style={{
           position: "fixed",
           inset: 0,
@@ -511,8 +511,8 @@ export function AiTripModal({
       {/* Modal */}
       <div
         ref={modalRef}
-        className="roam-modal-sheet"
-        data-roam-modal="ai-trip"
+        className="glovebox-modal-sheet"
+        data-glovebox-modal="ai-trip"
         style={{
           position: "fixed",
           left: "50%",
@@ -522,7 +522,7 @@ export function AiTripModal({
             : "translateX(-50%) translateY(100%)",
           width: "min(100%, 440px)",
           maxHeight: "90dvh",
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           borderRadius: "24px 24px 0 0",
           boxShadow: "var(--shadow-sheet, 0 -8px 32px rgba(40,32,20,0.10))",
           zIndex: 51,
@@ -554,7 +554,7 @@ export function AiTripModal({
               width: 36,
               height: 5,
               borderRadius: 3,
-              background: "var(--roam-border-strong)",
+              background: "var(--glovebox-border-strong)",
               opacity: 0.6,
               margin: "0 auto",
             }}
@@ -577,7 +577,7 @@ export function AiTripModal({
                 width: 30,
                 height: 30,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
+                background: "var(--glovebox-surface-hover)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -590,7 +590,7 @@ export function AiTripModal({
                 style={{
                   fontSize: 16,
                   fontWeight: 900,
-                  color: "var(--roam-text)",
+                  color: "var(--glovebox-text)",
                   letterSpacing: "-0.01em",
                 }}
               >
@@ -611,8 +611,8 @@ export function AiTripModal({
                 width: 44,
                 height: 44,
                 borderRadius: "var(--r-card)",
-                background: "var(--roam-surface-hover)",
-                color: "var(--roam-text-muted)",
+                background: "var(--glovebox-surface-hover)",
+                color: "var(--glovebox-text-muted)",
                 touchAction: "manipulation",
                 WebkitTapHighlightColor: "transparent",
               }}
@@ -632,7 +632,7 @@ export function AiTripModal({
             {/* Scrollable body */}
             <div
               ref={scrollRef}
-              className="roam-scroll"
+              className="glovebox-scroll"
               style={{
                 flex: 1,
                 overflowY: "auto",
@@ -646,7 +646,7 @@ export function AiTripModal({
                   style={{
                     fontSize: 13,
                     fontWeight: 500,
-                    color: "var(--roam-text-muted)",
+                    color: "var(--glovebox-text-muted)",
                     lineHeight: 1.45,
                     marginBottom: 14,
                     animation: "aitm-fadeIn 0.3s ease both",
@@ -675,19 +675,19 @@ export function AiTripModal({
                     width: "100%",
                     boxSizing: "border-box",
                     resize: "none",
-                    background: "var(--roam-surface-raised, var(--roam-surface))",
-                    border: "1.5px solid var(--roam-border)",
+                    background: "var(--glovebox-surface-raised, var(--glovebox-surface))",
+                    border: "1.5px solid var(--glovebox-border)",
                     borderRadius: "var(--r-card)",
                     padding: "12px 14px",
                     fontSize: 14,
-                    color: "var(--roam-text)",
+                    color: "var(--glovebox-text)",
                     outline: "none",
                     lineHeight: 1.5,
                     fontFamily: "inherit",
                     transition: "border-color 0.15s",
                   }}
                   onFocus={(e) => { e.currentTarget.style.borderColor = "var(--brand-sky, #38bdf8)"; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--roam-border)"; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = "var(--glovebox-border)"; }}
                 />
               </div>
 
@@ -708,10 +708,10 @@ export function AiTripModal({
                   height: 48,
                   borderRadius: "var(--r-card)",
                   background: !vibe.trim()
-                    ? "var(--roam-surface-hover)"
+                    ? "var(--glovebox-surface-hover)"
                     : "#A8431F",
                   color: !vibe.trim()
-                    ? "var(--roam-text-muted)"
+                    ? "var(--glovebox-text-muted)"
                     : "#fff",
                   fontSize: 15,
                   fontWeight: 800,
@@ -769,7 +769,7 @@ export function AiTripModal({
                     style={{
                       fontSize: 15,
                       fontWeight: 900,
-                      color: "var(--roam-text)",
+                      color: "var(--glovebox-text)",
                       marginBottom: 4,
                       display: "flex",
                       alignItems: "center",
@@ -785,7 +785,7 @@ export function AiTripModal({
                     style={{
                       fontSize: 12,
                       fontWeight: 500,
-                      color: "var(--roam-text-muted)",
+                      color: "var(--glovebox-text-muted)",
                       marginBottom: 12,
                       paddingLeft: 22,
                     }}
@@ -814,7 +814,7 @@ export function AiTripModal({
                         marginTop: 10,
                         fontSize: 12,
                         fontWeight: 600,
-                        color: "var(--roam-text-muted)",
+                        color: "var(--glovebox-text-muted)",
                         textAlign: "center",
                       }}
                     >
@@ -831,7 +831,7 @@ export function AiTripModal({
                 style={{
                   padding: "12px 16px 4px",
                   flexShrink: 0,
-                  borderTop: "1px solid var(--roam-border)",
+                  borderTop: "1px solid var(--glovebox-border)",
                   animation: "aitm-fadeIn 0.3s ease 0.15s both",
                 }}
               >

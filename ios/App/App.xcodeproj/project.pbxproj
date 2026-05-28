@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15DC9F206F6F2E64A67749F7 /* RoamCarPlayBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448D1EFF53A1F021C428C6 /* RoamCarPlayBridge.swift */; };
+		15DC9F206F6F2E64A67749F7 /* GloveboxCarPlayBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448D1EFF53A1F021C428C6 /* GloveboxCarPlayBridge.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -15,7 +15,7 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
-		71D2DF0BF205092E0F18C4F0 /* RoamCarPlaySharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F587A7CC5FAEB87CE1DEE4 /* RoamCarPlaySharedState.swift */; };
+		71D2DF0BF205092E0F18C4F0 /* GloveboxCarPlaySharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F587A7CC5FAEB87CE1DEE4 /* GloveboxCarPlaySharedState.swift */; };
 		8F5C113429583AF0E7F68B21 /* CarPlayMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F448365EF9A5DE18900767E /* CarPlayMapViewController.swift */; };
 		922CEA754974A61852D2D86D /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1FEC5239D7075F0E04C605 /* CarPlaySceneDelegate.swift */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
@@ -37,11 +37,11 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
-		AE448D1EFF53A1F021C428C6 /* RoamCarPlayBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoamCarPlayBridge.swift; sourceTree = "<group>"; };
+		AE448D1EFF53A1F021C428C6 /* GloveboxCarPlayBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GloveboxCarPlayBridge.swift; sourceTree = "<group>"; };
 		AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
 		B0B1A0011FED79650016851F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		C5F587A7CC5FAEB87CE1DEE4 /* RoamCarPlaySharedState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoamCarPlaySharedState.swift; sourceTree = "<group>"; };
+		C5F587A7CC5FAEB87CE1DEE4 /* GloveboxCarPlaySharedState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GloveboxCarPlaySharedState.swift; sourceTree = "<group>"; };
 		CBA5B3BBDFBA9CB8CE5EEDBE /* Pods-App.release-carplay.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release-carplay.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release-carplay.xcconfig"; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,8 +96,8 @@
 				B0B1A0011FED79650016851F /* PrivacyInfo.xcprivacy */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
-				C5F587A7CC5FAEB87CE1DEE4 /* RoamCarPlaySharedState.swift */,
-				AE448D1EFF53A1F021C428C6 /* RoamCarPlayBridge.swift */,
+				C5F587A7CC5FAEB87CE1DEE4 /* GloveboxCarPlaySharedState.swift */,
+				AE448D1EFF53A1F021C428C6 /* GloveboxCarPlayBridge.swift */,
 				1B1FEC5239D7075F0E04C605 /* CarPlaySceneDelegate.swift */,
 				2E1C807C167161E79D63842D /* CarPlayNavigationCoordinator.swift */,
 				2F448365EF9A5DE18900767E /* CarPlayMapViewController.swift */,
@@ -239,8 +239,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
-				71D2DF0BF205092E0F18C4F0 /* RoamCarPlaySharedState.swift in Sources */,
-				15DC9F206F6F2E64A67749F7 /* RoamCarPlayBridge.swift in Sources */,
+				71D2DF0BF205092E0F18C4F0 /* GloveboxCarPlaySharedState.swift in Sources */,
+				15DC9F206F6F2E64A67749F7 /* GloveboxCarPlayBridge.swift in Sources */,
 				922CEA754974A61852D2D86D /* CarPlaySceneDelegate.swift in Sources */,
 				B431E83EFFEC85B118B8A894 /* CarPlayNavigationCoordinator.swift in Sources */,
 				8F5C113429583AF0E7F68B21 /* CarPlayMapViewController.swift in Sources */,
@@ -384,13 +384,13 @@
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 86PUY7393S;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = au.ecodia.roam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -409,13 +409,13 @@
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 86PUY7393S;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = au.ecodia.roam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -483,13 +483,13 @@
 				CODE_SIGN_ENTITLEMENTS = "App/App-CarPlay.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 86PUY7393S;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = au.ecodia.roam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

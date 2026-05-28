@@ -15,7 +15,7 @@ export function SyncStatusBadge() {
   if (!online) {
     return (
       <span style={styles.badge}>
-        <span style={{ ...styles.dot, background: "var(--roam-text-muted)" }} />
+        <span style={{ ...styles.dot, background: "var(--glovebox-text-muted)" }} />
         <span className="trip-muted-small">Offline</span>
       </span>
     );
@@ -41,8 +41,8 @@ export function SyncStatusBadge() {
 
   return (
     <span style={styles.badge}>
-      <span style={{ ...styles.dot, background: "var(--roam-success)" }} />
-      <span className="trip-muted-small" style={{ color: "var(--roam-success)" }}>Synced</span>
+      <span style={{ ...styles.dot, background: "var(--glovebox-success)" }} />
+      <span className="trip-muted-small" style={{ color: "var(--glovebox-success)" }}>Synced</span>
     </span>
   );
 }
@@ -53,7 +53,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 6,
     padding: "4px 8px",
-    background: "var(--roam-surface-hover)",
+    background: "var(--glovebox-surface-hover)",
     borderRadius: "var(--r-pill)",
   },
   dot: {

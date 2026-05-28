@@ -19,14 +19,14 @@
 //   FOREGROUND_SERVICE, FOREGROUND_SERVICE_LOCATION
 
 import { Geolocation } from "@capacitor/geolocation";
-import type { RoamPosition } from "./geolocation";
+import type { GloveboxPosition } from "./geolocation";
 
 let watchId: string | null = null;
-let lastPosition: RoamPosition | null = null;
+let lastPosition: GloveboxPosition | null = null;
 let currentMode: BackgroundLocationMode = "nav";
 let currentCallbacks: { onPosition?: PositionCallback; onError?: ErrorCallback } = {};
 
-export type PositionCallback = (pos: RoamPosition) => void;
+export type PositionCallback = (pos: GloveboxPosition) => void;
 export type ErrorCallback = (err: unknown) => void;
 
 // Battery-adaptive GPS mode. Caller flips between these based on nav state.
@@ -94,7 +94,7 @@ export async function startBackgroundTracking(
         }
         if (!position) return;
 
-        const rp: RoamPosition = {
+        const rp: GloveboxPosition = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
           accuracy: position.coords.accuracy ?? 999,
@@ -159,6 +159,6 @@ export function isBackgroundTracking(): boolean {
  * Get the last known position from background tracking.
  * Returns null if not tracking or no position received yet.
  */
-function getLastBackgroundPosition(): RoamPosition | null {
+function getLastBackgroundPosition(): GloveboxPosition | null {
   return lastPosition;
 }

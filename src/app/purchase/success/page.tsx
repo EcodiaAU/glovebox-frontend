@@ -227,7 +227,7 @@ function PurchaseSuccessInner() {
 
   // The whole page is always ochre-forward.
   // Polling = warm ochre wash. Unlocked = deeper, richer ochre.
-  // Both work in light and dark because we don't rely on --roam-bg.
+  // Both work in light and dark because we don't rely on --glovebox-bg.
 
   return (
     <div
@@ -353,7 +353,7 @@ function PurchaseSuccessInner() {
               background: "rgba(255,255,255,0.12)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid var(--roam-border-strong)",
+              border: "1px solid var(--glovebox-border-strong)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -365,7 +365,7 @@ function PurchaseSuccessInner() {
               strokeWidth={1.6}
               style={{
                 color: "var(--on-color)",
-                animation: "roam-spin 3s ease-in-out infinite",
+                animation: "glovebox-spin 3s ease-in-out infinite",
                 filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))",
               }}
             />
@@ -478,7 +478,7 @@ function PurchaseSuccessInner() {
             background: "rgba(255,255,255,0.15)",
             backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)",
             borderRadius: 999, padding: "5px 16px", marginBottom: 8,
-            border: "1px solid var(--roam-border-strong)",
+            border: "1px solid var(--glovebox-border-strong)",
             animation: "fade-up 0.5s ease 0.4s both",
           }}>
             <MapPin size={12} style={{ color: "rgba(255,255,255,0.85)" }} />
@@ -525,7 +525,7 @@ function PurchaseSuccessInner() {
                   background: "rgba(255,255,255,0.12)",
                   backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)",
                   borderRadius: 999, padding: "6px 14px 6px 10px",
-                  border: "1px solid var(--roam-border)",
+                  border: "1px solid var(--glovebox-border)",
                   animation: `pill-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) ${0.9 + i * 0.1}s both`,
                 }}
               >
@@ -568,7 +568,7 @@ function PurchaseSuccessInner() {
             width: 80, height: 80, borderRadius: "50%",
             background: "rgba(255,255,255,0.12)",
             backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-            border: "1px solid var(--roam-border-strong)",
+            border: "1px solid var(--glovebox-border-strong)",
             display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: "var(--shadow-heavy)",
           }}>
@@ -604,7 +604,7 @@ function PurchaseSuccessInner() {
               background: "rgba(255,255,255,0.15)",
               backdropFilter: "blur(8px)",
               WebkitBackdropFilter: "blur(8px)",
-              border: "1px solid var(--roam-border-strong)",
+              border: "1px solid var(--glovebox-border-strong)",
               color: "var(--on-color)", fontWeight: 700,
               cursor: "pointer", fontSize: 15,
               WebkitTapHighlightColor: "transparent",

@@ -17,13 +17,13 @@ const ROW: CSSProperties = {
   gap: 12,
   padding: "12px 14px",
   borderRadius: "var(--r-card)",
-  background: "var(--roam-surface)",
-  border: "1px solid var(--roam-border)",
+  background: "var(--glovebox-surface)",
+  border: "1px solid var(--glovebox-border)",
   width: "100%",
   cursor: "pointer",
   WebkitTapHighlightColor: "transparent",
   touchAction: "manipulation",
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
 };
 
 export function ThemeToggle() {
@@ -40,8 +40,8 @@ export function ThemeToggle() {
     >
       <span style={{
         width: 36, height: 36, borderRadius: 10,
-        background: "var(--accent-tint, color-mix(in srgb, var(--roam-accent) 12%, transparent))",
-        color: "var(--roam-accent)",
+        background: "var(--accent-tint, color-mix(in srgb, var(--glovebox-accent) 12%, transparent))",
+        color: "var(--glovebox-accent)",
         display: "flex", alignItems: "center", justifyContent: "center",
         flexShrink: 0,
       }}>
@@ -64,14 +64,14 @@ export function ThemeToggle() {
         )}
       </span>
       <div style={{ flex: 1, textAlign: "left", minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: "var(--roam-text)" }}>Theme</div>
-        <div style={{ fontSize: 12, color: "var(--roam-text-muted)", marginTop: 1 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "var(--glovebox-text)" }}>Theme</div>
+        <div style={{ fontSize: 12, color: "var(--glovebox-text-muted)", marginTop: 1 }}>
           {isDark ? "Night" : "Day"}
         </div>
       </div>
       <span style={{
         fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase",
-        color: "var(--roam-text-muted)",
+        color: "var(--glovebox-text-muted)",
       }}>
         Switch
       </span>

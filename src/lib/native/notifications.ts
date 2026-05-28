@@ -111,7 +111,7 @@ export async function initNotificationTapListener(): Promise<void> {
 
 /* ── Convenience: common Glovebox notifications ──────────────────────── */
 
-export const roamNotify = {
+export const gloveboxNotify = {
   bundleReady(planLabel?: string) {
     notify({
       title: "Bundle ready",
@@ -139,11 +139,11 @@ export const roamNotify = {
     });
   },
 
-  nearbyRoamer(distanceKm: number, direction: string) {
+  nearbyGloveboxer(distanceKm: number, direction: string) {
     notify({
       title: "Traveler nearby",
       body: `A fellow traveler is ~${distanceKm}km away, heading ${direction}. Pull over to exchange fresh road intel!`,
-      extra: { type: "nearby_roamer" },
+      extra: { type: "nearby_gloveboxer" },
     });
   },
 

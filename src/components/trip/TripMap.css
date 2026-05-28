@@ -6,12 +6,12 @@
 .layer-toggle-btn {
   position: relative;
   width: 44px; height: 44px; border-radius: var(--r-card, 14px);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
   cursor: pointer; display: grid; place-items: center;
   /* Theme-aware: light surface in day, dark glass in night (Tate 2026-05-28
      - was hardcoded dark in every theme). */
-  background: var(--roam-surface);
-  color: var(--roam-text);
+  background: var(--glovebox-surface);
+  color: var(--glovebox-text);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-medium);
   transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.2s ease;
@@ -58,7 +58,7 @@
   white-space: nowrap;
   pointer-events: none;
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
   box-shadow: var(--shadow-medium);
   animation: layer-hint-fade-in 0.4s ease-out;
 }
@@ -69,8 +69,8 @@
   transform: translateY(-50%) rotate(45deg);
   width: 8px; height: 8px;
   background: rgba(26,22,18,0.92);
-  border-right: 1px solid var(--roam-border);
-  border-bottom: 1px solid var(--roam-border);
+  border-right: 1px solid var(--glovebox-border);
+  border-bottom: 1px solid var(--glovebox-border);
 }
 @keyframes layer-hint-fade-in {
   from { opacity: 0; transform: translateY(-50%) translateX(6px); }
@@ -87,7 +87,7 @@
   background: linear-gradient(160deg, rgba(255,255,255,0.97) 0%, rgba(244,239,230,0.99) 100%);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-radius: var(--r-card);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
   box-shadow: var(--shadow-heavy);
   min-width: 150px;
   display: flex; flex-direction: column;
@@ -122,7 +122,7 @@
   background: rgba(26, 26, 26, 0.80);
   backdrop-filter: blur(20px) saturate(1.3);
   -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
   box-shadow: var(--shadow-heavy);
 }
 
@@ -135,7 +135,7 @@
 }
 .layer-menu-item--all {
   font-weight: 700;
-  border-bottom: 1px solid var(--roam-border);
+  border-bottom: 1px solid var(--glovebox-border);
 }
 [data-theme="tactical-night"] .layer-menu-item { color: var(--text-main); }
 [data-theme="tactical-night"] .layer-menu-item--all { border-bottom-color: rgba(255,255,255,0.08); }
@@ -158,7 +158,7 @@
 /* ── Map style section ── */
 .layer-menu-style-section {
   padding: 8px 8px 6px;
-  border-top: 1px solid var(--roam-border);
+  border-top: 1px solid var(--glovebox-border);
   display: flex; flex-direction: column; gap: 6px;
 }
 .layer-menu-style-label {
@@ -193,15 +193,15 @@
 .trip-map-popup .maplibregl-popup-content {
   border-radius: var(--r-card, 24px);
   padding: 16px 18px;
-  background: color-mix(in srgb, var(--roam-surface, #FFFFFF) 82%, transparent);
-  color: var(--roam-text);
+  background: color-mix(in srgb, var(--glovebox-surface, #FFFFFF) 82%, transparent);
+  color: var(--glovebox-text);
   backdrop-filter: blur(20px) saturate(170%);
   -webkit-backdrop-filter: blur(20px) saturate(170%);
   box-shadow:
     0 12px 40px rgba(26,26,26,0.12),
     0 2px 8px rgba(26,26,26,0.06),
     inset 0 1px 0 rgba(255,255,255,0.35);
-  border: 1px solid var(--roam-border-strong);
+  border: 1px solid var(--glovebox-border-strong);
 }
 [data-theme="tactical-night"] .trip-map-popup .maplibregl-popup-content {
   background: rgba(30, 30, 30, 0.75);
@@ -211,26 +211,26 @@
     0 12px 40px rgba(0,0,0,0.40),
     0 2px 8px rgba(0,0,0,0.25),
     inset 0 1px 0 rgba(255,255,255,0.06);
-  border: 1px solid var(--roam-border);
+  border: 1px solid var(--glovebox-border);
 }
 .trip-map-popup .maplibregl-popup-close-button {
   font-size: 16px;
   font-weight: 800;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
   padding: 4px 8px;
   border-radius: var(--r-card);
   transition: transform 80ms ease, background 120ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 .trip-map-popup .maplibregl-popup-close-button:hover {
-  background: var(--roam-surface-hover);
-  color: var(--roam-text);
+  background: var(--glovebox-surface-hover);
+  color: var(--glovebox-text);
 }
 .trip-map-popup .maplibregl-popup-close-button:active {
   transform: scale(0.88);
 }
 .trip-map-popup .maplibregl-popup-tip {
-  border-top-color: color-mix(in srgb, var(--roam-surface, #FFFFFF) 82%, transparent);
+  border-top-color: color-mix(in srgb, var(--glovebox-surface, #FFFFFF) 82%, transparent);
 }
 
 /* ==========================================================================
@@ -303,28 +303,28 @@
 /* ── High-contrast map chrome overrides ──────────────── */
 /* Attribution + logo stay visible over both light and dark tiles */
 .terra-map-container .maplibregl-ctrl-attrib {
-  background: color-mix(in srgb, var(--roam-surface) 85%, transparent);
+  background: color-mix(in srgb, var(--glovebox-surface) 85%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 6px;
   font-size: 9px;
   font-weight: 700;
-  color: var(--roam-text-muted);
+  color: var(--glovebox-text-muted);
 }
 
 /* Zoom controls match the design language */
 .terra-map-container .maplibregl-ctrl-group button {
-  background: var(--roam-surface);
-  color: var(--roam-text);
-  border-color: var(--roam-border);
+  background: var(--glovebox-surface);
+  color: var(--glovebox-text);
+  border-color: var(--glovebox-border);
 }
 .terra-map-container .maplibregl-ctrl-group button:hover {
-  background: var(--roam-surface-hover);
+  background: var(--glovebox-surface-hover);
 }
 [data-theme="tactical-night"] .terra-map-container .maplibregl-ctrl-group button {
   background: var(--surface-card);
   color: var(--text-main);
-  border-color: var(--roam-border);
+  border-color: var(--glovebox-border);
 }
 [data-theme="tactical-night"] .terra-map-container .maplibregl-ctrl-group button:hover {
   background: var(--surface-muted);

@@ -11,7 +11,7 @@
 // display. CPMapTemplate overlays the nav bar, panning controls, and
 // navigation alerts on top.
 //
-// Bound to RoamCarPlaySharedState through CarPlayNavigationCoordinator,
+// Bound to GloveboxCarPlaySharedState through CarPlayNavigationCoordinator,
 // which calls render*/clear* on this VC when state changes.
 
 import CarPlay
@@ -37,8 +37,8 @@ final class CarPlayMapViewController: UIViewController {
         // Initial follow on first render if state already has a fix.
         followDriverLocation()
         // Render any pre-existing hazards / fuel from shared state.
-        renderHazards(RoamCarPlaySharedState.shared.hazards)
-        renderFuelStops(RoamCarPlaySharedState.shared.fuelStops)
+        renderHazards(GloveboxCarPlaySharedState.shared.hazards)
+        renderFuelStops(GloveboxCarPlaySharedState.shared.fuelStops)
     }
 
     private func configureMapView() {
@@ -87,7 +87,7 @@ final class CarPlayMapViewController: UIViewController {
 
     // MARK: - Hazards
 
-    func renderHazards(_ hazards: [RoamCarPlaySharedState.Hazard]) {
+    func renderHazards(_ hazards: [GloveboxCarPlaySharedState.Hazard]) {
         if !hazardAnnotations.isEmpty {
             mapView.removeAnnotations(hazardAnnotations)
             hazardAnnotations = []
@@ -109,7 +109,7 @@ final class CarPlayMapViewController: UIViewController {
 
     // MARK: - Fuel stops
 
-    func renderFuelStops(_ stops: [RoamCarPlaySharedState.FuelStop]) {
+    func renderFuelStops(_ stops: [GloveboxCarPlaySharedState.FuelStop]) {
         if !fuelAnnotations.isEmpty {
             mapView.removeAnnotations(fuelAnnotations)
             fuelAnnotations = []
@@ -127,7 +127,7 @@ final class CarPlayMapViewController: UIViewController {
     // MARK: - Driver follow
 
     func followDriverLocation() {
-        guard let loc = RoamCarPlaySharedState.shared.driverLocation else { return }
+        guard let loc = GloveboxCarPlaySharedState.shared.driverLocation else { return }
         followDriver = true
         let coord = CLLocationCoordinate2D(latitude: loc.lat, longitude: loc.lng)
 
@@ -191,7 +191,7 @@ extension CarPlayMapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let point = annotation as? MKPointAnnotation else { return nil }
 
-        let id = "RoamCarPlayPin"
+        let id = "GloveboxCarPlayPin"
         let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) as? MKMarkerAnnotationView
             ?? MKMarkerAnnotationView(annotation: point, reuseIdentifier: id)
         view.annotation = point

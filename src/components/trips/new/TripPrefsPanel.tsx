@@ -23,7 +23,7 @@ type GroupMeta = {
 };
 
 const GROUPS: GroupMeta[] = [
-  { key: "essentials",     label: "Essentials",     Icon: Fuel,         color: "var(--roam-danger)" },
+  { key: "essentials",     label: "Essentials",     Icon: Fuel,         color: "var(--glovebox-danger)" },
   { key: "food",           label: "Food & Drink",   Icon: Utensils,     color: "#f59e0b" },
   { key: "accommodation",  label: "Accommodation",  Icon: Tent,         color: "#8b5cf6" },
   { key: "nature",         label: "Nature",         Icon: TreePine,     color: "#22c55e" },
@@ -119,7 +119,7 @@ export function TripPrefsPanel({
           style={{
             fontSize: 13,
             fontWeight: 700,
-            color: "var(--roam-text)",
+            color: "var(--glovebox-text)",
             flex: 1,
           }}
         >
@@ -131,7 +131,7 @@ export function TripPrefsPanel({
           viewBox="0 0 16 16"
           fill="none"
           style={{
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             transition: "transform 0.25s",
             transform: collapsed ? "rotate(0deg)" : "rotate(180deg)",
             flexShrink: 0,
@@ -174,10 +174,10 @@ export function TripPrefsPanel({
                 marginBottom: 8,
               }}
             >
-              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text)", letterSpacing: "-0.01em" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", letterSpacing: "-0.01em" }}>
                 Stops Along the Way
               </span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "var(--roam-text-muted)" }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: "var(--glovebox-text-muted)" }}>
                 {densityMeta.label}
               </span>
             </div>
@@ -200,19 +200,19 @@ export function TripPrefsPanel({
                   outline: "none",
                   cursor: "pointer",
                   ["--slider-fill" as keyof React.CSSProperties as string]:
-                    `linear-gradient(to right, #2563eb 0%, #2563eb ${((prefs.stop_density - 1) / 4) * 100}%, var(--roam-border, #d1d5db) ${((prefs.stop_density - 1) / 4) * 100}%, var(--roam-border, #d1d5db) 100%)`,
+                    `linear-gradient(to right, #2563eb 0%, #2563eb ${((prefs.stop_density - 1) / 4) * 100}%, var(--glovebox-border, #d1d5db) ${((prefs.stop_density - 1) / 4) * 100}%, var(--glovebox-border, #d1d5db) 100%)`,
                 } as React.CSSProperties}
               />
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "var(--roam-text-muted)" }}>Minimal</span>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "var(--roam-text-muted)" }}>Everything</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "var(--glovebox-text-muted)" }}>Minimal</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "var(--glovebox-text-muted)" }}>Everything</span>
               </div>
             </div>
 
             <div
               style={{
                 fontSize: 11,
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 fontWeight: 500,
                 marginTop: 4,
                 textAlign: "center",
@@ -224,7 +224,7 @@ export function TripPrefsPanel({
 
           {/* ── Category toggles ── */}
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text)", marginBottom: 8, letterSpacing: "-0.01em" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", marginBottom: 8, letterSpacing: "-0.01em" }}>
               What to Include
             </div>
 
@@ -254,7 +254,7 @@ export function TripPrefsPanel({
                       minHeight: 44,
                       boxSizing: "border-box",
                       borderRadius: "var(--r-card)",
-                      border: `1.5px solid ${on ? `${color}40` : "var(--roam-border)"}`,
+                      border: `1.5px solid ${on ? `${color}40` : "var(--glovebox-border)"}`,
                       background: on ? `${color}0A` : "transparent",
                       opacity: on ? 1 : 0.5,
                       transition: "all 0.2s",
@@ -264,7 +264,7 @@ export function TripPrefsPanel({
                     <Icon
                       size={14}
                       style={{
-                        color: on ? color : "var(--roam-text-muted)",
+                        color: on ? color : "var(--glovebox-text-muted)",
                         flexShrink: 0,
                         transition: "color 0.2s",
                       }}
@@ -273,7 +273,7 @@ export function TripPrefsPanel({
                       style={{
                         fontSize: 12,
                         fontWeight: on ? 700 : 600,
-                        color: on ? "var(--roam-text)" : "var(--roam-text-muted)",
+                        color: on ? "var(--glovebox-text)" : "var(--glovebox-text-muted)",
                         transition: "color 0.2s",
                       }}
                     >

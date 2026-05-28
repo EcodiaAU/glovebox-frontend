@@ -75,7 +75,7 @@ function SectionHeader({ title }: { title: string }) {
       fontWeight: 800,
       textTransform: "uppercase",
       letterSpacing: "0.6px",
-      color: "var(--roam-text-muted)",
+      color: "var(--glovebox-text-muted)",
       marginBottom: 8,
     }}>
       {title}
@@ -95,14 +95,14 @@ function AttrRow({ Icon, label, value, accent }: {
       alignItems: "flex-start",
       gap: 12,
       padding: "10px 0",
-      borderBottom: "1px solid var(--roam-border)",
+      borderBottom: "1px solid var(--glovebox-border)",
     }}>
       <div style={{
         width: 32,
         height: 32,
         borderRadius: "var(--r-card)",
-        background: accent ? `${accent}18` : "var(--roam-surface-hover)",
-        color: accent ?? "var(--roam-text-muted)",
+        background: accent ? `${accent}18` : "var(--glovebox-surface-hover)",
+        color: accent ?? "var(--glovebox-text-muted)",
         display: "grid",
         placeItems: "center",
         flexShrink: 0,
@@ -111,10 +111,10 @@ function AttrRow({ Icon, label, value, accent }: {
         <Icon size={15} strokeWidth={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: "var(--font-xs)", fontWeight: 700, color: "var(--roam-text-muted)", marginBottom: 2 }}>
+        <div style={{ fontSize: "var(--font-xs)", fontWeight: 700, color: "var(--glovebox-text-muted)", marginBottom: 2 }}>
           {label}
         </div>
-        <div style={{ fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--roam-text)", lineHeight: 1.4 }}>
+        <div style={{ fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--glovebox-text)", lineHeight: 1.4 }}>
           {value}
         </div>
       </div>
@@ -129,13 +129,13 @@ function BoolRow({ Icon, label, value }: { Icon: LucideIcon; label: string; valu
       alignItems: "center",
       gap: 10,
       padding: "8px 0",
-      borderBottom: "1px solid var(--roam-border)",
+      borderBottom: "1px solid var(--glovebox-border)",
     }}>
-      <Icon size={15} strokeWidth={2} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
-      <span style={{ flex: 1, fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--roam-text)" }}>{label}</span>
+      <Icon size={15} strokeWidth={2} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
+      <span style={{ flex: 1, fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--glovebox-text)" }}>{label}</span>
       {value
         ? <CheckCircle2 size={16} style={{ color: "var(--brand-eucalypt)", flexShrink: 0 }} />
-        : <XCircle size={16} style={{ color: "var(--roam-text-muted)", opacity: 0.4, flexShrink: 0 }} />
+        : <XCircle size={16} style={{ color: "var(--glovebox-text-muted)", opacity: 0.4, flexShrink: 0 }} />
       }
     </div>
   );
@@ -154,9 +154,9 @@ function FacilityChip({ label, active }: { label: string; active: boolean }) {
       borderRadius: "var(--r-pill)",
       fontSize: "var(--font-xs)",
       fontWeight: 700,
-      background: active ? "var(--accent-tint)" : "var(--roam-surface-hover)",
-      color: active ? "var(--brand-eucalypt)" : "var(--roam-text-muted)",
-      border: "1px solid var(--roam-border)",
+      background: active ? "var(--accent-tint)" : "var(--glovebox-surface-hover)",
+      color: active ? "var(--brand-eucalypt)" : "var(--glovebox-text-muted)",
+      border: "1px solid var(--glovebox-border)",
     }}>
       {active && <CheckCircle2 size={11} />}
       {label}
@@ -199,7 +199,7 @@ function ActionBtn({
       <span style={{
         fontSize: "var(--font-xxs)",
         fontWeight: 700,
-        color: "var(--roam-text-muted)",
+        color: "var(--glovebox-text-muted)",
         letterSpacing: "0.2px",
         textAlign: "center",
         lineHeight: 1.2,
@@ -439,7 +439,7 @@ export function PlaceDetailSheet({
         className="place-detail-sheet"
         data-visible={visible}
         style={{
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           borderRadius: "28px 28px 0 0",
           boxShadow: "var(--shadow-sheet)",
           transform: visible ? "translateY(0)" : "translateY(100%)",
@@ -472,7 +472,7 @@ export function PlaceDetailSheet({
             cursor: "grab",
             touchAction: "none",
             height: 150,
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             overflow: "hidden",
           }}
         >
@@ -483,7 +483,7 @@ export function PlaceDetailSheet({
               color={cc.accent}
               height={150}
               zoom={11}
-              styleId="roam-basemap-hybrid"
+              styleId="glovebox-basemap-hybrid"
               radius={0}
             />
           </Suspense>
@@ -564,11 +564,11 @@ export function PlaceDetailSheet({
               </div>
 
               <h1
-                className="roam-wrap-2"
+                className="glovebox-wrap-2"
                 style={{
                   fontSize: "var(--font-h1)",
                   fontWeight: 800,
-                  color: "var(--roam-text)",
+                  color: "var(--glovebox-text)",
                   lineHeight: 1.2,
                   margin: 0,
                   letterSpacing: "-0.3px",
@@ -584,11 +584,11 @@ export function PlaceDetailSheet({
                       key={i}
                       size={12}
                       fill={i < stars ? "var(--brand-amber)" : "none"}
-                      stroke={i < stars ? "var(--brand-amber)" : "var(--roam-text-muted)"}
+                      stroke={i < stars ? "var(--brand-amber)" : "var(--glovebox-text-muted)"}
                       strokeWidth={2}
                     />
                   ))}
-                  <span style={{ fontSize: "var(--font-xs)", color: "var(--roam-text-muted)", marginLeft: 4 }}>
+                  <span style={{ fontSize: "var(--font-xs)", color: "var(--glovebox-text-muted)", marginLeft: 4 }}>
                     {stars}-star
                   </span>
                 </div>
@@ -599,12 +599,12 @@ export function PlaceDetailSheet({
                 instead of the previous inline " · " separator (which broke awkwardly
                 when the third element wrapped to a new line). The open/closed status
                 is intentionally a pill — it's a state, not a stat. */}
-            <div className="roam-stat-row" style={{ marginTop: 6 }}>
+            <div className="glovebox-stat-row" style={{ marginTop: 6 }}>
               {dist && (
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: 4,
                   fontSize: "var(--font-sm)", fontWeight: 700,
-                  color: "var(--roam-text-muted)",
+                  color: "var(--glovebox-text-muted)",
                 }}>
                   <Navigation size={12} strokeWidth={2.5} />
                   {dist}
@@ -614,7 +614,7 @@ export function PlaceDetailSheet({
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: 4,
                   fontSize: "var(--font-sm)", fontWeight: 600,
-                  color: "var(--roam-text-muted)",
+                  color: "var(--glovebox-text-muted)",
                 }}>
                   <Flag size={11} strokeWidth={2.5} />
                   {kmFromStart.toFixed(0)} km from start
@@ -627,8 +627,8 @@ export function PlaceDetailSheet({
                   borderRadius: "var(--r-pill)",
                   fontSize: "var(--font-xs)",
                   fontWeight: 700,
-                  background: ohStatus.isOpen ? "var(--accent-tint)" : "var(--roam-surface-hover)",
-                  color: ohStatus.isOpen ? "var(--brand-eucalypt)" : "var(--roam-text-muted)",
+                  background: ohStatus.isOpen ? "var(--accent-tint)" : "var(--glovebox-surface-hover)",
+                  color: ohStatus.isOpen ? "var(--brand-eucalypt)" : "var(--glovebox-text-muted)",
                 }}>
                   <Clock size={10} strokeWidth={3} />
                   {ohStatus.label}
@@ -690,7 +690,7 @@ export function PlaceDetailSheet({
                   fontSize: "var(--font-sm)",
                   fontWeight: 500,
                   lineHeight: 1.55,
-                  color: "var(--roam-text)",
+                  color: "var(--glovebox-text)",
                 }}>
                   {guideDesc}
                 </p>
@@ -703,7 +703,7 @@ export function PlaceDetailSheet({
                 margin: 0,
                 fontSize: "var(--font-sm)",
                 lineHeight: 1.55,
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 fontWeight: 500,
               }}>
                 {descriptionStr}
@@ -725,7 +725,7 @@ export function PlaceDetailSheet({
                     <ActionBtn
                       Icon={Plus}
                       label="In trip"
-                      color="var(--roam-text-muted)"
+                      color="var(--glovebox-text-muted)"
                     />
                   </div>
                 ) : (
@@ -746,7 +746,7 @@ export function PlaceDetailSheet({
               {contextShowOnMap && (
                 <ActionBtn Icon={MapIcon} label="Map" color="var(--brand-sky)" onClick={handleShowOnMap} />
               )}
-              <ActionBtn Icon={Share2} label="Share" color="var(--roam-text-muted)" onClick={handleShare} />
+              <ActionBtn Icon={Share2} label="Share" color="var(--glovebox-text-muted)" onClick={handleShare} />
               {contextSave && (
                 <ActionBtn
                   Icon={Bookmark}
@@ -762,7 +762,7 @@ export function PlaceDetailSheet({
             {hasContact && (
               <div>
                 <SectionHeader title="Contact" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   {phone && (
                     <AttrRow
                       Icon={Phone}
@@ -810,22 +810,22 @@ export function PlaceDetailSheet({
             {extra.opening_hours && (
               <div>
                 <SectionHeader title="Hours" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   <AttrRow
                     Icon={Clock}
                     label="Opening Hours"
-                    accent={ohStatus?.isOpen ? "var(--brand-eucalypt)" : "var(--roam-text-muted)"}
+                    accent={ohStatus?.isOpen ? "var(--brand-eucalypt)" : "var(--glovebox-text-muted)"}
                     value={
                       <div>
                         <div style={{
                           fontWeight: 700,
-                          color: ohStatus?.isOpen ? "var(--brand-eucalypt)" : "var(--roam-danger)",
+                          color: ohStatus?.isOpen ? "var(--brand-eucalypt)" : "var(--glovebox-danger)",
                           marginBottom: 2,
                         }}>
                           {ohStatus?.isOpen ? "Open" : "Closed"}
                           {ohStatus?.nextLabel ? ` · ${ohStatus.nextLabel}` : ""}
                         </div>
-                        <div style={{ fontSize: "var(--font-xs)", color: "var(--roam-text-muted)", fontWeight: 500 }}>
+                        <div style={{ fontSize: "var(--font-xs)", color: "var(--glovebox-text-muted)", fontWeight: 500 }}>
                           {ohToHuman(String(extra.opening_hours))}
                         </div>
                       </div>
@@ -840,7 +840,7 @@ export function PlaceDetailSheet({
               <div>
                 <SectionHeader title="Fuel Available" />
                 {fuelPrices.length > 0 ? (
-                  <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                  <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                     {fuelPrices
                       .sort((a, b) => {
                         const order = ["unleaded", "e10", "premium_unleaded_95", "premium_unleaded_98", "diesel", "premium_diesel", "lpg"];
@@ -852,13 +852,13 @@ export function PlaceDetailSheet({
                           justifyContent: "space-between",
                           alignItems: "center",
                           padding: "10px 0",
-                          borderBottom: "1px solid var(--roam-border)",
+                          borderBottom: "1px solid var(--glovebox-border)",
                         }}>
-                          <span style={{ fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--roam-text-muted)", textTransform: "capitalize" }}>
+                          <span style={{ fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--glovebox-text-muted)", textTransform: "capitalize" }}>
                             <Fuel size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
                             {fp.fuel_type.replace(/_/g, " ")}
                           </span>
-                          <span style={{ fontSize: "var(--font-sm)", fontWeight: 800, color: "var(--roam-text)" }}>
+                          <span style={{ fontSize: "var(--font-sm)", fontWeight: 800, color: "var(--glovebox-text)" }}>
                             ${(fp.price_cents / 100).toFixed(2)}/L
                           </span>
                         </div>
@@ -873,8 +873,8 @@ export function PlaceDetailSheet({
                         fontSize: "var(--font-sm)",
                         fontWeight: 700,
                         background: "var(--severity-minor-tint)",
-                        color: "var(--roam-warn)",
-                        border: "1px solid var(--roam-border-strong)",
+                        color: "var(--glovebox-warn)",
+                        border: "1px solid var(--glovebox-border-strong)",
                         textTransform: "capitalize",
                       }}>
                         <Fuel size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: 4 }} />
@@ -904,34 +904,34 @@ export function PlaceDetailSheet({
                     fontWeight: 800,
                     marginBottom: 8,
                     background: evOperational ? "var(--accent-tint)" : "var(--danger-tint)",
-                    color: evOperational ? "var(--roam-success)" : "var(--roam-danger)",
+                    color: evOperational ? "var(--glovebox-success)" : "var(--glovebox-danger)",
                   }}>
                     {evOperational ? "Operational" : "Out of Service"}
                   </div>
                 )}
                 {evConnectors.length > 0 ? (
-                  <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                  <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                     {evConnectors.map((cn, i) => (
                       <div key={`${cn.type}-${i}`} style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
                         padding: "10px 0",
-                        borderBottom: "1px solid var(--roam-border)",
+                        borderBottom: "1px solid var(--glovebox-border)",
                       }}>
-                        <span style={{ fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--roam-text-muted)" }}>
+                        <span style={{ fontSize: "var(--font-sm)", fontWeight: 600, color: "var(--glovebox-text-muted)" }}>
                           <Zap size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
                           {cn.type}{cn.quantity > 1 ? ` x${cn.quantity}` : ""}
                         </span>
                         {cn.power_kw ? (
-                          <span style={{ fontSize: "var(--font-sm)", fontWeight: 800, color: "var(--roam-text)" }}>
+                          <span style={{ fontSize: "var(--font-sm)", fontWeight: 800, color: "var(--glovebox-text)" }}>
                             {cn.power_kw}kW
                           </span>
                         ) : null}
                       </div>
                     ))}
                     {evCost && (
-                      <div style={{ padding: "10px 0", fontSize: "var(--font-xs)", fontWeight: 600, color: "var(--roam-text-muted)" }}>
+                      <div style={{ padding: "10px 0", fontSize: "var(--font-xs)", fontWeight: 600, color: "var(--glovebox-text-muted)" }}>
                         {evCost}
                       </div>
                     )}
@@ -945,8 +945,8 @@ export function PlaceDetailSheet({
                         fontSize: "var(--font-sm)",
                         fontWeight: 700,
                         background: "rgba(16,185,129,0.1)",
-                        color: "var(--roam-success)",
-                        border: "1px solid var(--roam-success)",
+                        color: "var(--glovebox-success)",
+                        border: "1px solid var(--glovebox-success)",
                         textTransform: "capitalize",
                       }}>
                         <Zap size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: 4 }} />
@@ -959,9 +959,9 @@ export function PlaceDetailSheet({
                         borderRadius: "var(--r-pill)",
                         fontSize: "var(--font-sm)",
                         fontWeight: 700,
-                        background: "var(--roam-surface-hover)",
-                        color: "var(--roam-text-muted)",
-                        border: "1px solid var(--roam-border)",
+                        background: "var(--glovebox-surface-hover)",
+                        color: "var(--glovebox-text-muted)",
+                        border: "1px solid var(--glovebox-border)",
                       }}>
                         {evMaxPower}kW max
                       </span>
@@ -1009,9 +1009,9 @@ export function PlaceDetailSheet({
                       borderRadius: "var(--r-pill)",
                       fontSize: "var(--font-xs)",
                       fontWeight: 700,
-                      background: "var(--roam-surface-hover)",
-                      color: "var(--roam-text-muted)",
-                      border: "1px solid var(--roam-border)",
+                      background: "var(--glovebox-surface-hover)",
+                      color: "var(--glovebox-text-muted)",
+                      border: "1px solid var(--glovebox-border)",
                     }}>
                       {capacityStr} sites
                     </span>
@@ -1024,7 +1024,7 @@ export function PlaceDetailSheet({
             {hasDumpAttrs && (
               <div>
                 <SectionHeader title="Dump Point" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   {dumpType && <AttrRow Icon={Trash2} label="Type" value={dumpType.replace(/_/g, " ")} />}
                   {dumpAccess && <AttrRow Icon={Flag} label="Access" value={dumpAccess.replace(/_/g, " ")} />}
                   {dumpFee && <AttrRow Icon={Banknote} label="Fee" value={dumpFee} />}
@@ -1038,7 +1038,7 @@ export function PlaceDetailSheet({
             {hasWaterAttrs && (
               <div>
                 <SectionHeader title="Water" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   {waterType && <AttrRow Icon={Droplets} label="Water Type" value={waterType.replace(/_/g, " ")} accent="var(--brand-sky)" />}
                   {waterFlow && <AttrRow Icon={Droplets} label="Flow" value={waterFlow.replace(/_/g, " ")} />}
                   {waterTreated != null && <BoolRow Icon={CheckCircle2} label="Treated" value={waterTreated} />}
@@ -1051,7 +1051,7 @@ export function PlaceDetailSheet({
             {hasToiletAttrs && (
               <div>
                 <SectionHeader title="Toilets" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   {toiletType && <AttrRow Icon={Bath} label="Type" value={toiletType.replace(/_/g, " ")} />}
                   {toiletCount != null && <AttrRow Icon={Bath} label="Count" value={`${toiletCount} cubicles`} />}
                   {hasBabyChange && <BoolRow Icon={Baby} label="Baby change" value />}
@@ -1066,7 +1066,7 @@ export function PlaceDetailSheet({
             {hasShowerAttrs && (
               <div>
                 <SectionHeader title="Showers" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   {showerType && <AttrRow Icon={Thermometer} label="Type" value={`${showerType} shower`} />}
                   {showerCount != null && <AttrRow Icon={Bath} label="Count" value={`${showerCount} showers`} />}
                   {showerFee && <AttrRow Icon={Banknote} label="Fee" value={showerFee} />}
@@ -1079,7 +1079,7 @@ export function PlaceDetailSheet({
             {hasAccessCost && (
               <div>
                 <SectionHeader title="Access & Cost" />
-                <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+                <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                   {isFree && <BoolRow Icon={CheckCircle2} label="Free" value />}
                   {feeStr && <AttrRow Icon={Banknote} label="Fee" value={feeStr} accent="var(--brand-amber)" />}
                   {accessStr && <AttrRow Icon={Flag} label="Access" value={accessStr} />}
@@ -1094,9 +1094,9 @@ export function PlaceDetailSheet({
             {/* ── LOCATION ────────────────────────────────── */}
             <div>
               <SectionHeader title="Location" />
-              <div style={{ borderRadius: "var(--r-card)", background: "var(--roam-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
+              <div style={{ borderRadius: "var(--r-card)", background: "var(--glovebox-surface-hover)", overflow: "hidden", padding: "0 14px" }}>
                 {address && (
-                  <AttrRow Icon={MapPin} label="Address" value={address} accent="var(--roam-accent)" />
+                  <AttrRow Icon={MapPin} label="Address" value={address} accent="var(--glovebox-accent)" />
                 )}
                 <AttrRow
                   Icon={Compass}
@@ -1137,7 +1137,7 @@ export function PlaceDetailSheet({
                 <SectionHeader title="More Information" />
                 <div style={{
                   borderRadius: "var(--r-card)",
-                  background: "var(--roam-surface-hover)",
+                  background: "var(--glovebox-surface-hover)",
                   padding: 14,
                   display: "flex",
                   alignItems: "center",
@@ -1145,10 +1145,10 @@ export function PlaceDetailSheet({
                   gap: 12,
                 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "var(--font-sm)", fontWeight: 700, color: "var(--roam-text)", marginBottom: 2 }}>
+                    <div style={{ fontSize: "var(--font-sm)", fontWeight: 700, color: "var(--glovebox-text)", marginBottom: 2 }}>
                       Wikipedia article
                     </div>
-                    <div style={{ fontSize: "var(--font-xs)", color: "var(--roam-text-muted)", fontWeight: 500 }}>
+                    <div style={{ fontSize: "var(--font-xs)", color: "var(--glovebox-text-muted)", fontWeight: 500 }}>
                       {isOnline ? "Tap to read more on Wikipedia" : "Available when online"}
                     </div>
                   </div>
@@ -1178,7 +1178,7 @@ export function PlaceDetailSheet({
                       </button>
                     )
                     : (
-                      <WifiOff size={18} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
+                      <WifiOff size={18} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
                     )}
                 </div>
               </div>
@@ -1188,7 +1188,7 @@ export function PlaceDetailSheet({
             <div style={{
               textAlign: "center",
               fontSize: "var(--font-xxs)",
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               opacity: 0.7,
               paddingTop: 8,
             }}>

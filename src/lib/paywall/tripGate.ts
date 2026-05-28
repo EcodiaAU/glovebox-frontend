@@ -31,7 +31,7 @@ async function getPurchases() {
   return mod;
 }
 
-const KEY_TRIPS_USED = "roam_trips_used";
+const KEY_TRIPS_USED = "glovebox_trips_used";
 const KEY_UNLOCKED   = "roam_unlimited_unlocked";
 
 const RC_ENTITLEMENT_ID = "roam_unlimited";

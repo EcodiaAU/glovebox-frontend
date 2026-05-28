@@ -8,11 +8,11 @@
 
 /** Solid accent colour for a 0–10 route score. */
 export function scoreColor(score: number): string {
-  if (score >= 8) return "var(--roam-success)";
-  if (score >= 6) return "var(--roam-info)";
-  if (score >= 4) return "var(--roam-warn)";
+  if (score >= 8) return "var(--glovebox-success)";
+  if (score >= 6) return "var(--glovebox-info)";
+  if (score >= 4) return "var(--glovebox-warn)";
   if (score >= 2) return "var(--severity-moderate)";
-  return "var(--roam-danger)";
+  return "var(--glovebox-danger)";
 }
 
 /** 12%-alpha background tint matching scoreColor. */
@@ -36,12 +36,12 @@ export function severityColor(severity: string): { bg: string; text: string; ico
         icon: "var(--text-error, #ef4444)",
       };
     case "warn":
-      return { bg: "var(--bg-warn)", text: "var(--text-warn)", icon: "var(--roam-warn)" };
+      return { bg: "var(--bg-warn)", text: "var(--text-warn)", icon: "var(--glovebox-warn)" };
     default:
       return {
-        bg: "var(--roam-surface-hover)",
-        text: "var(--roam-text)",
-        icon: "var(--roam-info, #3b82f6)",
+        bg: "var(--glovebox-surface-hover)",
+        text: "var(--glovebox-text)",
+        icon: "var(--glovebox-info, #3b82f6)",
       };
   }
 }
@@ -54,6 +54,6 @@ export function legColor(leg: {
   gap_exceeds_warn: boolean;
 }): string {
   if (leg.gap_exceeds_range) return "var(--bg-error, #ef4444)";
-  if (leg.gap_exceeds_warn) return "var(--roam-warn)";
-  return "var(--roam-success)";
+  if (leg.gap_exceeds_warn) return "var(--glovebox-warn)";
+  return "var(--glovebox-success)";
 }

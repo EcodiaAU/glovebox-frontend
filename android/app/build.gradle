@@ -26,15 +26,15 @@ android {
     signingConfigs {
         release {
             if (hasKeystoreProperties) {
-                storeFile rootProject.file(keystoreProperties['storeFile'] ?: '../roam-release.keystore')
+                storeFile rootProject.file(keystoreProperties['storeFile'] ?: '../glovebox-release.keystore')
                 storePassword keystoreProperties['storePassword']
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
-            } else if (System.getenv('ROAM_KEYSTORE_PASSWORD')) {
-                storeFile rootProject.file(System.getenv('ROAM_KEYSTORE_FILE') ?: '../roam-release.keystore')
-                storePassword System.getenv('ROAM_KEYSTORE_PASSWORD')
-                keyAlias System.getenv('ROAM_KEY_ALIAS')
-                keyPassword System.getenv('ROAM_KEY_PASSWORD')
+            } else if (System.getenv('GLOVEBOX_KEYSTORE_PASSWORD')) {
+                storeFile rootProject.file(System.getenv('GLOVEBOX_KEYSTORE_FILE') ?: '../glovebox-release.keystore')
+                storePassword System.getenv('GLOVEBOX_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('GLOVEBOX_KEY_ALIAS')
+                keyPassword System.getenv('GLOVEBOX_KEY_PASSWORD')
             }
         }
     }
@@ -42,7 +42,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (hasKeystoreProperties || System.getenv('ROAM_KEYSTORE_PASSWORD')) {
+            if (hasKeystoreProperties || System.getenv('GLOVEBOX_KEYSTORE_PASSWORD')) {
                 signingConfig signingConfigs.release
             }
         }

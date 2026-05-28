@@ -25,14 +25,14 @@ export function TogglePill({
         gap: 5,
         borderRadius: 999,
         border: active
-          ? "1.5px solid var(--roam-accent)"
-          : "1.5px solid var(--roam-border-strong)",
+          ? "1.5px solid var(--glovebox-accent)"
+          : "1.5px solid var(--glovebox-border-strong)",
         padding: "8px 14px",
         minHeight: 44,
         fontSize: 13,
         fontWeight: 700,
         background: active ? "var(--accent-tint)" : "transparent",
-        color: active ? "var(--roam-accent)" : "var(--roam-text-muted)",
+        color: active ? "var(--glovebox-accent)" : "var(--glovebox-text-muted)",
         cursor: "pointer",
         whiteSpace: "nowrap",
         flexShrink: 0,

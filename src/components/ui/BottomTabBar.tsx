@@ -27,8 +27,8 @@ type Tab = {
 // backdrop so the bar reads as part of the app chrome rather than a
 // showy glass effect. Cheaper on older devices too.
 const NAV_STYLE: CSSProperties = {
-  backgroundColor: "color-mix(in srgb, var(--roam-bg) 92%, transparent)",
-  boxShadow: "0 -1px 3px color-mix(in srgb, var(--roam-text) 6%, transparent)",
+  backgroundColor: "color-mix(in srgb, var(--glovebox-bg) 92%, transparent)",
+  boxShadow: "0 -1px 3px color-mix(in srgb, var(--glovebox-text) 6%, transparent)",
 };
 
 // Safe-area leg below the nav - just continues the nav's surface colour
@@ -39,7 +39,7 @@ const SAFE_LEG_STYLE: CSSProperties = {
   left: 0,
   right: 0,
   height: "env(safe-area-inset-bottom, 0px)",
-  backgroundColor: "color-mix(in srgb, var(--roam-bg) 92%, transparent)",
+  backgroundColor: "color-mix(in srgb, var(--glovebox-bg) 92%, transparent)",
 };
 
 /* ── Icons ────────────────────────────────────────────────────────────
@@ -88,7 +88,7 @@ function IconGuide(active: boolean) {
         <>
           <circle fill="currentColor" cx="12" cy="12" r="10" />
           <path
-            fill="var(--roam-surface, #f4efe6)"
+            fill="var(--glovebox-surface, #f4efe6)"
             d="M14.5 7.5l-6 3-1 5 6-3z"
           />
         </>
@@ -142,8 +142,8 @@ function IconSos(active: boolean) {
             fill="currentColor"
             d="M12 2L4 6v5.1c0 5.1 3.4 9.8 8 11 4.6-1.2 8-5.9 8-11V6l-8-4z"
           />
-          <rect fill="var(--roam-surface, #f4efe6)" x="11" y="7" width="2" height="6" rx="1" />
-          <rect fill="var(--roam-surface, #f4efe6)" x="11" y="15" width="2" height="2" rx="1" />
+          <rect fill="var(--glovebox-surface, #f4efe6)" x="11" y="7" width="2" height="6" rx="1" />
+          <rect fill="var(--glovebox-surface, #f4efe6)" x="11" y="15" width="2" height="2" rx="1" />
         </>
       ) : (
         <>
@@ -201,8 +201,8 @@ export const BottomTabBar = memo(function BottomTabBar() {
   );
 
   return (
-    <div className="roam-tabs-wrap" role="navigation" aria-label="Primary">
-      <nav className="roam-tabs" role="tablist" aria-label="Primary tabs" style={NAV_STYLE}>
+    <div className="glovebox-tabs-wrap" role="navigation" aria-label="Primary">
+      <nav className="glovebox-tabs" role="tablist" aria-label="Primary tabs" style={NAV_STYLE}>
         {/* Safe-area blur extension - replaces CSS ::after */}
         <span aria-hidden="true" style={SAFE_LEG_STYLE} />
 
@@ -218,18 +218,18 @@ export const BottomTabBar = memo(function BottomTabBar() {
                 aria-selected={active}
                 aria-label={tab.label}
                 aria-current={active ? ("page" as const) : undefined}
-                className={cx("roam-tab roam-tab-center", active && "roam-tab-active")}
+                className={cx("glovebox-tab glovebox-tab-center", active && "glovebox-tab-active")}
                 data-active={active ? "true" : "false"}
                 draggable={false}
                 onClick={(e) => handleTabPress(e, tab.href, active)}
               >
-                <span className="roam-tab-bump" aria-hidden="true" />
-                <span className="roam-tab-inner">
-                  <span className="roam-tab-icon" aria-hidden="true">
+                <span className="glovebox-tab-bump" aria-hidden="true" />
+                <span className="glovebox-tab-inner">
+                  <span className="glovebox-tab-icon" aria-hidden="true">
                     {tab.icon(active)}
                   </span>
                 </span>
-                <span className="roam-tab-label">{tab.label}</span>
+                <span className="glovebox-tab-label">{tab.label}</span>
               </a>
             );
           }
@@ -243,18 +243,18 @@ export const BottomTabBar = memo(function BottomTabBar() {
               aria-label={tab.label}
               aria-current={active ? ("page" as const) : undefined}
               className={cx(
-                "roam-tab",
-                active && "roam-tab-active",
-                tab.emergency && "roam-tab-sos",
+                "glovebox-tab",
+                active && "glovebox-tab-active",
+                tab.emergency && "glovebox-tab-sos",
               )}
               data-active={active ? "true" : "false"}
               draggable={false}
               onClick={(e) => handleTabPress(e, tab.href, active)}
             >
-              <span className="roam-tab-icon" aria-hidden="true">
+              <span className="glovebox-tab-icon" aria-hidden="true">
                 {tab.icon(active)}
               </span>
-              <span className="roam-tab-label">{tab.label}</span>
+              <span className="glovebox-tab-label">{tab.label}</span>
             </a>
           );
         })}

@@ -24,19 +24,19 @@ const variantStyles: Record<ButtonVariant, React.CSSProperties> = {
     border: "none",
   },
   secondary: {
-    background: "var(--roam-accent)",
+    background: "var(--glovebox-accent)",
     color: "var(--on-color)",
     border: "none",
   },
   danger: {
-    background: "var(--roam-surface-hover)",
-    color: "var(--roam-danger)",
-    border: "2.5px solid var(--roam-border-strong)",
+    background: "var(--glovebox-surface-hover)",
+    color: "var(--glovebox-danger)",
+    border: "2.5px solid var(--glovebox-border-strong)",
   },
   ghost: {
     background: "transparent",
-    color: "var(--roam-text)",
-    border: "2.5px solid var(--roam-border-strong)",
+    color: "var(--glovebox-text)",
+    border: "2.5px solid var(--glovebox-border-strong)",
   },
 };
 
@@ -126,7 +126,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           ...style,
         }}
         // Active state via CSS - scale-down 95% + brightness shift
-        className="roam-btn-press"
+        className="glovebox-btn-press"
         {...props}
       >
         {loading ? (

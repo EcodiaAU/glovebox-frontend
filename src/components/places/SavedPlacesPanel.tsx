@@ -42,8 +42,8 @@ function NoteEditor({
     <div
       style={{
         padding: "10px 16px 12px",
-        background: "var(--roam-surface)",
-        borderTop: "1px solid var(--roam-border)",
+        background: "var(--glovebox-surface)",
+        borderTop: "1px solid var(--glovebox-border)",
       }}
     >
       <textarea
@@ -54,12 +54,12 @@ function NoteEditor({
         placeholder="Add a personal note…"
         style={{
           width: "100%",
-          background: "var(--roam-surface-hover)",
+          background: "var(--glovebox-surface-hover)",
           border: "none",
           borderRadius: "var(--r-card)",
           padding: "8px 12px",
           fontSize: 14,
-          color: "var(--roam-text)",
+          color: "var(--glovebox-text)",
           resize: "none",
           outline: "none",
           WebkitUserSelect: "auto",
@@ -73,14 +73,14 @@ function NoteEditor({
           type="button"
           onClick={onClose}
           style={{
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             border: "none",
             borderRadius: "var(--r-card)",
             padding: "10px 14px",
             minHeight: 44,
             fontSize: 13,
             fontWeight: 700,
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             cursor: "pointer",
             touchAction: "manipulation",
           }}
@@ -95,7 +95,7 @@ function NoteEditor({
             onClose();
           }}
           style={{
-            background: "var(--roam-accent)",
+            background: "var(--glovebox-accent)",
             border: "none",
             borderRadius: "var(--r-card)",
             padding: "10px 14px",
@@ -146,7 +146,7 @@ function SavedRow({
   return (
     <div
       style={{
-        borderBottom: "1px solid var(--roam-border)",
+        borderBottom: "1px solid var(--glovebox-border)",
       }}
     >
       {/* Main row */}
@@ -171,23 +171,23 @@ function SavedRow({
             width: 36,
             height: 36,
             borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             display: "grid",
             placeItems: "center",
             flexShrink: 0,
           }}
         >
-          <CatIcon size={17} style={{ color: "var(--roam-text-muted)" }} />
+          <CatIcon size={17} style={{ color: "var(--glovebox-text-muted)" }} />
         </div>
 
         {/* Text */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
-            className="roam-wrap-2"
+            className="glovebox-wrap-2"
             style={{
               fontSize: 14,
               fontWeight: 700,
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               lineHeight: 1.25,
             }}
           >
@@ -196,7 +196,7 @@ function SavedRow({
           <div
             style={{
               fontSize: 12,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               fontWeight: 500,
               marginTop: 1,
             }}
@@ -216,7 +216,7 @@ function SavedRow({
             style={{
               fontSize: 11,
               fontWeight: 700,
-              color: "var(--roam-accent)",
+              color: "var(--glovebox-accent)",
               flexShrink: 0,
               padding: "3px 8px",
               borderRadius: "var(--r-card)",
@@ -290,7 +290,7 @@ function ActionChip({
         minHeight: 44,
         fontSize: 12,
         fontWeight: 700,
-        color: danger ? "var(--roam-danger)" : "var(--roam-text-muted)",
+        color: danger ? "var(--glovebox-danger)" : "var(--glovebox-text-muted)",
         cursor: "pointer",
         transition: "transform 0.1s ease, opacity 0.1s ease",
         touchAction: "manipulation",
@@ -354,7 +354,7 @@ export function SavedPlacesPanel({
         style={{
           padding: "48px 24px",
           textAlign: "center",
-          color: "var(--roam-text-muted)",
+          color: "var(--glovebox-text-muted)",
           fontSize: 14,
           fontWeight: 600,
         }}
@@ -373,12 +373,12 @@ export function SavedPlacesPanel({
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             borderRadius: "var(--r-card)",
             padding: "8px 12px",
           }}
         >
-          <Search size={16} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
+          <Search size={16} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
           <input
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
@@ -390,7 +390,7 @@ export function SavedPlacesPanel({
               outline: "none",
               fontSize: 15,
               fontWeight: 500,
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               WebkitUserSelect: "auto",
               userSelect: "auto",
             }}
@@ -407,7 +407,7 @@ export function SavedPlacesPanel({
                 minWidth: 44,
                 minHeight: 44,
                 cursor: "pointer",
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -428,7 +428,7 @@ export function SavedPlacesPanel({
           padding: "8px 16px 4px",
           fontSize: 12,
           fontWeight: 700,
-          color: "var(--roam-text-muted)",
+          color: "var(--glovebox-text-muted)",
           flexShrink: 0,
         }}
       >
@@ -459,13 +459,13 @@ export function SavedPlacesPanel({
           >
             <Bookmark
               size={40}
-              style={{ color: "var(--roam-border-strong)", opacity: 0.4 }}
+              style={{ color: "var(--glovebox-border-strong)", opacity: 0.4 }}
             />
             <div
               style={{
                 fontSize: 15,
                 fontWeight: 700,
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
               }}
             >
               No saved places yet
@@ -474,7 +474,7 @@ export function SavedPlacesPanel({
               style={{
                 fontSize: 13,
                 fontWeight: 500,
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 maxWidth: 240,
                 lineHeight: 1.5,
               }}
@@ -487,7 +487,7 @@ export function SavedPlacesPanel({
             style={{
               padding: "32px 24px",
               textAlign: "center",
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               fontSize: 14,
               fontWeight: 600,
             }}

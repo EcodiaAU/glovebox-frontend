@@ -1,10 +1,10 @@
-// RoamCarPlaySharedState.swift
+// GloveboxCarPlaySharedState.swift
 //
-// In-process singleton holding cross-scene Roam state: the active trip,
+// In-process singleton holding cross-scene Glovebox state: the active trip,
 // the planned route geometry, hazards along the corridor, fuel stops,
 // the vehicle's fuel profile, and the driver's last known location.
 //
-// The phone scene writes to this state via the RoamCarPlayBridge Capacitor
+// The phone scene writes to this state via the GloveboxCarPlayBridge Capacitor
 // plugin. The CarPlay scene observes the NotificationCenter notification
 // fired on change and refreshes its templates.
 //
@@ -16,11 +16,11 @@ import Foundation
 import CoreLocation
 
 @available(iOS 14.0, *)
-final class RoamCarPlaySharedState {
+final class GloveboxCarPlaySharedState {
 
-    static let shared = RoamCarPlaySharedState()
+    static let shared = GloveboxCarPlaySharedState()
 
-    static let stateChangedNotification = Notification.Name("RoamCarPlayStateChanged")
+    static let stateChangedNotification = Notification.Name("GloveboxCarPlayStateChanged")
     static let changeKindKey = "kind"
 
     enum ChangeKind: String {

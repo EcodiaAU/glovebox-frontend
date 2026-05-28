@@ -1,4 +1,4 @@
-// roam-ui-v2/guide-screen.jsx
+// glovebox-ui-v2/guide-screen.jsx
 // Ported from prototype guide.jsx. Mock data; real services wire in v2.
 
 import { useEffect, useRef, useState } from "react";

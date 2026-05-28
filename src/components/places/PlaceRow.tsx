@@ -21,7 +21,7 @@ const ROW_STYLE: React.CSSProperties = {
   padding: "10px 16px",
   background: "none",
   border: "none",
-  borderBottom: "1px solid var(--roam-border)",
+  borderBottom: "1px solid var(--glovebox-border)",
   cursor: "pointer",
   textAlign: "left",
 };
@@ -32,12 +32,12 @@ const NAME_STYLE: React.CSSProperties = {
   ...textTruncate,
   fontSize: 14,
   fontWeight: 700,
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
 };
 
 const META_STYLE: React.CSSProperties = {
   fontSize: 12,
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   fontWeight: 500,
   marginTop: 2,
   display: "flex",
@@ -50,7 +50,7 @@ const META_STYLE: React.CSSProperties = {
 const PILL_STYLE: React.CSSProperties = {
   fontSize: 10,
   fontWeight: 700,
-  background: "var(--roam-surface-hover)",
+  background: "var(--glovebox-surface-hover)",
   borderRadius: 4,
   padding: "1px 5px",
 };
@@ -59,7 +59,7 @@ const PILL_STYLE: React.CSSProperties = {
 const DIST_INLINE_STYLE: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 800,
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
   whiteSpace: "nowrap",
   flexShrink: 0,
 };
@@ -67,7 +67,7 @@ const DIST_INLINE_STYLE: React.CSSProperties = {
 const AHEAD_STYLE: React.CSSProperties = {
   fontSize: 10,
   fontWeight: 700,
-  color: "var(--roam-success)",
+  color: "var(--glovebox-success)",
   display: "flex",
   alignItems: "center",
   gap: 2,
@@ -76,7 +76,7 @@ const AHEAD_STYLE: React.CSSProperties = {
 const BEHIND_STYLE: React.CSSProperties = {
   fontSize: 10,
   fontWeight: 700,
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   display: "flex",
   alignItems: "center",
   gap: 2,
@@ -98,9 +98,9 @@ const BOOKMARK_BTN_BASE: React.CSSProperties = {
 };
 
 const BOOKMARK_SAVED: React.CSSProperties = { ...BOOKMARK_BTN_BASE, color: "var(--brand-amber)" };
-const BOOKMARK_UNSAVED: React.CSSProperties = { ...BOOKMARK_BTN_BASE, color: "var(--roam-text-muted)" };
+const BOOKMARK_UNSAVED: React.CSSProperties = { ...BOOKMARK_BTN_BASE, color: "var(--glovebox-text-muted)" };
 
-const ICON_STYLE: React.CSSProperties = { color: "var(--roam-text-muted)" };
+const ICON_STYLE: React.CSSProperties = { color: "var(--glovebox-text-muted)" };
 
 export type PlaceRowProps = {
   place: PlaceItem;
@@ -175,7 +175,7 @@ export const PlaceRow = memo(function PlaceRow({ place, distKm, ahead, onSelect,
               style={{
                 fontSize: 10,
                 fontWeight: 700,
-                color: openStatus ? "var(--roam-success)" : "var(--roam-danger)",
+                color: openStatus ? "var(--glovebox-success)" : "var(--glovebox-danger)",
               }}
             >
               {openStatus ? "Open" : "Closed"}
@@ -196,7 +196,7 @@ export const PlaceRow = memo(function PlaceRow({ place, distKm, ahead, onSelect,
           style={BOOKMARK_BTN_BASE}
           aria-label="Show on map"
         >
-          <MapIcon size={16} style={{ color: "var(--roam-text-muted)" }} />
+          <MapIcon size={16} style={{ color: "var(--glovebox-text-muted)" }} />
         </button>
       )}
 

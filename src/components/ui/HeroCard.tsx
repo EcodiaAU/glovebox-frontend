@@ -83,7 +83,7 @@ export const HeroCard = forwardRef<HTMLDivElement, HeroCardProps>(
           flexDirection: "column",
           justifyContent: "flex-end",
           cursor: pressable ? "pointer" : undefined,
-          background: "var(--roam-surface)",
+          background: "var(--glovebox-surface)",
           boxShadow: "var(--shadow-heavy)",
           WebkitTapHighlightColor: "transparent",
           touchAction: "manipulation",
@@ -126,7 +126,7 @@ export const HeroCard = forwardRef<HTMLDivElement, HeroCardProps>(
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(to top, var(--roam-bg) 0%, transparent 60%, transparent 100%)",
+              "linear-gradient(to top, var(--glovebox-bg) 0%, transparent 60%, transparent 100%)",
             pointerEvents: "none",
           }}
         />
@@ -141,14 +141,14 @@ export const HeroCard = forwardRef<HTMLDivElement, HeroCardProps>(
               zIndex: 2,
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
-              background: "color-mix(in srgb, var(--roam-surface) 20%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--roam-border) 30%, transparent)",
+              background: "color-mix(in srgb, var(--glovebox-surface) 20%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--glovebox-border) 30%, transparent)",
               borderRadius: "var(--r-pill)",
               padding: "var(--space-xs) var(--space-md)",
               fontSize: "var(--font-xxs)",
               fontFamily: "var(--ff-display)",
               fontWeight: 700,
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               letterSpacing: "0.04em",
               textTransform: "uppercase" as const,
             }}
@@ -176,7 +176,7 @@ export const HeroCard = forwardRef<HTMLDivElement, HeroCardProps>(
               letterSpacing: "0.05em",
               lineHeight: 1.15,
               fontSize: "var(--font-h2)",
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               margin: 0,
             }}
           >
@@ -190,7 +190,7 @@ export const HeroCard = forwardRef<HTMLDivElement, HeroCardProps>(
                 fontWeight: 500,
                 fontSize: "var(--font-body)",
                 lineHeight: 1.5,
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 margin: 0,
               }}
             >

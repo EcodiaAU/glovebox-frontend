@@ -272,7 +272,7 @@ class PlanSyncManager {
     try {
       // Get all plans this user is a member of
       const { data: memberships, error: mErr } = await supabase
-        .from("roam_plan_members")
+        .from("glovebox_plan_members")
         .select("plan_id")
         .eq("user_id", this._userId);
 
@@ -286,7 +286,7 @@ class PlanSyncManager {
 
       // Fetch those plans
       const { data: rows, error: pErr } = await supabase
-        .from("roam_plans")
+        .from("glovebox_plans")
         .select("*")
         .in("plan_id", planIds);
 
@@ -353,11 +353,11 @@ class PlanSyncManager {
     const rec = await getOfflinePlan(planId);
     if (rec) {
       const row = localToCloud(rec, this._userId);
-      const { error: planErr } = await supabase.from("roam_plans").upsert(row, { onConflict: "plan_id" });
+      const { error: planErr } = await supabase.from("glovebox_plans").upsert(row, { onConflict: "plan_id" });
       if (planErr) throw new Error(`Failed to push plan for invite: ${planErr.message}`);
 
       // Ensure owner membership
-      const { error: memberErr } = await supabase.from("roam_plan_members").upsert(
+      const { error: memberErr } = await supabase.from("glovebox_plan_members").upsert(
         { plan_id: planId, user_id: this._userId, role: "owner" },
         { onConflict: "plan_id,user_id" },
       );
@@ -366,7 +366,7 @@ class PlanSyncManager {
 
     const code = this._generateCode();
 
-    const { error } = await supabase.from("roam_plan_invites").insert({
+    const { error } = await supabase.from("glovebox_plan_invites").insert({
       code,
       plan_id: planId,
       created_by: this._userId,
@@ -400,7 +400,7 @@ class PlanSyncManager {
 
     // 1. Look up the invite
     const { data: invite, error: e1 } = await supabase
-      .from("roam_plan_invites")
+      .from("glovebox_plan_invites")
       .select("*")
       .eq("code", code.toUpperCase().trim())
       .maybeSingle();
@@ -419,7 +419,7 @@ class PlanSyncManager {
     }
 
     // 2. Add self as editor member
-    const { error: e2 } = await supabase.from("roam_plan_members").upsert(
+    const { error: e2 } = await supabase.from("glovebox_plan_members").upsert(
       {
         plan_id: invite.plan_id,
         user_id: this._userId,
@@ -449,7 +449,7 @@ class PlanSyncManager {
 
   private async _pullSinglePlan(planId: string): Promise<void> {
     const { data: row, error } = await supabase
-      .from("roam_plans")
+      .from("glovebox_plans")
       .select("*")
       .eq("plan_id", planId)
       .maybeSingle();
@@ -494,13 +494,13 @@ class PlanSyncManager {
         const row = localToCloud(rec, this._userId);
 
         const { error } = await supabase
-          .from("roam_plans")
+          .from("glovebox_plans")
           .upsert(row, { onConflict: "plan_id" });
 
         if (error) throw new Error(`plan_upsert: ${error.message}`);
 
         // Also ensure we're an owner-member
-        const { error: memberErr } = await supabase.from("roam_plan_members").upsert(
+        const { error: memberErr } = await supabase.from("glovebox_plan_members").upsert(
           { plan_id: op.plan_id, user_id: this._userId, role: "owner" },
           { onConflict: "plan_id,user_id" },
         );
@@ -511,7 +511,7 @@ class PlanSyncManager {
       case "plan_delete": {
         // Only the owner can delete. If not owner, this is a no-op on the server.
         const { error } = await supabase
-          .from("roam_plans")
+          .from("glovebox_plans")
           .delete()
           .eq("plan_id", op.plan_id)
           .eq("owner_id", this._userId);
@@ -522,7 +522,7 @@ class PlanSyncManager {
 
       case "plan_label": {
         const { error } = await supabase
-          .from("roam_plans")
+          .from("glovebox_plans")
           .update({
             label: op.payload?.label ?? null,
             updated_at: new Date().toISOString(),
@@ -543,13 +543,13 @@ class PlanSyncManager {
 
   private _subscribeRealtime(userId: string) {
     this._channel = supabase
-      .channel("roam_plans_sync")
+      .channel("glovebox_plans_sync")
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
-          table: "roam_plans",
+          table: "glovebox_plans",
         },
         async (payload) => {
           const row = (payload.new ?? payload.old) as SupaPlanRow | undefined;
@@ -565,7 +565,7 @@ class PlanSyncManager {
 
           // INSERT or UPDATE - check if we're a member
           const { data: membership } = await supabase
-            .from("roam_plan_members")
+            .from("glovebox_plan_members")
             .select("plan_id")
             .eq("plan_id", row.plan_id)
             .eq("user_id", userId)

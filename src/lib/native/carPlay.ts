@@ -1,6 +1,6 @@
 // src/lib/native/carPlay.ts
 //
-// Thin wrapper around the RoamCarPlayBridge Capacitor plugin.
+// Thin wrapper around the GloveboxCarPlayBridge Capacitor plugin.
 // - Catches platform mismatch errors so callers don't need to gate on
 //   Capacitor.getPlatform() === "ios" themselves.
 // - Provides `useCarPlayBridgeSync` which pushes ActiveNav state + position
@@ -10,7 +10,7 @@
 import { useEffect, useRef } from "react";
 import { Capacitor } from "@capacitor/core";
 
-import { RoamCarPlayBridge } from "@/plugins/roam-carplay-bridge";
+import { GloveboxCarPlayBridge } from "@/plugins/glovebox-carplay-bridge";
 import type {
   CarPlayTrip,
   CarPlayHazard,
@@ -19,12 +19,12 @@ import type {
   CarPlayDriverLocation,
   CarPlayManeuver,
   CarPlayWaypoint,
-} from "@/plugins/roam-carplay-bridge";
+} from "@/plugins/glovebox-carplay-bridge";
 
 import type { NavPack, NavStep, NavLeg } from "@/lib/types/navigation";
 import type { TripStop } from "@/lib/types/trip";
 import type { ActiveNavState } from "@/lib/nav/activeNav";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 
 const isIos = (): boolean => Capacitor.getPlatform() === "ios";
 
@@ -46,31 +46,31 @@ const swallow = async <T>(p: Promise<T>): Promise<T | null> => {
 export const carPlay = {
   async setActiveTrip(trip: CarPlayTrip): Promise<void> {
     if (!isIos()) return;
-    await swallow(RoamCarPlayBridge.setActiveTrip(trip));
+    await swallow(GloveboxCarPlayBridge.setActiveTrip(trip));
   },
   async clearActiveTrip(): Promise<void> {
     if (!isIos()) return;
-    await swallow(RoamCarPlayBridge.clearActiveTrip());
+    await swallow(GloveboxCarPlayBridge.clearActiveTrip());
   },
   async setHazards(hazards: CarPlayHazard[]): Promise<void> {
     if (!isIos()) return;
-    await swallow(RoamCarPlayBridge.setHazards({ hazards }));
+    await swallow(GloveboxCarPlayBridge.setHazards({ hazards }));
   },
   async setFuelStops(fuelStops: CarPlayFuelStop[]): Promise<void> {
     if (!isIos()) return;
-    await swallow(RoamCarPlayBridge.setFuelStops({ fuelStops }));
+    await swallow(GloveboxCarPlayBridge.setFuelStops({ fuelStops }));
   },
   async setVehicle(vehicle: CarPlayVehicle): Promise<void> {
     if (!isIos()) return;
-    await swallow(RoamCarPlayBridge.setVehicle(vehicle));
+    await swallow(GloveboxCarPlayBridge.setVehicle(vehicle));
   },
   async setDriverLocation(location: CarPlayDriverLocation): Promise<void> {
     if (!isIos()) return;
-    await swallow(RoamCarPlayBridge.setDriverLocation(location));
+    await swallow(GloveboxCarPlayBridge.setDriverLocation(location));
   },
   async isConnected(): Promise<boolean> {
     if (!isIos()) return false;
-    const r = await swallow(RoamCarPlayBridge.isCarPlayConnected());
+    const r = await swallow(GloveboxCarPlayBridge.isCarPlayConnected());
     return r?.connected ?? false;
   },
 };
@@ -180,7 +180,7 @@ function navPackToCarPlayTrip(navpack: NavPack): CarPlayTrip | null {
 export interface CarPlayBridgeSyncOptions {
   navpack: NavPack | null;
   navStatus: ActiveNavState["status"];
-  lastPosition: RoamPosition | null;
+  lastPosition: GloveboxPosition | null;
   hazards?: CarPlayHazard[] | null;
   fuelStops?: CarPlayFuelStop[] | null;
   vehicle?: CarPlayVehicle | null;

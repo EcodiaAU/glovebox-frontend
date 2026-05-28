@@ -70,7 +70,7 @@ export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple 
     : null;
 
   return (
-    <div className="roam-nav-hud" style={{
+    <div className="glovebox-nav-hud" style={{
       position: "absolute",
       top: "calc(env(safe-area-inset-top, 0px) + 12px)",
       left: 12,
@@ -88,8 +88,8 @@ export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple 
           borderRadius: 18,
           /* Theme-aware: white in bright mode, near-black in tactical-night.
              Was hardcoded rgba(18,14,10,0.93) which never changed. */
-          background: "var(--c-nav-card, var(--roam-surface, #fff))",
-          border: "1px solid var(--c-border, var(--roam-border))",
+          background: "var(--c-nav-card, var(--glovebox-surface, #fff))",
+          border: "1px solid var(--c-border, var(--glovebox-border))",
           boxShadow: "var(--sh-floating, 0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10))",
           pointerEvents: "auto",
         }}
@@ -136,7 +136,7 @@ export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple 
         {/* Middle column: distance (big, accent) + short detail + current road name */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
-            className="t-display roam-wrap-1"
+            className="t-display glovebox-wrap-1"
             style={{
               fontWeight: 800,
               fontSize: simple ? 32 : 28,
@@ -150,24 +150,24 @@ export const NavigationHUD = memo(function NavigationHUD({ nav, visible, simple 
             {formatDistance(nav.distToNextManeuver_m)}
           </div>
           <div
-            className="roam-wrap-1"
+            className="glovebox-wrap-1"
             style={{
               marginTop: 3,
               fontSize: simple ? 13 : 12,
               fontWeight: 500,
-              color: "var(--c-text-muted, var(--roam-text-muted))",
+              color: "var(--c-text-muted, var(--glovebox-text-muted))",
             }}
           >
             {formatShort(displayStep)}
           </div>
           {streetText && (
             <div
-              className="roam-wrap-1"
+              className="glovebox-wrap-1"
               style={{
                 marginTop: 2,
                 fontSize: simple ? 16 : 15,
                 fontWeight: 700,
-                color: "var(--c-text, var(--roam-text))",
+                color: "var(--c-text, var(--glovebox-text))",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",

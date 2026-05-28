@@ -24,7 +24,7 @@ function Skel({
         width: w,
         height: h,
         borderRadius: r,
-        background: "var(--roam-surface-hover)",
+        background: "var(--glovebox-surface-hover)",
         animation: `guide-skel-pulse 1.6s ease-in-out infinite ${delay}s`,
         flexShrink: 0,
         ...style,
@@ -38,8 +38,8 @@ export function GuideSkeleton() {
     <div
       style={{
         height: "100%",
-        background: "var(--roam-bg)",
-        color: "var(--roam-text)",
+        background: "var(--glovebox-bg)",
+        color: "var(--glovebox-text)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -51,8 +51,8 @@ export function GuideSkeleton() {
           flexShrink: 0,
           zIndex: 50,
           padding: "calc(env(safe-area-inset-top, 0px) + 20px) 16px 0",
-          background: "var(--roam-bg)",
-          borderBottom: "1px solid var(--roam-border)",
+          background: "var(--glovebox-bg)",
+          borderBottom: "1px solid var(--glovebox-border)",
         }}
       >
         {/* Title row: 3-column grid - title | tabs | status pill */}
@@ -74,7 +74,7 @@ export function GuideSkeleton() {
                   gap: 6,
                   padding: "8px 14px",
                   height: 44,
-                  borderBottom: i === 0 ? "3px solid var(--roam-surface-hover)" : "3px solid transparent",
+                  borderBottom: i === 0 ? "3px solid var(--glovebox-surface-hover)" : "3px solid transparent",
                   marginBottom: "-1px",
                 }}
               >
@@ -115,7 +115,7 @@ export function GuideSkeleton() {
             alignSelf: "flex-start",
             maxWidth: "85%",
             borderRadius: "var(--r-card, 16px)",
-            background: "var(--roam-surface)",
+            background: "var(--glovebox-surface)",
             padding: "14px 16px",
             display: "flex",
             flexDirection: "column",

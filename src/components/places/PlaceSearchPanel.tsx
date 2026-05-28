@@ -229,7 +229,7 @@ type SortMode = "distance" | "alpha";
 // localStorage persistence key
 // ──────────────────────────────────────────────────────────────
 
-const LS_KEY = "roam:place_search_filter_v1";
+const LS_KEY = "glovebox:place_search_filter_v1";
 
 type PersistedState = {
   categories: PlaceCategory[];
@@ -727,12 +727,12 @@ export function PlaceSearchPanel({
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             borderRadius: "var(--r-card)",
             padding: "8px 12px",
           }}
         >
-          <Search size={16} style={{ color: "var(--roam-text-muted)", flexShrink: 0 }} />
+          <Search size={16} style={{ color: "var(--glovebox-text-muted)", flexShrink: 0 }} />
           <input
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
@@ -744,7 +744,7 @@ export function PlaceSearchPanel({
               outline: "none",
               fontSize: 15,
               fontWeight: 500,
-              color: "var(--roam-text)",
+              color: "var(--glovebox-text)",
               WebkitUserSelect: "auto",
               userSelect: "auto",
             }}
@@ -759,7 +759,7 @@ export function PlaceSearchPanel({
                 border: "none",
                 padding: 2,
                 cursor: "pointer",
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 display: "flex",
               }}
             >
@@ -776,8 +776,8 @@ export function PlaceSearchPanel({
             display: "flex",
             alignItems: "center",
             gap: 6,
-            background: filtersExpanded ? "var(--roam-accent)" : "var(--roam-surface-hover)",
-            color: filtersExpanded ? "var(--on-color)" : "var(--roam-text-muted)",
+            background: filtersExpanded ? "var(--glovebox-accent)" : "var(--glovebox-surface-hover)",
+            color: filtersExpanded ? "var(--on-color)" : "var(--glovebox-text-muted)",
             border: "none",
             borderRadius: "var(--r-card)",
             padding: "8px 12px",
@@ -861,7 +861,7 @@ export function PlaceSearchPanel({
         <div
           style={{
             padding: "10px 16px",
-            background: "var(--roam-surface)",
+            background: "var(--glovebox-surface)",
             margin: "8px 16px 0",
             borderRadius: "var(--r-card)",
             display: "flex",
@@ -884,7 +884,7 @@ export function PlaceSearchPanel({
               style={{
                 fontSize: 12,
                 fontWeight: 700,
-                color: "var(--roam-text-muted)",
+                color: "var(--glovebox-text-muted)",
                 marginBottom: 6,
               }}
             >
@@ -924,7 +924,7 @@ export function PlaceSearchPanel({
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "var(--roam-text-muted)",
+                  color: "var(--glovebox-text-muted)",
                   marginBottom: 6,
                 }}
               >
@@ -955,7 +955,7 @@ export function PlaceSearchPanel({
           flexShrink: 0,
         }}
       >
-        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--roam-text-muted)" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text-muted)" }}>
           {sorted.length === items.length
             ? `${items.length} places`
             : `${sorted.length} of ${items.length}`}
@@ -967,7 +967,7 @@ export function PlaceSearchPanel({
                 marginLeft: 8,
                 fontSize: 11,
                 fontWeight: 700,
-                color: "var(--roam-danger)",
+                color: "var(--glovebox-danger)",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
@@ -994,7 +994,7 @@ export function PlaceSearchPanel({
             fontSize: 12,
             fontWeight: 700,
             background: "transparent",
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             border: "none",
             borderRadius: "var(--r-card)",
             padding: "4px 8px",
@@ -1019,7 +1019,7 @@ export function PlaceSearchPanel({
               gap: 6,
               fontSize: 11,
               fontWeight: 800,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               textTransform: "uppercase",
               letterSpacing: 0.4,
               marginBottom: 6,
@@ -1057,7 +1057,7 @@ export function PlaceSearchPanel({
                     width: 30,
                     height: 30,
                     borderRadius: "var(--r-card)",
-                    background: "var(--roam-surface-hover)",
+                    background: "var(--glovebox-surface-hover)",
                     display: "grid",
                     placeItems: "center",
                     flexShrink: 0,
@@ -1066,8 +1066,8 @@ export function PlaceSearchPanel({
                   <CatIcon size={15} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trip-title roam-wrap-2">{p.name}</div>
-                  <div className="trip-muted-small roam-wrap-1 trip-mt-xs">{subtitle}</div>
+                  <div className="trip-title glovebox-wrap-2">{p.name}</div>
+                  <div className="trip-muted-small glovebox-wrap-1 trip-mt-xs">{subtitle}</div>
                 </div>
                 <button
                   type="button"
@@ -1077,8 +1077,8 @@ export function PlaceSearchPanel({
                     display: "flex",
                     alignItems: "center",
                     gap: 4,
-                    background: isAdding ? "var(--roam-surface-hover)" : "var(--accent-tint)",
-                    color: "var(--roam-accent)",
+                    background: isAdding ? "var(--glovebox-surface-hover)" : "var(--accent-tint)",
+                    color: "var(--glovebox-accent)",
                     border: "none",
                     borderRadius: "var(--r-card)",
                     padding: "6px 10px",
@@ -1111,7 +1111,7 @@ export function PlaceSearchPanel({
             justifyContent: "center",
             padding: "32px 24px",
             textAlign: "center",
-            color: "var(--roam-text-muted)",
+            color: "var(--glovebox-text-muted)",
             fontSize: 14,
             fontWeight: 600,
             minHeight: 0,
@@ -1161,15 +1161,15 @@ const CHIP_BASE: React.CSSProperties = {
 };
 
 const CHIP_STYLES = {
-  active:       { ...CHIP_BASE, padding: "7px 11px", fontSize: 13, fontWeight: 800, background: "var(--roam-surface-hover)", color: "var(--roam-text)", boxShadow: "var(--shadow-button)" } as React.CSSProperties,
-  inactive:     { ...CHIP_BASE, padding: "7px 11px", fontSize: 13, fontWeight: 800, background: "var(--roam-surface)", color: "var(--roam-text-muted)", boxShadow: "var(--shadow-soft)" } as React.CSSProperties,
-  activeSmall:  { ...CHIP_BASE, padding: "6px 10px", fontSize: 12, fontWeight: 800, background: "var(--roam-surface-hover)", color: "var(--roam-text)", boxShadow: "var(--shadow-button)" } as React.CSSProperties,
-  inactiveSmall:{ ...CHIP_BASE, padding: "6px 10px", fontSize: 12, fontWeight: 800, background: "var(--roam-surface)", color: "var(--roam-text-muted)", boxShadow: "var(--shadow-soft)" } as React.CSSProperties,
+  active:       { ...CHIP_BASE, padding: "7px 11px", fontSize: 13, fontWeight: 800, background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text)", boxShadow: "var(--shadow-button)" } as React.CSSProperties,
+  inactive:     { ...CHIP_BASE, padding: "7px 11px", fontSize: 13, fontWeight: 800, background: "var(--glovebox-surface)", color: "var(--glovebox-text-muted)", boxShadow: "var(--shadow-soft)" } as React.CSSProperties,
+  activeSmall:  { ...CHIP_BASE, padding: "6px 10px", fontSize: 12, fontWeight: 800, background: "var(--glovebox-surface-hover)", color: "var(--glovebox-text)", boxShadow: "var(--shadow-button)" } as React.CSSProperties,
+  inactiveSmall:{ ...CHIP_BASE, padding: "6px 10px", fontSize: 12, fontWeight: 800, background: "var(--glovebox-surface)", color: "var(--glovebox-text-muted)", boxShadow: "var(--shadow-soft)" } as React.CSSProperties,
 };
 
 const BADGE_STYLES = {
-  active:   { fontSize: 10, fontWeight: 800, background: "var(--roam-accent)", color: "var(--on-color)", borderRadius: 999, padding: "1px 5px", minWidth: 16, textAlign: "center", transition: "background 100ms ease, color 100ms ease" } as React.CSSProperties,
-  inactive: { fontSize: 10, fontWeight: 800, background: "var(--roam-border-strong)", color: "var(--roam-text-muted)", borderRadius: 999, padding: "1px 5px", minWidth: 16, textAlign: "center", transition: "background 100ms ease, color 100ms ease" } as React.CSSProperties,
+  active:   { fontSize: 10, fontWeight: 800, background: "var(--glovebox-accent)", color: "var(--on-color)", borderRadius: 999, padding: "1px 5px", minWidth: 16, textAlign: "center", transition: "background 100ms ease, color 100ms ease" } as React.CSSProperties,
+  inactive: { fontSize: 10, fontWeight: 800, background: "var(--glovebox-border-strong)", color: "var(--glovebox-text-muted)", borderRadius: 999, padding: "1px 5px", minWidth: 16, textAlign: "center", transition: "background 100ms ease, color 100ms ease" } as React.CSSProperties,
 };
 
 function chipStyle(active: boolean, small = false): React.CSSProperties {

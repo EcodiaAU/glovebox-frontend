@@ -34,7 +34,7 @@ const toastCard: React.CSSProperties = {
   alignItems: "flex-start",
   gap: 10,
   boxShadow: "0 8px 32px rgba(239,68,68,0.35), 0 2px 8px rgba(0,0,0,0.2)",
-  animation: "roam-fuel-toast-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+  animation: "glovebox-fuel-toast-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
 };
 
 const toastIcon: React.CSSProperties = {
@@ -148,7 +148,7 @@ export function FuelLastChanceToast({
       </div>
 
       <style>{`
-        @keyframes roam-fuel-toast-in {
+        @keyframes glovebox-fuel-toast-in {
           0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
           100% { opacity: 1; transform: translateY(0) scale(1); }
         }

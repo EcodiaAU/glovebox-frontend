@@ -81,7 +81,7 @@ export function EnrichmentBanner({ progress }: { progress: EnrichProgress | null
       <div className={`trip-enrichment-banner pointer-events-auto absolute left-4 top-[env(safe-area-inset-top,0px)] z-50 mt-2 ${animClass}`}>
         <div style={S.chipOuter}>
           <div style={S.chipInner}>
-            <AlertTriangle style={{ width: 16, height: 16, flexShrink: 0, color: "var(--roam-warn)" }} />
+            <AlertTriangle style={{ width: 16, height: 16, flexShrink: 0, color: "var(--glovebox-warn)" }} />
             <span style={S.chipLabel}>
               Trip setup incomplete
             </span>
@@ -104,7 +104,7 @@ export function EnrichmentBanner({ progress }: { progress: EnrichProgress | null
     <div className={`trip-enrichment-banner pointer-events-auto absolute left-4 top-[env(safe-area-inset-top,0px)] z-50 mt-2 ${animClass}`}>
       <div style={S.chipOuter}>
         <div style={S.chipInner}>
-          <Loader2 className="enrich-spin" style={{ width: 16, height: 16, flexShrink: 0, color: "var(--roam-info)" }} />
+          <Loader2 className="enrich-spin" style={{ width: 16, height: 16, flexShrink: 0, color: "var(--glovebox-info)" }} />
           <span style={S.chipLabel}>
             Setting up your trip&hellip;
           </span>
@@ -141,7 +141,7 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 8,
     borderRadius: "var(--r-card)",
-    background: "var(--roam-success)",
+    background: "var(--glovebox-success)",
     padding: "10px 16px",
     fontSize: 14,
     fontWeight: 500,
@@ -168,26 +168,26 @@ const S: Record<string, React.CSSProperties> = {
   chipLabel: {
     fontSize: 14,
     fontWeight: 500,
-    color: "var(--roam-text)",
+    color: "var(--glovebox-text)",
   },
   chipCounter: {
     marginLeft: 12,
     fontSize: 12,
     fontVariantNumeric: "tabular-nums",
-    color: "var(--roam-text-muted)",
+    color: "var(--glovebox-text-muted)",
   },
   barTrack: {
     height: 2,
-    background: "var(--roam-border-strong)",
+    background: "var(--glovebox-border-strong)",
   },
   barFillWarn: {
     height: "100%",
-    background: "var(--roam-warn)",
+    background: "var(--glovebox-warn)",
     transition: "width 300ms ease-out",
   },
   barFillInfo: {
     height: "100%",
-    background: "var(--roam-info)",
+    background: "var(--glovebox-info)",
   },
   corridorReady: {
     display: "flex",
@@ -195,7 +195,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: 6,
     padding: "6px 16px",
     fontSize: 12,
-    color: "var(--roam-success)",
+    color: "var(--glovebox-success)",
   },
 };
 

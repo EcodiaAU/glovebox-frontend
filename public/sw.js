@@ -5,7 +5,7 @@
 //
 // To update cached assets, increment CACHE_VERSION.
 
-const CACHE_VERSION = "roam-v4";
+const CACHE_VERSION = "glovebox-v4";
 const SHELL_URLS = [
   // ── Pages (every route a user can navigate to) ──
   "/",
@@ -26,8 +26,8 @@ const SHELL_URLS = [
   "/icons/icon-512.png",
 
   // ── Static images used by share cards + UI ──
-  "/img/roam-app-icon.png",
-  "/img/roam-logo.png",
+  "/img/glovebox-app-icon.png",
+  "/img/glovebox-logo.png",
   "/img/noise.png",
   "/img/paper-texture.png",
 

@@ -12,7 +12,7 @@ import { decodePolyline6 } from "@/lib/nav/polyline6";
 import { cumulativeKm, buildPolylineIndex, snapToPolylineIndexed } from "@/lib/nav/snapToRoute";
 import { getPack } from "@/lib/offline/packsStore";
 import { getCurrentPlanId } from "@/lib/offline/plansStore";
-import { packFacilities, type EncodableItem } from "./roamCodec";
+import { packFacilities, type EncodableItem } from "./gloveboxCodec";
 
 import type { TrafficOverlay, HazardOverlay } from "@/lib/types/navigation";
 import type {

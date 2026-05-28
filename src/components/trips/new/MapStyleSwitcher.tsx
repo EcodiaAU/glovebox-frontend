@@ -81,12 +81,12 @@ const launcherBase: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
   // Theme-aware to match the layer button (Tate 2026-05-28): light surface in
-  // day, dark surface in night, both via --roam-* tokens.
-  color: "var(--roam-text, #faf6ef)",
-  background: "var(--roam-surface, rgba(0,0,0,0.45))",
+  // day, dark surface in night, both via --glovebox-* tokens.
+  color: "var(--glovebox-text, #faf6ef)",
+  background: "var(--glovebox-surface, rgba(0,0,0,0.45))",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
-  border: "1px solid var(--roam-border)",
+  border: "1px solid var(--glovebox-border)",
   boxShadow: "var(--shadow-medium)",
   WebkitTapHighlightColor: "transparent",
 };
@@ -137,12 +137,12 @@ export function MapStyleSwitcher(props: {
             background: "rgba(0,0,0,0.7)",
             backdropFilter: "blur(18px) saturate(1.3)",
             WebkitBackdropFilter: "blur(18px) saturate(1.3)",
-            border: "1px solid var(--roam-border)",
+            border: "1px solid var(--glovebox-border)",
             boxShadow: "var(--shadow-heavy)",
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 8,
-            animation: "roam-mss-pop 0.22s cubic-bezier(0.34,1.56,0.64,1)",
+            animation: "glovebox-mss-pop 0.22s cubic-bezier(0.34,1.56,0.64,1)",
           }}
         >
           {TILES.map((t) => {
@@ -238,7 +238,7 @@ export function MapStyleSwitcher(props: {
       )}
 
       <style>{`
-        @keyframes roam-mss-pop {
+        @keyframes glovebox-mss-pop {
           from { opacity: 0; transform: translateY(-6px) scale(0.96); }
           to { opacity: 1; transform: translateY(0) scale(1); }
         }

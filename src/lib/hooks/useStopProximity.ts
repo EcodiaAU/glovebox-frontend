@@ -1,7 +1,7 @@
 // src/lib/hooks/useStopProximity.ts
 
 import { useCallback, useEffect, useRef } from "react";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { TripStop } from "@/lib/types/trip";
 
 /** Radius in meters - triggers notification when user is within this distance */
@@ -42,7 +42,7 @@ type ProximityEvent = {
  *  - A 30-minute cooldown prevents re-firing for the same stop.
  */
 export function useStopProximity(opts: {
-  position: RoamPosition | null;
+  position: GloveboxPosition | null;
   stops: TripStop[];
   planId: string | null;
   enabled?: boolean;

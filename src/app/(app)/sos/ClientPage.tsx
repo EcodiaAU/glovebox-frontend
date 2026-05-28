@@ -13,7 +13,7 @@ import { saveEmergencyContactLocalFirst, deleteEmergencyContactLocalFirst } from
 
 import type { EmergencyContactLocal } from "@/lib/types/emergency";
 import { PhoneCall, MessageSquareText, Plus, Pencil, Trash2, Satellite, RefreshCw } from "lucide-react";
-import { Icon, NetworkPill, PrimaryBtn, GhostBtn } from "@/components/roam-ui-v2/shared";
+import { Icon, NetworkPill, PrimaryBtn, GhostBtn } from "@/components/glovebox-ui-v2/shared";
 
 function nowIso() {
   return new Date().toISOString();

@@ -5,7 +5,7 @@ import { useFLIP } from "@/lib/hooks/useFLIP";
 import type { NavPack, CorridorGraphPack, TrafficOverlay, HazardOverlay } from "@/lib/types/navigation";
 import type { TripStop } from "@/lib/types/trip";
 import type { PlacesPack, PlaceItem } from "@/lib/types/places";
-import type { RoamPosition } from "@/lib/native/geolocation";
+import type { GloveboxPosition } from "@/lib/native/geolocation";
 import type { FuelAnalysis } from "@/lib/types/fuel";
 import { haptic } from "@/lib/native/haptics";
 import { toErrorMessage } from "@/lib/utils/errors";
@@ -174,7 +174,7 @@ export function TripView({
   onAddSuggestion?: (place: PlaceItem) => Promise<void> | void;
   highlightedAlertId?: string | null;
   onHighlightAlert?: (ev: AlertHighlightEvent) => void;
-  userPosition?: RoamPosition | null;
+  userPosition?: GloveboxPosition | null;
   fuelAnalysis?: FuelAnalysis | null;
   onOpenFuelSettings?: () => void;
   offlineRouted?: boolean;

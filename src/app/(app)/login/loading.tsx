@@ -14,7 +14,7 @@ export default function LoginLoading() {
         alignItems: "center",
         justifyContent: "center",
         padding: "12px 20px",
-        background: "var(--roam-bg)",
+        background: "var(--glovebox-bg)",
       }}
     >
       <div
@@ -35,7 +35,7 @@ export default function LoginLoading() {
             width: 56,
             height: 56,
             borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite",
           }}
         />
@@ -46,7 +46,7 @@ export default function LoginLoading() {
             width: 140,
             height: 22,
             borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.05s",
           }}
         />
@@ -57,7 +57,7 @@ export default function LoginLoading() {
             width: 220,
             height: 14,
             borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.1s",
           }}
         />
@@ -68,24 +68,24 @@ export default function LoginLoading() {
             width: "100%",
             height: 48,
             borderRadius: "var(--r-btn, 12px)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.12s",
           }}
         />
 
         {/* Divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, width: "100%" }}>
-          <div style={{ flex: 1, height: 1, background: "var(--roam-border)" }} />
+          <div style={{ flex: 1, height: 1, background: "var(--glovebox-border)" }} />
           <div
             style={{
               width: 20,
               height: 12,
               borderRadius: 4,
-              background: "var(--roam-surface-hover)",
+              background: "var(--glovebox-surface-hover)",
               animation: "login-skel-pulse 1.6s ease-in-out infinite 0.15s",
             }}
           />
-          <div style={{ flex: 1, height: 1, background: "var(--roam-border)" }} />
+          <div style={{ flex: 1, height: 1, background: "var(--glovebox-border)" }} />
         </div>
 
         {/* Email input */}
@@ -94,7 +94,7 @@ export default function LoginLoading() {
             width: "100%",
             height: 48,
             borderRadius: "var(--r-btn, 12px)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.18s",
           }}
         />
@@ -105,7 +105,7 @@ export default function LoginLoading() {
             width: "100%",
             height: 48,
             borderRadius: "var(--r-btn, 12px)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.22s",
           }}
         />
@@ -116,7 +116,7 @@ export default function LoginLoading() {
             width: "100%",
             height: 48,
             borderRadius: "var(--r-btn, 12px)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.26s",
           }}
         />
@@ -127,7 +127,7 @@ export default function LoginLoading() {
             width: 200,
             height: 14,
             borderRadius: "var(--r-card)",
-            background: "var(--roam-surface-hover)",
+            background: "var(--glovebox-surface-hover)",
             animation: "login-skel-pulse 1.6s ease-in-out infinite 0.3s",
           }}
         />

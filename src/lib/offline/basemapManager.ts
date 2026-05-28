@@ -1,7 +1,7 @@
 // src/lib/offline/basemapManager.ts
 //
 // Manages offline basemap packs (PMTiles + glyphs + sprites + style).
-// Coordinates with the RoamTileServer native plugin for:
+// Coordinates with the GloveboxTileServer native plugin for:
 //   - Downloading large PMTiles files to device storage
 //   - Starting/stopping the local HTTP tile server
 //   - Tracking install status in IDB meta store
@@ -11,7 +11,7 @@
 
 
 import { Capacitor } from "@capacitor/core";
-import { RoamTileServer } from "@/plugins/roam-tile-server";
+import { GloveboxTileServer } from "@/plugins/glovebox-tile-server";
 import { idbGet, idbPut, idbStores } from "./idb";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
@@ -116,7 +116,7 @@ export async function getBasemapStatus(region: string = DEFAULT_REGION): Promise
   // If status says installed, verify files still exist on native
   if (status.state === "installed" && Capacitor.isNativePlatform()) {
     try {
-      const info = await RoamTileServer.getBasemapInfo({ region });
+      const info = await GloveboxTileServer.getBasemapInfo({ region });
       if (!info.installed) {
         // Files were deleted externally - reset status
         const reset = defaultStatus(region);
@@ -248,7 +248,7 @@ export async function downloadBasemap(
   // will carry that same string. Match on startsWith so the progress filter works.
   const pluginRegion = `${region}/tiles`;
 
-  const listener = await RoamTileServer.addListener("downloadProgress", async (event) => {
+  const listener = await GloveboxTileServer.addListener("downloadProgress", async (event) => {
     if (event.region !== pluginRegion) return;
     const s = await loadStatus(region);
     s.downloadProgress = event.progress >= 0 ? event.progress : -1;
@@ -263,7 +263,7 @@ export async function downloadBasemap(
 
     // Download to {region}/tiles/ subdirectory so URL paths resolve correctly.
     // The native plugin creates the subdirectory automatically.
-    const result = await RoamTileServer.downloadFile({
+    const result = await GloveboxTileServer.downloadFile({
       url: downloadUrl,
       region: pluginRegion,
       filename: TILE_FILENAME,
@@ -303,7 +303,7 @@ export async function downloadBasemap(
  */
 export async function cancelBasemapDownload(region: string = DEFAULT_REGION): Promise<void> {
   try {
-    await RoamTileServer.cancelDownload({ region });
+    await GloveboxTileServer.cancelDownload({ region });
   } catch {}
   const status = await loadStatus(region);
   if (status.state === "downloading") {
@@ -326,7 +326,7 @@ export async function deleteBasemap(region: string = DEFAULT_REGION): Promise<vo
 
   try {
     await stopTileServer();
-    await RoamTileServer.deleteBasemap({ region });
+    await GloveboxTileServer.deleteBasemap({ region });
     await saveStatus(defaultStatus(region));
   } catch (e: unknown) {
     status.state = "error";
@@ -351,7 +351,7 @@ export async function ensureTileServerRunning(
 
   // Check if already running
   try {
-    const status = await RoamTileServer.getServerStatus();
+    const status = await GloveboxTileServer.getServerStatus();
     if (status.running && status.url) {
       _serverInfo = { running: true, url: status.url, port: status.port };
       await idbPut(idbStores.meta, _serverInfo.url, META_TILE_SERVER_URL);
@@ -361,10 +361,10 @@ export async function ensureTileServerRunning(
 
   // Get the basemaps root directory
   try {
-    const { path: rootPath } = await RoamTileServer.getBasemapsRoot();
+    const { path: rootPath } = await GloveboxTileServer.getBasemapsRoot();
     const regionPath = `${rootPath}/${region}`;
 
-    const result = await RoamTileServer.startServer({
+    const result = await GloveboxTileServer.startServer({
       rootPath: regionPath,
       port: DEFAULT_PORT,
     });
@@ -384,7 +384,7 @@ export async function ensureTileServerRunning(
  */
 export async function stopTileServer(): Promise<void> {
   try {
-    await RoamTileServer.stopServer();
+    await GloveboxTileServer.stopServer();
   } catch {}
   _serverInfo = { running: false, url: null, port: 0 };
   await idbPut(idbStores.meta, null, META_TILE_SERVER_URL);

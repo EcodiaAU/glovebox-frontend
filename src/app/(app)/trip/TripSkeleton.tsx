@@ -22,7 +22,7 @@ function Skel({
         width: w,
         height: h,
         borderRadius: r,
-        background: "var(--roam-surface-hover)",
+        background: "var(--glovebox-surface-hover)",
         animation: `trip-skel-pulse 1.6s ease-in-out infinite ${delay}s`,
         flexShrink: 0,
         ...style,
@@ -58,7 +58,7 @@ export function TripSkeleton() {
       {/* ── Side FAB stack (Report) - matches ClientPage ── */}
       <div style={{
         position: "absolute",
-        bottom: "calc(220px + var(--roam-safe-bottom, 0px) + 24px)",
+        bottom: "calc(220px + var(--glovebox-safe-bottom, 0px) + 24px)",
         right: 12,
         zIndex: 18,
         display: "flex",
@@ -80,7 +80,7 @@ export function TripSkeleton() {
           bottom: -200, left: 0, right: 0,
           height: "calc(100% - 80px + 200px)",
           zIndex: 20,
-          transform: "translateY(calc(100% - 420px - var(--roam-safe-bottom, 0px)))",
+          transform: "translateY(calc(100% - 420px - var(--glovebox-safe-bottom, 0px)))",
         }}
       >
         {/* Drag handle (mobile only via globals.css media query) */}

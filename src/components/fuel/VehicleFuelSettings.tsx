@@ -25,11 +25,11 @@ const panel: React.CSSProperties = {
   maxWidth: 380,
   maxHeight: "80vh",
   overflowY: "auto",
-  background: "var(--roam-surface)",
+  background: "var(--glovebox-surface)",
   borderRadius: "var(--r-card)",
   padding: "20px 20px 24px",
   boxShadow: "var(--shadow-heavy)",
-  animation: "roam-fuel-settings-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+  animation: "glovebox-fuel-settings-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
 };
 
 const headerRow: React.CSSProperties = {
@@ -42,12 +42,12 @@ const headerRow: React.CSSProperties = {
 const titleText: React.CSSProperties = {
   fontSize: 18,
   fontWeight: 950,
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
   letterSpacing: "-0.3px",
 };
 
 const closeBtn: React.CSSProperties = {
-  background: "var(--roam-surface-hover)",
+  background: "var(--glovebox-surface-hover)",
   border: "none",
   borderRadius: 999,
   width: 44,
@@ -55,7 +55,7 @@ const closeBtn: React.CSSProperties = {
   display: "grid",
   placeItems: "center",
   cursor: "pointer",
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   touchAction: "manipulation",
   WebkitTapHighlightColor: "transparent",
 };
@@ -63,7 +63,7 @@ const closeBtn: React.CSSProperties = {
 const sectionLabel: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 900,
-  color: "var(--roam-text-muted)",
+  color: "var(--glovebox-text-muted)",
   marginBottom: 8,
   marginTop: 18,
   letterSpacing: "0.3px",
@@ -81,9 +81,9 @@ const segmentBtn = (active: boolean): React.CSSProperties => ({
   minWidth: 70,
   padding: "10px 12px",
   borderRadius: "var(--r-card)",
-  border: active ? "2px solid var(--roam-accent)" : "2px solid transparent",
-  background: active ? "var(--accent-tint)" : "var(--roam-surface-hover)",
-  color: active ? "var(--roam-accent)" : "var(--roam-text-muted)",
+  border: active ? "2px solid var(--glovebox-accent)" : "2px solid transparent",
+  background: active ? "var(--accent-tint)" : "var(--glovebox-surface-hover)",
+  color: active ? "var(--glovebox-accent)" : "var(--glovebox-text-muted)",
   fontWeight: 900,
   fontSize: 12,
   cursor: "pointer",
@@ -106,18 +106,18 @@ const sliderLabel: React.CSSProperties = {
   alignItems: "center",
   fontSize: 13,
   fontWeight: 800,
-  color: "var(--roam-text)",
+  color: "var(--glovebox-text)",
 };
 
 const sliderValue: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 900,
-  color: "var(--roam-accent)",
+  color: "var(--glovebox-accent)",
 };
 
 const sliderInput: React.CSSProperties = {
   width: "100%",
-  accentColor: "var(--roam-accent, #3b82f6)",
+  accentColor: "var(--glovebox-accent, #3b82f6)",
   height: 6,
 };
 
@@ -126,7 +126,7 @@ const saveButton: React.CSSProperties = {
   marginTop: 24,
   padding: "12px 20px",
   borderRadius: "var(--r-card)",
-  background: "var(--roam-accent)",
+  background: "var(--glovebox-accent)",
   color: "var(--on-color)",
   border: "none",
   fontWeight: 950,
@@ -201,7 +201,7 @@ export function VehicleFuelSettings({
   if (!open) return null;
 
   return (
-    <div className="roam-modal-backdrop" data-roam-modal="fuel-settings" style={overlay} onClick={onClose}>
+    <div className="glovebox-modal-backdrop" data-glovebox-modal="fuel-settings" style={overlay} onClick={onClose}>
       <div style={panel} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div style={headerRow}>
@@ -243,7 +243,7 @@ export function VehicleFuelSettings({
             onChange={(e) => updateField("tank_range_km", Number(e.target.value))}
             style={sliderInput}
           />
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, fontWeight: 700, color: "var(--roam-text-muted)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, fontWeight: 700, color: "var(--glovebox-text-muted)" }}>
             <span>100 km</span>
             <span>1500 km</span>
           </div>
@@ -270,7 +270,7 @@ export function VehicleFuelSettings({
         <div style={{ ...sliderGroup, marginTop: 10 }}>
           <div style={sliderLabel}>
             <span>Critical threshold</span>
-            <span style={{ ...sliderValue, color: "var(--roam-danger)" }}>{profile.reserve_critical_km} km</span>
+            <span style={{ ...sliderValue, color: "var(--glovebox-danger)" }}>{profile.reserve_critical_km} km</span>
           </div>
           <input
             type="range"
@@ -288,10 +288,10 @@ export function VehicleFuelSettings({
           marginTop: 18,
           padding: "10px 14px",
           borderRadius: "var(--r-card)",
-          background: "var(--roam-surface-hover)",
+          background: "var(--glovebox-surface-hover)",
           fontSize: 12,
           fontWeight: 700,
-          color: "var(--roam-text-muted)",
+          color: "var(--glovebox-text-muted)",
           lineHeight: "1.5",
         }}>
           Glovebox will warn at {profile.reserve_warn_km}km remaining range and alert critically at{" "}
@@ -306,7 +306,7 @@ export function VehicleFuelSettings({
       </div>
 
       <style>{`
-        @keyframes roam-fuel-settings-in {
+        @keyframes glovebox-fuel-settings-in {
           0% { opacity: 0; transform: scale(0.95) translateY(10px); }
           100% { opacity: 1; transform: scale(1) translateY(0); }
         }

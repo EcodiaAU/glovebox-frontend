@@ -3,7 +3,7 @@
 
 export type IDBValue = unknown;
 
-const DB_NAME = "roam_offline";
+const DB_NAME = "glovebox_offline";
 const DB_VERSION = 5; // baseline version
 
 const STORE_PLANS = "plans"; // keyPath: plan_id
@@ -64,7 +64,7 @@ function openAtVersion(version: number): Promise<IDBDatabase | null> {
       // Another tab has the DB open at an older version.
       // We can't force-close it, but we can tell the user.
       console.warn(
-        "[roam/idb] DB upgrade blocked - close other tabs with Glovebox open and retry.",
+        "[glovebox/idb] DB upgrade blocked - close other tabs with Glovebox open and retry.",
       );
       reject(
         new Error(
@@ -80,7 +80,7 @@ function openAtVersion(version: number): Promise<IDBDatabase | null> {
       db.onversionchange = () => {
         db.close();
         _dbPromise = null;
-        console.info("[roam/idb] DB closing for version change in another tab.");
+        console.info("[glovebox/idb] DB closing for version change in another tab.");
       };
 
       const missing = REQUIRED_STORES.filter((s) => !db.objectStoreNames.contains(s));
@@ -126,7 +126,7 @@ function openDb(): Promise<IDBDatabase> {
 
     const healVersion = currentVersion + 1;
     console.info(
-      `[roam/idb] Self-healing: DB at v${currentVersion} missing stores, upgrading to v${healVersion}`,
+      `[glovebox/idb] Self-healing: DB at v${currentVersion} missing stores, upgrading to v${healVersion}`,
     );
 
     db = await openAtVersion(healVersion);

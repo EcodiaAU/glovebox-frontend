@@ -61,7 +61,7 @@ function NavBtn({
           ? "var(--brand-eucalypt)"
           : "transparent",
         color: isDefault
-          ? "var(--roam-text, #1a1613)"
+          ? "var(--glovebox-text, #1a1613)"
           : "var(--on-color, #faf6ef)",
         boxShadow: isDanger
           ? "0 2px 8px rgba(181,69,46,0.30)"
@@ -110,12 +110,12 @@ export function NavigationControls({
 
   // Position: sits below the HUD card, right-aligned.
   // The four non-destructive controls (layers, mute, overview, recenter, report)
-  // group inside a single roam-control-group capsule so they read as one
+  // group inside a single glovebox-control-group capsule so they read as one
   // control surface — not 4-6 disconnected circles floating on the map.
   // The End-nav button sits OUTSIDE the group as a danger primary so the
   // visual weight matches its destructive intent.
   return (
-    <div className="roam-nav-controls" style={{
+    <div className="glovebox-nav-controls" style={{
       position: "absolute",
       top: "calc(env(safe-area-inset-top, 0px) + 120px)",
       right: 12,
@@ -134,7 +134,7 @@ export function NavigationControls({
           {compass}
         </div>
       )}
-      <div className="roam-control-group">
+      <div className="glovebox-control-group">
         {onLayerToggle && (
           <NavBtn
             animClass={`nav-ctrl-enter-${++idx}`}
@@ -207,7 +207,7 @@ export function NavigationControls({
           whiteSpace: "nowrap",
           background: "var(--nav-card-bg, #f0e9dc)",
           boxShadow: "var(--shadow-heavy)",
-          border: "1px solid var(--roam-border)",
+          border: "1px solid var(--glovebox-border)",
         }}>
           <button
             type="button"
@@ -235,12 +235,12 @@ export function NavigationControls({
             style={{
               padding: "10px 14px",
               minHeight: 44,
-              border: "1px solid var(--roam-border-strong)",
+              border: "1px solid var(--glovebox-border-strong)",
               borderRadius: "var(--r-card)",
               cursor: "pointer",
               fontSize: 13,
               fontWeight: 950,
-              color: "var(--roam-text-muted)",
+              color: "var(--glovebox-text-muted)",
               background: "transparent",
               letterSpacing: "-0.1px",
               touchAction: "manipulation",
