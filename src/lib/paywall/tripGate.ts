@@ -37,6 +37,46 @@ const KEY_UNLOCKED   = "roam_unlimited_unlocked";
 const RC_ENTITLEMENT_ID = "roam_unlimited";
 const RC_PRODUCT_ID     = "roam_unlimited";
 
+// Resolve unlock state from a CustomerInfo response.
+//
+// Primary check: the `roam_unlimited` entitlement is active in the RevenueCat
+// dashboard mapping. Fallback: StoreKit confirmed the product was purchased
+// even if the dashboard entitlement mapping is missing / mis-named. A paying
+// user must never be locked out because of a dashboard config drift -
+// `roam_unlimited` is a non-consumable one-time purchase, so the presence of
+// the SKU in allPurchasedProductIdentifiers (or as a non-subscription
+// transaction) is sufficient proof of entitlement.
+type CustomerInfoLike = {
+  entitlements?: { active?: Record<string, unknown>; all?: Record<string, unknown> };
+  allPurchasedProductIdentifiers?: string[];
+  nonSubscriptionTransactions?: Array<{ productIdentifier?: string }>;
+};
+function resolveUnlock(info: CustomerInfoLike | undefined | null): {
+  unlocked: boolean;
+  source: "entitlement" | "product-fallback" | "transaction-fallback" | "none";
+} {
+  if (!info) return { unlocked: false, source: "none" };
+  if (info.entitlements?.active && RC_ENTITLEMENT_ID in info.entitlements.active) {
+    return { unlocked: true, source: "entitlement" };
+  }
+  if (info.allPurchasedProductIdentifiers?.includes(RC_PRODUCT_ID)) {
+    return { unlocked: true, source: "product-fallback" };
+  }
+  if (info.nonSubscriptionTransactions?.some((t) => t?.productIdentifier === RC_PRODUCT_ID)) {
+    return { unlocked: true, source: "transaction-fallback" };
+  }
+  return { unlocked: false, source: "none" };
+}
+
+function summariseEntitlements(info: CustomerInfoLike | undefined | null): string {
+  if (!info) return "no customerInfo";
+  const active = Object.keys(info.entitlements?.active ?? {});
+  const all = Object.keys(info.entitlements?.all ?? {});
+  const purchased = info.allPurchasedProductIdentifiers ?? [];
+  const tx = (info.nonSubscriptionTransactions ?? []).map((t) => t?.productIdentifier).filter(Boolean);
+  return `active=[${active.join(",")}] all=[${all.join(",")}] purchased=[${purchased.join(",")}] tx=[${tx.join(",")}]`;
+}
+
 /* ── Platform helper ─────────────────────────────────────────────── */
 
 export function isNativePlatform(): boolean {
@@ -148,8 +188,13 @@ async function syncUnlockFromRC(): Promise<boolean> {
   try {
     const { Purchases } = await getPurchases();
     const { customerInfo } = await Purchases.getCustomerInfo();
-    const unlocked = RC_ENTITLEMENT_ID in customerInfo.entitlements.active;
+    const { unlocked, source } = resolveUnlock(customerInfo);
     if (unlocked) {
+      if (source !== "entitlement") {
+        console.warn(
+          `[tripGate] syncUnlockFromRC unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
+        );
+      }
       // Persist to server so it's visible on web too
       await markEntitlementInSupabase("revenuecat");
       localSet(KEY_UNLOCKED, "1");
@@ -197,12 +242,18 @@ export async function purchaseUnlimited(): Promise<{ success: boolean; error?: s
     }
 
     const { customerInfo } = await Purchases.purchaseStoreProduct({ product });
-    const unlocked = RC_ENTITLEMENT_ID in customerInfo.entitlements.active;
+    const { unlocked, source } = resolveUnlock(customerInfo);
     if (unlocked) {
+      if (source !== "entitlement") {
+        console.warn(
+          `[tripGate] purchase unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
+        );
+      }
       await markEntitlementInSupabase("revenuecat");
       localSet(KEY_UNLOCKED, "1");
       return { success: true };
     }
+    console.warn(`[tripGate] purchase completed but unlock not resolved. ${summariseEntitlements(customerInfo)}`);
     return { success: false, error: "Purchase completed but entitlement not found. Please tap Restore purchase." };
   } catch (e: unknown) {
     const err = e as { code?: string; message?: string };
@@ -224,10 +275,17 @@ export async function restorePurchases(): Promise<{ success: boolean; error?: st
   try {
     const { Purchases } = await getPurchases();
     const { customerInfo } = await Purchases.restorePurchases();
-    const unlocked = RC_ENTITLEMENT_ID in customerInfo.entitlements.active;
+    const { unlocked, source } = resolveUnlock(customerInfo);
     if (unlocked) {
+      if (source !== "entitlement") {
+        console.warn(
+          `[tripGate] restore unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
+        );
+      }
       await markEntitlementInSupabase("revenuecat");
       localSet(KEY_UNLOCKED, "1");
+    } else {
+      console.warn(`[tripGate] restore found no qualifying purchase. ${summariseEntitlements(customerInfo)}`);
     }
     return { success: unlocked, error: unlocked ? undefined : "No previous purchase found." };
   } catch (e: unknown) {
