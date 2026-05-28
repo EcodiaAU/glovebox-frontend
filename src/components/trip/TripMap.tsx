@@ -1490,12 +1490,13 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       //    outback trips the cache was holding hundreds of tiles in GPU
       //    memory that the viewport had moved away from; the lower cap
       //    pushes them out faster.
-      //  - pixelRatio: capped at 1.5 to cut GPU load on Retina iPhones (where
-      //    devicePixelRatio is 3). Visually imperceptible for a nav map
-      //    while halving fragment shader work.
+      // pixelRatio is intentionally left unset so MapLibre uses
+      // window.devicePixelRatio natively. A prior 1.5 cap was visibly fuzzy
+      // on Retina iPhones (DPR 2 or 3) - the upscaled canvas softened base
+      // tiles, the route, and every circle simultaneously. Google Maps and
+      // Apple Maps both render at full DPR; we match that.
       fadeDuration: 0,
       maxTileCacheSize: 50,
-      pixelRatio: Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 1.5),
       transformRequest: (url) => {
         if (typeof url === "string" && url.startsWith("pmtiles://")) return { url: normalizePmtilesUrl(url, origin) };
         return { url };
@@ -2283,7 +2284,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           id: USER_LOC_DOT_OUTER,
           type: "circle",
           source: USER_LOC_SRC,
-          paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 6, 10, 9, 16, 12], "circle-color": "#ffffff", "circle-opacity": 0.95 },
+          paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 6, 10, 9, 16, 12], "circle-color": "#ffffff", "circle-opacity": 1 },
         });
       }
       if (!map.getLayer(USER_LOC_DOT_INNER)) {
