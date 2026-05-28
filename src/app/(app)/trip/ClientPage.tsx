@@ -281,7 +281,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     run();
     // Re-check when auth state changes. On a fresh login the component mounts
     // before the Supabase session finishes hydrating, so the initial call can
-    // see no user and fall back to localStorage (= false) — wrongly showing
+    // see no user and fall back to localStorage (= false) - wrongly showing
     // the paywall for entitled users. onAuthReadyForGate re-fires once the
     // session is actually in place.
     const unsub = onAuthReadyForGate(run);
@@ -314,7 +314,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     });
   }, []);
 
-  // Suggestions sheet — opened by the "Stops" CTA in the persistent action bar.
+  // Suggestions sheet - opened by the "Stops" CTA in the persistent action bar.
   // Separate bottom sheet that slides over the planning sheet with a backdrop dim,
   // matching the prototype's onSuggestions / <BottomSheet title="Suggestions">.
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -1975,13 +1975,18 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       el.removeEventListener("touchend", onEnd);
       el.removeEventListener("touchcancel", onEnd);
     };
-  }, []);
+    // Depend on `plan` so the listeners (re)attach once the real sheet
+    // content mounts. The component returns <TripSkeleton/> before `plan`
+    // loads, so an empty-deps effect ran when .roam-scroll did not exist yet
+    // and never re-bound - which is why overscroll-to-close did nothing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plan]);
 
   // ── Derived values ─────────────────────────────────────────────
   // Snap positions (translateY values).
   // The sheet extends 300px below the viewport to absorb spring bounce,
   // so peek/nav snaps add 300px to compensate.
-  //   full:      calc(safe-top - 80) — sheet pulled up by the 80px top-gap so it covers screen
+  //   full:      calc(safe-top - 80) - sheet pulled up by the 80px top-gap so it covers screen
   //   expanded:  0px (sheet fills from 80px down)
   //   peek:      calc(100% - 660px - safe-bottom)   shows ~280px of sheet content above
   //              the persistent action bar (which sits at bottom: tab-h).
@@ -1992,8 +1997,11 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     switch (sheetSnap) {
       case "full":      return "calc(var(--roam-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
+      // peek sits slightly lower (660 -> 620, Tate 2026-05-28) so the bottom
+      // of the sheet head meets the top of the action section rather than
+      // floating above it. Exact value may want one device-confirmed tweak.
       case "peek":
-      default:          return `calc(100% - 660px - var(--roam-safe-bottom, 0px))`;
+      default:          return `calc(100% - 620px - var(--roam-safe-bottom, 0px))`;
     }
   })();
   const sheetTransform = isDraggingState
@@ -2470,7 +2478,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           willChange: "transform",
         }}
       >
-        {/* Elevation strip removed from sheet per redesign — lives in T-b-T ProgressCard only. */}
+        {/* Elevation strip removed from sheet per redesign - lives in T-b-T ProgressCard only. */}
 
         {/* Grab zone: handle + title + distance/time are ONE large draggable
             target (Tate 2026-05-27 - the thin-handle-only hitbox was too small
@@ -2539,7 +2547,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
         {/* Header actions (outside the drag zone) */}
         <div style={{ padding: "0 20px 12px" }}>
-          {/* Row 2: action row — each pill takes flex:1 so the row stretches edge-to-edge,
+          {/* Row 2: action row - each pill takes flex:1 so the row stretches edge-to-edge,
                matching the StatRow chips below visually. Upgrade pinned right when shown. */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ display: "flex", gap: 8, flex: 1 }}>
@@ -2648,7 +2656,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           </div>
         </div>
 
-        {/* StatRow (prototype: 3 chips below header — km / drive / surface) */}
+        {/* StatRow (prototype: 3 chips below header - km / drive / surface) */}
         {(() => {
           const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
           const durSec = navpack?.primary?.duration_s ?? null;
@@ -2800,7 +2808,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
       </div>{/* end trip-bottom-sheet */}
 
-      {/* Suggestions sheet — opened from the "Stops" CTA in the persistent
+      {/* Suggestions sheet - opened from the "Stops" CTA in the persistent
            action bar. Slides up over the planning sheet with a backdrop dim
            per the prototype's onSuggestions flow. Wires to the real `places`
            pack so the user sees actual POIs along their route. */}
@@ -2912,7 +2920,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         })()}
       </SuggestionsBottomSheet>
 
-      {/* Persistent action bar — outside the sheet, anchored to the very bottom of
+      {/* Persistent action bar - outside the sheet, anchored to the very bottom of
            the trip-app-container. At peek the bottom tab bar is visible so we lift
            the action bar above it via translateY(-tab-h). At expanded the tab bar
            slides out, so the action bar drops down to 0 to take the freed space.
@@ -2924,9 +2932,11 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           bottom: 0,
           padding: "10px 16px calc(10px + env(safe-area-inset-bottom, 0px))",
           display: "flex", gap: 8, alignItems: "center",
-          // Match the bottom tab bar surface, not the sheet, so the action
-          // bar reads as part of the nav chrome (Tate 2026-05-27).
-          background: "var(--tab-bar-bg, var(--c-surface))",
+          // EXACT match to the bottom tab bar fill (BottomTabBar.tsx uses
+          // color-mix(--roam-bg 92%, transparent), NOT --tab-bar-bg) so the
+          // action section and the tab bar read as one continuous surface
+          // (Tate 2026-05-28).
+          background: "color-mix(in srgb, var(--roam-bg) 92%, transparent)",
           borderTop: "1px solid var(--c-border)",
           zIndex: 22, // above sheet (20) but below modals
           transition: "transform var(--dur-normal) ease, opacity var(--dur-fast) ease",

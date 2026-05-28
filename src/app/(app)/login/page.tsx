@@ -144,25 +144,25 @@ export default function LoginPage() {
         overflowY: "auto",
       }}
     >
-      <div className="ed-column" style={{ paddingTop: "clamp(32px, 6vh, 80px)" }}>
-        <div className="ed-mark">
-          <GloveboxMark />
+      <div className="ed-column" style={{ paddingTop: "clamp(32px, 6vh, 80px)", gap: 14, alignItems: "stretch" }}>
+        {/* Header block: mark + heading + lede, all flush-left as one unit
+            so the column reads as a single editorial column rather than a
+            scatter of centred fragments. */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start", marginBottom: 4 }}>
+          <div className="ed-mark" style={{ justifyContent: "flex-start", marginBottom: 8 }}>
+            <GloveboxMark />
+          </div>
+          <h1 className="ed-heading">
+            <em>{headingText}</em>
+          </h1>
+          <p className="ed-lede" style={{ textAlign: "left" }}>
+            <em>Offline navigation for the outback.</em>
+          </p>
         </div>
 
-        <h1 className="ed-heading">
-          <em>{headingText}</em>
-        </h1>
-
-        <p className="ed-lede">
-          <em>Offline navigation for the outback.</em>
-        </p>
-
         {!deviceOnline && (
-          <p className="ed-notice ed-notice-err">
-            <em>
-              You&apos;re offline. Sign-in needs a connection. Once in,
-              Glovebox works without signal.
-            </em>
+          <p className="ed-notice ed-notice-err" style={{ textAlign: "left" }}>
+            <em>You&apos;re offline. Sign-in needs a connection.</em>
           </p>
         )}
 
@@ -214,9 +214,7 @@ export default function LoginPage() {
           <span>Continue with Google</span>
         </button>
 
-        <p className="ed-label" style={{ textAlign: "center" }}>
-          or with email
-        </p>
+        <p className="ed-label">or with email</p>
 
         <form onSubmit={handleEmailSubmit} className="ed-form">
           <input
@@ -249,13 +247,13 @@ export default function LoginPage() {
         </form>
 
         {error && (
-          <p className="ed-notice ed-notice-err">
+          <p className="ed-notice ed-notice-err" style={{ textAlign: "left" }}>
             <em>{error}</em>
           </p>
         )}
 
         {signupSuccess && (
-          <p className="ed-notice">
+          <p className="ed-notice" style={{ textAlign: "left" }}>
             <em>Check your email for a confirmation link, then sign in.</em>
           </p>
         )}
@@ -269,7 +267,7 @@ export default function LoginPage() {
             setSignupSuccess(false);
           }}
           className="ed-textlink"
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "left", alignSelf: "flex-start" }}
           disabled={busy}
         >
           <em>{toggleLabel}</em>
@@ -277,7 +275,7 @@ export default function LoginPage() {
       </div>
 
       {/* Legal links - quiet dotted-underline row, marketing voice. */}
-      <div className="ed-row" style={{ marginTop: 16, paddingBottom: 8 }}>
+      <div className="ed-row" style={{ marginTop: 16, paddingBottom: 8, justifyContent: "center" }}>
         {[
           { href: "/contact", label: "Contact" },
           { href: "/terms", label: "Terms" },

@@ -35,7 +35,6 @@ import { GuideView, type GuideTabBarProps } from "@/components/trip/GuideView";
 
 import { Satellite, AlertTriangle } from "lucide-react";
 import { NetworkPill, AccountBtn } from "@/components/roam-ui-v2/shared";
-import { GloveboxMark } from "@/components/brand/GloveboxMark";
 import { GuideSkeleton } from "./GuideSkeleton";
 
 import type { GuideBootstrap } from "@/lib/guide/guideEngine";
@@ -647,49 +646,6 @@ export default function GuideClientPage(props: {
           {err}
         </p>
       ) : null}
-
-      {/* ── Editorial intro - shown until guide has messages ───── */}
-      {guidePack && guidePack.thread.length === 0 && busy === "chat" && (
-        <div
-          style={{
-            padding: "20px 16px 8px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: 10,
-          }}
-        >
-          <div style={{ color: "var(--roam-accent)" }}>
-            <GloveboxMark size={36} />
-          </div>
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: "clamp(22px, 3vw, 28px)",
-              lineHeight: 1.18,
-              color: "var(--roam-text)",
-              letterSpacing: "-0.005em",
-            }}
-          >
-            Your guide.
-          </h2>
-          <p
-            style={{
-              margin: 0,
-              fontSize: 14,
-              color: "var(--roam-text-muted)",
-              lineHeight: 1.5,
-              maxWidth: "44ch",
-            }}
-          >
-            Preparing route intel, points of interest, and conditions for
-            your trip.
-          </p>
-        </div>
-      )}
 
       {/* ── Content ─────────────────────────────────────────────── */}
       <div

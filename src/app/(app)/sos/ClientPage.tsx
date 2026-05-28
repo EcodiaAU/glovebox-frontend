@@ -826,21 +826,6 @@ export default function EmergencyClientPage() {
             })}
           </div>
         )}
-
-        {/* REASSURANCE FOOTER */}
-        <div style={{
-          marginTop: 22, padding: "14px",
-          borderRadius: 14, background: "var(--c-surface-muted)",
-          display: "flex", gap: 10, alignItems: "flex-start",
-        }}>
-          <Icon name="leaf" size={18} style={{ color: "var(--c-success)" }}/>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700 }}>Your location is saved on this phone</div>
-            <div style={{ fontSize: 12, color: "var(--c-text-muted)" }}>
-              Glovebox remembers where you last were, even without signal. SMS works on one bar of 2G.
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

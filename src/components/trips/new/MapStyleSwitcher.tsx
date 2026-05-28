@@ -80,12 +80,14 @@ const launcherBase: React.CSSProperties = {
   borderRadius: "var(--r-card, 14px)",
   fontSize: 12,
   fontWeight: 700,
-  color: "var(--on-color, #faf6ef)",
-  background: "rgba(0,0,0,0.45)",
+  // Theme-aware to match the layer button (Tate 2026-05-28): light surface in
+  // day, dark surface in night, both via --roam-* tokens.
+  color: "var(--roam-text, #faf6ef)",
+  background: "var(--roam-surface, rgba(0,0,0,0.45))",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
   border: "1px solid var(--roam-border)",
-  boxShadow: "var(--shadow-heavy)",
+  boxShadow: "var(--shadow-medium)",
   WebkitTapHighlightColor: "transparent",
 };
 

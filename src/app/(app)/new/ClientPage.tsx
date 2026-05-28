@@ -237,19 +237,20 @@ export default function NewTripClientPage() {
         depart_at: effectiveDepartAt,
       });
 
-      // Step 2: Save to IDB first so /trip page can find the plan on boot
-      await Promise.all([
-        saveMinimalPlan({
-          plan_id,
-          navPack: pack,
-          stops: draft.stops,
-          profile: draft.profile,
-          tripPrefs: draft.tripPrefs,
-        }),
-        incrementTripsUsed(),
-      ]);
+      // Step 2: Save to IDB so /trip can find the plan on boot. This is the
+      // only thing navigation must wait on.
+      await saveMinimalPlan({
+        plan_id,
+        navPack: pack,
+        stops: draft.stops,
+        profile: draft.profile,
+        tripPrefs: draft.tripPrefs,
+      });
 
-      // Step 3: Navigate after IDB write completes
+      // Step 3: Navigate immediately (optimistic). The trip-counter increment
+      // is a fire-and-forget side-effect - it must never block or fail the
+      // navigation (it no longer throws either, see tripGate).
+      void incrementTripsUsed();
       router(`/trip?plan_id=${encodeURIComponent(plan_id)}`, { replace: true });
     } catch (e: unknown) {
       setRouteError(toErrorMessage(e, "Failed to save trip"));

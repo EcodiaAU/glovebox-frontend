@@ -65,7 +65,7 @@ function localSet(key: string, value: string): void {
  *  IMPORTANT: Uses getSession() (reads from localStorage cache), not getUser()
  *  (network round-trip). Right after login the session is hydrated into the
  *  client before getUser() can validate with the server, so getUser() races
- *  and transiently returns null — which would make an entitled user look
+ *  and transiently returns null - which would make an entitled user look
  *  unentitled for the first few seconds. */
 async function fetchUnlockFromSupabase(): Promise<boolean | null> {
   try {
@@ -268,23 +268,26 @@ async function getTripsUsed(): Promise<number> {
   return isNaN(n) ? 0 : n;
 }
 
-/** Called after a trip is successfully saved. Increments server counter via API. */
+/** Called after a trip is successfully saved. Increments the server counter
+ *  via API when a session is present, otherwise increments locally. NEVER
+ *  throws - trip creation must not hinge on the trip-counter side-effect.
+ *  (Previously this threw "not authenticated" when getSession() came back
+ *  empty - e.g. demo mode or a not-yet-hydrated session - which rejected the
+ *  Promise.all in saveAndGo and aborted navigation even though the trip had
+ *  already been written to IDB. Tate 2026-05-28.) */
 export async function incrementTripsUsed(): Promise<number> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.access_token) {
-    // Auth is required on /new - this should not be reachable.
-    // If it somehow is, refuse to count locally to prevent cheating.
-    throw new Error("Cannot increment trips: not authenticated");
-  }
-
   try {
-    const { trips_used } = await api.post<{ trips_used: number }>("/trips/increment", undefined, {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-    localSet(KEY_TRIPS_USED, String(trips_used));
-    return trips_used;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      const { trips_used } = await api.post<{ trips_used: number }>("/trips/increment", undefined, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      localSet(KEY_TRIPS_USED, String(trips_used));
+      return trips_used;
+    }
   } catch {
-    // Offline - fall back to local increment so the paywall still triggers
+    // Offline, no session, or API error - fall through to local increment so
+    // the free-trip paywall still advances.
   }
   const current = parseInt(localGet(KEY_TRIPS_USED) ?? "0", 10);
   const next = (isNaN(current) ? 0 : current) + 1;

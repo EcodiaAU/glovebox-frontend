@@ -8,10 +8,12 @@
   width: 44px; height: 44px; border-radius: var(--r-card, 14px);
   border: 1px solid var(--roam-border);
   cursor: pointer; display: grid; place-items: center;
-  background: rgba(0,0,0,0.45);
-  color: #faf6ef;
+  /* Theme-aware: light surface in day, dark glass in night (Tate 2026-05-28
+     - was hardcoded dark in every theme). */
+  background: var(--roam-surface);
+  color: var(--roam-text);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-heavy);
+  box-shadow: var(--shadow-medium);
   transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 /* Filtered state: keep glassy chrome, signal with a small accent dot in the
@@ -25,7 +27,7 @@
   box-shadow: 0 0 0 2px rgba(0,0,0,0.55);
 }
 [data-theme="tactical-night"] .layer-toggle-btn {
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(18, 18, 22, 0.85);
   color: var(--on-color);
 }
 
@@ -232,7 +234,7 @@
 }
 
 /* ==========================================================================
-   TERRA NOMAD — High-contrast topographic map styling
+   TERRA NOMAD - High-contrast topographic map styling
    Simplified palette that stays legible on cached/offline tiles when zooming.
    ========================================================================== */
 

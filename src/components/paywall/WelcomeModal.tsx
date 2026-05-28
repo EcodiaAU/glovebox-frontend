@@ -65,50 +65,42 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
           willChange: "transform",
         }}
       >
-        {/* Pull-to-dismiss handle strip. Sits above the hero so the user
-            can drag from the top edge to close. Visually it's an iOS-style
-            grabber: 36×5px capsule centred. */}
-        <div
-          ref={handleRef}
-          style={{
-            position: "relative",
-            padding: "8px 0 6px",
-            display: "flex",
-            justifyContent: "center",
-            touchAction: "none",
-            cursor: "grab",
-            background: "transparent",
-            zIndex: 2,
-          }}
-        >
-          <div style={{
-            width: 36, height: 5,
-            background: "rgba(0,0,0,0.18)",
-            borderRadius: 999,
-          }} />
-        </div>
         {/* Scroll container - the modal content rarely scrolls but
             wrapping it lets at-top pull-to-dismiss work consistently. */}
         <div ref={scrollRef} style={{
-          maxHeight: "calc(100dvh - 56px - env(safe-area-inset-bottom, 0px))",
+          maxHeight: "calc(100dvh - env(safe-area-inset-bottom, 0px))",
           overflowY: "auto",
           WebkitOverflowScrolling: "touch" as const,
           overscrollBehavior: "contain",
           touchAction: "pan-y",
         }}>
-        {/* Hero - solid burnt-orange + cream editorial, no gradient,
-            no decorative ring, GloveboxMark instead of lucide icon. */}
+        {/* Hero - solid burnt-orange + cream editorial. It is the topmost
+            element so the ochre bleeds to the very top of the modal (the
+            sheet's overflow:hidden + rounded top corners clip it). The
+            pull-to-dismiss handle is the grab zone, overlaid on the ochre
+            in cream. */}
         <div
+          ref={handleRef}
           style={{
             background: "#A8431F",
             color: "#E8DFC9",
-            padding: "36px 28px 32px",
+            padding: "26px 28px 32px",
             textAlign: "left",
             position: "relative",
             overflow: "hidden",
+            touchAction: "none",
+            cursor: "grab",
           }}
         >
-          <div style={{ marginBottom: 16, color: "#E8DFC9" }}>
+          {/* Grabber on the ochre */}
+          <div style={{
+            position: "absolute", top: 8, left: 0, right: 0,
+            display: "flex", justifyContent: "center", pointerEvents: "none",
+          }}>
+            <div style={{ width: 36, height: 5, borderRadius: 999, background: "rgba(232,223,201,0.45)" }} />
+          </div>
+
+          <div style={{ marginBottom: 16, marginTop: 8, color: "#E8DFC9" }}>
             <GloveboxMark size={40} />
           </div>
 

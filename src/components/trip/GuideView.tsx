@@ -1412,7 +1412,7 @@ export function GuideView({
               fontSize: 13, fontWeight: 600, color: "var(--text-warn, #e6a040)",
             }}>
               <WifiOff size={16} style={{ flexShrink: 0 }} />
-              <span>You&apos;re offline. Chat needs internet, but your saved places in the <strong>Found</strong> tab are available.</span>
+              <span>You&apos;re offline. Saved places stay in <strong>Found</strong>.</span>
             </div>
           )}
 
@@ -1715,7 +1715,7 @@ export function GuideView({
                 No discoveries yet
               </div>
               <div style={{ fontSize: 13, fontWeight: 500, color: "var(--roam-text-muted)", lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
-                Ask the Guide about fuel, camps, food, or scenic stops to discover places along your route.
+                Ask about fuel, camps, food or scenic stops along your route.
               </div>
               <button
                 type="button"
