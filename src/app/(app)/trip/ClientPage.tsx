@@ -1988,17 +1988,20 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   // so peek/nav snaps add 300px to compensate.
   //   full:      sheet covers screen
   //   expanded:  full editor with stats + actions + scrollable trip view
-  //   peek:      drag handle + title + distance/time ONLY (Tate 2026-05-29).
-  //              Action chips (Plans/Invite/Share/Pro), StatRow, and
-  //              scrollable TripView all hide at peek so the sheet head sits
-  //              flush above the persistent action bar.
+  //   peek:      drag handle + title + distance/time peek clearly above
+  //              the persistent action bar. The chips/StatRow/scrollable
+  //              content still occupy DOM layout (opacity:0 only), so peek
+  //              has to leave ~100px visible above the action bar for the
+  //              title row to clear plus safe-area buffer on iPhone.
+  //              First pass 2026-05-29 used 310 (too tight; sheet head sat
+  //              flush behind the action bar on iPhone with safe-area).
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
       case "full":      return "calc(var(--glovebox-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       case "peek":
-      default:          return `calc(100% - 310px - var(--glovebox-safe-bottom, 0px))`;
+      default:          return `calc(100% - 410px - var(--glovebox-safe-bottom, 0px))`;
     }
   })();
   const isPeek = sheetSnap === "peek" && !activeNav.isActive;
@@ -2971,7 +2974,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           transform:
             sheetSnap === "full"     ? "translateY(calc(100% + var(--glovebox-tab-h, 80px)))" :
             sheetSnap === "expanded" ? "translateY(0)" :
-                                       "translateY(calc(-1 * var(--glovebox-tab-h, 80px)))",
+                                       "translateY(calc(-1 * (var(--glovebox-tab-h, 80px) + 10px)))",
           opacity: sheetSnap === "full" ? 0 : 1,
           pointerEvents: sheetSnap === "full" ? "none" : "auto",
         }}>
