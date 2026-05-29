@@ -1237,6 +1237,21 @@ export function GuideView({
       setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 80);
     }
   }, [chatBusy]);
+  // Land at the bottom every time the user opens /guide (or switches the
+  // tab back to it). PersistentTabs keeps this component mounted across
+  // tab switches, so neither the thread-length effect nor the initial
+  // mount alone covers the "switch back to /guide" case - scroll position
+  // would persist wherever it was last. Tate 2026-05-29: "guide chat
+  // needs to always open to the bottom of the chat, right now its
+  // opening at the top". `behavior: "auto"` for an instant land, no
+  // visible scroll animation on tab open.
+  useEffect(() => {
+    if (!isGuidePageActive) return;
+    if (activeTab !== "chat") return;
+    requestAnimationFrame(() => {
+      chatEndRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+    });
+  }, [isGuidePageActive, activeTab]);
 
   // Auto-ask once guide becomes ready (triggered by "View in Guide" from map)
   const autoAskFiredRef = useRef(false);

@@ -2007,7 +2007,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       case "full":      return "calc(var(--glovebox-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       case "peek":
-      default:          return `calc(100% - 530px)`;
+      default:          return `calc(100% - 515px)`;
     }
   })();
   const isPeek = sheetSnap === "peek" && !activeNav.isActive;
