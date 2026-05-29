@@ -1037,13 +1037,17 @@ export function GuideView({
   const { openPlace } = usePlaceDetail();
   const [chatInput, setChatInput] = useState("");
   const [activeTab, setActiveTab] = useState<ViewTab>(initialTab ?? "chat");
-  // Trip page is persistent-mounted across all tabs (Home/Trip/Guide/SOS) so
-  // GuideView lives in DOM even when user is on /home etc. The chat input
-  // portal targets document.body, which is shared across all pages - without
-  // a pathname guard the portal would surface on every page. Only render the
-  // portal when the trip page is the active route. (Tate 2026-05-29 on 1.1.1(6).)
+  // GuideView is rendered ONLY by the /guide page (not /trip). The /guide
+  // page is persistent-mounted in PersistentTabs so the component lives in
+  // DOM even when the user is on /trip, /sos, or /home. The chat input
+  // portal targets document.body, which is shared across all pages -
+  // without a pathname guard the portal would surface on every page. Only
+  // render the portal when /guide is the active route. (Tate 2026-05-29 on
+  // 1.1.1(6) -> 1.1.1(8): first attempt used pathname === "/trip" because
+  // I misread which page rendered GuideView; that hid the input on /guide
+  // and overlapped the trip bottom sheet on /trip.)
   const { pathname } = useLocation();
-  const isTripPageActive = pathname === "/trip" || pathname === "/trip/";
+  const isGuidePageActive = pathname === "/guide" || pathname === "/guide/";
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingUserMsg, setPendingUserMsg] = useState<string | null>(null);
   // Optimistic "Added" state for stop-row buttons. We flip this immediately
@@ -1633,7 +1637,7 @@ export function GuideView({
               the bottom nav if keyboard is closed). Only mounted when the
               chat tab is active so the discoveries tab doesn't get a
               phantom input bar. (Tate 2026-05-28 on 1.1.1(4) -> 1.1.1(6).) */}
-          {activeTab === "chat" && isTripPageActive && typeof document !== "undefined" && createPortal(
+          {activeTab === "chat" && isGuidePageActive && typeof document !== "undefined" && createPortal(
           <div style={{
             position: "fixed",
             left: 0,
