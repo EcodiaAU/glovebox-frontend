@@ -1988,20 +1988,26 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   // so peek/nav snaps add 300px to compensate.
   //   full:      sheet covers screen
   //   expanded:  full editor with stats + actions + scrollable trip view
-  //   peek:      drag handle + title + distance/time peek clearly above
-  //              the persistent action bar. The chips/StatRow/scrollable
-  //              content still occupy DOM layout (opacity:0 only), so peek
-  //              has to leave ~100px visible above the action bar for the
-  //              title row to clear plus safe-area buffer on iPhone.
-  //              First pass 2026-05-29 used 310 (too tight; sheet head sat
-  //              flush behind the action bar on iPhone with safe-area).
+  //   peek:      drag handle + title + distance/time peek above the
+  //              persistent action bar. The chips/StatRow at peek are
+  //              COLLAPSED to height 0 (grid-rows trick) so the peek visual
+  //              ends just above the action bar with no empty gap.
+  //
+  // IMPORTANT translateY math: `%` inside translateY references the
+  // ELEMENT'S OWN height (here vh + 220), NOT the parent. So
+  // `calc(100% - 620px)` evaluates to ~(vh - 400) at runtime, putting
+  // the sheet top at viewport y ~= vh - 320 (i.e. ~280px peeking above
+  // the viewport bottom, which leaves enough room for drag + title above
+  // the action bar). I learned this the painful way 2026-05-29 after
+  // three blind ship cycles with 310/410 that shifted the sheet too far
+  // and put its top BELOW the action bar top.
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
       case "full":      return "calc(var(--glovebox-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       case "peek":
-      default:          return `calc(100% - 410px - var(--glovebox-safe-bottom, 0px))`;
+      default:          return `calc(100% - 620px - var(--glovebox-safe-bottom, 0px))`;
     }
   })();
   const isPeek = sheetSnap === "peek" && !activeNav.isActive;
@@ -2558,14 +2564,19 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           </div>
         </div>
 
-        {/* Header actions (outside the drag zone) - hidden at peek per Tate 2026-05-29:
-             peek shows ONLY drag handle + title + distance/time. */}
+        {/* Header actions (outside the drag zone) - COLLAPSED to height:0
+             at peek per Tate 2026-05-29 so the sheet head sits directly
+             above the action bar with no empty gap. opacity:0 alone left
+             the layout space, which (combined with my buggy translateY %
+             math) shoved the sheet head behind the action bar. */}
         <div style={{
-          padding: "0 20px 12px",
+          display: "grid",
+          gridTemplateRows: isPeek ? "0fr" : "1fr",
           opacity: isPeek ? 0 : 1,
           pointerEvents: isPeek ? "none" : "auto",
-          transition: "opacity 200ms ease",
+          transition: "grid-template-rows 220ms ease, opacity 180ms ease",
         }}>
+        <div style={{ overflow: "hidden", minHeight: 0, padding: "0 20px 12px" }}>
           {/* Row 2: action row - each pill takes flex:1 so the row stretches edge-to-edge,
                matching the StatRow chips below visually. Upgrade pinned right when shown. */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -2674,10 +2685,11 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             )}
           </div>
         </div>
+        </div>
 
         {/* StatRow (prototype: 3 chips below header - km / drive / surface).
-             Hidden at peek - the title row already carries the distance/time
-             summary, and peek must stay tight. */}
+             Hidden + collapsed at peek - the title row already carries the
+             distance/time summary, and peek must stay tight. */}
         {(() => {
           const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
           const durSec = navpack?.primary?.duration_s ?? null;
@@ -2690,11 +2702,16 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           if (distKm == null && drive == null) return null;
           return (
             <div style={{
-              padding: "0 20px 12px", display: "flex", gap: 8,
-              borderBottom: "1px solid var(--c-border)",
+              display: "grid",
+              gridTemplateRows: isPeek ? "0fr" : "1fr",
               opacity: isPeek ? 0 : 1,
               pointerEvents: isPeek ? "none" : "auto",
-              transition: "opacity 200ms ease",
+              transition: "grid-template-rows 220ms ease, opacity 180ms ease",
+            }}>
+            <div style={{
+              overflow: "hidden", minHeight: 0,
+              padding: "0 20px 12px", display: "flex", gap: 8,
+              borderBottom: "1px solid var(--c-border)",
             }}>
               {distKm != null && (
                 <div style={{
@@ -2737,6 +2754,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                   {stopCount} stops
                 </div>
               </div>
+            </div>
             </div>
           );
         })()}
@@ -2974,7 +2992,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           transform:
             sheetSnap === "full"     ? "translateY(calc(100% + var(--glovebox-tab-h, 80px)))" :
             sheetSnap === "expanded" ? "translateY(0)" :
-                                       "translateY(calc(-1 * (var(--glovebox-tab-h, 80px) + 10px)))",
+                                       "translateY(calc(-1 * var(--glovebox-tab-h, 80px)))",
           opacity: sheetSnap === "full" ? 0 : 1,
           pointerEvents: sheetSnap === "full" ? "none" : "auto",
         }}>
