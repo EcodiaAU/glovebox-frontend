@@ -1984,30 +1984,30 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
   // ── Derived values ─────────────────────────────────────────────
   // Snap positions (translateY values).
-  // The sheet extends 300px below the viewport to absorb spring bounce,
-  // so peek/nav snaps add 300px to compensate.
   //   full:      sheet covers screen
   //   expanded:  full editor with stats + actions + scrollable trip view
   //   peek:      drag handle + title + distance/time peek above the
-  //              persistent action bar. The chips/StatRow at peek are
-  //              COLLAPSED to height 0 (grid-rows trick) so the peek visual
-  //              ends just above the action bar with no empty gap.
+  //              persistent action bar. Chips, StatRow, and scrollable
+  //              content sit BELOW the action bar (covered by it z-22 >
+  //              sheet z-20) - normal layout, not collapsed.
   //
-  // IMPORTANT translateY math: `%` inside translateY references the
-  // ELEMENT'S OWN height (here vh + 220), NOT the parent. So
-  // `calc(100% - 620px)` evaluates to ~(vh - 400) at runtime, putting
-  // the sheet top at viewport y ~= vh - 320 (i.e. ~280px peeking above
-  // the viewport bottom, which leaves enough room for drag + title above
-  // the action bar). I learned this the painful way 2026-05-29 after
-  // three blind ship cycles with 310/410 that shifted the sheet too far
-  // and put its top BELOW the action bar top.
+  // translateY `%` references the ELEMENT'S OWN height (vh + 220),
+  // NOT the parent. Worked through the math for X (peek snap):
+  //   sheet_top_viewport = 80 + Y = 80 + ((vh + 220) - X) = vh + 300 - X
+  //   action_bar_top at peek = vh - 80 - action_bar_height (no safe-area
+  //     at peek because tab bar is visible and covers the home indicator)
+  //   action_bar_height = 12 + 48 + 12 = 72 (no safe-area)
+  //   action_bar_top = vh - 152
+  // Want sheet_top = action_bar_top - 76 (drag 20 + title 52 + pad 4):
+  //   80 + (vh + 220) - X = vh - 152 - 76
+  //   X = 300 + 228 = 528 -> round to 530.
   const snapY = (() => {
     if (activeNav.isActive) return `calc(100% - 360px)`;
     switch (sheetSnap) {
       case "full":      return "calc(var(--glovebox-safe-top, 0px) - 80px)";
       case "expanded":  return "0px";
       case "peek":
-      default:          return `calc(100% - 620px - var(--glovebox-safe-bottom, 0px))`;
+      default:          return `calc(100% - 530px)`;
     }
   })();
   const isPeek = sheetSnap === "peek" && !activeNav.isActive;
@@ -2564,19 +2564,14 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           </div>
         </div>
 
-        {/* Header actions (outside the drag zone) - COLLAPSED to height:0
-             at peek per Tate 2026-05-29 so the sheet head sits directly
-             above the action bar with no empty gap. opacity:0 alone left
-             the layout space, which (combined with my buggy translateY %
-             math) shoved the sheet head behind the action bar. */}
-        <div style={{
-          display: "grid",
-          gridTemplateRows: isPeek ? "0fr" : "1fr",
-          opacity: isPeek ? 0 : 1,
-          pointerEvents: isPeek ? "none" : "auto",
-          transition: "grid-template-rows 220ms ease, opacity 180ms ease",
-        }}>
-        <div style={{ overflow: "hidden", minHeight: 0, padding: "0 20px 12px" }}>
+        {/* Header actions (outside the drag zone). At peek these sit BELOW
+             the action bar (covered by it) - peek snap is sized so only the
+             drag handle + title row peek above the action bar; chips +
+             StatRow + scrollable content sit below the action bar, hidden
+             by it but still occupying normal layout. Tate 2026-05-29:
+             collapsing them via grid-rows left a blacked-out gap above
+             the action bar instead of natural sheet continuation. */}
+        <div style={{ padding: "0 20px 12px" }}>
           {/* Row 2: action row - each pill takes flex:1 so the row stretches edge-to-edge,
                matching the StatRow chips below visually. Upgrade pinned right when shown. */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -2685,11 +2680,9 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             )}
           </div>
         </div>
-        </div>
 
         {/* StatRow (prototype: 3 chips below header - km / drive / surface).
-             Hidden + collapsed at peek - the title row already carries the
-             distance/time summary, and peek must stay tight. */}
+             At peek, sits BELOW the action bar (covered by it). */}
         {(() => {
           const distKm = navpack?.primary?.distance_m ? Math.round(navpack.primary.distance_m / 1000) : null;
           const durSec = navpack?.primary?.duration_s ?? null;
@@ -2702,14 +2695,6 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           if (distKm == null && drive == null) return null;
           return (
             <div style={{
-              display: "grid",
-              gridTemplateRows: isPeek ? "0fr" : "1fr",
-              opacity: isPeek ? 0 : 1,
-              pointerEvents: isPeek ? "none" : "auto",
-              transition: "grid-template-rows 220ms ease, opacity 180ms ease",
-            }}>
-            <div style={{
-              overflow: "hidden", minHeight: 0,
               padding: "0 20px 12px", display: "flex", gap: 8,
               borderBottom: "1px solid var(--c-border)",
             }}>
@@ -2755,19 +2740,12 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
                 </div>
               </div>
             </div>
-            </div>
           );
         })()}
 
-        {/* Scrollable content - hidden at peek so the sheet head sits flush
-             above the persistent action bar with only drag handle + title +
-             distance/time visible. */}
-        <div style={{
-          flex: 1, overflow: "hidden", touchAction: "pan-y",
-          opacity: isPeek ? 0 : 1,
-          pointerEvents: isPeek ? "none" : "auto",
-          transition: "opacity 200ms ease",
-        }}>
+        {/* Scrollable content - at peek this sits below the action bar
+             (covered by it); user pulls the sheet up to reveal. */}
+        <div style={{ flex: 1, overflow: "hidden", touchAction: "pan-y" }}>
           <div
             ref={scrollElRef}
             className="glovebox-scroll"
@@ -2979,7 +2957,17 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           position: "absolute",
           left: 0, right: 0,
           bottom: 0,
-          padding: "7px 14px calc(7px + env(safe-area-inset-bottom, 0px))",
+          // Vertical centering: symmetric 12px padding when at peek (tab bar
+          // visible, covers home indicator below so no safe-area needed inside
+          // the action bar). At expanded/full the tab bar slides out so the
+          // action bar sits at the very bottom and needs safe-area-bottom
+          // padding to keep buttons clear of the home indicator. (Tate
+          // 2026-05-29: "buttons need to sit vertically centered in their
+          // section, right now they're against the top too close, and have
+          // too much padding from the bottom of their section".)
+          padding: isPeek
+            ? "12px 14px 12px"
+            : "12px 14px calc(12px + env(safe-area-inset-bottom, 0px))",
           display: "flex", gap: 8, alignItems: "center",
           // EXACT match to the bottom tab bar fill (BottomTabBar.tsx uses
           // color-mix(--glovebox-bg 92%, transparent), NOT --tab-bar-bg) so the
@@ -3001,15 +2989,15 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             aria-label="Add stops"
             onClick={() => { haptic.selection(); setSuggestionsOpen(true); }}
             style={{
-              flex: "0 0 auto", height: 44, padding: "0 13px",
+              flex: "0 0 auto", height: 48, padding: "0 14px",
               borderRadius: 12,
               background: "var(--c-accent-tint)", color: "var(--c-accent)",
               border: 0,
-              fontWeight: 700, fontSize: 13,
+              fontWeight: 700, fontSize: 14,
               display: "inline-flex", alignItems: "center", gap: 6,
             }}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14M5 12h14"/>
             </svg>
             Stops
@@ -3021,7 +3009,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
               onClick={handleStartNavigation}
               disabled={!navpack?.primary?.legs?.some((l) => l.steps && l.steps.length > 0)}
               style={{
-                flex: 1, minHeight: 48,
+                flex: 1, height: 48,
                 padding: "0 18px",
                 borderRadius: 12,
                 background: "var(--grad-cta)", color: "white",
