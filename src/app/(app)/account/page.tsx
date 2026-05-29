@@ -8,9 +8,11 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth";
+import { supabase } from "@/lib/supabase/client";
 import { haptic } from "@/lib/native/haptics";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { KEY_TEST_BLOCK_RC } from "@/lib/paywall/tripGate";
 import "@/app/landing.css";
 
 export default function AccountPage() {
@@ -256,17 +258,30 @@ function AccountPageInner() {
             color: "var(--glovebox-text-muted)",
             lineHeight: 1.5,
           }}>
-            Clears the local Untethered unlock flag so the paywall returns.
-            Your Apple-ID purchase is unaffected and recoverable via the
-            Restore button on the paywall.
+            Wipes the local unlock cache, the server entitlement row for this
+            account, and blocks Apple-StoreKit re-sync until the next purchase
+            or restore so the paywall flow can be exercised end-to-end. Your
+            Apple-ID purchase is unaffected and recoverable via the Restore
+            button on the paywall.
           </p>
           <button
             type="button"
-            onClick={() => {
+            onClick={async () => {
               haptic.light();
               try {
                 localStorage.removeItem("roam_unlimited_unlocked");
                 localStorage.removeItem("glovebox_trips_used");
+                // Block RC re-sync until next purchase/restore. Without this,
+                // syncUnlockFromRC inside checkTripGate immediately restores
+                // the unlock flag from the device's Apple-ID-tied IAP.
+                localStorage.setItem(KEY_TEST_BLOCK_RC, "1");
+              } catch {}
+              try {
+                const { data } = await supabase.auth.getSession();
+                const uid = data.session?.user?.id;
+                if (uid) {
+                  await supabase.from("user_entitlements").delete().eq("user_id", uid);
+                }
               } catch {}
               window.location.reload();
             }}

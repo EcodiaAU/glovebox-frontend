@@ -33,6 +33,14 @@ async function getPurchases() {
 
 const KEY_TRIPS_USED = "glovebox_trips_used";
 const KEY_UNLOCKED   = "roam_unlimited_unlocked";
+// Test-only flag set by the Account page's "Reset paywall cache" button.
+// While present, syncUnlockFromRC short-circuits so the device's Apple-ID-tied
+// IAP doesn't immediately restore the unlock flag after the button clears it.
+// Cleared on the next successful purchase or restore so production users
+// never get stuck in test mode. Tate 2026-05-29: the prior reset button was
+// undone within milliseconds by RC re-sync; this flag is the test-mode toggle
+// that lets the paywall flow be exercised end-to-end on a real device.
+export const KEY_TEST_BLOCK_RC = "glovebox_test_block_rc";
 
 const RC_ENTITLEMENT_ID = "roam_unlimited";
 const RC_PRODUCT_ID     = "roam_unlimited";
@@ -187,6 +195,10 @@ async function ensureRCReady(): Promise<boolean> {
 /** Native only: check RC entitlement and persist to Supabase + local cache. */
 async function syncUnlockFromRC(): Promise<boolean> {
   if (!isNativePlatform()) return false;
+  // Test mode: Reset paywall cache button on the Account page sets this flag
+  // so RC doesn't immediately restore the unlock flag from the device's
+  // Apple-ID-tied IAP. Cleared on next successful purchase/restore (below).
+  if (localGet(KEY_TEST_BLOCK_RC) === "1") return false;
   await ensureRCReady();
   if (!_rcReady) return false;
   try {
@@ -266,6 +278,8 @@ export async function purchaseUnlimited(): Promise<{ success: boolean; error?: s
       }
       await markEntitlementInSupabase("revenuecat");
       localSet(KEY_UNLOCKED, "1");
+      // Clear the test-block-RC flag - a real purchase ends test mode.
+      try { localStorage.removeItem(KEY_TEST_BLOCK_RC); } catch {}
       return { success: true };
     }
     console.warn(`[tripGate] purchase completed but unlock not resolved. ${summariseEntitlements(customerInfo)}`);
@@ -299,6 +313,8 @@ export async function restorePurchases(): Promise<{ success: boolean; error?: st
       }
       await markEntitlementInSupabase("revenuecat");
       localSet(KEY_UNLOCKED, "1");
+      // Clear the test-block-RC flag - a successful restore ends test mode.
+      try { localStorage.removeItem(KEY_TEST_BLOCK_RC); } catch {}
     } else {
       console.warn(`[tripGate] restore found no qualifying purchase. ${summariseEntitlements(customerInfo)}`);
     }
