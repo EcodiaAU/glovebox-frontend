@@ -40,3 +40,4 @@ secrets/
 
 # UI audit screenshots (local-only)
 .preview-*.png
+appstore-screenshots/
