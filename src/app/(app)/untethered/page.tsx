@@ -459,10 +459,10 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
         }}
       >
         {[
-          { label: "Contact", href: "/contact" },
-          { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
-          { label: "Attributions", href: "/attributions" },
+          { label: "contact", href: "/contact" },
+          { label: "privacy", href: "/privacy" },
+          { label: "terms", href: "/terms" },
+          { label: "attributions", href: "/attributions" },
         ].map((link, i, arr) => (
           <span key={link.href} style={{ display: "inline-flex", alignItems: "center" }}>
             <a href={link.href} style={footerLink}>{link.label}</a>
@@ -902,8 +902,8 @@ function PurchasePage({
               <span style={{ color: "var(--glovebox-border-strong)", fontSize: 12 }}>·</span>
             </>
           )}
-          <a href="/privacy" style={legalLink}>Privacy</a>
-          <a href="/terms" style={legalLink}>Terms</a>
+          <a href="/privacy" style={legalLink}>privacy</a>
+          <a href="/terms" style={legalLink}>terms</a>
         </div>
       </div>
     </div>
