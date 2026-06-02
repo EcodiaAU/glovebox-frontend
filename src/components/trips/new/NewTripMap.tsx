@@ -1,6 +1,6 @@
 // src/components/new/NewTripMap.tsx
 
-import { useEffect, useMemo, useRef, useCallback } from "react";
+import { useEffect, useMemo, useRef, useCallback, useState } from "react";
 import maplibregl, { type Map as MLMap, type GeoJSONSource, type StyleSpecification } from "maplibre-gl";
 import { Protocol } from "pmtiles";
 
@@ -107,6 +107,26 @@ function loadHeadingArrow(map: MLMap): Promise<void> {
   });
 }
 
+/**
+ * Probe whether the browser can hand out a WebGL context at all. MapLibre v5
+ * dropped its own .supported() helper, so we do the minimal canvas check here.
+ * Returns false when hardware acceleration is off, the GPU process is dead, or
+ * the renderer is sandbox-disabled (Chrome's "GL_RENDERER = Disabled" path).
+ */
+function isWebglAvailable(): boolean {
+  if (typeof document === "undefined") return false;
+  try {
+    const c = document.createElement("canvas");
+    const gl =
+      c.getContext("webgl2") ||
+      c.getContext("webgl") ||
+      c.getContext("experimental-webgl");
+    return !!gl;
+  } catch {
+    return false;
+  }
+}
+
 function pointFromBbox(b: number[] | null | undefined): [number, number] | null {
   if (!b || b.length !== 4) return null;
   const [minLng, minLat, maxLng, maxLat] = b;
@@ -167,6 +187,7 @@ export function NewTripMap(props: {
   const elRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MLMap | null>(null);
   const initRef = useRef(false);
+  const [webglFailed, setWebglFailed] = useState(false);
 
   const onCenterRef = useRef(props.onMapCenterChanged);
   onCenterRef.current = props.onMapCenterChanged;
@@ -194,21 +215,36 @@ export function NewTripMap(props: {
     if (!elRef.current || initRef.current) return;
     initRef.current = true;
 
+    if (!isWebglAvailable()) {
+      console.warn("[NewTripMap] WebGL unavailable, rendering planning UI without map.");
+      setWebglFailed(true);
+      initRef.current = false;
+      return;
+    }
+
     const protocol = new Protocol();
     maplibregl.addProtocol("pmtiles", protocol.tile.bind(protocol));
 
-    // Start with an empty style - we load + rewrite the real one async
-    const map = new maplibregl.Map({
-      container: elRef.current,
-      style: { version: 8 as const, sources: {}, layers: [] },
-      center: [153.026, -27.4705],
-      zoom: 10,
-      attributionControl: false,
-      transformRequest: (url) => {
-        if (url.startsWith("pmtiles://")) return { url: rewritePmtilesUrl(url) };
-        return { url };
-      },
-    });
+    let map: MLMap;
+    try {
+      // Start with an empty style - we load + rewrite the real one async
+      map = new maplibregl.Map({
+        container: elRef.current,
+        style: { version: 8 as const, sources: {}, layers: [] },
+        center: [153.026, -27.4705],
+        zoom: 10,
+        attributionControl: false,
+        transformRequest: (url) => {
+          if (url.startsWith("pmtiles://")) return { url: rewritePmtilesUrl(url) };
+          return { url };
+        },
+      });
+    } catch (err) {
+      console.error("[NewTripMap] WebGL context init failed, falling back:", err);
+      setWebglFailed(true);
+      initRef.current = false;
+      return;
+    }
 
     mapRef.current = map;
 
@@ -316,6 +352,14 @@ export function NewTripMap(props: {
   return (
     <div className="trip-map-fullscreen">
       <div ref={elRef} className="trip-map-inner" />
+      {webglFailed && (
+        <div className="trip-map-webgl-fallback" role="status" aria-live="polite">
+          <div className="trip-map-webgl-fallback-card">
+            <strong>Map can&rsquo;t render in this browser</strong>
+            <p>Planning still works below. To see the map, enable hardware acceleration in your browser and reload.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

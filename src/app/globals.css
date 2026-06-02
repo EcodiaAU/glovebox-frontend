@@ -1221,6 +1221,34 @@ body[data-trip-sheet="full"] .glovebox-tabs-wrap {
    any accidental reflow cascade from overlay controls showing or hiding. */
 .trip-map-inner { width: 100%; height: 100%; contain: layout; }
 
+/* Fallback shown when the browser can't initialize WebGL (hardware accel off,
+   GPU process dead, sandboxed renderer disabled). Sits inside the map slot so
+   the surrounding planning UI (StopsEditor, etc.) keeps rendering. */
+.trip-map-webgl-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(var(--glovebox-safe-top, 0px) + 24px) 16px 16px;
+  background: var(--glovebox-surface, #f4f4f0);
+  pointer-events: none;
+  z-index: 1;
+}
+.trip-map-webgl-fallback-card {
+  pointer-events: auto;
+  max-width: 32ch;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--glovebox-card, #ffffff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--glovebox-text, #111);
+}
+.trip-map-webgl-fallback-card strong { display: block; margin-bottom: 6px; font-size: 15px; }
+.trip-map-webgl-fallback-card p { margin: 0; opacity: 0.78; }
+
 .trip-map-switcher {
   position: absolute;
   top: calc(var(--glovebox-safe-top) + 24px);
