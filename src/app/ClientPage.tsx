@@ -69,12 +69,10 @@ export default function LandingPage() {
         </p>
 
         <p className="gl-lede">
-          <em>Maps, routing, fuel and road conditions. Works without signal.</em>
-        </p>
-
-        <p>
-          Glovebox downloads the trip to your phone before you leave. It
-          keeps working in areas with no coverage.
+          <em>
+            Maps, routing, fuel and road conditions. Works without signal.
+            Downloads the trip before you leave.
+          </em>
         </p>
 
         <p className="gl-section-label">acknowledgement</p>
