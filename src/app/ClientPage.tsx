@@ -53,12 +53,6 @@ export default function LandingPage() {
   return (
     <div className="gl">
 
-      <section className="gl-title">
-        <p className="gl-sentence">
-          <em>Offline navigation for Australia.</em>
-        </p>
-      </section>
-
       <main className="gl-memo">
         <p className="gl-row">
           <a href={APP_STORE} target="_blank" rel="noopener noreferrer">App Store</a>
@@ -66,13 +60,6 @@ export default function LandingPage() {
           <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer">Google Play</a>
           <span className="gl-sep" aria-hidden="true">.</span>
           <a href="/trip">Open in browser</a>
-        </p>
-
-        <p className="gl-lede">
-          <em>
-            Maps, routing, fuel and road conditions. Works without signal.
-            Downloads the trip before you leave.
-          </em>
         </p>
 
         <p className="gl-section-label">acknowledgement</p>
