@@ -53,6 +53,12 @@ export default function LandingPage() {
   return (
     <div className="gl">
 
+      <section className="gl-title">
+        <p className="gl-sentence">
+          <em>Offline navigation for Australia.</em>
+        </p>
+      </section>
+
       <main className="gl-memo">
         <p className="gl-row">
           <a href={APP_STORE} target="_blank" rel="noopener noreferrer">App Store</a>
