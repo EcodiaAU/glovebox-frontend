@@ -1,7 +1,36 @@
 import React from "react";
 import { Outlet } from "react-router";
 
+// Burnt-orange ground for the whole document while the legal pages are
+// mounted. globals.css paints html/body --glovebox-bg (sand); the
+// .gl-legal-page div paints orange on top, but an overscroll bounce past
+// the top or bottom rubber-bands open to reveal the sand body underneath.
+// Painting html + body the legal orange (and containing overscroll) makes
+// the gutters orange too, so the ground reads as genuinely full-bleed.
+// Restored on unmount so the app shell + other routes are untouched.
+// Keep in sync with --bg in legal.module.css / the .gl-legal-page wrapper.
+const LEGAL_BG = "#A8431F";
+
+function useDocumentGround(color: string) {
+  React.useEffect(() => {
+    const html = document.documentElement;
+    const { body } = document;
+    const prevHtmlBg = html.style.backgroundColor;
+    const prevBodyBg = body.style.backgroundColor;
+    const prevOverscroll = body.style.overscrollBehaviorY;
+    html.style.backgroundColor = color;
+    body.style.backgroundColor = color;
+    body.style.overscrollBehaviorY = "contain";
+    return () => {
+      html.style.backgroundColor = prevHtmlBg;
+      body.style.backgroundColor = prevBodyBg;
+      body.style.overscrollBehaviorY = prevOverscroll;
+    };
+  }, [color]);
+}
+
 export function LegalLayout() {
+  useDocumentGround(LEGAL_BG);
   return (
     <>
       <style>{WRAPPER_CSS}</style>
