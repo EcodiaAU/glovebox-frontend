@@ -38,6 +38,7 @@ const TermsPage = lazy(() => import("./app/(legal)/terms/page"));
 
 // Standalone routes
 const PurchaseSuccessPage = lazy(() => import("./app/purchase/success/page"));
+const ComingSoonPage = lazy(() => import("./app/coming-soon/page"));
 
 // Catch-all
 const NotFoundClient = lazy(() =>
@@ -169,6 +170,14 @@ export function App() {
             element={
               <Suspense fallback={null}>
                 <PurchaseSuccessPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="coming-soon"
+            element={
+              <Suspense fallback={null}>
+                <ComingSoonPage />
               </Suspense>
             }
           />

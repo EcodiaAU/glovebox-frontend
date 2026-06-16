@@ -20,8 +20,10 @@ function useNativeRedirect() {
   return isNative;
 }
 
-const APP_STORE = "https://apps.apple.com/au/app/glovebox/id000000000";
-const PLAY_STORE = "https://play.google.com/store/apps/details?id=au.ecodia.roam";
+// iOS + Android aren't on the stores yet  only the web app is live  so the
+// store links land on the rust coming-soon page instead of dead store records.
+const APP_STORE = "/coming-soon";
+const PLAY_STORE = "/coming-soon";
 
 export default function LandingPage() {
   const isNative = useNativeRedirect();
@@ -55,15 +57,15 @@ export default function LandingPage() {
 
       <section className="gl-title">
         <p className="gl-sentence">
-          <em>Offline navigation for Australia.</em>
+          <em>Offline Road Tripping for Australia</em>
         </p>
       </section>
 
       <main className="gl-memo">
         <p className="gl-row">
-          <a href={APP_STORE} target="_blank" rel="noopener noreferrer">App Store</a>
+          <a href={APP_STORE}>App Store</a>
           <span className="gl-sep" aria-hidden="true">.</span>
-          <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer">Google Play</a>
+          <a href={PLAY_STORE}>Google Play</a>
           <span className="gl-sep" aria-hidden="true">.</span>
           <a href="/trip">Open in browser</a>
         </p>
