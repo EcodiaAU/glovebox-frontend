@@ -21,9 +21,7 @@ function useNativeRedirect() {
 }
 
 // iOS + Android aren't on the stores yet  only the web app is live  so the
-// store links land on the rust coming-soon page instead of dead store records.
-const APP_STORE = "/coming-soon";
-const PLAY_STORE = "/coming-soon";
+// store links are omitted entirely until the native apps go live.
 
 export default function LandingPage() {
   const isNative = useNativeRedirect();
@@ -63,10 +61,6 @@ export default function LandingPage() {
 
       <main className="gl-memo">
         <p className="gl-row">
-          <a href={APP_STORE}>App Store</a>
-          <span className="gl-sep" aria-hidden="true">.</span>
-          <a href={PLAY_STORE}>Google Play</a>
-          <span className="gl-sep" aria-hidden="true">.</span>
           <a href="/trip">Open in browser</a>
         </p>
 
