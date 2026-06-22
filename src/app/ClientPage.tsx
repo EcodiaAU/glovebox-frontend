@@ -78,9 +78,9 @@ export default function LandingPage() {
         <a className="gl-sig" href="https://ecodia.au" target="_blank" rel="noopener noreferrer">An Ecodia thing.</a>
         <span className="gl-foot-links">
           <a href="/privacy">privacy</a>
-          <span className="gl-sep" aria-hidden="true">.</span>
+          <span className="gl-sep" aria-hidden="true">·</span>
           <a href="/terms">terms</a>
-          <span className="gl-sep" aria-hidden="true">.</span>
+          <span className="gl-sep" aria-hidden="true">·</span>
           <CopyEmail>code@ecodia.au</CopyEmail>
         </span>
       </footer>
