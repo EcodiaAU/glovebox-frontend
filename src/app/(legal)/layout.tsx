@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router";
+import { EcodiaAttribution } from "@/components/brand/EcodiaAttribution";
 
 // Burnt-orange ground for the whole document while the legal pages are
 // mounted. globals.css paints html/body --glovebox-bg (sand); the
@@ -44,6 +45,9 @@ export function LegalLayout() {
           </p>
           <p>
             <em>Built on Gubbi Gubbi land, Sunshine Coast, Australia.</em>
+          </p>
+          <p>
+            <EcodiaAttribution style={{ fontSize: "13px" }} />
           </p>
         </footer>
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router";
 import { Capacitor } from "@capacitor/core";
 import CopyEmail from "@/components/CopyEmail";
+import { EcodiaAttribution } from "@/components/brand/EcodiaAttribution";
 import "./landing.css";
 
 /* Capacitor native shortcut: the marketing page never shows inside the app.
@@ -75,7 +76,7 @@ export default function LandingPage() {
       </main>
 
       <footer className="gl-foot">
-        <a className="gl-sig" href="https://ecodia.au" target="_blank" rel="noopener noreferrer">An Ecodia thing.</a>
+        <EcodiaAttribution style={{ fontSize: "14px" }} />
         <span className="gl-foot-links">
           <a href="/privacy">privacy</a>
           <span className="gl-sep" aria-hidden="true">·</span>

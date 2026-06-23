@@ -143,8 +143,6 @@
 }
 .gl-foot a:hover { color: var(--fg); text-decoration-color: var(--fg); }
 
-.gl-sig em { font-style: italic; }
-
 .gl-foot-links {
   display: inline-flex;
   align-items: baseline;
