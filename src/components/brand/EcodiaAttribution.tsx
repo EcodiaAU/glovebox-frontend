@@ -36,16 +36,16 @@ export function EcodiaAttribution({ style }: Props) {
         lineHeight: 1,
         textDecoration: "none",
         display: "inline-block",
-        opacity: 0.6,
+        opacity: 1,
         transition: "opacity 0.2s ease",
         color: "inherit",
         ...style,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.opacity = "0.9";
+        e.currentTarget.style.opacity = "1";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.opacity = "0.6";
+        e.currentTarget.style.opacity = "1";
       }}
     >
       the world we build next
