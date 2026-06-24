@@ -1,6 +1,6 @@
 // src/components/brand/EcodiaAttribution.tsx
 //
-// The Ecodia attribution mark: "the world we build next" -> ecodia.au.
+// The Ecodia attribution mark: "built by Ecodia" -> ecodia.au.
 // EB Garamond italic signature, lowercase, opacity-recede. Inherits the
 // surrounding text colour so it works on light and dark footers with no
 // colour prop. Degrades to Georgia/Garamond where the webfont is absent
@@ -27,7 +27,7 @@ export function EcodiaAttribution({ style }: Props) {
       href="https://ecodia.au"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="the world we build next"
+      aria-label="built by Ecodia"
       style={{
         fontFamily: "'EB Garamond', Georgia, 'Times New Roman', serif",
         fontStyle: "italic",
@@ -48,7 +48,7 @@ export function EcodiaAttribution({ style }: Props) {
         e.currentTarget.style.opacity = "1";
       }}
     >
-      the world we build next
+      built by Ecodia
     </a>
   );
 }
