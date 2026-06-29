@@ -39,6 +39,8 @@ const TermsPage = lazy(() => import("./app/(legal)/terms/page"));
 // Standalone routes
 const PurchaseSuccessPage = lazy(() => import("./app/purchase/success/page"));
 const ComingSoonPage = lazy(() => import("./app/coming-soon/page"));
+// Public, login-free map embed iframed by the Ecosphere connector.
+const EmbedPage = lazy(() => import("./app/(app)/embed/ClientPage"));
 
 // Catch-all
 const NotFoundClient = lazy(() =>
@@ -178,6 +180,14 @@ export function App() {
             element={
               <Suspense fallback={null}>
                 <ComingSoonPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="embed"
+            element={
+              <Suspense fallback={null}>
+                <EmbedPage />
               </Suspense>
             }
           />
