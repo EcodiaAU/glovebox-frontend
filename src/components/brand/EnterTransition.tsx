@@ -30,7 +30,6 @@ export function EnterTransition() {
   const [faded, setFaded] = useState(false);
   const activeRef = useRef(false);
   const originRef = useRef('');
-  const targetRef = useRef('');
   const timers = useRef<number[]>([]);
 
   const clearTimers = () => {
@@ -80,7 +79,6 @@ export function EnterTransition() {
       }
       activeRef.current = true;
       originRef.current = window.location.pathname;
-      targetRef.current = d.href;
       setFaded(false);
       setGrown(false);
       setBox({ cx: d.cx, cy: d.cy, size: d.size, scale });
@@ -103,12 +101,13 @@ export function EnterTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
-  // When the destination route has committed (pathname is the target), give the
-  // lazy route a beat to paint under the cover, then fade the cream out.
+  // Once the route has left the landing (any destination, including a /trip ->
+  // /login auth redirect), give it a beat to paint under the cover, then fade
+  // the cream out. Keyed on "moved off origin", NOT an exact target, so a
+  // redirect past the nominal target still clears the cream.
   useEffect(() => {
     if (!activeRef.current || faded || !box) return;
     if (location.pathname === originRef.current) return;
-    if (targetRef.current && location.pathname !== targetRef.current) return;
     const t = window.setTimeout(() => {
       setFaded(true);
       timers.current.push(window.setTimeout(reset, 740));
