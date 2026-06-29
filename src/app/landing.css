@@ -39,6 +39,14 @@
   padding: clamp(24px, 5vh, 60px) clamp(24px, 5vw, 60px);
 }
 
+/* Title + the cream enter sphere, centered together in the title viewport. */
+.gl-title-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(30px, 6vh, 56px);
+}
+
 .gl-sentence {
   font-style: italic;
   font-weight: 300;

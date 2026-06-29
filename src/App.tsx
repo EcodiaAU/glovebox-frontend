@@ -5,6 +5,7 @@ import { NativeBootstrap } from "@/components/native/NativeBootstrap";
 import { SyncBootstrap } from "@/components/auth/SyncBootstrap";
 import { BasemapBootstrap } from "@/components/native/BasemapBootstrap";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { EnterTransition } from "@/components/brand/EnterTransition";
 import { AppLayout } from "./app/(app)/layout";
 import { LegalLayout } from "./app/(legal)/layout";
 import { Suspense, lazy } from "react";
@@ -202,6 +203,7 @@ export function App() {
             }
           />
           </Routes>
+          <EnterTransition />
         </AuthProvider>
       </ErrorBoundary>
     </BrowserRouter>

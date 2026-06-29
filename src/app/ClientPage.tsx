@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { Capacitor } from "@capacitor/core";
 import CopyEmail from "@/components/CopyEmail";
 import { EcodiaAttribution } from "@/components/brand/EcodiaAttribution";
+import { EnterSphere } from "@/components/brand/EnterSphere";
 import "./landing.css";
 
 /* Capacitor native shortcut: the marketing page never shows inside the app.
@@ -55,16 +56,15 @@ export default function LandingPage() {
     <div className="gl">
 
       <section className="gl-title">
-        <p className="gl-sentence">
-          <em>Offline Road Tripping for Australia</em>
-        </p>
+        <div className="gl-title-stack">
+          <p className="gl-sentence">
+            <em>Offline Road Tripping for Australia</em>
+          </p>
+          <EnterSphere />
+        </div>
       </section>
 
       <main className="gl-memo">
-        <p className="gl-row">
-          <a href="/trip">Open in browser</a>
-        </p>
-
         <p className="gl-section-label">acknowledgement</p>
         <p>
           <em>
