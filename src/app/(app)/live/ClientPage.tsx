@@ -128,12 +128,47 @@ export default function LiveTripClientPage() {
   // the second mount with nothing. sessionStorage auto-clears on tab close.
   useEffect(() => {
     const pack = loadLiveNavPack();
-    if (!pack) {
-      setBootError("No route data found");
+    if (pack) {
+      setNavpack(pack);
+      setBooted(true);
       return;
     }
-    setNavpack(pack);
-    setBooted(true);
+    // Deep-link seeding: /live?toLat&toLng&toName[&fromLat&fromLng]. Used by the
+    // public /embed "Open in Glovebox" button so a business's site can hand off a
+    // trip from the visitor's location to a destination POI (e.g. a Locals merchant).
+    const sp = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const toLat = Number(sp?.get("toLat"));
+    const toLng = Number(sp?.get("toLng"));
+    if (sp && Number.isFinite(toLat) && Number.isFinite(toLng)) {
+      const toName = sp.get("toName") ?? "Destination";
+      const seedFrom = (from: { lat: number; lng: number }) => {
+        navApi
+          .route({
+            profile: "drive",
+            stops: [
+              { type: "start", name: "My location", lat: from.lat, lng: from.lng },
+              { type: "end", name: toName, lat: toLat, lng: toLng },
+            ],
+          })
+          .then((np) => { setNavpack(np); setBooted(true); })
+          .catch(() => setBootError("Could not build the route"));
+      };
+      const fromLat = Number(sp.get("fromLat"));
+      const fromLng = Number(sp.get("fromLng"));
+      if (Number.isFinite(fromLat) && Number.isFinite(fromLng)) {
+        seedFrom({ lat: fromLat, lng: fromLng });
+      } else if (typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => seedFrom({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => setBootError("Allow location to build the route"),
+          { enableHighAccuracy: true, timeout: 15_000, maximumAge: 30_000 },
+        );
+      } else {
+        setBootError("Location unavailable");
+      }
+      return;
+    }
+    setBootError("No route data found");
   }, []);
 
   // ── Overlay polling ─────────────────────────────────────────────
