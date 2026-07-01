@@ -112,6 +112,8 @@ type Props = {
    // ── Active navigation mode ──
    /** When true, map is in heading-up tracking mode. Disables bbox refit. */
    navigationMode?: boolean;
+   /** Hide the top-right map-layers toggle (e.g. the minimal directions embed). */
+   hideLayerToggle?: boolean;
    /** Ref that TripMap populates with the MapLibre instance for external control */
    mapInstanceRef?: React.MutableRefObject<import("maplibre-gl").Map | null>;
 
@@ -3858,7 +3860,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
             {/* Layer button + dropdown wrapper */}
             <div style={RELATIVE_STYLE}>
             {/* In nav mode the toggle lives in NavigationControls - hide button here */}
-            {!isNav && (
+            {!isNav && !props.hideLayerToggle && (
               <>
               <button
                 type="button"

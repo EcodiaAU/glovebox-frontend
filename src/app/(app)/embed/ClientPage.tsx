@@ -252,6 +252,7 @@ function DirectionsEmbed({ params }: { params: URLSearchParams }) {
         bbox={bbox}
         userPosition={me}
         isOnline
+        hideLayerToggle
       />
 
       <Panel side="bottom">
