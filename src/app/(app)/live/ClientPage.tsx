@@ -262,8 +262,12 @@ export default function LiveTripClientPage() {
   const effectivePosition = activeNav.isActive ? activeNav.lastPosition : geo.position;
 
   const peekBase = `calc(100% - 220px - var(--glovebox-safe-bottom, 0px))`;
+  // During active turn-by-turn the NavigationHUD + NavigationBar are the live UI,
+  // so the trip bottom-sheet fully hides. Previously it peeked 60px, leaving the
+  // "Live Trip" header stacked under the NavigationBar as duplicated chrome (and
+  // the peek was non-interactive here, since this transform ignores offsetY).
   const sheetTransform = activeNav.isActive
-    ? `translateY(calc(100% - 60px))`
+    ? `translateY(100%)`
     : `translateY(clamp(0px, calc(${peekBase} + ${offsetY + dragOffset}px), ${peekBase}))`;
   const sheetTransition = isDraggingState ? "none" : "transform 0.25s cubic-bezier(0.4,0,0.2,1)";
 
