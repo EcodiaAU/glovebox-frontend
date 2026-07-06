@@ -3,7 +3,31 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Capacitor } from "@capacitor/core";
+import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
+
+/**
+ * On a Friend (custom OIDC) login, copy the Friend sub into the local user's
+ * app_metadata.friend_id via the link_my_friend_id RPC so this Glovebox user
+ * is resolvable to the canonical Friend person. No-op for Google/Apple/email.
+ * Best-effort: a failure never blocks sign-in (a later login retries).
+ */
+async function maybeLinkFriend(session: Session | null): Promise<void> {
+  if (!session) return;
+  const am = (session.user.app_metadata ?? {}) as Record<string, unknown>;
+  const providers = Array.isArray(am.providers) ? (am.providers as unknown[]) : [];
+  const isFriend =
+    am.provider === "custom:friend" ||
+    providers.some((p) => typeof p === "string" && p.includes("friend"));
+  if (!isFriend || typeof am.friend_id === "string") return;
+  try {
+    await supabase.rpc("link_my_friend_id");
+    // Pull the freshly-written friend_id into the live session claims.
+    await supabase.auth.refreshSession();
+  } catch {
+    // Non-fatal.
+  }
+}
 
 /**
  * OAuth redirect landing page.
@@ -37,19 +61,26 @@ export default function AuthCallbackPage() {
       return;
     }
 
-    // Main WebView (native or web): exchange code → session → navigate
+    // Main WebView (native or web): exchange code → session → navigate.
+    // Guard so the two triggers (event + getSession) resolve only once.
+    let handled = false;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
-        closeBrowserAndNavigate();
+        onSignedIn(session);
       }
     });
 
     // Session may already be established by the time we mount
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) closeBrowserAndNavigate();
+      if (data.session) onSignedIn(data.session);
     });
 
-    function closeBrowserAndNavigate() {
+    async function onSignedIn(session: Session) {
+      if (handled) return;
+      handled = true;
+      // Federated-identity link (Friend path only; no-op otherwise).
+      await maybeLinkFriend(session);
       // On native, close the in-app browser if it's still open
       if (Capacitor.isNativePlatform()) {
         import("@capacitor/browser")

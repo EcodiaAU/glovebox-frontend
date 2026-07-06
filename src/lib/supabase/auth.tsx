@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Session, User, AuthError } from "@supabase/supabase-js";
+import type { Session, User, AuthError, Provider } from "@supabase/supabase-js";
 import { supabase } from "./client";
 import { api } from "@/lib/api";
 import { planSync } from "@/lib/offline/planSync";
@@ -26,6 +26,8 @@ export type AuthState = {
 
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signInWithAppleNative: () => Promise<{ error: AuthError | null }>;
+  /** "Connect your Friend" - federate into the shared Ecodia consumer identity (Friend IdP). */
+  signInWithFriend: () => Promise<{ error: AuthError | null }>;
 
   signInWithEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signUpWithEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
@@ -183,6 +185,71 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /**
+   * "Connect your Friend" - sign in via the shared Ecodia consumer identity.
+   *
+   * Friend is a custom OIDC provider (custom:friend) on this project. The flow
+   * mirrors Google exactly: Glovebox's GoTrue drives the OIDC handshake against
+   * the Friend IdP and mints a LOCAL Glovebox session, so nothing about RLS or
+   * the local user id changes. On the callback we copy the Friend sub into
+   * app_metadata.friend_id (link_my_friend_id RPC) so this Glovebox user is
+   * resolvable to the canonical Friend person.
+   */
+  const signInWithFriend = useCallback(async () => {
+    // Same native/web redirect split as Google: on native we return to the web
+    // callback which bounces to the au.ecodia.roam:// scheme; on web we use the
+    // current origin so localhost dev returns to localhost.
+    const redirectTo = Capacitor.isNativePlatform()
+      ? "https://glovebox.ecodia.au/auth/callback"
+      : `${window.location.origin}/auth/callback`;
+
+    if (Capacitor.isNativePlatform()) {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "custom:friend" as Provider,
+        options: { redirectTo, skipBrowserRedirect: true },
+      });
+      if (error) return { error };
+      if (data?.url) {
+        const { Browser } = await import("@capacitor/browser");
+
+        let settled = false;
+        const timeout = setTimeout(async () => {
+          if (!settled) {
+            settled = true;
+            Browser.close().catch(() => {});
+          }
+        }, 120_000);
+
+        const closeHandler = await Browser.addListener("browserFinished", async () => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          closeHandler.remove();
+          setTimeout(async () => {
+            const { data: sess } = await supabase.auth.getSession();
+            if (!sess.session) {
+              await supabase.auth.getSession();
+            }
+          }, 1000);
+        });
+        const isIpad =
+          /iPad/.test(navigator.userAgent) ||
+          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        await Browser.open({
+          url: data.url,
+          presentationStyle: isIpad ? "popover" : "fullscreen",
+        });
+      }
+      return { error: null };
+    }
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "custom:friend" as Provider,
+      options: { redirectTo },
+    });
+    return { error };
+  }, []);
+
+  /**
    * Native (in-app) Apple Sign-In
    * Uses @capacitor-community/apple-sign-in -> SignInWithApple.authorize()
    * Then exchanges the returned identityToken with Supabase via signInWithIdToken.
@@ -316,6 +383,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isDemoMode,
       signInWithGoogle,
       signInWithAppleNative,
+      signInWithFriend,
       signInWithEmail,
       signUpWithEmail,
       signOut,
@@ -328,6 +396,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isDemoMode,
       signInWithGoogle,
       signInWithAppleNative,
+      signInWithFriend,
       signInWithEmail,
       signUpWithEmail,
       signOut,

@@ -17,6 +17,7 @@ export default function LoginPage() {
     signInWithEmail,
     signUpWithEmail,
     signInWithAppleNative,
+    signInWithFriend,
   } = useAuth();
 
   const router = useNavigate();
@@ -50,6 +51,16 @@ export default function LoginPage() {
     if (err) { haptic.error(); setError(err.message); }
     setBusy(false);
   }, [signInWithGoogle]);
+
+  const handleFriend = useCallback(async () => {
+    haptic.tap();
+    setError(null);
+    setBusy(true);
+    const { error: err } = await signInWithFriend();
+    if (err) { haptic.error(); setError(err.message); }
+    // On success the browser leaves for the Friend IdP; keep busy until then.
+    setBusy(false);
+  }, [signInWithFriend]);
 
   const handleApple = useCallback(async () => {
     haptic.tap();
@@ -167,6 +178,27 @@ export default function LoginPage() {
             <em>You&apos;re offline. Sign-in needs a connection.</em>
           </p>
         )}
+
+        {/* Connect your Friend - the canonical Ecodia consumer identity.
+            One account across every Ecodia app; federates this login into
+            the shared Friend identity provider. Placed first as the primary
+            path. Email/password + Apple + Google remain as alternates. */}
+        <button
+          type="button"
+          onClick={handleFriend}
+          disabled={busy || !deviceOnline}
+          className="ed-btn friend-sso-btn"
+          style={{
+            opacity: busy ? 0.55 : 1,
+            borderColor: "var(--glovebox-accent)",
+            color: "var(--glovebox-accent)",
+          }}
+        >
+          <FriendMark />
+          <span>Connect your Friend</span>
+        </button>
+
+        <p className="ed-label">or</p>
 
         {/* Apple Sign-In (iOS-only). Apple HIG mandates the official
             button presentation; do NOT edit the styling without
@@ -341,6 +373,32 @@ function AppleMark() {
         fill="currentColor"
         d="M16.365 1.43c0 1.14-.48 2.22-1.26 3.06-.81.87-2.14 1.55-3.31 1.46-.15-1.1.43-2.27 1.19-3.07.84-.89 2.24-1.54 3.38-1.45ZM20.39 17.13c-.54 1.24-.8 1.8-1.5 2.9-.98 1.52-2.36 3.41-4.06 3.43-1.51.02-1.9-.99-3.96-.98-2.06.01-2.49 1.0-4 .98-1.7-.02-3-1.73-3.98-3.25-2.74-4.24-3.03-9.22-1.34-11.82 1.2-1.86 3.1-2.96 4.89-2.96 1.83 0 2.98 1.0 4.49 1.0 1.47 0 2.36-1.0 4.47-1.0 1.6 0 3.3.87 4.5 2.36-3.95 2.16-3.31 7.78.49 9.34Z"
       />
+    </svg>
+  );
+}
+
+/* Minimal Friend mark: two dots joined by a line - two identities, one
+   connection. Uses currentColor so it inherits the button's accent. */
+function FriendMark() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      <line
+        x1="7.5"
+        y1="12"
+        x2="16.5"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <circle cx="6" cy="12" r="2.6" fill="currentColor" />
+      <circle cx="18" cy="12" r="2.6" fill="currentColor" />
     </svg>
   );
 }
