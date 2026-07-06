@@ -39,6 +39,7 @@
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.1",
     "@revenuecat/purchases-capacitor": "^12.2.4",
+    "@sentry/react": "^10.63.0",
     "@supabase/supabase-js": "^2.95.3",
     "fflate": "^0.8.2",
     "idb": "^8.0.3",
