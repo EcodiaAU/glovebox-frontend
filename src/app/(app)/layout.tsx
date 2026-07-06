@@ -6,6 +6,7 @@ import { PlaceDetailProvider } from "@/lib/context/PlaceDetailContext";
 import { PlaceDetailSheet } from "@/components/places/PlaceDetailSheet";
 import { SavedPlacesSync } from "@/components/places/SavedPlacesSync";
 import { OfflineStatusIndicator } from "@/components/ui/OfflineStatusIndicator";
+import { FloatingGuideChat } from "@/components/guide/FloatingGuideChat";
 export function AppLayout() {
   useEffect(() => {
     document.documentElement.classList.add("glovebox-shell");
@@ -40,6 +41,9 @@ export function AppLayout() {
         <BottomTabBar />
         {/* Global place detail sheet - opened via usePlaceDetail().openPlace() from anywhere */}
         <PlaceDetailSheet />
+        {/* Unified floating Friend chat - the same guide conversation, reachable
+            from anywhere, not just the /guide route. */}
+        <FloatingGuideChat />
       </div>
     </PlaceDetailProvider>
   );
