@@ -377,28 +377,24 @@ function AppleMark() {
   );
 }
 
-/* Minimal Friend mark: two dots joined by a line - two identities, one
-   connection. Uses currentColor so it inherits the button's accent. */
+/* Canonical Friend mark: the black rounded-square badge carrying the cream
+   Friend "10" logo - a vertical rounded bar (the "1") beside a filled circle
+   (the "0"). Identical to the Friend app icon, so "Connect your Friend" reads
+   the same mark across Studio, Glovebox, Locals and the rest of Ecodia.
+   Self-contained inline SVG: no external asset, no network. Fixed colours
+   (black badge #0B0B0B, cream #F5F1E6) so it renders identically everywhere. */
 function FriendMark() {
   return (
     <svg
       width="20"
       height="20"
-      viewBox="0 0 24 24"
+      viewBox="0 0 48 48"
       aria-hidden="true"
       style={{ flexShrink: 0 }}
     >
-      <line
-        x1="7.5"
-        y1="12"
-        x2="16.5"
-        y2="12"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      <circle cx="6" cy="12" r="2.6" fill="currentColor" />
-      <circle cx="18" cy="12" r="2.6" fill="currentColor" />
+      <rect width="48" height="48" rx="12" fill="#0B0B0B" />
+      <rect x="13.2" y="15.2" width="3.8" height="17.6" rx="1.9" fill="#F5F1E6" />
+      <circle cx="27.6" cy="24" r="7.1" fill="#F5F1E6" />
     </svg>
   );
 }
