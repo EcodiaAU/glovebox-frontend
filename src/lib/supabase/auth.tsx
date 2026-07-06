@@ -11,7 +11,6 @@ import {
 } from "react";
 import type { Session, User, AuthError, Provider } from "@supabase/supabase-js";
 import { supabase } from "./client";
-import { api } from "@/lib/api";
 import { planSync } from "@/lib/offline/planSync";
 import { mergeLocalTripsToServer } from "@/lib/paywall/tripGate";
 
@@ -357,20 +356,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const deleteAccount = useCallback(async (): Promise<{ error: string | null }> => {
-    try {
-      await api.delete("/account");
-      // Server deleted the auth user - sign out locally
-      planSync.stop();
-      await supabase.auth.signOut();
-      setSession(null);
-      // Clear local storage caches
-      localStorage.removeItem("glovebox_trips_used");
-      localStorage.removeItem("roam_unlimited_unlocked");
-      return { error: null };
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Failed to delete account.";
-      return { error: msg };
+    // Irreversibly erase this Glovebox account server-side. delete_glovebox_account
+    // runs SECURITY DEFINER and, in one atomic transaction, deletes every Glovebox
+    // user-keyed row (trips, plans, saved places, emergency contacts, entitlements,
+    // trip counts, plan memberships/invites, trip clones) and the auth.users record,
+    // which cascades auth.identities - including the custom:friend link for THIS app.
+    // It does NOT touch the separate Friend IdP account, and it CANNOT cancel an App
+    // Store / Google Play subscription (only the store can - disclosed in the UI).
+    const { error: rpcError } = await supabase.rpc("delete_glovebox_account");
+    if (rpcError) {
+      return { error: rpcError.message || "Failed to delete account. Please try again or contact support." };
     }
+    // Server erased the user - tear down the local session and caches.
+    planSync.stop();
+    await supabase.auth.signOut();
+    setSession(null);
+    localStorage.removeItem("glovebox_trips_used");
+    localStorage.removeItem("roam_unlimited_unlocked");
+    try { localStorage.removeItem("glovebox_demo_mode"); } catch {}
+    setIsDemoMode(false);
+    return { error: null };
   }, []);
 
   const user = session?.user ?? null;

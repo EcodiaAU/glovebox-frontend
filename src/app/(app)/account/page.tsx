@@ -27,6 +27,7 @@ function AccountPageInner() {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSignOut = useCallback(async () => {
@@ -51,12 +52,58 @@ function AccountPageInner() {
       setDeleting(false);
       setConfirmDelete(false);
     } else {
+      // Account and all data are gone and the local session is torn down.
+      // Land on an explicit "deleted" state rather than silently bouncing to
+      // login, so the user has confirmation the erasure happened.
       haptic.success();
-      navigate("/login", { replace: true });
+      setDeleting(false);
+      setDeleted(true);
     }
-  }, [confirmDelete, deleteAccount, navigate]);
+  }, [confirmDelete, deleteAccount]);
 
   const email = user?.email ?? session?.user?.email ?? null;
+
+  if (deleted) {
+    return (
+      <div
+        className="ed"
+        style={{ position: "absolute", inset: 0, overflowY: "auto" }}
+      >
+        <div
+          className="ed-column"
+          style={{
+            minHeight: "100%",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            paddingTop: "clamp(20px, 8vh, 80px)",
+          }}
+        >
+          <h1 className="ed-heading" style={{ fontSize: "clamp(26px, 4vw, 36px)" }}>
+            <em>Account deleted.</em>
+          </h1>
+          <p style={{
+            margin: "10px 0 0",
+            fontSize: 14.5,
+            color: "var(--glovebox-text-muted)",
+            lineHeight: 1.55,
+            maxWidth: 460,
+          }}>
+            Your Glovebox account and all of its data have been permanently
+            erased. If you had an App Store or Google Play subscription, remember
+            to cancel it in your device settings so you are not billed again.
+          </p>
+          <button
+            type="button"
+            onClick={() => { haptic.light(); navigate("/login", { replace: true }); }}
+            className="ed-action"
+            style={{ marginTop: 22, fontSize: 16 }}
+          >
+            <em>Return to start.</em>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -151,13 +198,45 @@ function AccountPageInner() {
         <div>
           <p className="ed-label">account management</p>
           <p style={{
-            margin: "6px 0 12px",
+            margin: "6px 0 10px",
             fontSize: 13.5,
             color: "var(--glovebox-text-muted)",
             lineHeight: 1.5,
           }}>
             Permanently delete your account and all associated data including trips,
-            saved places, emergency contacts, and plan history. This cannot be undone.
+            saved places, emergency contacts, plans, and entitlement history. This
+            cannot be undone.
+          </p>
+
+          <p style={{
+            margin: "0 0 10px",
+            fontSize: 13,
+            color: "var(--glovebox-text-muted)",
+            lineHeight: 1.5,
+          }}>
+            Deleting your account does not cancel any App Store or Google Play
+            subscription. Manage that separately in your device settings.
+          </p>
+
+          <p style={{
+            margin: "0 0 14px",
+            fontSize: 13,
+            color: "var(--glovebox-text-muted)",
+            lineHeight: 1.5,
+          }}>
+            If you connected your Friend, your Friend account and its memory are
+            managed separately at{" "}
+            <a
+              href="https://friend.ecodia.au"
+              target="_blank"
+              rel="noreferrer"
+              className="ed-textlink"
+              style={{ display: "inline" }}
+            >
+              friend.ecodia.au
+            </a>
+            . Deleting your Glovebox account here removes only your Glovebox data
+            and unlinks your Friend from this app.
           </p>
 
           {error && (
