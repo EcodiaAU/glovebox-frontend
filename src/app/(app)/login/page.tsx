@@ -190,8 +190,9 @@ export default function LoginPage() {
           className="ed-btn friend-sso-btn"
           style={{
             opacity: busy ? 0.55 : 1,
-            borderColor: "var(--glovebox-accent)",
-            color: "var(--glovebox-accent)",
+            background: "#0B0B0B",
+            borderColor: "#0B0B0B",
+            color: "#F5F1E6",
           }}
         >
           <FriendMark />
