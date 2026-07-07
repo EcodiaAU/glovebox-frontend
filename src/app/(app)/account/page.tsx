@@ -29,12 +29,43 @@ function AccountPageInner() {
   const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resetting, setResetting] = useState(false);
 
   const handleSignOut = useCallback(async () => {
     haptic.medium();
     await signOut();
     navigate("/login", { replace: true });
   }, [signOut, navigate]);
+
+  // Full local reset: unregister the service worker, drop every cache, and
+  // delete the offline database, then hard-reload a clean shell from the
+  // network. This is the in-app equivalent of "clear site data" - the only
+  // recovery an installed-PWA / WebView user can actually reach if a stale
+  // cache or a bad offline record ever wedges the app.
+  const handleReset = useCallback(async () => {
+    haptic.medium();
+    setResetting(true);
+    try {
+      if ("serviceWorker" in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.unregister()));
+      }
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+      if ("indexedDB" in window) {
+        await new Promise<void>((resolve) => {
+          const req = indexedDB.deleteDatabase("glovebox_offline");
+          req.onsuccess = req.onerror = req.onblocked = () => resolve();
+        });
+      }
+    } catch {
+      // best-effort: reload regardless so the user is never stuck mid-reset
+    } finally {
+      window.location.reload();
+    }
+  }, []);
 
   const handleDelete = useCallback(async () => {
     if (!confirmDelete) {
@@ -171,6 +202,30 @@ function AccountPageInner() {
             style={{ marginTop: 2, fontSize: 16 }}
           >
             <em>Sign out.</em>
+          </button>
+        </div>
+
+        <div>
+          <p className="ed-label">troubleshooting</p>
+          <p style={{
+            margin: "6px 0 8px",
+            fontSize: 13.5,
+            color: "var(--glovebox-text-muted)",
+            lineHeight: 1.5,
+          }}>
+            If the app looks out of date, gets stuck, or fails to load properly,
+            reset it. This clears the offline cache and stored data on this
+            device and reloads a fresh copy. Your account and anything saved to
+            your account are not affected.
+          </p>
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={resetting}
+            className="ed-action"
+            style={{ marginTop: 2, fontSize: 16, opacity: resetting ? 0.6 : 1 }}
+          >
+            <em>{resetting ? "Resetting..." : "Reset app & clear cache."}</em>
           </button>
         </div>
 
