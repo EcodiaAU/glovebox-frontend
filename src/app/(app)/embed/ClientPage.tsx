@@ -230,7 +230,12 @@ function DirectionsEmbed({ params }: { params: URLSearchParams }) {
 
   const bbox: BBox4 = useMemo(() => {
     if (navpack?.primary?.bbox) return navpack.primary.bbox;
-    const d = 0.25;
+    // Pre-route view sits tight on the destination (~3km each way) so the
+    // embed only pulls a small tile set on open instead of a ~55km-wide area
+    // it would immediately throw away when the route arrives and refits. Cuts
+    // initial tile load ~40x (area scales with the square) and shrinks the
+    // camera move once OSRM returns.
+    const d = 0.03;
     return { minLng: toLng - d, minLat: toLat - d, maxLng: toLng + d, maxLat: toLat + d };
   }, [navpack, toLat, toLng]);
 
