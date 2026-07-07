@@ -117,10 +117,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = useCallback(async () => {
     // On web, derive the callback URL from the current origin so localhost dev
-    // redirects back to localhost instead of the live domain.
+    // redirects back to localhost instead of the live domain. flow=web tells
+    // /auth/callback to exchange the code in place instead of bouncing to the
+    // au.ecodia.roam:// app scheme (which hangs on web). Native stays bare so an
+    // already-installed binary keeps bouncing correctly.
     const redirectTo = Capacitor.isNativePlatform()
       ? "https://glovebox.ecodia.au/auth/callback"
-      : `${window.location.origin}/auth/callback`;
+      : `${window.location.origin}/auth/callback?flow=web`;
 
     if (Capacitor.isNativePlatform()) {
       // skipBrowserRedirect prevents Supabase from calling window.location.href,
@@ -194,12 +197,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * resolvable to the canonical Friend person.
    */
   const signInWithFriend = useCallback(async () => {
-    // Same native/web redirect split as Google: on native we return to the web
-    // callback which bounces to the au.ecodia.roam:// scheme; on web we use the
-    // current origin so localhost dev returns to localhost.
+    // Same native/web redirect split as Google: native returns to the web
+    // callback which bounces to the au.ecodia.roam:// scheme; web tags flow=web
+    // so the callback exchanges the code in place instead of bouncing (a bare
+    // web callback bounced to the dead app scheme and hung on "Signing you in").
     const redirectTo = Capacitor.isNativePlatform()
       ? "https://glovebox.ecodia.au/auth/callback"
-      : `${window.location.origin}/auth/callback`;
+      : `${window.location.origin}/auth/callback?flow=web`;
 
     if (Capacitor.isNativePlatform()) {
       const { data, error } = await supabase.auth.signInWithOAuth({

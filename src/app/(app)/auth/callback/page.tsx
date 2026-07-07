@@ -50,10 +50,20 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const params = window.location.search || window.location.hash;
 
-    // If we're NOT inside the Capacitor WebView and we have OAuth params,
-    // we're in the in-app browser - redirect to the custom scheme so the
-    // OS routes us back to the app.
-    if (!Capacitor.isNativePlatform() && params) {
+    // Bounce to the au.ecodia.roam:// custom scheme ONLY for the native in-app
+    // browser (SFSafariViewController / Chrome Custom Tab), where the OS hands
+    // the URL back to the app. Plain WEB has no such scheme registered, so
+    // bouncing there hangs the page on "Signing you in..." forever.
+    //
+    // The WEB sign-in tags its redirectTo with flow=web; the native sign-in does
+    // NOT. So we bounce by DEFAULT (what an in-app browser needs) and skip the
+    // bounce only when flow=web is present. Marked on web, not native, on
+    // purpose: an already-installed native binary sends no marker and keeps
+    // bouncing correctly, while the web build opts out. Before this guard the
+    // condition was `!isNative && params`, which fired on web too and stranded
+    // every web OAuth login.
+    const isWebFlow = /[?&]flow=web(?:&|=|$)/.test(window.location.search);
+    if (!Capacitor.isNativePlatform() && params && !isWebFlow) {
       window.location.href =
         "au.ecodia.roam://auth/callback" +
         window.location.search +
