@@ -190,10 +190,10 @@ export default function LoginPage() {
           className="ed-btn friend-sso-btn"
           style={{
             opacity: busy ? 0.55 : 1,
-            // Themed to Glovebox's own rust/ochre accent. The Friend mark is a
-            // self-contained black tile + cream mark, so it reads on the ochre.
-            background: "var(--glovebox-accent)",
-            borderColor: "var(--glovebox-accent)",
+            // Themed to the Glovebox app-icon background (#A8431F rust). The Friend
+            // mark sits bare (no tile) in cream on the rust.
+            background: "#A8431F",
+            borderColor: "#A8431F",
             color: "#F5F1E6",
           }}
         >
@@ -380,24 +380,21 @@ function AppleMark() {
   );
 }
 
-/* Canonical Friend mark: the black rounded-square badge carrying the cream
-   Friend "10" logo - a vertical rounded bar (the "1") beside a filled circle
-   (the "0"). Identical to the Friend app icon, so "Connect your Friend" reads
-   the same mark across Studio, Glovebox, Locals and the rest of Ecodia.
-   Self-contained inline SVG: no external asset, no network. Fixed colours
-   (black badge #0B0B0B, cream #F5F1E6) so it renders identically everywhere. */
+/* The Friend "10" mark - a vertical rounded bar (the "1") beside a filled circle
+   (the "0"), drawn BARE (no tile) in cream directly on the rust button, larger so
+   the line + circle read clearly. Canonical geometry (viewBox 288-448), matching
+   the mark on Studio/Locals/Chambers. Self-contained inline SVG. */
 function FriendMark() {
   return (
     <svg
-      width="20"
-      height="20"
-      viewBox="0 0 48 48"
+      width="34"
+      height="34"
+      viewBox="288 288 448 448"
       aria-hidden="true"
       style={{ flexShrink: 0 }}
     >
-      <rect width="48" height="48" rx="12" fill="#0B0B0B" />
-      <rect x="13.2" y="15.2" width="3.8" height="17.6" rx="1.9" fill="#F5F1E6" />
-      <circle cx="27.6" cy="24" r="7.1" fill="#F5F1E6" />
+      <rect x="293" y="332" width="76" height="360" rx="38" fill="#F5F1E6" />
+      <circle cx="584" cy="512" r="147" fill="#F5F1E6" />
     </svg>
   );
 }
