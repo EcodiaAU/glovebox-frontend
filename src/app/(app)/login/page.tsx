@@ -190,8 +190,10 @@ export default function LoginPage() {
           className="ed-btn friend-sso-btn"
           style={{
             opacity: busy ? 0.55 : 1,
-            background: "#0B0B0B",
-            borderColor: "#0B0B0B",
+            // Themed to Glovebox's own rust/ochre accent. The Friend mark is a
+            // self-contained black tile + cream mark, so it reads on the ochre.
+            background: "var(--glovebox-accent)",
+            borderColor: "var(--glovebox-accent)",
             color: "#F5F1E6",
           }}
         >
