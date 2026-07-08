@@ -118,8 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = useCallback(async () => {
     // On web, derive the callback URL from the current origin so localhost dev
     // redirects back to localhost instead of the live domain.
+    // `flow=native` tells the callback page it is running inside the native
+    // in-app browser (which also reports !isNativePlatform()) so it bounces to
+    // the au.ecodia.roam:// scheme; a real web browser omits it and exchanges
+    // the code in-page.
     const redirectTo = Capacitor.isNativePlatform()
-      ? "https://glovebox.ecodia.au/auth/callback"
+      ? "https://glovebox.ecodia.au/auth/callback?flow=native"
       : `${window.location.origin}/auth/callback`;
 
     if (Capacitor.isNativePlatform()) {
@@ -197,8 +201,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Same native/web redirect split as Google: on native we return to the web
     // callback which bounces to the au.ecodia.roam:// scheme; on web we use the
     // current origin so localhost dev returns to localhost.
+    // `flow=native` tells the callback page it is running inside the native
+    // in-app browser (which also reports !isNativePlatform()) so it bounces to
+    // the au.ecodia.roam:// scheme; a real web browser omits it and exchanges
+    // the code in-page.
     const redirectTo = Capacitor.isNativePlatform()
-      ? "https://glovebox.ecodia.au/auth/callback"
+      ? "https://glovebox.ecodia.au/auth/callback?flow=native"
       : `${window.location.origin}/auth/callback`;
 
     if (Capacitor.isNativePlatform()) {

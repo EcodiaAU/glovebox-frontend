@@ -50,10 +50,14 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const params = window.location.search || window.location.hash;
 
-    // If we're NOT inside the Capacitor WebView and we have OAuth params,
-    // we're in the in-app browser - redirect to the custom scheme so the
-    // OS routes us back to the app.
-    if (!Capacitor.isNativePlatform() && params) {
+    // If we're in the native app's in-app browser (SFSafariViewController /
+    // Chrome Custom Tab), the native sign-in set redirectTo with `flow=native`,
+    // so bounce to the custom scheme and let the OS hand back to the app. A REAL
+    // web browser also reports !isNativePlatform() with OAuth params but carries
+    // no `flow=native` marker, so it must fall through and exchange the code
+    // in-page (bouncing it to a dead app scheme was the "web connect does nothing"
+    // bug).
+    if (!Capacitor.isNativePlatform() && params && params.includes("flow=native")) {
       window.location.href =
         "au.ecodia.roam://auth/callback" +
         window.location.search +
