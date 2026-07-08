@@ -16,13 +16,28 @@ import {
     onNotificationTap,
 } from "@/lib/native";
 import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { networkMonitor } from "@/lib/offline/networkMonitor";
 import { planSync } from "@/lib/offline/planSync";
-import { initRevenueCat } from "@/lib/paywall/tripGate";
+import { initRevenueCat, rcFriendAppUserId } from "@/lib/paywall/tripGate";
 import { supabase } from "@/lib/supabase/client";
 
-// Set this env var to your RevenueCat iOS/Android API key
-const RC_API_KEY = import.meta.env.VITE_REVENUECAT_API_KEY ?? "";
+// RevenueCat public SDK keys are platform-specific (iOS `appl_…`, Android
+// `goog_…`) but the same web bundle ships in both native shells, so the key
+// must be selected at runtime by platform - a single baked key is wrong on one
+// of the two stores. Both are baked into the env (public client keys ship in
+// the binary anyway; see docs/secrets/revenuecat.md). Legacy single-var env
+// (VITE_REVENUECAT_API_KEY) is the last-resort fallback.
+function resolveRcApiKey(): string {
+  const ios = import.meta.env.VITE_REVENUECAT_IOS_KEY as string | undefined;
+  const android = import.meta.env.VITE_REVENUECAT_ANDROID_KEY as string | undefined;
+  const legacy = (import.meta.env.VITE_REVENUECAT_API_KEY as string | undefined) ?? "";
+  const platform = Capacitor.getPlatform(); // "ios" | "android" | "web"
+  if (platform === "ios") return ios ?? legacy;
+  if (platform === "android") return android ?? legacy;
+  return legacy;
+}
+const RC_API_KEY = resolveRcApiKey();
 
 /**
  * Invisible component that initializes all native Capacitor plugins.
@@ -91,10 +106,20 @@ export function NativeBootstrap() {
 
         if (RC_API_KEY) {
           initRevenueCat(RC_API_KEY).catch(() => {});
+          // Identify RC with the canonical FRIEND account id, not the local
+          // Glovebox user id. The friend-iap-reconciler keys the server
+          // entitlement row on RC's app_user_id == the Friend account id, so
+          // logging in as the local user would orphan the purchase from the
+          // Friend identity. friend_id lands in app_metadata after the
+          // link_my_friend_id RPC + refreshSession (auth/callback), which fires
+          // a TOKEN_REFRESHED here - so re-run on every auth change and let RC
+          // alias if the id upgrades from local -> friend. Falls back to the
+          // local user id when the person has not connected a Friend yet.
           supabase.auth.onAuthStateChange((_event, session) => {
-            if (session?.user?.id) {
+            const appUserID = rcFriendAppUserId(session);
+            if (appUserID) {
               import("@revenuecat/purchases-capacitor")
-                .then(({ Purchases }) => Purchases.logIn({ appUserID: session.user.id }))
+                .then(({ Purchases }) => Purchases.logIn({ appUserID }))
                 .catch(() => {});
             }
           });

@@ -30,11 +30,11 @@ const FEATURES: { label: string; sub: string }[] = [
 const HERO_COPY = {
   gate: {
     heading: <>Ready to go<br />Untethered?</>,
-    body: "You've used your 2 free trips. Go Untethered for a single one-time payment. No subscription, ever.",
+    body: "You've used your 2 free trips. Unlock unlimited trips and your always-on road guide with the Friend plan.",
   },
   upgrade: {
     heading: <>Go Untethered</>,
-    body: "Unlock every feature and never worry about trip limits again. One payment, yours forever.",
+    body: "Unlock unlimited trips and your always-on road guide. One plan, across everything Ecodia.",
   },
 };
 
@@ -392,7 +392,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               fontWeight: 400,
               color: "var(--glovebox-text-muted)",
             }}>
-              one-time. yours forever.
+              per month. cancel anytime.
             </span>
           </div>
 
@@ -422,11 +422,29 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             {buying
               ? (isNative ? "Processing…" : "Redirecting to checkout…")
               : isNative
-                ? "Unlock Glovebox Untethered · $19.99"
+                ? "Subscribe · $19.99/mo"
                 : session
-                  ? "Pay with Card · $19.99 →"
-                  : "Sign in to unlock · $19.99 →"}
+                  ? "Pay with Card · $19.99/mo →"
+                  : "Sign in to unlock · $19.99/mo →"}
           </button>
+
+          {/* Auto-renewal disclosure (App Store / Play Billing requirement for
+              auto-renewable subscriptions). Shown on native only; web bills via
+              Stripe. */}
+          {isNative && (
+            <p style={{
+              margin: "10px 2px 0",
+              fontSize: 10.5,
+              lineHeight: 1.4,
+              color: "var(--glovebox-text-muted, #7a7067)",
+              textAlign: "center",
+              opacity: 0.85,
+            }}>
+              Glovebox Untethered is a $19.99/month auto-renewing subscription (the Friend plan).
+              Payment is charged to your store account and renews monthly until cancelled at least
+              24 hours before the end of the period. Manage or cancel in your store account settings.
+            </p>
+          )}
 
           {/* Error */}
           {error && (

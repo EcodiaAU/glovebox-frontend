@@ -13,6 +13,7 @@
 // Mounted once at AppLayout scope (which already excludes the marketing landing
 // and auth surfaces), so no route-hiding is needed here.
 
+import { useCallback, useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 
 import { FriendChat } from "@ecodia/friend-chat";
@@ -21,6 +22,8 @@ import "@ecodia/friend-chat/styles.css";
 import { haptic } from "@/lib/native/haptics";
 import { useAuth } from "@/lib/supabase/auth";
 import { useGloveboxFriend } from "@/lib/guide/useFriendChat";
+import { isUnlocked, onAuthReadyForGate } from "@/lib/paywall/tripGate";
+import { PaywallModal } from "@/components/paywall/PaywallModal";
 import type { GuideAction } from "@/lib/types/guide";
 
 const EXAMPLES = [
@@ -85,25 +88,58 @@ export function FloatingGuideChat() {
   const { connected, friendName, ask } = useGloveboxFriend();
   const { signInWithFriend } = useAuth();
 
+  // The always-on guide is a Friend-plan (`friend` entitlement) feature. It also
+  // needs a linked Friend to run (identity + trip grounding). So the chat is
+  // fully usable only when BOTH hold: a linked Friend AND an active entitlement.
+  //  - not connected            -> connect nudge routes into Friend SSO
+  //  - connected, not entitled  -> connect nudge opens the native paywall
+  //  - connected + entitled     -> full trip-grounded guide
+  const [entitled, setEntitled] = useState<boolean>(false);
+  const [paywallOpen, setPaywallOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = () => { void isUnlocked().then((u) => { if (!cancelled) setEntitled(u); }); };
+    refresh();
+    const unsub = onAuthReadyForGate(refresh);
+    return () => { cancelled = true; unsub(); };
+  }, []);
+
+  const handleConnect = useCallback(() => {
+    if (connected === true) {
+      // Linked Friend but no entitlement yet -> present the native purchase sheet.
+      haptic.medium();
+      setPaywallOpen(true);
+    } else {
+      void signInWithFriend();
+    }
+  }, [connected, signInWithFriend]);
+
   return (
-    <FriendChat
-      app="Glovebox"
-      connected={connected === true}
-      friendName={friendName}
-      ask={ask}
-      onConnect={() => {
-        void signInWithFriend();
-      }}
-      examples={EXAMPLES}
-      emptyLine={`Hey, it's ${friendName}. Ask me anything about the road ahead.`}
-      connectTitle="Unlock your road-trip guide"
-      connectBody="Connect your Ecodia Friend and it rides along inside Glovebox: it knows you and your trip, and points you to the right fuel, food, stops and sights on the road ahead. One Friend, across everything Ecodia."
-      accent="var(--glovebox-accent)"
-      onAccent="var(--on-color)"
-      renderExtra={(extra) => <ActionPills actions={(extra as GuideAction[]) ?? []} />}
-      // Lift the FAB + panel above the bottom tab bar (shared default sits at 18px).
-      style={{ bottom: "calc(var(--bottom-nav-height) + 16px)" } as CSSProperties}
-    />
+    <>
+      <FriendChat
+        app="Glovebox"
+        connected={connected === true && entitled}
+        friendName={friendName}
+        ask={ask}
+        onConnect={handleConnect}
+        examples={EXAMPLES}
+        emptyLine={`Hey, it's ${friendName}. Ask me anything about the road ahead.`}
+        connectTitle="Unlock your road-trip guide"
+        connectBody="Your always-on road guide comes with the Friend plan: it knows you and your trip, and points you to the right fuel, food, stops and sights on the road ahead. One Friend, across everything Ecodia."
+        accent="var(--glovebox-accent)"
+        onAccent="var(--on-color)"
+        renderExtra={(extra) => <ActionPills actions={(extra as GuideAction[]) ?? []} />}
+        // Lift the FAB + panel above the bottom tab bar (shared default sits at 18px).
+        style={{ bottom: "calc(var(--bottom-nav-height) + 16px)" } as CSSProperties}
+      />
+      <PaywallModal
+        open={paywallOpen}
+        variant="upgrade"
+        onClose={() => setPaywallOpen(false)}
+        onUnlocked={() => { setEntitled(true); setPaywallOpen(false); }}
+      />
+    </>
   );
 }
 

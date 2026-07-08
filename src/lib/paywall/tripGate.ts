@@ -21,6 +21,7 @@
 //   unlocked == true → skip gate entirely
 
 import { Capacitor } from "@capacitor/core";
+import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
 import { api } from "@/lib/api";
 
@@ -42,47 +43,77 @@ const KEY_UNLOCKED   = "roam_unlimited_unlocked";
 // that lets the paywall flow be exercised end-to-end on a real device.
 export const KEY_TEST_BLOCK_RC = "glovebox_test_block_rc";
 
-const RC_ENTITLEMENT_ID = "roam_unlimited";
-const RC_PRODUCT_ID     = "roam_unlimited";
+// Friend-IAP (2026-07-08, wave 2): native Glovebox sells the Friend "A little"
+// plan (A$19.99/mo auto-renewable subscription) via Apple IAP / Play Billing
+// through RevenueCat. Entitlement `friend`, offering `default`, product
+// `friend_a_little_monthly`. The old `roam_unlimited` lifetime non-consumable
+// is grandfathered: existing lifetime buyers keep unlimited access, so the
+// unlock check accepts EITHER entitlement.
+const RC_ENTITLEMENT_ID = "friend";          // primary (Friend subscription)
+const RC_ENTITLEMENT_LEGACY = "roam_unlimited"; // grandfathered lifetime buyers
+const RC_ENTITLEMENT_IDS = [RC_ENTITLEMENT_ID, RC_ENTITLEMENT_LEGACY];
+const RC_OFFERING_ID = "default";
+const RC_PRODUCT_ID = "friend_a_little_monthly"; // Friend "A little" monthly sub
+const RC_PRODUCT_IDS = [RC_PRODUCT_ID, RC_ENTITLEMENT_LEGACY]; // sub + legacy SKU
 
 // Resolve unlock state from a CustomerInfo response.
 //
-// Primary check: the `roam_unlimited` entitlement is active in the RevenueCat
-// dashboard mapping. Fallback: StoreKit confirmed the product was purchased
-// even if the dashboard entitlement mapping is missing / mis-named. A paying
-// user must never be locked out because of a dashboard config drift -
-// `roam_unlimited` is a non-consumable one-time purchase, so the presence of
-// the SKU in allPurchasedProductIdentifiers (or as a non-subscription
-// transaction) is sufficient proof of entitlement.
+// Primary check: the `friend` entitlement (or the grandfathered `roam_unlimited`
+// entitlement) is active in the RevenueCat dashboard mapping. Fallback: StoreKit
+// confirmed a qualifying product was purchased even if the dashboard entitlement
+// mapping is missing / mis-named. A paying user must never be locked out because
+// of a dashboard config drift - the presence of a qualifying SKU in
+// allPurchasedProductIdentifiers, an active subscription, or a non-subscription
+// transaction is sufficient proof of entitlement.
 type CustomerInfoLike = {
   entitlements?: { active?: Record<string, unknown>; all?: Record<string, unknown> };
   allPurchasedProductIdentifiers?: string[];
+  activeSubscriptions?: string[];
   nonSubscriptionTransactions?: Array<{ productIdentifier?: string }>;
 };
-function resolveUnlock(info: CustomerInfoLike | undefined | null): {
+export function resolveUnlock(info: CustomerInfoLike | undefined | null): {
   unlocked: boolean;
-  source: "entitlement" | "product-fallback" | "transaction-fallback" | "none";
+  source: "entitlement" | "subscription-fallback" | "product-fallback" | "transaction-fallback" | "none";
 } {
   if (!info) return { unlocked: false, source: "none" };
-  if (info.entitlements?.active && RC_ENTITLEMENT_ID in info.entitlements.active) {
+  const active = info.entitlements?.active ?? {};
+  if (RC_ENTITLEMENT_IDS.some((id) => id in active)) {
     return { unlocked: true, source: "entitlement" };
   }
-  if (info.allPurchasedProductIdentifiers?.includes(RC_PRODUCT_ID)) {
+  if (info.activeSubscriptions?.some((s) => RC_PRODUCT_IDS.includes(s))) {
+    return { unlocked: true, source: "subscription-fallback" };
+  }
+  if (info.allPurchasedProductIdentifiers?.some((p) => RC_PRODUCT_IDS.includes(p))) {
     return { unlocked: true, source: "product-fallback" };
   }
-  if (info.nonSubscriptionTransactions?.some((t) => t?.productIdentifier === RC_PRODUCT_ID)) {
+  if (info.nonSubscriptionTransactions?.some((t) => t?.productIdentifier && RC_PRODUCT_IDS.includes(t.productIdentifier))) {
     return { unlocked: true, source: "transaction-fallback" };
   }
   return { unlocked: false, source: "none" };
+}
+
+/**
+ * The RevenueCat app_user_id to identify with. Prefers the canonical Friend
+ * account id (app_metadata.friend_id, written by link_my_friend_id after a
+ * Friend SSO login) so RC's app_user_id matches what the friend-iap-reconciler
+ * keys the server entitlement row on. Falls back to the local Glovebox user id
+ * before a Friend is connected. Returns null when there is no session.
+ */
+export function rcFriendAppUserId(session: Session | null): string | null {
+  if (!session?.user) return null;
+  const am = (session.user.app_metadata ?? {}) as Record<string, unknown>;
+  const friendId = typeof am.friend_id === "string" ? am.friend_id : null;
+  return friendId ?? session.user.id ?? null;
 }
 
 function summariseEntitlements(info: CustomerInfoLike | undefined | null): string {
   if (!info) return "no customerInfo";
   const active = Object.keys(info.entitlements?.active ?? {});
   const all = Object.keys(info.entitlements?.all ?? {});
+  const subs = info.activeSubscriptions ?? [];
   const purchased = info.allPurchasedProductIdentifiers ?? [];
   const tx = (info.nonSubscriptionTransactions ?? []).map((t) => t?.productIdentifier).filter(Boolean);
-  return `active=[${active.join(",")}] all=[${all.join(",")}] purchased=[${purchased.join(",")}] tx=[${tx.join(",")}]`;
+  return `active=[${active.join(",")}] all=[${all.join(",")}] subs=[${subs.join(",")}] purchased=[${purchased.join(",")}] tx=[${tx.join(",")}]`;
 }
 
 /* ── Platform helper ─────────────────────────────────────────────── */
@@ -260,20 +291,26 @@ export async function purchaseUnlimited(): Promise<{ success: boolean; error?: s
   try {
     const { Purchases } = await getPurchases();
 
-    const { products } = await Purchases.getProducts({
-      productIdentifiers: [RC_PRODUCT_ID],
-    });
-    const product = products.find((p) => p.identifier === RC_PRODUCT_ID);
-    if (!product) {
-      return { success: false, error: "Product not available. Please check your internet connection and try again." };
+    // Preferred path: buy the configured package from the `default` offering so
+    // the store sheet carries RevenueCat's server-side pricing + eligibility
+    // (intro offers, price localisation). This is the Friend "A little" monthly
+    // subscription (product friend_a_little_monthly).
+    const { customerInfo, error: pkgError } = await purchaseFriendPackage(Purchases);
+    if (pkgError === "cancelled") return { success: false, error: "cancelled" };
+
+    // Fallback: if offerings could not be loaded (dashboard drift / transient),
+    // buy the store product directly by identifier so a paying user is never
+    // blocked by a mis-configured offering.
+    const info = customerInfo ?? (await purchaseFriendProductDirect(Purchases)).customerInfo;
+    if (!info) {
+      return { success: false, error: pkgError ?? "Product not available. Please check your internet connection and try again." };
     }
 
-    const { customerInfo } = await Purchases.purchaseStoreProduct({ product });
-    const { unlocked, source } = resolveUnlock(customerInfo);
+    const { unlocked, source } = resolveUnlock(info);
     if (unlocked) {
       if (source !== "entitlement") {
         console.warn(
-          `[tripGate] purchase unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
+          `[tripGate] purchase unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(info)}`
         );
       }
       await markEntitlementInSupabase("revenuecat");
@@ -282,12 +319,51 @@ export async function purchaseUnlimited(): Promise<{ success: boolean; error?: s
       try { localStorage.removeItem(KEY_TEST_BLOCK_RC); } catch {}
       return { success: true };
     }
-    console.warn(`[tripGate] purchase completed but unlock not resolved. ${summariseEntitlements(customerInfo)}`);
+    console.warn(`[tripGate] purchase completed but unlock not resolved. ${summariseEntitlements(info)}`);
     return { success: false, error: "Purchase completed but entitlement not found. Please tap Restore purchase." };
   } catch (e: unknown) {
-    const err = e as { code?: string; message?: string };
-    if (err?.code === "1") return { success: false, error: "cancelled" };
+    const err = e as { code?: string; userCancelled?: boolean; message?: string };
+    if (err?.userCancelled || err?.code === "1") return { success: false, error: "cancelled" };
     return { success: false, error: err?.message ?? "Purchase failed. Please try again." };
+  }
+}
+
+/** Purchase the Friend package from the `default` offering. Returns the
+ *  resulting CustomerInfo, or an error marker (null customerInfo) when offerings
+ *  are unavailable so the caller can fall back to a direct product purchase. */
+async function purchaseFriendPackage(
+  Purchases: Awaited<ReturnType<typeof getPurchases>>["Purchases"],
+): Promise<{ customerInfo: CustomerInfoLike | null; error?: string }> {
+  try {
+    const offerings = await Purchases.getOfferings();
+    const offering =
+      offerings.all?.[RC_OFFERING_ID] ?? offerings.current ?? null;
+    const pkg =
+      offering?.availablePackages?.find(
+        (p) => p.product?.identifier === RC_PRODUCT_ID,
+      ) ?? offering?.availablePackages?.[0];
+    if (!pkg) return { customerInfo: null, error: "offering-empty" };
+    const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+    return { customerInfo };
+  } catch (e: unknown) {
+    const err = e as { code?: string; userCancelled?: boolean };
+    if (err?.userCancelled || err?.code === "1") return { customerInfo: null, error: "cancelled" };
+    return { customerInfo: null, error: "offering-error" };
+  }
+}
+
+/** Direct-by-identifier fallback purchase of the Friend subscription product. */
+async function purchaseFriendProductDirect(
+  Purchases: Awaited<ReturnType<typeof getPurchases>>["Purchases"],
+): Promise<{ customerInfo: CustomerInfoLike | null }> {
+  try {
+    const { products } = await Purchases.getProducts({ productIdentifiers: [RC_PRODUCT_ID] });
+    const product = products.find((p) => p.identifier === RC_PRODUCT_ID);
+    if (!product) return { customerInfo: null };
+    const { customerInfo } = await Purchases.purchaseStoreProduct({ product });
+    return { customerInfo };
+  } catch {
+    return { customerInfo: null };
   }
 }
 
