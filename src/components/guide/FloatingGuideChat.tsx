@@ -127,8 +127,8 @@ export function FloatingGuideChat() {
         emptyLine={`Hey, it's ${friendName}. Ask me anything about the road ahead.`}
         connectTitle="Unlock your road-trip guide"
         connectBody="Your always-on road guide comes with the Friend plan: it knows you and your trip, and points you to the right fuel, food, stops and sights on the road ahead. One Friend, across everything Ecodia."
-        accent="var(--glovebox-accent)"
-        onAccent="var(--on-color)"
+        accent="#A8431F"
+        onAccent="#FAF7F0"
         renderExtra={(extra) => <ActionPills actions={(extra as GuideAction[]) ?? []} />}
         // Lift the FAB + panel above the bottom tab bar (shared default sits at 18px).
         style={{ bottom: "calc(var(--bottom-nav-height) + 16px)" } as CSSProperties}
