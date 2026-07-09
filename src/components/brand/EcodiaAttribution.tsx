@@ -30,7 +30,7 @@ export function EcodiaAttribution({ style }: Props) {
       aria-label="built by Ecodia"
       style={{
         fontFamily: "'Spectral', 'Iowan Old Style', Garamond, 'Times New Roman', serif",
-        fontStyle: "italic",
+        fontStyle: "normal",
         fontWeight: 400,
         fontSize: "15px",
         lineHeight: 1,
