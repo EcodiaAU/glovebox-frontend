@@ -58,7 +58,7 @@ export function LegalLayout() {
 export default LegalLayout;
 
 /* Wrapper-scoped tokens + base type. Inherits the marketing palette
-   (burnt-orange #A8431F on cream #E8DFC9) and EB Garamond body. */
+   (burnt-orange #A8431F on cream #E8DFC9) and Spectral body. */
 const WRAPPER_CSS = `
 .gl-legal-page {
   --bg: #A8431F;
@@ -70,7 +70,7 @@ const WRAPPER_CSS = `
   min-height: 100dvh;
   background: var(--bg);
   color: var(--fg);
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-feature-settings: "kern", "liga", "dlig", "onum";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

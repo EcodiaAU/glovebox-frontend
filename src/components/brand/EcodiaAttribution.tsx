@@ -1,9 +1,9 @@
 // src/components/brand/EcodiaAttribution.tsx
 //
 // The Ecodia attribution mark: "built by Ecodia" -> ecodia.au.
-// EB Garamond italic signature, lowercase, opacity-recede. Inherits the
+// Spectral italic signature, lowercase, opacity-recede. Inherits the
 // surrounding text colour so it works on light and dark footers with no
-// colour prop. Degrades to Georgia/Garamond where the webfont is absent
+// colour prop. Degrades to Iowan Old Style/Garamond where the webfont is absent
 // (the glovebox footers already rely on the system serif, so no webfont
 // is bundled for this line).
 //
@@ -29,7 +29,7 @@ export function EcodiaAttribution({ style }: Props) {
       rel="noopener noreferrer"
       aria-label="built by Ecodia"
       style={{
-        fontFamily: "'EB Garamond', Georgia, 'Times New Roman', serif",
+        fontFamily: "'Spectral', 'Iowan Old Style', Garamond, 'Times New Roman', serif",
         fontStyle: "italic",
         fontWeight: 400,
         fontSize: "15px",

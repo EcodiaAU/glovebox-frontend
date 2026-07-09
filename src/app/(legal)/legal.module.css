@@ -1,13 +1,13 @@
 /* ── Glovebox legal aesthetic ───────────────────────────────────────
    Same editorial grammar as the marketing landing page: burnt-orange
-   ground (#A8431F), cream ink (#E8DFC9), EB Garamond serif, single
+   ground (#A8431F), cream ink (#E8DFC9), Spectral serif, single
    column, quiet hairlines instead of chunky cards. Inherits link
    styling from the .gl-legal-page wrapper applied in layout.tsx.
    ─────────────────────────────────────────────────────────────────── */
 
 /* ── Title block (h1 + effective date) ────────────── */
 .pageTitle {
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
   font-size: clamp(30px, 4vw, 44px);
@@ -33,7 +33,7 @@
 }
 
 .sectionTitle {
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
   font-size: clamp(20px, 1.7vw, 23px);
@@ -45,7 +45,7 @@
 }
 
 .subsectionTitle {
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
   font-size: 1em;
@@ -172,7 +172,7 @@
 }
 
 .label {
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-style: italic;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -240,7 +240,7 @@
 .submitBtn {
   align-self: flex-start;
   cursor: pointer;
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
   font-size: 14px;
@@ -297,7 +297,7 @@
 }
 
 .contactCard h4 {
-  font-family: "EB Garamond", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
   font-size: 12.5px;
