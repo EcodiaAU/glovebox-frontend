@@ -8,16 +8,11 @@ import { toErrorMessage } from "@/lib/utils/errors";
 import { useNetworkStatus } from "@/lib/hooks/useNetworkStatus";
 import { useAuth } from "@/lib/supabase/auth";
 import { listEmergencyContacts } from "@/lib/offline/emergencyStore";
-import { emergencySyncOnce } from "@/lib/offline/emergencySync";
-import { saveEmergencyContactLocalFirst, deleteEmergencyContactLocalFirst } from "@/lib/emergency/emergencyActions";
+import { saveEmergencyContact, removeEmergencyContact } from "@/lib/emergency/emergencyActions";
+import { canPickContacts, pickContact } from "@/lib/emergency/contactPicker";
 
-import type { EmergencyContactLocal } from "@/lib/types/emergency";
-import { PhoneCall, MessageSquareText, Plus, Pencil, Trash2, Satellite, RefreshCw } from "lucide-react";
+import type { EmergencyContact } from "@/lib/types/emergency";
 import { Icon, NetworkPill, PrimaryBtn, GhostBtn } from "@/components/glovebox-ui-v2/shared";
-
-function nowIso() {
-  return new Date().toISOString();
-}
 
 function randomId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -173,9 +168,8 @@ async function getPositionNative(timeoutMs = 120_000): Promise<GeoResult> {
 
 export default function EmergencyClientPage() {
   const { online: isOnline } = useNetworkStatus();
-  const { user } = useAuth();
 
-  const [items, setItems] = useState<EmergencyContactLocal[]>([]);
+  const [items, setItems] = useState<EmergencyContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({});
 
   const [busy, setBusy] = useState<null | "boot" | "save" | "delete" | "sync">(null);
@@ -189,15 +183,15 @@ export default function EmergencyClientPage() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [relationship, setRelationship] = useState("");
-  const [notes, setNotes] = useState("");
+  // The browser can hand us the OS address book on Chromium/Android and nowhere
+  // else, so the typed form below stays as the fallback rather than being removed.
+  const [pickerSupported, setPickerSupported] = useState(false);
 
   const [lat, setLat] = useState<number | null>(null);
   const [lon, setLon] = useState<number | null>(null);
   const [accuracyM, setAccuracyM] = useState<number | null>(null);
 
   const didBootRef = useRef(false);
-  const syncInFlightRef = useRef(false);
   const locInFlightRef = useRef(false);
 
   const isLocating = locating && (lat == null || lon == null);
@@ -240,22 +234,12 @@ export default function EmergencyClientPage() {
     });
   }, []);
 
-  const runAutoSync = useCallback(async () => {
-    if (!user || !isOnline) return;
-    if (syncInFlightRef.current) return;
-
-    syncInFlightRef.current = true;
-    setBusy((b) => (b ? b : "sync"));
-    try {
-      await emergencySyncOnce(user);
-      await refresh();
-    } catch (e: unknown) {
-      setErr(toErrorMessage(e));
-    } finally {
-      syncInFlightRef.current = false;
-      setBusy((b) => (b === "sync" ? null : b));
-    }
-  }, [user, isOnline, refresh]);
+  // Contacts are device-local. There is no sync to run, no queue to drain and no
+  // sync error to surface: the Supabase table this page used to mirror to was
+  // dropped 2026-07-12 because the phone already backs up its own address book.
+  useEffect(() => {
+    setPickerSupported(canPickContacts());
+  }, []);
 
   const fetchLocationAuto = useCallback(async (force = false) => {
     // force=true allows the retry button to bypass the in-flight guard
@@ -288,7 +272,6 @@ export default function EmergencyClientPage() {
       try {
         await refresh();
         if (cancelled) return;
-        await runAutoSync();
       } catch (e: unknown) {
         setErr(toErrorMessage(e));
       } finally {
@@ -300,17 +283,7 @@ export default function EmergencyClientPage() {
     return () => {
       cancelled = true;
     };
-  }, [refresh, runAutoSync]);
-
-  useEffect(() => {
-    runAutoSync();
-  }, [runAutoSync]);
-
-  useEffect(() => {
-    if (!user || !isOnline) return;
-    const t = setInterval(() => runAutoSync(), 30_000);
-    return () => clearInterval(t);
-  }, [user, isOnline, runAutoSync]);
+  }, [refresh]);
 
   useEffect(() => {
     fetchLocationAuto();
@@ -327,14 +300,10 @@ export default function EmergencyClientPage() {
     if (!editing) {
       setName("");
       setPhone("");
-      setRelationship("");
-      setNotes("");
       return;
     }
     setName(editing.name ?? "");
     setPhone(editing.phone ?? "");
-    setRelationship(editing.relationship ?? "");
-    setNotes(editing.notes ?? "");
   }, [editingId, editing]);
 
   const callEmergency = useCallback(() => {
@@ -405,8 +374,6 @@ export default function EmergencyClientPage() {
     setEditingId("__new__");
     setName("");
     setPhone("");
-    setRelationship("");
-    setNotes("");
   }, []);
 
   const cancelEdit = useCallback(() => {
@@ -415,49 +382,60 @@ export default function EmergencyClientPage() {
     setEditingId(null);
   }, []);
 
+  /**
+   * Persist a contact and reflect it in the list. Keyed on `id`, so a contact
+   * that came from the picker (id = its number) updates in place on a re-pick
+   * instead of appearing twice, which is what the native apps get from the
+   * address-book row id.
+   */
+  const persist = useCallback(
+    async (contact: EmergencyContact) => {
+      const prevItems = items;
+      setItems((prev) => {
+        const idx = prev.findIndex((c) => c.id === contact.id);
+        if (idx >= 0) {
+          const next = [...prev];
+          next[idx] = contact;
+          return next;
+        }
+        return [...prev, contact];
+      });
+      setEditingId(null);
+      haptic.success();
+
+      try {
+        await saveEmergencyContact(contact);
+      } catch (e: unknown) {
+        setItems(prevItems);
+        haptic.error();
+        setErr(toErrorMessage(e));
+      }
+    },
+    [items],
+  );
+
+  /** Hand the user their own address book. Chromium/Android only; see contactPicker.ts. */
+  const addFromContacts = useCallback(async () => {
+    setErr(null);
+    haptic.medium();
+    try {
+      const picked = await pickContact();
+      if (!picked) return; // dismissed, or the person had no number
+      await persist(picked);
+    } catch (e: unknown) {
+      haptic.error();
+      setErr(toErrorMessage(e));
+    }
+  }, [persist]);
+
+  /** The fallback for every browser without a contact picker (desktop, iOS). */
   const save = useCallback(async () => {
     setErr(null);
     haptic.medium();
 
     const id = editingId && editingId !== "__new__" ? editingId : randomId();
-    const now = nowIso();
-    const contact: EmergencyContactLocal = {
-      id,
-      name: name.trim(),
-      phone: phone.trim(),
-      relationship: relationship.trim() || null,
-      notes: notes.trim() || null,
-      updated_at: now,
-      _local_updated_at: now,
-    };
-
-    // Snapshot for rollback
-    const prevItems = items;
-
-    // Optimistic: update list and close editor immediately
-    setItems((prev) => {
-      const idx = prev.findIndex((c) => c.id === id);
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = contact;
-        return next;
-      }
-      return [...prev, contact];
-    });
-    setEditingId(null);
-    haptic.success();
-
-    // Persist in background - revert on failure
-    try {
-      await saveEmergencyContactLocalFirst({ user, isOnline, contact });
-      runAutoSync();
-    } catch (e: unknown) {
-      // Revert
-      setItems(prevItems);
-      haptic.error();
-      setErr(toErrorMessage(e));
-    }
-  }, [editingId, name, phone, relationship, notes, user, isOnline, items, runAutoSync]);
+    await persist({ id, name: name.trim(), phone: phone.trim() });
+  }, [editingId, name, phone, persist]);
 
   const remove = useCallback(
     async (id: string) => {
@@ -475,8 +453,7 @@ export default function EmergencyClientPage() {
 
       // Persist in background - revert on failure
       try {
-        await deleteEmergencyContactLocalFirst({ user, isOnline, id });
-        runAutoSync();
+        await removeEmergencyContact(id);
       } catch (e: unknown) {
         // Revert
         setItems(prevItems);
@@ -484,7 +461,7 @@ export default function EmergencyClientPage() {
         setErr(toErrorMessage(e));
       }
     },
-    [user, isOnline, items, editingId, runAutoSync],
+    [items, editingId],
   );
 
   const selectedCount = selectedContacts.length;
@@ -713,10 +690,22 @@ export default function EmergencyClientPage() {
               }}>
                 {editingId === "__new__" ? "Add contact" : "Edit contact"}
               </div>
+              {/* On a browser with a contact picker (Chromium on Android) the user
+                  should never have to type a number their phone already knows.
+                  Everywhere else (desktop, iOS, where no engine ships the API)
+                  the fields below are the only way in, so they stay. */}
+              {pickerSupported && (
+                <button onClick={addFromContacts} style={{
+                  width: "100%", height: 44, borderRadius: 10, marginBottom: 8,
+                  background: "var(--c-accent)", color: "white",
+                  fontWeight: 700, fontSize: 14,
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                }}>
+                  <Icon name="user" size={16}/> Choose from contacts
+                </button>
+              )}
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name (e.g. Mum)" style={sosInputStyle()}/>
               <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (e.g. +61 412 …)" inputMode="tel" style={{ ...sosInputStyle(), fontFamily: "var(--font-mono)" }}/>
-              <input value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Relationship (optional)" style={sosInputStyle()}/>
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Notes (optional)" style={{ ...sosInputStyle(), resize: "none", minHeight: 56 }}/>
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={cancelEdit} style={{
                   flex: 1, height: 44, borderRadius: 10,
@@ -747,7 +736,7 @@ export default function EmergencyClientPage() {
             textAlign: "center", padding: "24px 0", fontSize: 13,
             color: "var(--c-text-muted)",
           }}>
-            No contacts saved. Add one above.
+            No contacts yet. Add the people to reach if something goes wrong. They stay on this device and work with no reception.
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -790,7 +779,7 @@ export default function EmergencyClientPage() {
                       fontSize: 11, color: "var(--c-text-muted)", lineHeight: 1.3,
                       overflow: "hidden", wordBreak: "break-word",
                     }}>
-                      {c.phone}{c.relationship ? ` · ${c.relationship}` : ""}
+                      {c.phone}
                     </div>
                   </div>
                   <button

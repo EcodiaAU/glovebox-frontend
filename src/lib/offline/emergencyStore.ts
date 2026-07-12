@@ -1,44 +1,46 @@
 import { idbGetAll, idbPut, idbDel, idbGet, idbStores } from "./idb";
-import type { EmergencyContact, EmergencyContactLocal } from "@/lib/types/emergency";
+import type { EmergencyContact } from "@/lib/types/emergency";
 
-function nowIso() {
-  return new Date().toISOString();
-}
+/**
+ * The people the user picked for the SOS screen to call or text, held in
+ * IndexedDB on this device.
+ *
+ * Deliberately dumb, and deliberately local. Every read and write works offline,
+ * and offline is the case a safety surface has to be right for. There is no
+ * cloud mirror: the Supabase table this used to sync to was dropped 2026-07-12
+ * because the phone already backs up its own address book, so a second copy
+ * bought nothing. `mergeEmergencyFromCloud` is gone with it.
+ */
 
 function normalizePhone(raw: string) {
-  // Keep it simple: trim, collapse spaces.
-  // (If you later want E.164 normalization, do it here.)
   return (raw ?? "").trim().replace(/\s+/g, " ");
 }
 
-export async function listEmergencyContacts(): Promise<EmergencyContactLocal[]> {
-  const items = await idbGetAll<EmergencyContactLocal>(idbStores.emergency);
-  // newest first by local updated
-  return (items ?? []).sort((a, b) => (b._local_updated_at || "").localeCompare(a._local_updated_at || ""));
+/** Insertion order, which is the order the user picked them in. */
+export async function listEmergencyContacts(): Promise<EmergencyContact[]> {
+  const items = await idbGetAll<EmergencyContact>(idbStores.emergency);
+  return items ?? [];
 }
 
-async function getEmergencyContact(id: string): Promise<EmergencyContactLocal | undefined> {
-  return await idbGet<EmergencyContactLocal>(idbStores.emergency, id);
+export async function getEmergencyContact(id: string): Promise<EmergencyContact | undefined> {
+  return await idbGet<EmergencyContact>(idbStores.emergency, id);
 }
 
-export async function upsertEmergencyContact(input: EmergencyContact): Promise<EmergencyContactLocal> {
-  const created = input.created_at ?? nowIso();
-  const updated = input.updated_at ?? nowIso();
-
-  const next: EmergencyContactLocal = {
+/**
+ * Save a contact. Keyed on `id`, which is the platform contact identifier when
+ * the picker gave us one, so re-picking the same person updates them in place
+ * (their number may have changed) rather than listing one human twice.
+ */
+export async function upsertEmergencyContact(input: EmergencyContact): Promise<EmergencyContact> {
+  const next: EmergencyContact = {
     id: input.id,
     name: (input.name ?? "").trim(),
     phone: normalizePhone(input.phone ?? ""),
-    relationship: input.relationship ?? null,
-    notes: input.notes ?? null,
-    created_at: created,
-    updated_at: updated,
-    _local_updated_at: nowIso(),
   };
 
   if (!next.id) throw new Error("Emergency contact missing id");
-  if (!next.name) throw new Error("Name is required");
-  if (!next.phone) throw new Error("Phone is required");
+  if (!next.phone) throw new Error("A contact with no number cannot be called or texted");
+  if (!next.name) next.name = next.phone;
 
   await idbPut(idbStores.emergency, next);
   return next;
@@ -46,27 +48,4 @@ export async function upsertEmergencyContact(input: EmergencyContact): Promise<E
 
 export async function deleteEmergencyContact(id: string): Promise<void> {
   await idbDel(idbStores.emergency, id);
-}
-
-// Merge from cloud into local (local-first with updated_at comparison)
-export async function mergeEmergencyFromCloud(remote: EmergencyContact[]): Promise<void> {
-  const local = await idbGetAll<EmergencyContactLocal>(idbStores.emergency);
-  const localMap = new Map(local.map((x) => [x.id, x]));
-
-  for (const r of remote) {
-    const existing = localMap.get(r.id);
-    const rUpdated = r.updated_at ?? r.created_at ?? "";
-    const lUpdated = existing?.updated_at ?? existing?.created_at ?? existing?._local_updated_at ?? "";
-
-    // If we don't have it, or remote looks newer, take remote.
-    if (!existing || (rUpdated && (!lUpdated || rUpdated > lUpdated))) {
-      await idbPut(idbStores.emergency, {
-        ...existing,
-        ...r,
-        relationship: r.relationship ?? null,
-        notes: r.notes ?? null,
-        _local_updated_at: nowIso(),
-      } satisfies EmergencyContactLocal);
-    }
-  }
 }
