@@ -10,13 +10,26 @@
 //   - useGeolocation is for general map centering (foreground only)
 //   - backgroundLocation is for active TBT navigation (background-capable)
 //
-// iOS requirements (in Info.plist):
-//   NSLocationAlwaysAndWhenInUseUsageDescription
-//   UIBackgroundModes: ["location", "audio"]
+// iOS: genuinely background-capable. Info.plist declares
+//   NSLocationAlwaysAndWhenInUseUsageDescription and
+//   UIBackgroundModes: ["location", "audio"], so the OS keeps the watch alive
+//   with the screen off.
 //
-// Android requirements (in AndroidManifest.xml):
-//   ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION,
-//   FOREGROUND_SERVICE, FOREGROUND_SERVICE_LOCATION
+// Android: FOREGROUND ONLY, despite the name of this module.
+//   The manifest declares ACCESS_FINE_LOCATION + ACCESS_COARSE_LOCATION (it
+//   declared neither until 2026-07-12, so every call here failed outright).
+//   True background tracking on Android additionally needs a foreground
+//   service holding the location type, which @capacitor/geolocation does not
+//   provide: it is a plain watchPosition in the WebView, and Android stops
+//   delivering once the app leaves the foreground. Declaring
+//   ACCESS_BACKGROUND_LOCATION on its own would change nothing at runtime and
+//   would pull the app into Play's background-location policy review.
+//   What keeps navigation working today is the nav screen holding the screen
+//   awake (useKeepAwake in the /live route), which keeps the app foregrounded
+//   for the whole drive.
+//   To get real screen-off navigation on Android, adopt a foreground-service
+//   geolocation plugin and file the Play background-location declaration. That
+//   is a scoped piece of work, not a manifest line.
 
 import { Geolocation } from "@capacitor/geolocation";
 import type { GloveboxPosition } from "./geolocation";
