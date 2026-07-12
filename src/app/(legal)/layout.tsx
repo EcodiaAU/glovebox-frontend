@@ -70,7 +70,7 @@ const WRAPPER_CSS = `
   min-height: 100dvh;
   background: var(--bg);
   color: var(--fg);
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-feature-settings: "kern", "liga", "dlig", "onum";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

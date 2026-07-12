@@ -644,17 +644,17 @@ export function StopsEditor(props: {
                   style={{
                     position: "relative",
                     display: "flex", alignItems: "center", gap: 5,
-                    background: "linear-gradient(135deg, #122d1e 0%, var(--brand-eucalypt-dark, #1f5236) 40%, var(--brand-eucalypt, #2d6e40) 80%, #3d8f54 100%)",
+                    background: "var(--brand-eucalypt, #2d6e40)",
                     borderRadius: "var(--r-card)", padding: "0 12px",
                     height: 44, border: "1px solid var(--glovebox-border)", cursor: "pointer",
-                    boxShadow: "0 2px 12px rgba(31,82,54,0.45), 0 1px 3px rgba(31,82,54,0.20), inset 0 1px 0 rgba(255,255,255,0.10)",
+                    boxShadow: "none",
                     overflow: "hidden",
                     WebkitTapHighlightColor: "transparent",
                   }}
                 >
                   <div style={{
                     position: "absolute", inset: 0,
-                    background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.10) 50%, transparent 70%)",
+                    background: "transparent",
                     borderRadius: "inherit", pointerEvents: "none",
                   }} />
                   <span style={{ fontSize: 10, fontWeight: 800, color: "var(--on-color)", letterSpacing: "0.06em", textTransform: "uppercase", position: "relative" }}>
@@ -782,14 +782,14 @@ export function StopsEditor(props: {
                     padding: "13px 24px",
                     borderRadius: "var(--r-card)",
                     border: "1px solid var(--glovebox-border-strong)",
-                    background: "linear-gradient(135deg, #5c1a0e 0%, var(--brand-ochre, #b5452e) 40%, #d4664a 70%, #e8956a 100%)",
+                    background: "var(--brand-ochre, #b5452e)",
                     color: "var(--on-color)",
                     fontSize: 15,
                     fontWeight: 900,
                     letterSpacing: "-0.2px",
                     cursor: canSave ? "pointer" : "default",
                     opacity: canSave ? 1 : 0.45,
-                    boxShadow: "0 4px 20px rgba(181,69,46,0.45), 0 2px 6px rgba(181,69,46,0.25), inset 0 1px 0 rgba(255,255,255,0.12)",
+                    boxShadow: "none",
                     overflow: "hidden",
                     WebkitTapHighlightColor: "transparent",
                     transition: "opacity 0.2s, transform 0.15s",
@@ -797,7 +797,7 @@ export function StopsEditor(props: {
                 >
                   <div style={{
                     position: "absolute", inset: 0,
-                    background: "linear-gradient(105deg, transparent 25%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.08) 55%, transparent 75%)",
+                    background: "transparent",
                     borderRadius: "inherit", pointerEvents: "none",
                   }} />
                   <Compass size={18} style={{ position: "relative", flexShrink: 0 }} />

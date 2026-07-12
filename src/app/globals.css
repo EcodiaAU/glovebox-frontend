@@ -2,6 +2,23 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 
 /* ==========================================================================
+   0. TYPEFACE - Spectral, self-hosted.
+   Glovebox runs offline by design: the WebView serves `out/` from device
+   storage with no network. A Google Fonts <link> therefore resolves to
+   nothing the moment the user is past the last tower, which is exactly the
+   condition the app exists for. Every face is bundled.
+   Roman/upright is the Ecodia display face; italic is for emphasis only.
+   ========================================================================== */
+@font-face { font-family: "Spectral"; font-style: normal; font-weight: 300; font-display: swap; src: url("/fonts/Spectral-Light.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/Spectral-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/Spectral-Medium.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/Spectral-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/Spectral-Bold.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: normal; font-weight: 800; font-display: swap; src: url("/fonts/Spectral-ExtraBold.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: italic; font-weight: 400; font-display: swap; src: url("/fonts/Spectral-Italic.woff2") format("woff2"); }
+@font-face { font-family: "Spectral"; font-style: italic; font-weight: 600; font-display: swap; src: url("/fonts/Spectral-SemiBoldItalic.woff2") format("woff2"); }
+
+/* ==========================================================================
    GLOVEBOX - Australian Road Trip Navigation
    Design System: "Terra Nomad"
    ========================================================================== */
@@ -45,9 +62,13 @@
   --glovebox-tab-h: 80px;
   --bottom-nav-height: calc(var(--glovebox-tab-h) + var(--glovebox-safe-bottom));
 
-  --ff-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --ff-body: "Public Sans", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --ff-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, monospace;
+  /* One face, three roles. The fallback chain is serif-only so a missing
+     woff2 degrades to Iowan/Georgia rather than snapping to a sans. */
+  --ff-display: "Spectral", "Iowan Old Style", Georgia, Garamond, serif;
+  --ff-body: "Spectral", "Iowan Old Style", Georgia, Garamond, serif;
+  /* Data readouts stay Spectral; tabular figures come from the OpenType
+     `tnum` feature, not from swapping to a monospace face. */
+  --ff-mono: "Spectral", "Iowan Old Style", Georgia, serif;
 
   --font-h1: 1.5rem;
   --font-h2: 1.125rem;
@@ -59,7 +80,9 @@
   --font-xxs: 0.6875rem;
   --font-label: 0.6875rem;
 
-  --tracking-headline: 0.05em;
+  /* Serif headlines set tight; the 0.05em spacing was a sans-caps habit and
+     it pulls Spectral apart. Uppercase micro-labels still want the air. */
+  --tracking-headline: -0.01em;
   --tracking-label: 0.08em;
   --weight-headline: 700;
   --weight-data: 600;
@@ -169,14 +192,18 @@
   --tab-inactive-color: #555D68;  /* 6.0:1 on #FFF — AA large+, near AAA */
   --tab-center-bg: var(--brand-ochre);
   --tab-center-icon: var(--on-color);
-  --tab-center-glow: 0 6px 20px rgba(179, 84, 30, 0.35);
+  --tab-center-glow: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.10);
 
-  --shadow-soft: 0 2px 0 rgba(19, 19, 19, 0.06), 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.04);
-  --shadow-medium: 0 4px 0 rgba(19, 19, 19, 0.10), 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.06);
-  --shadow-heavy: 0 8px 0 rgba(19, 19, 19, 0.14), 0 0 0 var(--border-default) rgba(19, 19, 19, 0.08);
-  --shadow-button: 0 3px 0 rgba(19, 19, 19, 0.18);
-  --shadow-fab: 0 4px 0 rgba(19, 19, 19, 0.20), 0 0 0 var(--border-default) rgba(19, 19, 19, 0.10);
-  --shadow-sheet: 0 -4px 0 rgba(19, 19, 19, 0.08), 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.06);
+  /* Separation comes from hairlines, not from stacked drop shadows. The old
+     brutalist offsets (0 3px 0 / 0 8px 0) fought the serif; edges hold the
+     layout now, and only the surfaces that genuinely float above the map
+     (sheets, FAB, modals) carry a soft diffuse lift. */
+  --shadow-soft: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.10);
+  --shadow-medium: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.12);
+  --shadow-heavy: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.14), 0 12px 32px rgba(19, 19, 19, 0.10);
+  --shadow-button: none;
+  --shadow-fab: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.12), 0 8px 24px rgba(19, 19, 19, 0.12);
+  --shadow-sheet: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.10), 0 -8px 32px rgba(19, 19, 19, 0.08);
 
   --terra-emergency: #C62828;
   --terra-emergency-tint: rgba(198, 40, 40, 0.12);
@@ -199,9 +226,10 @@
   --glass-border: var(--glovebox-border-strong);
   --glass-blur: none;
 
-  /* CTA gradient — "machined" ochre depth */
-  --cta-gradient: linear-gradient(135deg, #933d04 0%, #b3541e 100%);
-  --cta-gradient-hover: linear-gradient(135deg, #7a3000 0%, #933d04 100%);
+  /* CTA is flat ochre. A gradient on the primary action reads as chrome, and
+     the token still exists so the ~30 call sites need no edit. */
+  --cta-gradient: var(--brand-ochre);
+  --cta-gradient-hover: #933d04;
 }
 
 
@@ -268,14 +296,15 @@
   --tab-inactive-color: #B0A89F;  /* Muted stone — 7.1:1 on dark AAA */
   --tab-center-bg: #A0522D;    /* Darker ochre for on-color contrast (5.8:1 AAA lg) */
   --tab-center-icon: var(--on-color);
-  --tab-center-glow: 0 4px 24px rgba(255, 182, 147, 0.35);
+  /* Night: hairlines are light-on-dark. No ochre glow behind the centre tab. */
+  --tab-center-glow: 0 0 0 1px rgba(255, 255, 255, 0.10);
 
-  --shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.30);
-  --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.40);
-  --shadow-heavy: 0 4px 16px rgba(0, 0, 0, 0.50);
-  --shadow-button: 0 2px 0 rgba(0, 0, 0, 0.30);
-  --shadow-fab: 0 2px 12px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  --shadow-sheet: 0 -2px 16px rgba(0, 0, 0, 0.40);
+  --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --shadow-medium: 0 0 0 1px rgba(255, 255, 255, 0.09);
+  --shadow-heavy: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-button: none;
+  --shadow-fab: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 8px 24px rgba(0, 0, 0, 0.50);
+  --shadow-sheet: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 -8px 32px rgba(0, 0, 0, 0.50);
 
   --terra-emergency: #EF5350;
   --terra-emergency-tint: rgba(239, 83, 80, 0.14);
@@ -298,9 +327,9 @@
   --glass-border: rgba(255, 255, 255, 0.10);
   --glass-blur: var(--blur-md);
 
-  /* CTA gradient — night mode metallic ochre */
-  --cta-gradient: linear-gradient(135deg, #ffb693 0%, #b3541e 100%);
-  --cta-gradient-hover: linear-gradient(135deg, #d4764a 0%, #933d04 100%);
+  /* CTA is flat ochre at night too. */
+  --cta-gradient: var(--brand-ochre);
+  --cta-gradient-hover: #933d04;
 }
 
 /* ==========================================================================
@@ -377,9 +406,9 @@
 @keyframes spin-360   { to { transform: rotate(360deg); } }
 
 /* Helper classes the redesigned components use */
-.t-display { font-family: var(--ff-display); }
-.t-mono    { font-family: var(--ff-mono); font-variant-numeric: tabular-nums; }
-.t-num     { font-variant-numeric: tabular-nums; }
+.t-display { font-family: var(--ff-display); letter-spacing: var(--tracking-headline); }
+.t-mono    { font-family: var(--ff-mono); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1, "lnum" 1; }
+.t-num     { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1, "lnum" 1; }
 .t-muted   { color: var(--glovebox-text-muted); }
 .scroll-y  { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
@@ -1523,9 +1552,9 @@ input[type="range"]::-webkit-slider-thumb {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #2563eb;
-  border: 3px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  background: var(--glovebox-accent);
+  border: 3px solid var(--glovebox-surface);
+  box-shadow: var(--shadow-soft);
   cursor: pointer;
   /* Centre the 28px thumb on the 8px track. */
   margin-top: -10px;
@@ -1534,9 +1563,9 @@ input[type="range"]::-moz-range-thumb {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #2563eb;
-  border: 3px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  background: var(--glovebox-accent);
+  border: 3px solid var(--glovebox-surface);
+  box-shadow: var(--shadow-soft);
   cursor: pointer;
 }
 

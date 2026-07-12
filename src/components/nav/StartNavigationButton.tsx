@@ -48,10 +48,10 @@ export function StartNavigationButton({ onStart, disabled }: Props) {
         color: "var(--on-color)",
         background: loading || disabled
           ? "rgba(45,110,64,0.35)"
-          : "linear-gradient(160deg, var(--brand-eucalypt) 0%, var(--brand-eucalypt-dark) 100%)",
+          : "var(--brand-eucalypt)",
         boxShadow: loading || disabled
           ? "none"
-          : "0 4px 20px rgba(45,110,64,0.35), 0 1px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.12)",
+          : "var(--shadow-fab)",
         transition: "all 0.2s ease",
         opacity: disabled ? 0.55 : 1,
       }}

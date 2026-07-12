@@ -17,8 +17,8 @@ interface FABProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "childr
 
 const variantBg: Record<FABVariant, string> = {
   primary: "var(--cta-gradient)",
-  danger: "linear-gradient(135deg, var(--glovebox-danger), var(--glovebox-danger))",
-  eucalypt: "linear-gradient(135deg, var(--brand-eucalypt-dark), var(--brand-eucalypt))",
+  danger: "var(--glovebox-danger)",
+  eucalypt: "var(--brand-eucalypt)",
 };
 
 export const FAB = forwardRef<HTMLButtonElement, FABProps>(

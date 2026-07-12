@@ -10,6 +10,8 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { Route, Satellite, Fuel, Package, Save } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { BuildPhase } from "@/lib/offline/buildPlanBundle";
 
 /* ─── Step definitions ───────────────────────────────────────────────────── */
@@ -23,7 +25,7 @@ type StepId =
 
 interface StepDef {
   id: StepId;
-  icon: string;
+  Icon: LucideIcon;
   label: string;
   quips: string[];
   doneQuip: string;
@@ -32,7 +34,7 @@ interface StepDef {
 const STEPS: StepDef[] = [
   {
     id: "routing",
-    icon: "🗺️",
+    Icon: Route,
     label: "Plotting your route",
     quips: [
       "Asking the map very nicely…",
@@ -46,7 +48,7 @@ const STEPS: StepDef[] = [
   },
   {
     id: "corridor",
-    icon: "📡",
+    Icon: Satellite,
     label: "Grabbing offline maps",
     quips: [
       "Downloading a wee bit of Australia…",
@@ -60,7 +62,7 @@ const STEPS: StepDef[] = [
   },
   {
     id: "fuel",
-    icon: "⛽",
+    Icon: Fuel,
     label: "Checking fuel stops",
     quips: [
       "Counting servos. Hoping for the best.",
@@ -74,7 +76,7 @@ const STEPS: StepDef[] = [
   },
   {
     id: "bundle",
-    icon: "📦",
+    Icon: Package,
     label: "Packing your offline kit",
     quips: [
       "Rounding up the roadhouses…",
@@ -89,7 +91,7 @@ const STEPS: StepDef[] = [
   },
   {
     id: "saving",
-    icon: "💾",
+    Icon: Save,
     label: "Saving to your phone",
     quips: [
       "Don't close the app. I mean it.",
@@ -223,10 +225,10 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
           <div
             style={{
               background: error
-                ? "linear-gradient(135deg, #7a1800 0%, var(--brand-ochre, #b5452e) 100%)"
+                ? "var(--glovebox-danger, #7a1800)"
                 : isReady
-                ? "linear-gradient(135deg, #7a3d00 0%, var(--brand-amber, #b8872a) 100%)"
-                : "linear-gradient(135deg, #7a3d00 0%, var(--brand-ochre, #b5452e) 100%)",
+                ? "var(--brand-eucalypt, #2d6e40)"
+                : "var(--brand-ochre, #b5452e)",
               padding: "20px 20px 16px",
               position: "relative",
               overflow: "hidden",
@@ -270,7 +272,7 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
               color: "var(--on-color)", lineHeight: 1.2,
             }}>
               {isReady
-                ? "You're good to go 🟢"
+                ? "You're good to go"
                 : error
                 ? "Something went wrong"
                 : `${doneCount} of ${STEPS.length} steps complete`}
@@ -351,7 +353,7 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
                       fontWeight: done ? 900 : undefined,
                       transition: "background 0.2s",
                     }}>
-                      {done ? "✓" : active ? <Spinner /> : step.icon}
+                      {done ? "✓" : active ? <Spinner /> : <step.Icon size={16} strokeWidth={2} />}
                     </div>
 
                     {/* Text */}

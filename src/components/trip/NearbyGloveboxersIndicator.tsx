@@ -94,7 +94,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: 44,
     padding: "0 14px",
     borderRadius: "var(--r-card)",
-    background: "linear-gradient(160deg, rgba(45,110,64,0.92) 0%, rgba(31,82,54,0.96) 100%)",
+    background: "rgba(45,110,64,0.95)",
     border: "1px solid var(--glovebox-success)",
     backdropFilter: "blur(16px)",
     WebkitBackdropFilter: "blur(16px)",
@@ -119,7 +119,7 @@ const styles: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap" as const,
   },
   dropdown: {
-    background: "linear-gradient(160deg, rgba(26,21,16,0.97) 0%, rgba(16,13,10,0.99) 100%)",
+    background: "rgba(22,18,13,0.97)",
     backdropFilter: "blur(20px)",
     WebkitBackdropFilter: "blur(20px)",
     borderRadius: "var(--r-card)",

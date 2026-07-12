@@ -200,7 +200,7 @@ export function TripPrefsPanel({
                   outline: "none",
                   cursor: "pointer",
                   ["--slider-fill" as keyof React.CSSProperties as string]:
-                    `linear-gradient(to right, #2563eb 0%, #2563eb ${((prefs.stop_density - 1) / 4) * 100}%, var(--glovebox-border, #d1d5db) ${((prefs.stop_density - 1) / 4) * 100}%, var(--glovebox-border, #d1d5db) 100%)`,
+                    `linear-gradient(to right, var(--glovebox-accent) 0%, var(--glovebox-accent) ${((prefs.stop_density - 1) / 4) * 100}%, var(--glovebox-border, #d1d5db) ${((prefs.stop_density - 1) / 4) * 100}%, var(--glovebox-border, #d1d5db) 100%)`,
                 } as React.CSSProperties}
               />
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>

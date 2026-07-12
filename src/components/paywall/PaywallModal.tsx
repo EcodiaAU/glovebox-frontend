@@ -262,8 +262,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
 
           {/* Quiet section label - reading beat, not badge pill */}
           <div style={{
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 12.5,
             letterSpacing: "0.08em",
             color: "rgba(232,223,201,0.55)",
@@ -275,8 +274,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
 
           <h1 style={{
             margin: "0 0 10px",
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontWeight: 400,
             fontSize: 30,
             lineHeight: 1.18,
@@ -287,8 +285,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
           </h1>
           <p style={{
             margin: 0,
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 15, fontWeight: 400,
             color: "rgba(232,223,201,0.78)",
             lineHeight: 1.5,
@@ -306,8 +303,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             style={{ padding: "22px 28px 12px", overflowY: "auto", height: "100%", WebkitOverflowScrolling: "touch" as React.CSSProperties["WebkitOverflowScrolling"], overscrollBehaviorX: "contain" }}
           >
             <div style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 12.5,
               letterSpacing: "0.08em",
               color: "var(--glovebox-text-muted)",
@@ -375,8 +371,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             justifyContent: "center",
           }}>
             <span style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 34,
               fontWeight: 400,
               color: "var(--glovebox-text)",
@@ -386,8 +381,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               $19.99
             </span>
             <span style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 13,
               fontWeight: 400,
               color: "var(--glovebox-text-muted)",

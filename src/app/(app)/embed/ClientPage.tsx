@@ -60,7 +60,7 @@ function OpenInGlovebox({ href }: { href: string }) {
         borderRadius: 999,
         background: GB_ORANGE,
         color: "#fff",
-        font: "600 13px system-ui",
+        font: "600 13px var(--ff-body)",
         textDecoration: "none",
         boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
       }}
@@ -85,7 +85,7 @@ function Panel({ children, side = "bottom-left" }: { children: React.ReactNode; 
         padding: "10px 14px",
         borderRadius: 12,
         boxShadow: "0 2px 14px rgba(0,0,0,0.14)",
-        font: "500 13px system-ui",
+        font: "500 13px var(--ff-body)",
         color: "#2c2c22",
         ...pos,
       }}
@@ -144,9 +144,9 @@ function MapEmbed({ params }: { params: URLSearchParams }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search this area"
-            style={{ flex: 1, padding: "10px 14px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.12)", background: "rgba(255,255,255,0.96)", boxShadow: "0 2px 10px rgba(0,0,0,0.10)", font: "500 14px system-ui", outline: "none" }}
+            style={{ flex: 1, padding: "10px 14px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.12)", background: "rgba(255,255,255,0.96)", boxShadow: "0 2px 10px rgba(0,0,0,0.10)", font: "500 14px var(--ff-body)", outline: "none" }}
           />
-          <button type="submit" style={{ padding: "10px 16px", borderRadius: 999, border: "none", background: GB_ORANGE, color: "#fff", font: "600 14px system-ui", boxShadow: "0 2px 10px rgba(0,0,0,0.12)" }}>
+          <button type="submit" style={{ padding: "10px 16px", borderRadius: 999, border: "none", background: GB_ORANGE, color: "#fff", font: "600 14px var(--ff-body)", boxShadow: "0 2px 10px rgba(0,0,0,0.12)" }}>
             Search
           </button>
         </form>
@@ -156,7 +156,7 @@ function MapEmbed({ params }: { params: URLSearchParams }) {
               key={c || "all"}
               type="button"
               onClick={() => { setQuery(c); void runSearch(c); }}
-              style={{ padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.10)", background: query === c ? GB_ORANGE : "rgba(255,255,255,0.92)", color: query === c ? "#fff" : "#333", font: "500 12px system-ui", cursor: "pointer" }}
+              style={{ padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.10)", background: query === c ? GB_ORANGE : "rgba(255,255,255,0.92)", color: query === c ? "#fff" : "#333", font: "500 12px var(--ff-body)", cursor: "pointer" }}
             >
               {c || "All"}
             </button>
@@ -168,7 +168,7 @@ function MapEmbed({ params }: { params: URLSearchParams }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <div>
             <div style={{ fontWeight: 700 }}>{title}</div>
-            <div style={{ font: "400 11px system-ui", color: "#6b6b5e", marginTop: 2 }}>
+            <div style={{ font: "400 11px var(--ff-body)", color: "#6b6b5e", marginTop: 2 }}>
               {status === "loading" ? "Loading places…" : status === "error" ? "Places unavailable right now" : `${places.length} place${places.length === 1 ? "" : "s"} · Glovebox`}
             </div>
           </div>
@@ -263,9 +263,9 @@ function DirectionsEmbed({ params }: { params: URLSearchParams }) {
       <Panel side="bottom">
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <div style={{ flex: "1 1 180px", minWidth: 0 }}>
-            <div style={{ font: "400 11px system-ui", color: "#6b6b5e" }}>Directions to</div>
+            <div style={{ font: "400 11px var(--ff-body)", color: "#6b6b5e" }}>Directions to</div>
             <div style={{ fontWeight: 700, fontSize: 15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{toName}</div>
-            <div style={{ font: "400 12px system-ui", color: "#6b6b5e", marginTop: 2 }}>
+            <div style={{ font: "400 12px var(--ff-body)", color: "#6b6b5e", marginTop: 2 }}>
               {status === "ready" && distanceKm !== null
                 ? `${distanceKm} km · ${minutes} min drive · Glovebox`
                 : status === "locating"
@@ -284,7 +284,7 @@ function DirectionsEmbed({ params }: { params: URLSearchParams }) {
               <button
                 type="button"
                 onClick={getDirections}
-                style={{ padding: "9px 14px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.12)", background: "#fff", color: "#2c2c22", font: "600 13px system-ui", cursor: "pointer" }}
+                style={{ padding: "9px 14px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.12)", background: "#fff", color: "#2c2c22", font: "600 13px var(--ff-body)", cursor: "pointer" }}
               >
                 Get directions
               </button>

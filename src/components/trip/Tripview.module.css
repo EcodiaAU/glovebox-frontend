@@ -404,7 +404,7 @@
 /* ── Leg time/distance pill ──────────────────────────────────── */
 
 .legPill {
-  font-family: "Spectral", "Iowan Old Style", Garamond, serif;
+  font-family: var(--ff-display);
   font-style: italic;
   font-size: 11.5px;
   font-weight: 400;
@@ -429,7 +429,7 @@
   border: none;
   background: transparent;
   color: var(--glovebox-text-muted);
-  font-family: "Spectral", "Iowan Old Style", Garamond, serif;
+  font-family: var(--ff-display);
   font-style: italic;
   font-size: 14px;
   font-weight: 400;

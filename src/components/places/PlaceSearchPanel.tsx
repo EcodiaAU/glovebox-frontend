@@ -874,7 +874,7 @@ export function PlaceSearchPanel({
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             <TogglePill active={free} onToggle={() => { haptic.selection(); setFree((v) => !v); }} label="Free" />
             <TogglePill active={openNow} onToggle={() => { haptic.selection(); setOpenNow((v) => !v); }} label="Open now" icon={<Clock size={12} />} />
-            <TogglePill active={accessible} onToggle={() => { haptic.selection(); setAccessible((v) => !v); }} label="Accessible ♿" />
+            <TogglePill active={accessible} onToggle={() => { haptic.selection(); setAccessible((v) => !v); }} label="Accessible" />
             <TogglePill active={aheadOnly} onToggle={() => { haptic.selection(); setAheadOnly((v) => !v); }} label="Ahead only" icon={<ArrowUp size={12} />} />
           </div>
 

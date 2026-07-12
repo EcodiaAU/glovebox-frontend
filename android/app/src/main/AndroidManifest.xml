@@ -40,4 +40,12 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Location. Without these the Geolocation plugin refuses every call on
+         Android ("Missing the following permissions in AndroidManifest.xml"),
+         so the map cannot place the user, navigation cannot follow the route,
+         and the fuel-range warnings never fire. iOS already ships the matching
+         NSLocationWhenInUseUsageDescription strings; Android never had them. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

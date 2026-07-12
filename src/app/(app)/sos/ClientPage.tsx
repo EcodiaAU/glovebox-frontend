@@ -516,8 +516,7 @@ export default function EmergencyClientPage() {
               letterSpacing: 1, textTransform: "uppercase",
             }}>SOS</div>
             <div style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontWeight: 400, fontSize: 26, letterSpacing: "-0.005em", lineHeight: 1.15,
               color: "var(--c-text)",
             }}>Help and location.</div>
@@ -675,8 +674,7 @@ export default function EmergencyClientPage() {
           marginTop: 22, marginBottom: 10,
         }}>
           <div style={{
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontWeight: 400, fontSize: 20, color: "var(--c-text)",
           }}>Speed dial.</div>
           <button onClick={startNew} style={{

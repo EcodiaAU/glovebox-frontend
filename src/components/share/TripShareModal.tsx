@@ -251,7 +251,7 @@ export function TripShareModal({ open, data, onClose, mapImageUrl }: Props) {
             position: "relative",
             background: mapImageUrl
               ? `url("${mapImageUrl}") center/cover no-repeat`
-              : "linear-gradient(160deg,#0e1f14 0%,#060d08 100%)" }}>
+              : "var(--glovebox-bg)" }}>
             {/* Loading shimmer while map snapshot is being generated */}
             {!mapImageUrl && (
               <div style={{ position: "absolute", inset: 0,

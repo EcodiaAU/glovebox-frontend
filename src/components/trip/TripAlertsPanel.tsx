@@ -384,8 +384,8 @@ function buildContextLabel(
 ): string {
   const parts: string[] = [];
 
-  if (impact === "blocks_route") parts.push("⛔ Route blocked");
-  else if (impact === "affects_route") parts.push("⚠️ On route");
+  if (impact === "blocks_route") parts.push("Route blocked");
+  else if (impact === "affects_route") parts.push("On route");
 
   if (routeDist != null && routeDist > 25) parts.push(`${Math.round(routeDist)} km off-route`);
 
@@ -1001,13 +1001,13 @@ export function RouteBlockedBanner({
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 950, color: "var(--glovebox-danger)", letterSpacing: "-0.2px", lineHeight: 1.2 }}>
-            ⛔ Route blocked ahead
+            Route blocked ahead
           </div>
           <div style={{ fontSize: 12, fontWeight: 700, color: "var(--glovebox-text)", marginTop: 3, lineHeight: 1.4 }}>
             {primary.headline}
           </div>
           {(() => {
-            const ctx = primary.contextLabel ? primary.contextLabel.replace(/⛔ Route blocked ?·? ?/g, "").trim() : "";
+            const ctx = primary.contextLabel ? primary.contextLabel.replace(/Route blocked ?·? ?/g, "").trim() : "";
             const ago = primary.timestamp ? timeAgo(primary.timestamp) : "";
             const parts: Array<{ key: string; node: ReactNode }> = [];
             if (ctx) parts.push({ key: "ctx", node: <span>{ctx}</span> });

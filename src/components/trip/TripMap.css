@@ -84,7 +84,7 @@
   right: calc(100% + 8px);
   transform-origin: top right;
   max-height: min(420px, calc(100dvh - env(safe-area-inset-top, 0px) - 56px - 180px - var(--bottom-nav-height, 80px)));
-  background: linear-gradient(160deg, rgba(255,255,255,0.97) 0%, rgba(244,239,230,0.99) 100%);
+  background: var(--glovebox-surface);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-radius: var(--r-card);
   border: 1px solid var(--glovebox-border);

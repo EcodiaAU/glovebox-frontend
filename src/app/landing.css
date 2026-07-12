@@ -18,7 +18,7 @@
   min-height: 100dvh;
   background: var(--bg);
   color: var(--fg);
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-feature-settings: "kern", "liga", "dlig", "onum";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -57,6 +57,9 @@
   margin: 0;
   text-wrap: balance;
   color: var(--fg);
+  /* The soft lift the cream serif carries off the ground, matched to the Studio
+     and Locals front doors. */
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.14), 0 4px 22px rgba(0, 0, 0, 0.22);
 }
 
 .gl-primary {
@@ -176,7 +179,7 @@
    Themes via --glovebox-* tokens so it auto-adapts day / night.
    ─────────────────────────────────────────────────────────────────── */
 .ed {
-  --ed-font-serif: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  --ed-font-serif: var(--ff-display);
   --ed-fg: var(--glovebox-text);
   --ed-fg-soft: var(--glovebox-text-muted);
   --ed-fg-trace: color-mix(in srgb, var(--glovebox-text) 35%, transparent);
@@ -215,9 +218,15 @@
   gap: 18px;
 }
 
-/* Editorial heading: one italic sentence. */
+/* The editorial markup wraps every string in <em> as a styling tic, not as
+   emphasis, and the UA default (em { font-style: italic }) then re-italicises
+   text whose own rule says normal. Inherit instead, so each element's declared
+   style wins and the display face stays roman. */
+.ed em { font-style: inherit; }
+
+/* Editorial heading: one roman sentence. */
 .ed-heading {
-  font-style: italic;
+  font-style: normal;
   font-weight: 300;
   font-size: clamp(30px, 5vw, 44px);
   line-height: 1.18;
@@ -229,7 +238,7 @@
 
 /* Quiet italic lede directly under the heading. */
 .ed-lede {
-  font-style: italic;
+  font-style: normal;
   font-size: 1.05em;
   color: var(--ed-fg-soft);
   margin: 0;
@@ -238,7 +247,7 @@
 
 /* Section label: lowercase italic letter-spaced. Reading beat, never heading. */
 .ed-label {
-  font-style: italic;
+  font-style: normal;
   font-size: 12.5px;
   letter-spacing: 0.08em;
   color: var(--ed-fg-trace);
@@ -254,7 +263,7 @@
   text-decoration-color: var(--ed-fg-trace);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
-  font-style: italic;
+  font-style: normal;
   transition: text-decoration-color 0.18s ease, color 0.18s ease;
 }
 .ed-link:hover { text-decoration-color: var(--ed-fg); }
@@ -293,7 +302,7 @@
   background: none;
   border: none;
   font-family: var(--ed-font-serif);
-  font-style: italic;
+  font-style: normal;
   font-size: 19px;
   color: var(--ed-fg);
   cursor: pointer;
@@ -337,7 +346,7 @@
   background: none;
   border: none;
   font-family: var(--ed-font-serif);
-  font-style: italic;
+  font-style: normal;
   font-size: 14px;
   color: var(--ed-fg-soft);
   cursor: pointer;
@@ -372,7 +381,7 @@
 
 /* Notice: italic, no box. For errors, offline warnings, success. */
 .ed-notice {
-  font-style: italic;
+  font-style: normal;
   font-size: 14px;
   margin: 0;
   text-align: center;

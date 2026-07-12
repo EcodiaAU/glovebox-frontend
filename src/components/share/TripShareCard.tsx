@@ -182,7 +182,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
       style={{ display: "block" }}
     >
       <defs>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Syne:wght@700&display=swap');`}</style>
+        {/* Faces are inlined as data URLs by getFontFaceCSS() so the card rasterises offline. */}
         <clipPath id="sc-card"><rect width={CARD_W} height={CARD_H} rx="28" /></clipPath>
         <clipPath id="sc-map"><rect width={CARD_W} height={CARD_H - STAT_H} /></clipPath>
 
@@ -293,7 +293,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                       fill={pillFill} stroke={pillStroke} strokeWidth="0.5" />
                     <text x={lx + labelW / 2} y={ly + 12.5} textAnchor="middle"
                       fontSize="8" fontWeight="600" fill={pillText}
-                      fontFamily="'Plus Jakarta Sans', sans-serif"
+                      fontFamily="'Spectral', Georgia, serif"
                       letterSpacing="0.02em">
                       {label}
                     </text>
@@ -313,13 +313,13 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
             <g key={s.l}>
               <text x={cx} y={midY - 4} textAnchor="middle"
                 fontSize="28" fontWeight="700" fill="#fff"
-                fontFamily="'Plus Jakarta Sans', sans-serif"
+                fontFamily="'Spectral', Georgia, serif"
                 letterSpacing="-0.03em">
                 {s.v}
               </text>
               <text x={cx} y={midY + 17} textAnchor="middle"
                 fontSize="10" fontWeight="500" fill="rgba(255,255,255,0.45)"
-                fontFamily="'Plus Jakarta Sans', sans-serif"
+                fontFamily="'Spectral', Georgia, serif"
                 letterSpacing="0.1em">
                 {s.l.toUpperCase()}
               </text>
@@ -357,13 +357,13 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                   <g key={s.l}>
                     <text x={cx} y={pillY + 24} textAnchor="middle"
                       fontSize="18" fontWeight="700" fill="#fff"
-                      fontFamily="'Plus Jakarta Sans', sans-serif"
+                      fontFamily="'Spectral', Georgia, serif"
                       letterSpacing="-0.02em">
                       {s.v}
                     </text>
                     <text x={cx} y={pillY + 40} textAnchor="middle"
                       fontSize="9" fontWeight="500" fill="rgba(255,255,255,0.5)"
-                      fontFamily="'Plus Jakarta Sans', sans-serif"
+                      fontFamily="'Spectral', Georgia, serif"
                       letterSpacing="0.08em">
                       {s.l.toUpperCase()}
                     </text>
@@ -374,7 +374,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
           );
         })()}
 
-        {/* ── BRANDING: icon + GLOVEBOX in Syne, centered below stats ─────── */}
+        {/* ── BRANDING: icon + GLOVEBOX in Spectral, centered below stats ─────── */}
         {!isOverlay && (() => {
           const iconSize = 24;
           const gap = 7;
@@ -400,7 +400,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                 textAnchor="start"
                 fontSize="15" fontWeight="700"
                 fill="rgba(255,255,255,0.9)"
-                fontFamily="'Syne', sans-serif"
+                fontFamily="'Spectral', Georgia, serif"
                 letterSpacing="0.22em">
                 GLOVEBOX
               </text>
@@ -422,7 +422,7 @@ export function TripShareCard({ data, mode = "card", svgRef, hasMap = false, ico
                 textAnchor={iconDataUrl ? "start" : "middle"}
                 fontSize="12" fontWeight="700"
                 fill="rgba(255,255,255,0.7)"
-                fontFamily="'Syne', sans-serif"
+                fontFamily="'Spectral', Georgia, serif"
                 letterSpacing="0.2em">
                 GLOVEBOX
               </text>

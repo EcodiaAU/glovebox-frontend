@@ -106,8 +106,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
 
           <h1 style={{
             margin: "0 0 10px",
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 30, fontWeight: 400,
             color: "#E8DFC9",
             lineHeight: 1.18,
@@ -120,8 +119,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
 
           <p style={{
             margin: 0,
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 15, fontWeight: 400,
             color: "rgba(232,223,201,0.78)",
             lineHeight: 1.5,
@@ -136,8 +134,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
         {!lastFreeTrip && (
           <div style={{ padding: "22px 28px 4px" }}>
             <div style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 12.5,
               letterSpacing: "0.08em",
               color: "var(--glovebox-text-muted)",
@@ -198,8 +195,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
             <p style={{
               margin: "14px 0 0",
               textAlign: "center",
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 13, fontWeight: 400,
               color: "var(--glovebox-text-muted)",
               lineHeight: 1.5,

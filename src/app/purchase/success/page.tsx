@@ -373,16 +373,15 @@ function PurchaseSuccessInner() {
 
           <div>
             <h1 style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic", fontSize: 32, fontWeight: 400, margin: "0 0 8px",
+              fontFamily: "var(--ff-display)",
+              fontSize: 32, fontWeight: 400, margin: "0 0 8px",
               color: "#E8DFC9", letterSpacing: "-0.014em", lineHeight: 1.1,
             }}>
               Payment confirmed.
             </h1>
             <p style={{
               margin: 0,
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 15, fontWeight: 400,
               color: "rgba(232,223,201,0.78)", lineHeight: 1.5,
             }}>
@@ -491,8 +490,8 @@ function PurchaseSuccessInner() {
           </div>
 
           <h1 style={{
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic", fontSize: 38, fontWeight: 400, margin: 0,
+            fontFamily: "var(--ff-display)",
+            fontSize: 38, fontWeight: 400, margin: 0,
             color: "#E8DFC9",
             lineHeight: 1.1, letterSpacing: "-0.014em",
             animation: "fade-up 0.5s ease 0.5s both",
@@ -502,8 +501,7 @@ function PurchaseSuccessInner() {
 
           <p style={{
             margin: "8px 0 0",
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 16, fontWeight: 400,
             color: "rgba(232,223,201,0.78)", lineHeight: 1.5, maxWidth: 290,
             animation: "fade-up 0.5s ease 0.65s both",
@@ -577,16 +575,15 @@ function PurchaseSuccessInner() {
 
           <div>
             <h1 style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic", fontSize: 26, fontWeight: 400, margin: "0 0 8px",
+              fontFamily: "var(--ff-display)",
+              fontSize: 26, fontWeight: 400, margin: "0 0 8px",
               color: "var(--on-color)", letterSpacing: "-0.014em", lineHeight: 1.2,
             }}>
               Still processing.
             </h1>
             <p style={{
               margin: 0,
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 14, fontWeight: 400,
               color: "rgba(255,255,255,0.65)", lineHeight: 1.5, maxWidth: 300,
             }}>

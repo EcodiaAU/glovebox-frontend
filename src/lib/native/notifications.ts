@@ -124,7 +124,7 @@ export const gloveboxNotify = {
 
   hazardAlert(description: string) {
     notify({
-      title: "⚠️ Hazard ahead",
+      title: "Hazard ahead",
       body: description,
       extra: { type: "hazard" },
     });

@@ -1,7 +1,7 @@
 // src/components/ui/Typography.tsx
 //
-// Typography component system built on Space Grotesk (display) and
-// Plus Jakarta Sans (body). Variants are tuned for legibility in
+// Typography component system built on Spectral. One face, weight and
+// size carry the hierarchy. Variants are tuned for legibility in
 // bright sunlight and low-light cabin conditions.
 
 import { type CSSProperties, type ElementType, type ReactNode, forwardRef } from "react";
@@ -20,7 +20,7 @@ interface VariantSpec {
 const VARIANTS: Record<Variant, VariantSpec> = {
   /**
    * Headline - bold, uppercase, tracked. For page titles and section headers.
-   * Space Grotesk bold gives geometric clarity at any size.
+   * Spectral bold holds its shape at a glance on a moving vehicle.
    */
   headline: {
     tag: "h2",
@@ -73,7 +73,7 @@ const VARIANTS: Record<Variant, VariantSpec> = {
 
   /**
    * Body - readable at any size, optimised for longer text.
-   * Uses the app's primary font (Plus Jakarta Sans / system).
+   * Uses the app's primary font (Spectral).
    */
   body: {
     tag: "p",

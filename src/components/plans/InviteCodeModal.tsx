@@ -243,8 +243,7 @@ export function InviteCodeModal({ open, planId, mode, onClose, onRedeemed }: Pro
         {/* ── Header ──────────────────────────────────────────────── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h2 style={{
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 24, fontWeight: 400, margin: 0,
             color: "var(--glovebox-text, #eee)",
             letterSpacing: "-0.005em",

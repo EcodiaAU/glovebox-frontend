@@ -224,8 +224,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
           <h1
             style={{
               margin: "0 0 12px",
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 36,
               fontWeight: 400,
               color: "#E8DFC9",
@@ -636,8 +635,7 @@ function PurchasePage({
           <h1
             style={{
               margin: "0 0 14px",
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 36,
               fontWeight: 400,
               color: "#E8DFC9",
@@ -804,23 +802,21 @@ function PurchasePage({
           }}
         >
           <span style={{
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic", fontSize: 42, fontWeight: 400,
+            fontFamily: "var(--ff-display)",
+            fontSize: 42, fontWeight: 400,
             color: "var(--glovebox-text)", lineHeight: 1, letterSpacing: "-0.014em",
           }}>
             $19.99
           </span>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 13, fontWeight: 400, color: "var(--glovebox-text-muted)", lineHeight: 1.3,
             }}>
               one-time.
             </span>
             <span style={{
-              fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-              fontStyle: "italic",
+              fontFamily: "var(--ff-display)",
               fontSize: 12, fontWeight: 400, color: "var(--glovebox-text-muted)", opacity: 0.7, lineHeight: 1.3,
             }}>
               yours forever.

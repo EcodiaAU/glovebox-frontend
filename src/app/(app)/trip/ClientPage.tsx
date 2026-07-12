@@ -3104,14 +3104,14 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
       <style>{`
         .map-fab-btn {
-          background: linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(244,239,230,0.96) 100%);
+          background: var(--glovebox-surface);
           color: var(--glovebox-text);
           border: 1px solid var(--glovebox-border);
           box-shadow: var(--shadow-medium);
         }
         [data-theme="tactical-night"] {
           .map-fab-btn {
-            background: linear-gradient(160deg, rgba(26,21,16,0.96) 0%, rgba(16,13,10,0.98) 100%);
+            background: var(--glovebox-surface);
             color: var(--on-color);
             border: 1px solid var(--glovebox-border);
             box-shadow: var(--shadow-medium);

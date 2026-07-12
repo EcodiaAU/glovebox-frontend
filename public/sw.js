@@ -33,9 +33,16 @@ const SHELL_URLS = [
   "/img/glovebox-logo.png",
   "/img/noise.png",
   "/img/paper-texture.png",
-  "/fonts/PlusJakartaSans-Bold.woff2",
-  "/fonts/PlusJakartaSans-ExtraBold.woff2",
-  "/fonts/Syne-Bold.woff2",
+  // Spectral is the whole typeface now. The shell precaches the faces the app
+  // actually paints with, so a first-run-then-offline device still renders in
+  // brand instead of dropping to a system serif.
+  "/fonts/Spectral-Light.woff2",
+  "/fonts/Spectral-Regular.woff2",
+  "/fonts/Spectral-Medium.woff2",
+  "/fonts/Spectral-SemiBold.woff2",
+  "/fonts/Spectral-Bold.woff2",
+  "/fonts/Spectral-ExtraBold.woff2",
+  "/fonts/Spectral-Italic.woff2",
 ];
 
 // ── Install: pre-cache the shell (resiliently) ────────────────────────────

@@ -1472,8 +1472,7 @@ export function GuideView({
                   <GloveboxMark size={28} />
                 </div>
                 <div style={{
-                  fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-                  fontStyle: "italic",
+                  fontFamily: "var(--ff-display)",
                   fontWeight: 400,
                   fontSize: 22,
                   lineHeight: 1.2,

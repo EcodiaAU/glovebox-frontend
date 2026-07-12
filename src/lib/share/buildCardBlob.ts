@@ -54,25 +54,27 @@ async function fetchFontDataUrl(localPath: string, cdnUrl: string): Promise<stri
 export async function getFontFaceCSS(): Promise<string> {
   if (fontFaceCSS) return fontFaceCSS;
   try {
-    const [bold, extrabold, syne] = await Promise.all([
+    // The share card is rasterised on-device (often offline, straight after a
+    // trip), so every face is inlined as a data URL from the local bundle.
+    // Spectral only, same as the app: the card is the brand leaving the phone.
+    const [medium, bold, extrabold] = await Promise.all([
       fetchFontDataUrl(
-        "/fonts/PlusJakartaSans-Bold.woff2",
-        "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2",
+        "/fonts/Spectral-Medium.woff2",
+        "https://fonts.gstatic.com/s/spectral/v15/rnCs-xNNww_2s0amA9vKsW3BafaPWnII.woff2",
       ),
       fetchFontDataUrl(
-        "/fonts/PlusJakartaSans-ExtraBold.woff2",
-        "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2",
+        "/fonts/Spectral-Bold.woff2",
+        "https://fonts.gstatic.com/s/spectral/v15/rnCs-xNNww_2s0amA9uCt23BafaPWnII.woff2",
       ),
       fetchFontDataUrl(
-        "/fonts/Syne-Bold.woff2",
-        "https://fonts.gstatic.com/s/syne/v24/8vIS7w4qzmVxsWxjBZRjr0FKM_3fvg6jTY8.woff2",
+        "/fonts/Spectral-ExtraBold.woff2",
+        "https://fonts.gstatic.com/s/spectral/v15/rnCs-xNNww_2s0amA9uetG3BafaPWnII.woff2",
       ),
     ]);
     fontFaceCSS = `
-      @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 700; src: url('${bold}') format('woff2'); }
-      @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 800; src: url('${extrabold}') format('woff2'); }
-      @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 500; src: url('${bold}') format('woff2'); }
-      @font-face { font-family: 'Syne'; font-weight: 700; src: url('${syne}') format('woff2'); }
+      @font-face { font-family: 'Spectral'; font-weight: 500; src: url('${medium}') format('woff2'); }
+      @font-face { font-family: 'Spectral'; font-weight: 700; src: url('${bold}') format('woff2'); }
+      @font-face { font-family: 'Spectral'; font-weight: 800; src: url('${extrabold}') format('woff2'); }
     `;
   } catch {
     fontFaceCSS = "";

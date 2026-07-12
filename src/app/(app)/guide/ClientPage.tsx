@@ -518,8 +518,7 @@ export default function GuideClientPage(props: {
           display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12,
         }}>
           <div style={{
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontWeight: 400,
             fontSize: 24,
             letterSpacing: "-0.005em",
@@ -607,8 +606,7 @@ export default function GuideClientPage(props: {
           </div>
           <div style={{
             display: "flex", justifyContent: "space-between", marginTop: 6,
-            fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-            fontStyle: "italic",
+            fontFamily: "var(--ff-display)",
             fontSize: 12,
             color: "var(--glovebox-text-muted)",
           }}>
@@ -622,8 +620,7 @@ export default function GuideClientPage(props: {
       {(geo.loading || geo.error) && (
         <div style={{
           margin: "8px 16px 0", flexShrink: 0,
-          fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-          fontStyle: "italic",
+          fontFamily: "var(--ff-display)",
           fontSize: 13,
           color: geo.error ? "var(--glovebox-warn)" : "var(--glovebox-text-muted)",
           display: "inline-flex", alignItems: "center", gap: 8,
@@ -636,8 +633,7 @@ export default function GuideClientPage(props: {
       {err ? (
         <p style={{
           margin: "12px 16px 0",
-          fontFamily: '"Spectral", "Iowan Old Style", Garamond, serif',
-          fontStyle: "italic",
+          fontFamily: "var(--ff-display)",
           fontSize: 14,
           color: "var(--glovebox-danger)",
           display: "inline-flex", alignItems: "center", gap: 8,

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Brand ochre. These were still Capacitor's stock #0a0a0a / #000000 /
+         #ffffff, which leaked into every system-drawn surface Android renders
+         for us: the recents-screen header, the text-selection handles, the
+         permission dialog accents. -->
     <color name="splash_background">#A8431F</color>
-    <color name="colorPrimary">#0a0a0a</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorPrimary">#A8431F</color>
+    <color name="colorPrimaryDark">#8A3517</color>
+    <color name="colorAccent">#B3541E</color>
 </resources>

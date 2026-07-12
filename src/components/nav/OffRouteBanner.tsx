@@ -29,7 +29,7 @@ export function OffRouteBanner({ visible, distFromRoute_m, hasCorridorGraph, onR
     >
       <div
         style={{
-          background: "linear-gradient(135deg, #dc2626, #b91c1c)",
+          background: "var(--glovebox-danger)",
           borderRadius: "var(--r-card)",
           padding: "14px 16px",
           boxShadow: "0 8px 32px rgba(220,38,38,0.4), 0 2px 8px rgba(0,0,0,0.2)",

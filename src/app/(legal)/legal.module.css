@@ -7,7 +7,7 @@
 
 /* ── Title block (h1 + effective date) ────────────── */
 .pageTitle {
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-style: normal;
   font-weight: 400;
   font-size: clamp(30px, 4vw, 44px);
@@ -33,7 +33,7 @@
 }
 
 .sectionTitle {
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-style: normal;
   font-weight: 400;
   font-size: clamp(20px, 1.7vw, 23px);
@@ -45,7 +45,7 @@
 }
 
 .subsectionTitle {
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-style: normal;
   font-weight: 400;
   font-size: 1em;
@@ -172,7 +172,7 @@
 }
 
 .label {
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-style: normal;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -240,7 +240,7 @@
 .submitBtn {
   align-self: flex-start;
   cursor: pointer;
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -297,7 +297,7 @@
 }
 
 .contactCard h4 {
-  font-family: "Spectral", "Iowan Old Style", Garamond, "Times New Roman", serif;
+  font-family: var(--ff-display);
   font-style: normal;
   font-weight: 400;
   font-size: 12.5px;

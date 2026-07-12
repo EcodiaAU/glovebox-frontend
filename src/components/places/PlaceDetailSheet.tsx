@@ -397,7 +397,7 @@ export function PlaceDetailSheet({
 
   function handleShare() {
     haptic.light();
-    const text = `${p.name}\n${fmtCategory(p.category)}\n📍 ${fmtCoord(p.lat, true)}, ${fmtCoord(p.lng, false)}`;
+    const text = `${p.name}\n${fmtCategory(p.category)}\n${fmtCoord(p.lat, true)}, ${fmtCoord(p.lng, false)}`;
     if (typeof navigator !== "undefined" && "share" in navigator) {
       navigator.share({ title: p.name, text }).catch(() => {});
     }
