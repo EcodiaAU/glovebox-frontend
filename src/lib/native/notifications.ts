@@ -167,7 +167,7 @@ export const gloveboxNotify = {
   stopArrived(stopName: string) {
     notify({
       title: `You've arrived at ${stopName}`,
-      body: "Tap to leave a note or take a photo for your trip journal.",
+      body: "Your next stop is ready when you are.",
       extra: { type: "stop_arrived", stop_name: stopName },
     });
   },
