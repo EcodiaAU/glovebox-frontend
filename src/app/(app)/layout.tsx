@@ -5,6 +5,7 @@ import { PlaceDetailSheet } from "@/components/places/PlaceDetailSheet";
 import { SavedPlacesSync } from "@/components/places/SavedPlacesSync";
 import { OfflineStatusIndicator } from "@/components/ui/OfflineStatusIndicator";
 import { FloatingGuideChat } from "@/components/guide/FloatingGuideChat";
+import { ShellControls } from "@/components/ui/ShellControls";
 export function AppLayout() {
   useEffect(() => {
     document.documentElement.classList.add("glovebox-shell");
@@ -37,6 +38,13 @@ export function AppLayout() {
             is the floating Friend chat below, which is already reachable from
             anywhere. The Guide tab and the SOS tab are gone: both were worse
             versions of something the phone or the ecosystem already had. */}
+        {/* SOS + account live in the SHELL, not on a page.
+            They used to be tabs, which meant they were reachable from EVERY screen.
+            Putting SOS on the trip page alone silently narrowed that: /trip
+            redirects to /new when you have no plan, and /new had no SOS at all. A
+            safety affordance does not get to depend on which route you happen to
+            be on. */}
+        <ShellControls />
         <main className="glovebox-main">
           <Outlet />
         </main>
