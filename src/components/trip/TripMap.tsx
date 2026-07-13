@@ -324,9 +324,17 @@ function writeStoredVis(v: OverlayVisibility) {
 const EMPTY_FC: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
 
 /* ── Static style objects (hoisted to avoid re-allocation per render) ── */
+
+/* The map's control rail starts BELOW the shell controls (SOS + account), which
+   are pinned top-right on every route since the tab bar was removed. Those are a
+   40px row at safe-top + 8px, so the rail clears them at safe-top + 56px.
+   Without this the SOS button lands on top of the layer switcher: the safety
+   control wins the z-fight (as it should) and the map control is unreachable. */
+const SHELL_CONTROLS_CLEARANCE = 56;
+
 const LAYER_CONTROLS_STYLE_NAV: React.CSSProperties = {
   position: "absolute",
-  top: "calc(env(safe-area-inset-top, 0px) + 12px)",
+  top: `calc(env(safe-area-inset-top, 0px) + ${SHELL_CONTROLS_CLEARANCE}px)`,
   right: 12,
   zIndex: 50,
   display: "flex",
@@ -335,9 +343,9 @@ const LAYER_CONTROLS_STYLE_NAV: React.CSSProperties = {
   gap: 8,
 };
 const LAYER_CONTROLS_STYLE: React.CSSProperties = {
-  // Sits directly below the MapStyleSwitcher launcher (top 12 + height 44 + 8 gap).
+  // Sits directly below the MapStyleSwitcher launcher (its top + height 44 + 8 gap).
   position: "absolute",
-  top: "calc(env(safe-area-inset-top, 0px) + 64px)",
+  top: `calc(env(safe-area-inset-top, 0px) + ${SHELL_CONTROLS_CLEARANCE + 52}px)`,
   right: 10,
   zIndex: 25,
   display: "flex",
