@@ -16,7 +16,6 @@ import {
     isNativePlatform,
     purchaseFriend,
     restorePurchases,
-    redirectToStripeCheckout,
     isUnlocked,
 } from "@/lib/paywall/friendEntitlement";
 import { useAuth } from "@/lib/supabase/auth";
@@ -797,6 +796,7 @@ function PurchasePage({
           flexShrink: 0,
         }}
       >
+        {isNative && (
         <div
           style={{
             display: "flex",
@@ -828,6 +828,7 @@ function PurchasePage({
             </span>
           </div>
         </div>
+        )}
 
         <button
           type="button"
@@ -867,7 +868,11 @@ function PurchasePage({
             }}
           />
           <span style={{ position: "relative" }}>
-            {buying ? (isNative ? "Processing..." : "Redirecting to checkout...") : "Get Friend · $19.99/mo"}
+            {buying && isNative
+              ? "Processing..."
+              : isNative
+                ? "Get Friend · $19.99/mo"
+                : "Get Friend →"}
           </span>
         </button>
 
@@ -957,19 +962,13 @@ export default function UntetheredPage() {
       return;
     }
 
-    if (!session) {
-      navigate("/login?next=checkout");
-      return;
-    }
-
-    setBuying(true);
-    try {
-      const result = await redirectToStripeCheckout();
-      if (result.error) setError(result.error);
-    } finally {
-      setBuying(false);
-    }
-  }, [isNative, session, navigate]);
+    // WEB. Glovebox does not sell Friend. This used to open a Stripe Checkout on
+    // the Glovebox STRIPE_PRICE_ID, a ONE-TIME AUD 19.99 charge on a legacy
+    // Glovebox product, sold as a Friend monthly subscription and granting a
+    // Glovebox-scoped entitlement rather than a real Friend. Friend sells Friend;
+    // the subscription comes back through the Friend perk push. See PaywallModal.
+    window.location.href = "https://friend.ecodia.au";
+  }, [isNative]);
 
   const handleRestore = useCallback(async () => {
     haptic.light();

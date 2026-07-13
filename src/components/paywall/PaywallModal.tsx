@@ -6,9 +6,12 @@ import {
     isNativePlatform,
     purchaseFriend,
     restorePurchases,
-    redirectToStripeCheckout,
 } from "@/lib/paywall/friendEntitlement";
-import { useAuth } from "@/lib/supabase/auth";
+
+// Friend is bought in Friend. Glovebox web points at it and never quotes a price:
+// the store SKU and the Stripe plan are priced per channel and Glovebox is not the
+// authority on either. friend.ecodia.au shows the live plans.
+const FRIEND_URL = "https://friend.ecodia.au";
 import { ChevronDown } from "lucide-react";
 
 // The Friend upsell. It sells ONE thing: the co-pilot.
@@ -47,7 +50,6 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [anim, setAnim] = useState<AnimState>("closed");
   const isNative = isNativePlatform();
-  const { session } = useAuth();
   const sheetRef = useRef<HTMLDivElement>(null);
   const featureRef = useRef<HTMLDivElement>(null);
   const [canScroll, setCanScroll] = useState(false);
@@ -131,22 +133,25 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
       return;
     }
 
-    // Web only - must be signed in so the Stripe Checkout session attaches
-    // to a Supabase user_id.
-    if (!session) {
-      router("/login?next=upgrade");
-      return;
-    }
-
-    // Signed in - redirect to Stripe Checkout (does not return on success)
-    setBuying(true);
-    try {
-      const result = await redirectToStripeCheckout();
-      if (result.error) setError(result.error);
-    } finally {
-      setBuying(false);
-    }
-  }, [isNative, session, onUnlocked, router]);
+    // WEB. Glovebox does not sell Friend, here or anywhere.
+    //
+    // This used to redirect to /stripe/checkout, which opens a Checkout Session on
+    // the Glovebox STRIPE_PRICE_ID. That price is a ONE-TIME AUD 19.99 charge on a
+    // legacy Glovebox product, sold under copy promising "a $19.99/month
+    // auto-renewing subscription" to Friend, and it wrote a Glovebox-scoped
+    // user_entitlements row rather than a Friend subscription. Wrong money, wrong
+    // promise, wrong entitlement, and a Friend that worked in Glovebox and nowhere
+    // else. Friend's real product is a separate Stripe product entirely.
+    //
+    // So the web sends people to Friend, which sells Friend, and the subscription
+    // comes back to Glovebox through the Friend perk push (pushGloveboxPerk ->
+    // /friend/entitlement). Commission-free, one subscription, every Ecodia app.
+    //
+    // Web MAY link out; the two natives may not (Apple 3.1.1(a) outside the US
+    // storefront). That asymmetry is deliberate and is why this is the one surface
+    // carrying the call to action.
+    window.location.href = FRIEND_URL;
+  }, [isNative, onUnlocked]);
 
   const handleRestore = useCallback(async () => {
     haptic.light();
@@ -364,6 +369,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
         {/* Price + CTA - lighter price weight, solid burnt-orange
             button instead of gradient + shadow. */}
         <div style={{ padding: "16px 28px 20px", flexShrink: 0 }}>
+          {isNative && (
           <div style={{
             display: "flex", alignItems: "baseline", gap: 10,
             marginBottom: 14,
@@ -388,6 +394,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
               per month. cancel anytime.
             </span>
           </div>
+          )}
 
           <button
             type="button"
@@ -412,13 +419,11 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
               touchAction: "manipulation",
             }}
           >
-            {buying
-              ? (isNative ? "Processing…" : "Redirecting to checkout…")
+            {buying && isNative
+              ? "Processing…"
               : isNative
                 ? "Get Friend · $19.99/mo"
-                : session
-                  ? "Get Friend · $19.99/mo →"
-                  : "Sign in to get Friend · $19.99/mo →"}
+                : "Get Friend →"}
           </button>
 
           {/* Auto-renewal disclosure (App Store / Play Billing requirement for

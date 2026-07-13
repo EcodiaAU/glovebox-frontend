@@ -379,24 +379,24 @@ export async function restorePurchases(): Promise<{ success: boolean; error?: st
   }
 }
 
-/* ── Public: web Stripe redirect ─────────────────────────────────── */
-
-/** Redirects browser to Stripe Checkout. Does not return on success. */
-export async function redirectToStripeCheckout(): Promise<{ error: string }> {
-  try {
-    // Always refresh to avoid sending a stale/expired access_token that causes 401s
-    const { data: { session } } = await supabase.auth.refreshSession();
-    const token = session?.access_token;
-    const { url } = await api.post<{ url: string }>("/stripe/checkout", undefined, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-    window.location.href = url;
-    return { error: "" }; // unreachable
-  } catch (err: unknown) {
-    const e = err as { details?: { error?: string }; message?: string };
-    return { error: e?.details?.error ?? e?.message ?? "Could not connect to payment service. Please try again." };
-  }
-}
+/* ── Web: there is no checkout ─────────────────────── */
+//
+// A web Stripe redirect lived here. It POSTed to /stripe/checkout, which opens a
+// Checkout Session on the Glovebox STRIPE_PRICE_ID. That price is a ONE-TIME AUD
+// 19.99 charge on a legacy Glovebox product (prod_U8fJqmmQKwCK4h), while the
+// paywall copy promised "a $19.99/month auto-renewing subscription" to Friend, and
+// a completed payment wrote a Glovebox-scoped `user_entitlements` row rather than a
+// Friend subscription. Wrong money, wrong promise, wrong entitlement, and a Friend
+// that worked in Glovebox and nowhere else.
+//
+// Friend is sold by Friend, on Friend's own Stripe product, and the subscription
+// arrives here through the perk push (pushGloveboxPerk -> /friend/entitlement). The
+// web paywall links to friend.ecodia.au and quotes no price, because the store SKU
+// and the Stripe plan are priced per channel and Glovebox is the authority on
+// neither.
+//
+// The one existing stripe-sourced entitlement row (2026-04-23, pre-dating Friend)
+// is unaffected: isUnlocked reads the row, which persists.
 
 /* ── Public: the entitlement check ───────────────────────────────── */
 
