@@ -18,7 +18,7 @@ import { haptic } from "@/lib/native/haptics";
  * Hidden only on `/sos` itself (you are already there) and on the login and
  * public-embed routes, which are not the app.
  */
-const HIDE_ON = ["/sos", "/login", "/auth", "/embed", "/untethered"];
+const HIDE_ON = ["/sos", "/login", "/auth", "/embed"];
 
 export function ShellControls() {
   const navigate = useNavigate();

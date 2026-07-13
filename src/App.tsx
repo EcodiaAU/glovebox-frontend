@@ -16,7 +16,6 @@ import AppError from "./app/(app)/error";
 import { NewTripSkeleton } from "./app/(app)/new/NewTripSkeleton";
 import LiveLoading from "./app/(app)/live/loading";
 import LoginLoading from "./app/(app)/login/loading";
-import UntetheredLoading from "./app/(app)/untethered/loading";
 
 // ── Lazy-loaded page components ────────────────────────────────────────
 const LandingPage = lazy(() => import("./app/ClientPage"));
@@ -29,7 +28,6 @@ const LandingPage = lazy(() => import("./app/ClientPage"));
 // floating Friend chat mounted in AppLayout.
 const LoginPage = lazy(() => import("./app/(app)/login/page"));
 const AuthCallbackPage = lazy(() => import("./app/(app)/auth/callback/page"));
-const UntetheredPage = lazy(() => import("./app/(app)/untethered/page"));
 const LiveTripClientPage = lazy(() => import("./app/(app)/live/ClientPage"));
 const NewTripPage = lazy(() => import("./app/(app)/new/page"));
 const AccountPage = lazy(() => import("./app/(app)/account/page"));
@@ -43,8 +41,6 @@ const PrivacyPage = lazy(() => import("./app/(legal)/privacy/page"));
 const TermsPage = lazy(() => import("./app/(legal)/terms/page"));
 
 // Standalone routes
-const PurchaseSuccessPage = lazy(() => import("./app/purchase/success/page"));
-const ComingSoonPage = lazy(() => import("./app/coming-soon/page"));
 // Public, login-free map embed iframed by the Ecosphere connector.
 const EmbedPage = lazy(() => import("./app/(app)/embed/ClientPage"));
 
@@ -105,14 +101,6 @@ export function App() {
               }
             />
             <Route
-              path="untethered"
-              element={
-                <Suspense fallback={<UntetheredLoading />}>
-                  <UntetheredPage />
-                </Suspense>
-              }
-            />
-            <Route
               path="account"
               element={
                 <Suspense fallback={null}>
@@ -167,22 +155,6 @@ export function App() {
           </Route>
 
           {/* Standalone routes */}
-          <Route
-            path="purchase/success"
-            element={
-              <Suspense fallback={null}>
-                <PurchaseSuccessPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="coming-soon"
-            element={
-              <Suspense fallback={null}>
-                <ComingSoonPage />
-              </Suspense>
-            }
-          />
           <Route
             path="embed"
             element={

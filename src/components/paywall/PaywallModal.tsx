@@ -486,7 +486,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
             <>
               <button
                 type="button"
-                onClick={() => { haptic.light(); router("/login?next=/untethered"); onClose(); }}
+                onClick={() => { haptic.light(); router("/login?next=/trip"); onClose(); }}
                 disabled={busy}
                 style={{
                   all: "unset",
