@@ -11,6 +11,16 @@
           {
             "/": "/auth/callback/*",
             "comment": "Supabase OAuth callback subpaths"
+          },
+          {
+            "/": "/live",
+            "?": { "toLat": "?*", "toLng": "?*" },
+            "comment": "Open in Glovebox - the directions handoff. A /live URL carrying a destination (toLat + toLng, as emitted by @ecodia/glovebox-link) opens the native app, which builds a real trip from the traveller's location, makes it active, and by doing so puts it on the CarPlay head unit. Gating on the destination params is deliberate: a bare /live still opens the WEB app rather than being swallowed by a native app that has no trip to show."
+          },
+          {
+            "/": "/embed",
+            "?": { "mode": "directions", "toLat": "?*", "toLng": "?*" },
+            "comment": "The directions embed, when opened as a top-level navigation. An iframed /embed is unaffected: iOS only resolves universal links for top-level navigations, so the map still renders in place on a host page."
           }
         ]
       }

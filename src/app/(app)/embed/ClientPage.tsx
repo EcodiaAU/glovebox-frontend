@@ -9,10 +9,25 @@
 //   DIRECTIONS /embed?mode=directions&toLat=-26.53&toLng=153.09&toName=Coolum%20Surf%20Club
 //
 // Directions mode routes from the visitor's browser location to the destination
-// POI (e.g. a Locals merchant) and always offers "Open in Glovebox", which deep
-// links the full app with the trip preloaded (/live?toLat&toLng&toName).
+// POI (e.g. a Locals merchant) and always offers "Open in Glovebox".
+//
+// That button emits the canonical UNIVERSAL LINK, built by @ecodia/glovebox-link:
+//
+//     https://glovebox.ecodia.au/live?toLat=..&toLng=..&toName=..
+//
+// On a device with Glovebox installed, iOS hands that straight to the native app
+// (the AASA at /.well-known/apple-app-site-association claims /live), and the app
+// builds a real trip from the traveller's location, makes it the ACTIVE plan, and
+// by doing so puts it on the CarPlay head unit. On a device without Glovebox, the
+// very same URL opens this web app at /live. One URL, both audiences.
+//
+// This comment used to claim the button "deep links the full app with the trip
+// preloaded". That was false: the app carried no associated-domains entitlement
+// and the AASA claimed only /auth/callback, so the link was a plain web
+// navigation that always landed in Safari. It is true as of the handoff build.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { gloveboxDirectionsURL, GLOVEBOX_ORIGIN } from "@ecodia/glovebox-link";
 import { TripMap } from "@/components/trip/TripMap";
 import { placesApi } from "@/lib/api/places";
 import { navApi } from "@/lib/api/nav";
@@ -29,10 +44,31 @@ function num(v: string | null, fallback: number): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
-function openInGloveboxUrl(params: Record<string, string | number>): string {
-  const u = new URLSearchParams();
-  for (const [k, v] of Object.entries(params)) u.set(k, String(v));
-  return `/live?${u.toString()}`;
+// The "Open in Glovebox" href. Built by the canonical contract package rather
+// than by hand, so this button and every other sender in the fleet (locals-web,
+// locals-ios, and whatever adopts it next) emit a byte-identical URL.
+//
+// It MUST be absolute. It used to return a relative `/live?...`, and a relative
+// href can never be resolved as a universal link: iOS matches an https URL
+// against the AASA's domain, so a same-origin relative navigation just stays in
+// the browser. Absolute is what makes this open the app.
+function openInGloveboxUrl(args: {
+  toLat: number;
+  toLng: number;
+  toName: string;
+  fromLat?: number;
+  fromLng?: number;
+}): string {
+  return gloveboxDirectionsURL(args);
+}
+
+// MAP mode's button is NOT a handoff: it carries no destination, so there is no
+// trip to hand over, only a place to look at. It stays a plain web link, and the
+// AASA deliberately claims /live only when toLat + toLng are present, so this URL
+// opens the web app rather than being swallowed by the native one.
+function openMapInGloveboxUrl(args: { lat: number; lng: number }): string {
+  const u = new URLSearchParams({ lat: String(args.lat), lng: String(args.lng) });
+  return `${GLOVEBOX_ORIGIN}/live?${u.toString()}`;
 }
 
 export default function EmbedClientPage() {
@@ -172,7 +208,7 @@ function MapEmbed({ params }: { params: URLSearchParams }) {
               {status === "loading" ? "Loading places…" : status === "error" ? "Places unavailable right now" : `${places.length} place${places.length === 1 ? "" : "s"} · Glovebox`}
             </div>
           </div>
-          <OpenInGlovebox href={openInGloveboxUrl({ lat, lng })} />
+          <OpenInGlovebox href={openMapInGloveboxUrl({ lat, lng })} />
         </div>
       </Panel>
     </div>
