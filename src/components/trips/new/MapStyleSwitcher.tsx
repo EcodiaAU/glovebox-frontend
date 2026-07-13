@@ -106,7 +106,11 @@ export function MapStyleSwitcher(props: {
       aria-label="Map style"
       style={{
         position: "absolute",
-        top: "calc(env(safe-area-inset-top, 0px) + 12px)",
+        // Clears the shell controls (SOS + account), a 40px row pinned top-right
+        // at safe-top + 8px on every route since the tab bar was removed. Sharing
+        // that corner puts the SOS button on top of this one, and SOS wins the
+        // z-fight (as it must), which makes the style switcher unreachable.
+        top: "calc(env(safe-area-inset-top, 0px) + 56px)",
         right: 10,
         zIndex: 15,
         display: "flex",
