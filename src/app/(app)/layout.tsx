@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router";
-import { BottomTabBar } from "@/components/ui/BottomTabBar";
-import { PersistentTabs } from "@/components/ui/PersistentTabs";
 import { PlaceDetailProvider } from "@/lib/context/PlaceDetailContext";
 import { PlaceDetailSheet } from "@/components/places/PlaceDetailSheet";
 import { SavedPlacesSync } from "@/components/places/SavedPlacesSync";
@@ -33,16 +31,20 @@ export function AppLayout() {
         }}>
           <OfflineStatusIndicator />
         </div>
+        {/* One page. There is no tab bar.
+            Glovebox does one thing, so it is one screen: the trip surface. SOS is
+            reached from a persistent button on it (never a menu), and the co-pilot
+            is the floating Friend chat below, which is already reachable from
+            anywhere. The Guide tab and the SOS tab are gone: both were worse
+            versions of something the phone or the ecosystem already had. */}
         <main className="glovebox-main">
-          <PersistentTabs>
-            <Outlet />
-          </PersistentTabs>
+          <Outlet />
         </main>
-        <BottomTabBar />
         {/* Global place detail sheet - opened via usePlaceDetail().openPlace() from anywhere */}
         <PlaceDetailSheet />
-        {/* Unified floating Friend chat - the same guide conversation, reachable
-            from anywhere, not just the /guide route. */}
+        {/* The co-pilot. Friend replaced the in-app Guide, and it is gated on the
+            pass (see lib/paywall/tripGate). Floating, so it is reachable from the
+            single page without costing a tab. */}
         <FloatingGuideChat />
       </div>
     </PlaceDetailProvider>

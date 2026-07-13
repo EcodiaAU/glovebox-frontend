@@ -88,7 +88,7 @@ import type {
 } from "@/lib/types/overlays";
 
 // Updated icons here
-import { Image as ImageIcon, UserPlus, Library, WifiOff, Megaphone, Plus } from "lucide-react";
+import { Image as ImageIcon, UserPlus, Library, WifiOff, Megaphone, Plus, Settings } from "lucide-react";
 import { TripSkeleton } from "./TripSkeleton";
 import { EnrichmentBanner } from "@/components/trip/EnrichmentBanner";
 import { isUnlocked as checkIsUnlocked, checkTripGate, onAuthReadyForGate } from "@/lib/paywall/tripGate";
@@ -1475,17 +1475,6 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
     }
   }, [navpack, places, plan, weather, fuelOverlay]);
 
-  // ── Guide navigation handler ────────────────────────────────────
-  const handleNavigateToGuide = useCallback((placeId: string, placeName?: string) => {
-    if (!plan) return;
-    // Use name from places pack or the name passed from the popup button
-    const p = places?.items?.find((x) => x.id === placeId);
-    const name = p?.name ?? placeName ?? null;
-    const askAbout = name ? encodeURIComponent(`Tell me more about ${name}`) : "";
-    const url = `/guide?plan_id=${encodeURIComponent(plan.plan_id)}&focus_place_id=${encodeURIComponent(placeId)}${askAbout ? `&ask_about=${askAbout}` : ""}`;
-    router(url);
-  }, [plan, places, router]);
-
   // ── Add stop from map popup ──────────────────────────────────────
   const handleAddStopFromMap = useCallback(async (placeId: string, coords?: { lat: number; lng: number; name?: string }) => {
     if (!plan || !navpack) return;
@@ -2148,7 +2137,6 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           onHazardEventPress={handleOverlayEventPress}
           userPosition={mapUserPosition}
           planId={plan.plan_id}
-          onNavigateToGuide={handleNavigateToGuide}
           onAddStopFromMap={handleAddStopFromMap}
           stopPlaceIds={stopPlaceIds}
           isOnline={isOnline}
@@ -2176,6 +2164,63 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           onNavLayerMenuToggle={() => setNavLayerMenuOpen((v) => !v)}
           onLayerFilterChange={setNavLayerFiltered}
         />
+      </div>
+
+      {/* ── Persistent SOS + account ─────────────────────────────────────
+          SOS used to be a tab. The tab bar is gone, so it has to stay exactly as
+          reachable as it was: one tap, always visible, works with NO trip planned.
+          It never goes in a menu. Account moves here too, so everything is
+          reachable from the single page. */}
+      <div
+        style={{
+          position: "absolute",
+          top: "calc(var(--glovebox-safe-top, 0px) + 8px)",
+          right: 8,
+          zIndex: 40,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <button
+          onClick={() => { haptic.medium(); router("/sos"); }}
+          aria-label="SOS"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: "var(--c-error, #c0392b)",
+            color: "#fff",
+            fontSize: 12,
+            fontWeight: 800,
+            letterSpacing: 0.5,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "var(--shadow-heavy)",
+          }}
+        >
+          SOS
+        </button>
+        <button
+          onClick={() => { haptic.selection(); router("/account"); }}
+          aria-label="Account"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            color: "var(--c-text, #1a1a1a)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "var(--shadow-heavy)",
+          }}
+        >
+          <Settings size={18} strokeWidth={2} />
+        </button>
       </div>
 
       {/* ── Enrichment banner (progressive trip loading) ── */}

@@ -130,8 +130,9 @@ export function FloatingGuideChat() {
         accent="#A8431F"
         onAccent="#FAF7F0"
         renderExtra={(extra) => <ActionPills actions={(extra as GuideAction[]) ?? []} />}
-        // Lift the FAB + panel above the bottom tab bar (shared default sits at 18px).
-        style={{ bottom: "calc(var(--bottom-nav-height) + 16px)" } as CSSProperties}
+        // No bottom tab bar any more (Glovebox is one page), so the FAB sits on the
+        // safe area rather than being lifted over a nav that is not there.
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" } as CSSProperties}
       />
       <PaywallModal
         open={paywallOpen}

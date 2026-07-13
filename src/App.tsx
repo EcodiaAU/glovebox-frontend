@@ -21,15 +21,20 @@ import UntetheredLoading from "./app/(app)/untethered/loading";
 // ── Lazy-loaded page components ────────────────────────────────────────
 const LandingPage = lazy(() => import("./app/ClientPage"));
 
-// App (tab) routes  these are rendered by PersistentTabs inside AppLayout,
-// so the actual tab pages (trip, guide, discover, journal, sos) don't need
-// individual lazy routes. Non-tab routes under (app) are lazy-loaded here.
+// Glovebox is ONE page: the trip surface. There is no tab bar and no
+// PersistentTabs shell any more, so the pages are plain lazy routes again.
+// /sos stays a route rather than a modal because on the web a URL is free: it is
+// deep-linkable and the back button works. It is reached from a persistent button
+// on the trip page, never from a tab. /guide is gone - the co-pilot is the
+// floating Friend chat mounted in AppLayout.
 const LoginPage = lazy(() => import("./app/(app)/login/page"));
 const AuthCallbackPage = lazy(() => import("./app/(app)/auth/callback/page"));
 const UntetheredPage = lazy(() => import("./app/(app)/untethered/page"));
 const LiveTripClientPage = lazy(() => import("./app/(app)/live/ClientPage"));
 const NewTripPage = lazy(() => import("./app/(app)/new/page"));
 const AccountPage = lazy(() => import("./app/(app)/account/page"));
+const TripClientPage = lazy(() => import("./app/(app)/trip/ClientPage").then((m) => ({ default: m.TripClientPage })));
+const EmergencyClientPage = lazy(() => import("./app/(app)/sos/ClientPage"));
 
 // Legal routes
 const AttributionsPage = lazy(() => import("./app/(legal)/attributions/page"));
@@ -47,11 +52,6 @@ const EmbedPage = lazy(() => import("./app/(app)/embed/ClientPage"));
 const NotFoundClient = lazy(() =>
   import("@/components/ui/NotFoundClient").then((m) => ({ default: m.NotFoundClient }))
 );
-
-// ── Stub page for tab routes (PersistentTabs handles rendering) ────────
-function NullPage() {
-  return null;
-}
 
 export function App() {
   return (
@@ -75,10 +75,9 @@ export function App() {
 
             {/* App shell routes */}
             <Route element={<ErrorBoundary fallback={(props) => <AppError {...props} />}><AppLayout /></ErrorBoundary>}>
-            {/* Tab routes  PersistentTabs renders the actual content */}
-            <Route path="guide" element={<NullPage />} />
-            <Route path="trip" element={<NullPage />} />
-            <Route path="sos" element={<NullPage />} />
+            {/* The single page, plus SOS as a deep-linkable route reached from a button on it. */}
+            <Route path="trip" element={<TripClientPage initialPlanId={null} />} />
+            <Route path="sos" element={<EmergencyClientPage />} />
 
             {/* Non-tab app routes */}
             <Route
