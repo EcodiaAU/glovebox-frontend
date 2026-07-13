@@ -1,24 +1,29 @@
-// src/lib/paywall/tripGate.ts
+// src/lib/paywall/friendEntitlement.ts
 //
-// Trip usage gate - tracks how many trips the user has created and whether
-// they have purchased Glovebox Untethered.
+// The Friend entitlement. This module answers exactly one question:
+// does this user have the Friend plan?
 //
-// SOURCE OF TRUTH (anti-cheat):
-//   - Unlock status  → Supabase `user_entitlements` (written by webhook, read by client)
-//   - Trip count     → Supabase `user_trip_counts`   (written by /api/trips/increment)
-//   - localStorage is an offline-only cache. /new requires auth (AuthGate), so
-//     the server count is always authoritative. On sign-in, mergeLocalTripsToServer()
-//     pushes max(server, local) to the server so pre-auth trips are never lost.
+// PRICING MODEL (Tate 2026-07-13). Navigation is free, permanently and
+// completely: offline maps, routing, turn-by-turn, fuel range, SOS, trip
+// planning and offline packs cost nothing and are not counted. There is no
+// free-trip limit and no Glovebox-only SKU. The ONLY paid thing in Glovebox is
+// the co-pilot, and the co-pilot is Friend. One AI, one subscription, one
+// entitlement, across every Ecodia app.
 //
-// PLATFORM ROUTING:
-//   - Native (iOS/Android Capacitor) → RevenueCat purchase flow
-//   - Web browser                    → Stripe Checkout redirect
+// This file was `tripGate.ts` until 2026-07-13. It carried a trip counter
+// (`user_trip_counts`, `/api/trips/increment`, a 2-free-trip limit) and gated
+// planning behind three Glovebox-only passes. All of that is retired: every
+// Glovebox-only SKU was a door leading away from Friend. The trip-count
+// machinery is gone; the entitlement check is what remains.
 //
-// Tier logic:
-//   trips_used == 0  → first launch → show welcome modal
-//   trips_used == 1  → trip 2 in progress → show "make it count" banner
-//   trips_used >= 2  → show full paywall (must purchase before creating)
-//   unlocked == true → skip gate entirely
+// SOURCE OF TRUTH:
+//   - Native (iOS/Android Capacitor) -> RevenueCat, entitlement `friend`
+//   - Web browser                    -> Stripe Checkout, mirrored into the
+//                                       Supabase `user_entitlements` row
+//   - localStorage is a device-bound cache, never the primary source.
+//
+// GRANDFATHERING: `roam_unlimited` (the v1 lifetime non-consumable, iOS only)
+// still counts as entitled. Those buyers keep the co-pilot forever.
 
 import { Capacitor } from "@capacitor/core";
 import type { Session } from "@supabase/supabase-js";
@@ -32,31 +37,29 @@ async function getPurchases() {
   return mod;
 }
 
-const KEY_TRIPS_USED = "glovebox_trips_used";
-const KEY_UNLOCKED   = "roam_unlimited_unlocked";
+const KEY_UNLOCKED = "roam_unlimited_unlocked";
 // Test-only flag set by the Account page's "Reset paywall cache" button.
 // While present, syncUnlockFromRC short-circuits so the device's Apple-ID-tied
 // IAP doesn't immediately restore the unlock flag after the button clears it.
 // Cleared on the next successful purchase or restore so production users
 // never get stuck in test mode. Tate 2026-05-29: the prior reset button was
 // undone within milliseconds by RC re-sync; this flag is the test-mode toggle
-// that lets the paywall flow be exercised end-to-end on a real device.
+// that lets the purchase flow be exercised end-to-end on a real device.
 export const KEY_TEST_BLOCK_RC = "glovebox_test_block_rc";
 
-// Friend-IAP (2026-07-08, wave 2): native Glovebox sells the Friend "A little"
-// plan (A$19.99/mo auto-renewable subscription) via Apple IAP / Play Billing
-// through RevenueCat. Entitlement `friend`, offering `default`, product
-// `friend_a_little_monthly`. The old `roam_unlimited` lifetime non-consumable
-// is grandfathered: existing lifetime buyers keep unlimited access, so the
-// unlock check accepts EITHER entitlement.
-const RC_ENTITLEMENT_ID = "friend";          // primary (Friend subscription)
+// Friend IAP: native Glovebox sells the Friend "A little" plan (A$19.99/mo
+// auto-renewable subscription) via Apple IAP / Play Billing through RevenueCat.
+// Entitlement `friend`, offering `default`, product `friend_a_little_monthly`.
+// The `roam_unlimited` lifetime non-consumable is GRANDFATHERED, so the check
+// accepts EITHER entitlement.
+const RC_ENTITLEMENT_ID = "friend";             // primary (Friend subscription)
 const RC_ENTITLEMENT_LEGACY = "roam_unlimited"; // grandfathered lifetime buyers
 const RC_ENTITLEMENT_IDS = [RC_ENTITLEMENT_ID, RC_ENTITLEMENT_LEGACY];
 const RC_OFFERING_ID = "default";
 const RC_PRODUCT_ID = "friend_a_little_monthly"; // Friend "A little" monthly sub
 const RC_PRODUCT_IDS = [RC_PRODUCT_ID, RC_ENTITLEMENT_LEGACY]; // sub + legacy SKU
 
-// Resolve unlock state from a CustomerInfo response.
+// Resolve entitlement from a CustomerInfo response.
 //
 // Primary check: the `friend` entitlement (or the grandfathered `roam_unlimited`
 // entitlement) is active in the RevenueCat dashboard mapping. Fallback: StoreKit
@@ -123,7 +126,7 @@ export function isNativePlatform(): boolean {
 }
 
 /* ── Local cache helpers (localStorage) ─────────────────────────── */
-// Used only as offline fallback - never the primary source of truth.
+// Device-bound cache only - never the primary source of truth.
 
 function localGet(key: string): string | null {
   if (typeof window === "undefined") return null;
@@ -135,7 +138,7 @@ function localSet(key: string, value: string): void {
   localStorage.setItem(key, value);
 }
 
-/* ── Supabase: unlock status ─────────────────────────────────────── */
+/* ── Supabase: entitlement status ────────────────────────────────── */
 
 /** Returns true if the authenticated user has an entitlement row in Supabase.
  *  Returns null when we can't determine (no session yet, query error) so the
@@ -166,30 +169,6 @@ async function fetchUnlockFromSupabase(): Promise<boolean | null> {
   }
 }
 
-/* ── Supabase: trip count ────────────────────────────────────────── */
-
-async function fetchTripCountFromSupabase(): Promise<number | null> {
-  try {
-    // getSession (localStorage-cached), not getUser (network round-trip) - the
-    // latter races against the post-sign-in session-hydration window and
-    // transiently returns null even when the session is in place.
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
-    if (!userId) return null;
-
-    const { data, error } = await supabase
-      .from("user_trip_counts")
-      .select("trips_used")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (error) return null;
-    return data?.trips_used ?? 0;
-  } catch {
-    return null;
-  }
-}
-
 /* ── RevenueCat ──────────────────────────────────────────────────── */
 
 let _rcReady = false;
@@ -206,7 +185,7 @@ export async function initRevenueCat(apiKey: string): Promise<void> {
       await Purchases.configure({ apiKey });
       _rcReady = true;
     } catch (e) {
-      console.warn("[tripGate] RevenueCat init failed:", e);
+      console.warn("[friendEntitlement] RevenueCat init failed:", e);
       _rcInitPromise = null; // allow retry
     }
   })();
@@ -223,7 +202,7 @@ async function ensureRCReady(): Promise<boolean> {
   return _rcReady;
 }
 
-/** Native only: check RC entitlement and persist to Supabase + local cache. */
+/** Native only: check the RC entitlement and persist to Supabase + local cache. */
 async function syncUnlockFromRC(): Promise<boolean> {
   if (!isNativePlatform()) return false;
   // Test mode: Reset paywall cache button on the Account page sets this flag
@@ -239,7 +218,7 @@ async function syncUnlockFromRC(): Promise<boolean> {
     if (unlocked) {
       if (source !== "entitlement") {
         console.warn(
-          `[tripGate] syncUnlockFromRC unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
+          `[friendEntitlement] syncUnlockFromRC unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
         );
       }
       // Persist to server so it's visible on web too
@@ -258,9 +237,8 @@ async function markEntitlementInSupabase(source: "revenuecat" | "stripe" | "manu
     // syncUnlockFromRC fires immediately after sign-in and getUser races
     // against the session-hydration window, transiently returning null. The
     // upsert then silently no-ops, no row is ever written, and subsequent
-    // fetchUnlockFromSupabase reads return false even though RC said yes -
-    // the paywall locks the user out on every page navigation (Tate 2026-05-28
-    // on TestFlight 1.1.1(1): logout-then-Apple-SSO cycle).
+    // fetchUnlockFromSupabase reads return false even though RC said yes.
+    // (Tate 2026-05-28 on TestFlight 1.1.1(1): logout-then-Apple-SSO cycle.)
     const { data: { session } } = await supabase.auth.getSession();
     const userId = session?.user?.id;
     if (!userId) return;
@@ -269,16 +247,17 @@ async function markEntitlementInSupabase(source: "revenuecat" | "stripe" | "manu
       { onConflict: "user_id,source" }
     );
     if (error) {
-      console.warn(`[tripGate] markEntitlementInSupabase upsert failed: ${error.message}`);
+      console.warn(`[friendEntitlement] markEntitlementInSupabase upsert failed: ${error.message}`);
     }
   } catch (e) {
-    console.warn(`[tripGate] markEntitlementInSupabase threw:`, e);
+    console.warn(`[friendEntitlement] markEntitlementInSupabase threw:`, e);
   }
 }
 
 /* ── Public: purchase / restore (native) ────────────────────────── */
 
-export async function purchaseUnlimited(): Promise<{ success: boolean; error?: string }> {
+/** Buy the Friend plan through the native store sheet. */
+export async function purchaseFriend(): Promise<{ success: boolean; error?: string }> {
   if (!isNativePlatform()) {
     return { success: false, error: "Use Stripe on web." };
   }
@@ -310,7 +289,7 @@ export async function purchaseUnlimited(): Promise<{ success: boolean; error?: s
     if (unlocked) {
       if (source !== "entitlement") {
         console.warn(
-          `[tripGate] purchase unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(info)}`
+          `[friendEntitlement] purchase unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(info)}`
         );
       }
       await markEntitlementInSupabase("revenuecat");
@@ -319,7 +298,7 @@ export async function purchaseUnlimited(): Promise<{ success: boolean; error?: s
       try { localStorage.removeItem(KEY_TEST_BLOCK_RC); } catch {}
       return { success: true };
     }
-    console.warn(`[tripGate] purchase completed but unlock not resolved. ${summariseEntitlements(info)}`);
+    console.warn(`[friendEntitlement] purchase completed but entitlement not resolved. ${summariseEntitlements(info)}`);
     return { success: false, error: "Purchase completed but entitlement not found. Please tap Restore purchase." };
   } catch (e: unknown) {
     const err = e as { code?: string; userCancelled?: boolean; message?: string };
@@ -384,7 +363,7 @@ export async function restorePurchases(): Promise<{ success: boolean; error?: st
     if (unlocked) {
       if (source !== "entitlement") {
         console.warn(
-          `[tripGate] restore unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
+          `[friendEntitlement] restore unlocked via ${source} fallback - RC dashboard entitlement '${RC_ENTITLEMENT_ID}' likely not mapped to product '${RC_PRODUCT_ID}'. ${summariseEntitlements(customerInfo)}`
         );
       }
       await markEntitlementInSupabase("revenuecat");
@@ -392,7 +371,7 @@ export async function restorePurchases(): Promise<{ success: boolean; error?: st
       // Clear the test-block-RC flag - a successful restore ends test mode.
       try { localStorage.removeItem(KEY_TEST_BLOCK_RC); } catch {}
     } else {
-      console.warn(`[tripGate] restore found no qualifying purchase. ${summariseEntitlements(customerInfo)}`);
+      console.warn(`[friendEntitlement] restore found no qualifying purchase. ${summariseEntitlements(customerInfo)}`);
     }
     return { success: unlocked, error: unlocked ? undefined : "No previous purchase found." };
   } catch (e: unknown) {
@@ -419,75 +398,37 @@ export async function redirectToStripeCheckout(): Promise<{ error: string }> {
   }
 }
 
-/* ── Trip counter ────────────────────────────────────────────────── */
+/* ── Public: the entitlement check ───────────────────────────────── */
 
-async function getTripsUsed(): Promise<number> {
-  // Server is authoritative - local is fallback when offline / unauthenticated
-  const serverCount = await fetchTripCountFromSupabase();
-  if (serverCount !== null) {
-    localSet(KEY_TRIPS_USED, String(serverCount));
-    return serverCount;
-  }
-  const raw = localGet(KEY_TRIPS_USED);
-  const n = parseInt(raw ?? "0", 10);
-  return isNaN(n) ? 0 : n;
-}
-
-/** Called after a trip is successfully saved. Increments the server counter
- *  via API when a session is present, otherwise increments locally. NEVER
- *  throws - trip creation must not hinge on the trip-counter side-effect.
- *  (Previously this threw "not authenticated" when getSession() came back
- *  empty - e.g. demo mode or a not-yet-hydrated session - which rejected the
- *  Promise.all in saveAndGo and aborted navigation even though the trip had
- *  already been written to IDB. Tate 2026-05-28.) */
-export async function incrementTripsUsed(): Promise<number> {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.access_token) {
-      const { trips_used } = await api.post<{ trips_used: number }>("/trips/increment", undefined, {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      localSet(KEY_TRIPS_USED, String(trips_used));
-      return trips_used;
-    }
-  } catch {
-    // Offline, no session, or API error - fall through to local increment so
-    // the free-trip paywall still advances.
-  }
-  const current = parseInt(localGet(KEY_TRIPS_USED) ?? "0", 10);
-  const next = (isNaN(current) ? 0 : current) + 1;
-  localSet(KEY_TRIPS_USED, String(next));
-  return next;
-}
-
+/**
+ * Does this user have the Friend plan? This gates the co-pilot and NOTHING
+ * else. Navigation, trip planning and offline packs never call it.
+ *
+ * Device-first per Tate 2026-05-28: an Apple-ID purchase is bound to the
+ * device's StoreKit account, not to whichever Supabase user happens to be
+ * signed in. The local KEY_UNLOCKED flag is set by syncUnlockFromRC the moment
+ * RC confirms the purchase on this device, so it survives sign-out / sign-in
+ * cycles. The server entitlement row is the BACKUP path, and it matters on
+ * fresh installs where the local cache is gone but the user re-signs in with an
+ * account that already carries the entitlement (including a Friend bought on
+ * the web or in another Ecodia app, which the Friend gateway pushes across via
+ * pushGloveboxPerk).
+ */
 export async function isUnlocked(): Promise<boolean> {
-  // Device-first per Tate 2026-05-28 reframe: an Apple-ID purchase is
-  // bound to the device's StoreKit account, not to whichever Supabase
-  // user happens to be signed in. The local KEY_UNLOCKED flag is set by
-  // syncUnlockFromRC the moment RC confirms the purchase on this device,
-  // so it survives sign-out / sign-in cycles. We only consult the server
-  // entitlement row as a BACKUP - that path matters on fresh installs
-  // where local cache is gone but the user re-signs in with an account
-  // that has the entitlement attached.
   if (localGet(KEY_UNLOCKED) === "1") return true;
+  // Native: ask RevenueCat directly. The purchase may have happened on another
+  // device under the same store account, or in another Ecodia app.
+  if (isNativePlatform() && (await syncUnlockFromRC())) return true;
   const server = await fetchUnlockFromSupabase();
   return server === true;
 }
 
-/** Clear the local trip-count cache only. The unlock flag is device-bound
- *  (StoreKit owns it) and intentionally survives sign-out per Tate's
- *  device-driven entitlement model. */
-export function clearLocalUnlock(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(KEY_TRIPS_USED);
-}
-
 /**
- * Subscribe to auth events that should trigger re-checking entitlement.
+ * Subscribe to auth events that should trigger re-checking the entitlement.
  * Right after login the Supabase session takes a moment to hydrate into the
- * client; callers that ran their gate check before hydration finished need
- * a chance to re-run once the session is actually in place. Returns an
- * unsubscribe function.
+ * client; callers that ran their check before hydration finished need a chance
+ * to re-run once the session is actually in place. Returns an unsubscribe
+ * function.
  */
 export function onAuthReadyForGate(cb: () => void): () => void {
   const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -496,65 +437,4 @@ export function onAuthReadyForGate(cb: () => void): () => void {
     }
   });
   return () => subscription.unsubscribe();
-}
-
-/**
- * Merge localStorage trip count into the server after sign-in.
- * Ensures pre-auth trips are never lost and can't be replayed by clearing storage.
- * Should be called exactly once per SIGNED_IN event.
- */
-export async function mergeLocalTripsToServer(): Promise<void> {
-  try {
-    // Skip merge entirely for entitled users - trip count is irrelevant
-    const unlocked = await isUnlocked();
-    if (unlocked) return;
-
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.access_token) return;
-
-    const raw = localGet(KEY_TRIPS_USED);
-    const localCount = parseInt(raw ?? "0", 10);
-    // Only merge if there's a meaningful local count
-    if (isNaN(localCount) || localCount <= 0) return;
-
-    const { trips_used } = await api.post<{ trips_used: number }>("/trips/merge", { local_count: localCount }, {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-    // Sync local cache to the authoritative merged value
-    localSet(KEY_TRIPS_USED, String(trips_used));
-  } catch {
-    // Non-fatal - server count is still authoritative
-  }
-}
-
-/* ── Gate check - call before creating a new trip ────────────────── */
-
-export type GateResult =
-  | { allowed: true;  tripsUsed: number; unlocked: boolean }
-  | { allowed: false; reason: "paywall" | "welcome"; tripsUsed: number; unlocked: boolean };
-
-export async function checkTripGate(): Promise<GateResult> {
-  // Dev shortcut: ?paywall=1 forces paywall, ?welcome=1 forces welcome modal
-  if (typeof window !== "undefined" && import.meta.env.DEV) {
-    const p = new URLSearchParams(window.location.search);
-    if (p.get("paywall") === "1") return { allowed: false, reason: "paywall", tripsUsed: 2, unlocked: false };
-    if (p.get("welcome") === "1") return { allowed: false, reason: "welcome", tripsUsed: 0, unlocked: false };
-  }
-
-  // On native: also sync RC entitlements in case they purchased on another device
-  if (isNativePlatform()) {
-    await syncUnlockFromRC();
-  }
-
-  // Check unlock first - skip trip count query entirely for entitled users
-  const unlocked = await isUnlocked();
-  if (unlocked) return { allowed: true, tripsUsed: 0, unlocked: true };
-
-  const tripsUsed = await getTripsUsed();
-
-  if (tripsUsed >= 2) return { allowed: false, reason: "paywall", tripsUsed, unlocked: false };
-
-  if (tripsUsed === 0) return { allowed: false, reason: "welcome", tripsUsed, unlocked: false };
-
-  return { allowed: true, tripsUsed, unlocked: false };
 }

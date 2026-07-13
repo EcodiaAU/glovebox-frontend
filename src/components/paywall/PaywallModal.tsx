@@ -4,43 +4,42 @@ import { createPortal } from "react-dom";
 import { haptic } from "@/lib/native/haptics";
 import {
     isNativePlatform,
-    purchaseUnlimited,
+    purchaseFriend,
     restorePurchases,
     redirectToStripeCheckout,
-} from "@/lib/paywall/tripGate";
+} from "@/lib/paywall/friendEntitlement";
 import { useAuth } from "@/lib/supabase/auth";
 import { ChevronDown } from "lucide-react";
+
+// The Friend upsell. It sells ONE thing: the co-pilot.
+//
+// Everything Glovebox does to get you there is free (Tate 2026-07-13):
+// offline maps, routing, turn-by-turn, fuel range, SOS, trip planning, offline
+// packs, as many trips as you like. So none of that belongs in this list. The
+// paid thing is Friend, and Friend is the same Friend in every Ecodia app.
+// This is a voluntary upsell; it never blocks anyone from planning a trip.
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onUnlocked: () => void;
-  /** "gate" = user hit the trip limit (default). "upgrade" = user tapped Upgrade voluntarily. */
-  variant?: "gate" | "upgrade";
 };
 
 const FEATURES: { label: string; sub: string }[] = [
-  { label: "Unlimited trips", sub: "Plan as many adventures as you want." },
-  { label: "Permanent offline maps", sub: "Every trip saved forever, works without signal." },
-  { label: "AI co-pilot", sub: "Smart fuel stops, hazards and local tips en-route." },
-  { label: "Trip sharing", sub: "Share with your co-pilot via a 6-character code." },
-  { label: "Fuel range alerts", sub: "Never run dry. Warnings before the last servo." },
+  { label: "Your co-pilot on the road", sub: "Ask anything as you drive. Friend knows the trip you are on." },
+  { label: "Stops worth pulling over for", sub: "Fuel, food, camps and sights on the road ahead, not a generic list." },
+  { label: "It remembers you", sub: "Your Friend carries what it learns from one trip to the next." },
+  { label: "One Friend, everywhere", sub: "The same Friend across every Ecodia app you use." },
 ];
 
 const HERO_COPY = {
-  gate: {
-    heading: <>Ready to go<br />Untethered?</>,
-    body: "You've used your 2 free trips. Unlock unlimited trips and your always-on road guide with the Friend plan.",
-  },
-  upgrade: {
-    heading: <>Go Untethered</>,
-    body: "Unlock unlimited trips and your always-on road guide. One plan, across everything Ecodia.",
-  },
+  heading: <>Bring a Friend<br />on the drive.</>,
+  body: "The road is free: maps, routing, offline packs, as many trips as you want. Friend is the co-pilot who rides along, and it is the same Friend across everything Ecodia.",
 };
 
 type AnimState = "entering" | "open" | "exiting" | "closed";
 
-export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Props) {
+export function PaywallModal({ open, onClose, onUnlocked }: Props) {
   const router = useNavigate();
   const [mounted, setMounted] = useState(false);
   const [buying, setBuying] = useState(false);
@@ -114,12 +113,12 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
       // iOS / Android - RevenueCat native sheet. No session gate on native
       // per Tate's 2026-05-28 device-driven entitlement reframe: StoreKit
       // owns the Apple-ID purchase, the device unlocks regardless of which
-      // (or no) Supabase user is signed in, and the upsert in tripGate
+      // (or no) Supabase user is signed in, and the upsert in friendEntitlement
       // will write the account backup if a session exists. Web still
       // gates because Stripe Checkout needs a Supabase user to attach to.
       setBuying(true);
       try {
-        const result = await purchaseUnlimited();
+        const result = await purchaseFriend();
         if (result.success) {
           haptic.success();
           onUnlocked();
@@ -153,7 +152,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
     haptic.light();
     // No session gate - device-driven model (Tate 2026-05-28). StoreKit
     // restoreCompletedTransactions works against the Apple-ID regardless
-    // of Supabase session; if a session is present, the upsert in tripGate
+    // of Supabase session; if a session is present, the upsert in friendEntitlement
     // will write the account backup, otherwise the device's local cache
     // is sufficient.
     setRestoring(true);
@@ -269,7 +268,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             textTransform: "lowercase",
             marginBottom: 10,
           }}>
-            glovebox untethered
+            your friend on the road
           </div>
 
           <h1 style={{
@@ -281,7 +280,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             letterSpacing: "-0.014em",
             color: "#E8DFC9",
           }}>
-            {HERO_COPY[variant].heading}
+            {HERO_COPY.heading}
           </h1>
           <p style={{
             margin: 0,
@@ -290,7 +289,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             color: "rgba(232,223,201,0.78)",
             lineHeight: 1.5,
           }}>
-            {HERO_COPY[variant].body}
+            {HERO_COPY.body}
           </p>
         </div>
 
@@ -310,7 +309,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               textTransform: "lowercase",
               marginBottom: 8,
             }}>
-              what you get
+              what friend does
             </div>
             {FEATURES.map((f) => (
               <div
@@ -416,10 +415,10 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
             {buying
               ? (isNative ? "Processing…" : "Redirecting to checkout…")
               : isNative
-                ? "Subscribe · $19.99/mo"
+                ? "Get Friend · $19.99/mo"
                 : session
-                  ? "Pay with Card · $19.99/mo →"
-                  : "Sign in to unlock · $19.99/mo →"}
+                  ? "Get Friend · $19.99/mo →"
+                  : "Sign in to get Friend · $19.99/mo →"}
           </button>
 
           {/* Auto-renewal disclosure (App Store / Play Billing requirement for
@@ -434,7 +433,7 @@ export function PaywallModal({ open, onClose, onUnlocked, variant = "gate" }: Pr
               textAlign: "center",
               opacity: 0.85,
             }}>
-              Glovebox Untethered is a $19.99/month auto-renewing subscription (the Friend plan).
+              Friend is a $19.99/month auto-renewing subscription.
               Payment is charged to your store account and renews monthly until cancelled at least
               24 hours before the end of the period. Manage or cancel in your store account settings.
             </p>

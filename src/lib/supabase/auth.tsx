@@ -12,7 +12,6 @@ import {
 import type { Session, User, AuthError, Provider } from "@supabase/supabase-js";
 import { supabase } from "./client";
 import { planSync } from "@/lib/offline/planSync";
-import { mergeLocalTripsToServer } from "@/lib/paywall/tripGate";
 
 import { Capacitor } from "@capacitor/core";
 
@@ -89,12 +88,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
       setLoading(false);
-
-      // On sign-in, merge any pre-auth localStorage trips into the server
-      // so the counter is never lost/reset when creating an account.
-      if (event === "SIGNED_IN" && newSession) {
-        mergeLocalTripsToServer();
-      }
     });
 
     return () => subscription.unsubscribe();

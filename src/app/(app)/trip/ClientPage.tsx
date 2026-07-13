@@ -91,7 +91,7 @@ import type {
 import { Image as ImageIcon, UserPlus, Library, WifiOff, Megaphone, Plus } from "lucide-react";
 import { TripSkeleton } from "./TripSkeleton";
 import { EnrichmentBanner } from "@/components/trip/EnrichmentBanner";
-import { isUnlocked as checkIsUnlocked, checkTripGate, onAuthReadyForGate } from "@/lib/paywall/tripGate";
+import { isUnlocked as checkIsUnlocked, onAuthReadyForGate } from "@/lib/paywall/friendEntitlement";
 import { PaywallModal } from "@/components/paywall/PaywallModal";
 import { NativeShareRenderer } from "@/components/share/NativeShareRenderer";
 import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
@@ -231,10 +231,10 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   const [drawOpen, setDrawOpen] = useState(false);
   const [plansDot, setPlansDot] = useState(false);
 
-  // Plan status (Untethered)
+  // Friend entitlement. Drives the voluntary upgrade pill only - nothing on
+  // this page is gated (navigation is free, Tate 2026-07-13).
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [paywallOpen, setPaywallOpen] = useState(false);
-  const [paywallVariant, setPaywallVariant] = useState<"gate" | "upgrade">("upgrade");
 
   // Offline modal
   const [offlineModalOpen, setOfflineModalOpen] = useState(false);
@@ -271,9 +271,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
       checkIsUnlocked().then((result) => {
         if (cancelled) return;
         setUnlocked(result);
-        // If redirected from /new with ?upgrade=1, open the paywall as gate variant
+        // ?upgrade=1 opens the Friend upsell directly.
         if (!result && sp.get("upgrade") === "1") {
-          setPaywallVariant("gate");
           setPaywallOpen(true);
         }
       });
@@ -560,18 +559,10 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
         if (cancelled) return;
         if (!rec) {
-          // Check if user is paywalled before redirecting to /new.
-          // If they are, redirecting to /new would just bounce back here (loop).
-          // Instead, show an empty state with the paywall modal.
-          const gate = await checkTripGate();
-          if (cancelled) return;
-          if (!gate.allowed && gate.reason === "paywall") {
-            setPaywallVariant("gate");
-            setPaywallOpen(true);
-            setPhase("error");
-            setBootError(null); // signal "no plans + paywalled" (not a real error)
-            return;
-          }
+          // No plans yet - send them to the planner. Trip creation is free and
+          // unlimited, so there is no paywalled empty state to fall into and no
+          // /new -> /trip bounce loop to guard against.
+          //
           // Only redirect when the user is actually viewing the /trip tab.
           // PersistentTabs pre-mounts this page on other tabs - don't hijack navigation.
           if (pathnameRef.current === "/trip" || pathnameRef.current === "/trip/") {
@@ -2059,41 +2050,25 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   }
 
   if (phase === "error") {
-    // No plans + paywalled: show empty state with paywall modal (no bootError means this case)
-    const isPaywallEmpty = !bootError && paywallOpen;
+    // A real load failure. The old "no plans + paywalled" empty state is gone:
+    // trip creation is free and unlimited, so a user with no plans is simply
+    // sent to the planner rather than parked behind a paywall.
     return (
       <div style={{ display: "grid", placeItems: "center", height: "100%", width: "100%", background: "var(--glovebox-bg)", color: "var(--glovebox-text)", padding: 32, textAlign: "center" }}>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 950, color: isPaywallEmpty ? "var(--glovebox-text)" : "var(--glovebox-danger)", marginBottom: 12 }}>
-            {isPaywallEmpty ? "No trips yet" : "Failed to load trip"}
+          <div style={{ fontSize: 16, fontWeight: 950, color: "var(--glovebox-danger)", marginBottom: 12 }}>
+            Failed to load trip
           </div>
           {bootError && <div style={{ fontSize: 13, color: "var(--glovebox-text-muted)", marginBottom: 20 }}>{bootError}</div>}
-          {isPaywallEmpty ? (
-            <button
-              type="button"
-              className="trip-interactive"
-              style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--glovebox-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
-              onClick={() => { setPaywallVariant("gate"); setPaywallOpen(true); }}
-            >
-              Upgrade to create more trips
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="trip-interactive"
-              style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--glovebox-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
-              onClick={() => router("/new", { replace: true })}
-            >
-              Build a Trip
-            </button>
-          )}
+          <button
+            type="button"
+            className="trip-interactive"
+            style={{ borderRadius: 999, minHeight: 42, padding: "0 20px", fontWeight: 950, background: "var(--glovebox-accent)", color: "var(--on-color)", boxShadow: "var(--shadow-button)" }}
+            onClick={() => router("/new", { replace: true })}
+          >
+            Build a Trip
+          </button>
         </div>
-        <PaywallModal
-          open={paywallOpen}
-          variant={paywallVariant}
-          onClose={() => setPaywallOpen(false)}
-          onUnlocked={() => { setPaywallOpen(false); setUnlocked(true); router("/new", { replace: true }); }}
-        />
       </div>
     );
   }
@@ -2328,18 +2303,13 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         open={drawOpen}
         onClose={() => setDrawOpen(false)}
         currentPlanId={plan.plan_id}
-        onNewTrip={async () => {
+        onNewTrip={() => {
           if (!isOnline) {
             setOfflineModalOpen(true);
             return;
           }
-          const gate = await checkTripGate();
-          if (gate.allowed) {
-            router("/new");
-          } else {
-            setPaywallVariant("gate");
-            setPaywallOpen(true);
-          }
+          // Unconditional. Planning a trip costs nothing.
+          router("/new");
         }}
       />
 
@@ -2366,7 +2336,6 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
 
       <PaywallModal
         open={paywallOpen}
-        variant={paywallVariant}
         onClose={() => setPaywallOpen(false)}
         onUnlocked={() => { setPaywallOpen(false); setUnlocked(true); }}
       />
@@ -2648,8 +2617,8 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
             {unlocked === false && (
               <button
                 type="button"
-                aria-label="Upgrade to Glovebox Untethered"
-                onClick={() => { haptic.selection(); setPaywallVariant("upgrade"); setPaywallOpen(true); }}
+                aria-label="Get your Friend co-pilot"
+                onClick={() => { haptic.selection(); setPaywallOpen(true); }}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 6,
                   height: 36, padding: "0 12px",

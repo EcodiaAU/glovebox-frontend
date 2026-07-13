@@ -6,12 +6,10 @@ import { GloveboxMark } from "@/components/brand/GloveboxMark";
 
 type Props = {
   open: boolean;
-  /** Trip 2 warning: "this is your last free trip" */
-  lastFreeTrip?: boolean;
   onClose: () => void;
 };
 
-export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
+export function WelcomeModal({ open, onClose }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
@@ -112,9 +110,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
             lineHeight: 1.18,
             letterSpacing: "-0.014em",
           }}>
-            {lastFreeTrip
-              ? "Make this one count."
-              : "Welcome to Glovebox."}
+            Welcome to Glovebox.
           </h1>
 
           <p style={{
@@ -124,15 +120,12 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
             color: "rgba(232,223,201,0.78)",
             lineHeight: 1.5,
           }}>
-            {lastFreeTrip
-              ? "This is your last free trip. Explore every feature: offline maps, the AI guide, turn-by-turn nav. If you love it, Glovebox Untethered is $19.99, one-time."
-              : "Two free trips inside. No card needed."}
+            The whole road, free. Plan as many trips as you like.
           </p>
         </div>
 
         {/* Bullets - quiet ochre dots, no per-row dividers */}
-        {!lastFreeTrip && (
-          <div style={{ padding: "22px 28px 4px" }}>
+        <div style={{ padding: "22px 28px 4px" }}>
             <div style={{
               fontFamily: "var(--ff-display)",
               fontSize: 12.5,
@@ -147,7 +140,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
               "Beautiful offline maps that work without signal.",
               "Turn-by-turn navigation with voice guidance.",
               "Fuel range alerts so you never run dry in the outback.",
-              "AI co-pilot for fuel stops, hazards and local knowledge.",
+              "SOS, ready for the moment the road turns on you.",
             ].map((text) => (
               <div key={text} style={{
                 display: "flex", alignItems: "baseline", gap: 14,
@@ -164,8 +157,7 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
                 </span>
               </div>
             ))}
-          </div>
-        )}
+        </div>
 
         {/* CTA - solid burnt-orange, no gradient, no shadow */}
         <div style={{ padding: "22px 28px 24px" }}>
@@ -188,21 +180,19 @@ export function WelcomeModal({ open, lastFreeTrip = false, onClose }: Props) {
               letterSpacing: "0.01em",
             }}
           >
-            {lastFreeTrip ? "Plan my last free trip" : "Let's go"}
+            Let's go
           </button>
 
-          {!lastFreeTrip && (
-            <p style={{
-              margin: "14px 0 0",
-              textAlign: "center",
-              fontFamily: "var(--ff-display)",
-              fontSize: 13, fontWeight: 400,
-              color: "var(--glovebox-text-muted)",
-              lineHeight: 1.5,
-            }}>
-              After 2 free trips, go Untethered for $19.99. One-time, no subscription.
-            </p>
-          )}
+          <p style={{
+            margin: "14px 0 0",
+            textAlign: "center",
+            fontFamily: "var(--ff-display)",
+            fontSize: 13, fontWeight: 400,
+            color: "var(--glovebox-text-muted)",
+            lineHeight: 1.5,
+          }}>
+            Want a co-pilot who knows the trip? Bring your Friend along.
+          </p>
         </div>
         </div>{/* /scroll container */}
       </div>

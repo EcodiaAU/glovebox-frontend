@@ -417,7 +417,7 @@ export function StopsEditor(props: {
   tripPrefs: TripPreferences;
   onTripPrefsChange: (next: TripPreferences) => void;
 
-  /** Whether user has Glovebox Untethered. null = still loading. */
+  /** Whether the user has the Friend plan. null = still loading. */
   unlocked?: boolean | null;
   /** Called when user taps the upgrade button. */
   onUpgrade?: () => void;
@@ -638,7 +638,7 @@ export function StopsEditor(props: {
                 <button
                   type="button"
                   className="trip-interactive"
-                  aria-label="Upgrade to Glovebox Untethered"
+                  aria-label="Get your Friend co-pilot"
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={() => { haptic.selection(); props.onUpgrade?.(); }}
                   style={{
@@ -658,7 +658,7 @@ export function StopsEditor(props: {
                     borderRadius: "inherit", pointerEvents: "none",
                   }} />
                   <span style={{ fontSize: 10, fontWeight: 800, color: "var(--on-color)", letterSpacing: "0.06em", textTransform: "uppercase", position: "relative" }}>
-                    Upgrade
+                    Get Friend
                   </span>
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0, position: "relative" }}>
                     <path d="M2 5h6M5.5 2.5L8 5l-2.5 2.5" stroke="rgba(255,255,255,0.85)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />

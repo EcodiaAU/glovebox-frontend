@@ -1,5 +1,5 @@
 // src/app/(app)/untethered/loading.tsx
-// Skeleton for the Glovebox Untethered paywall/marketing page.
+// Skeleton for the Friend plan page.
 
 export default function UntetheredLoading() {
   return (

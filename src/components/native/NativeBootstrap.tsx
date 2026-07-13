@@ -19,7 +19,7 @@ import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { networkMonitor } from "@/lib/offline/networkMonitor";
 import { planSync } from "@/lib/offline/planSync";
-import { initRevenueCat, rcFriendAppUserId } from "@/lib/paywall/tripGate";
+import { initRevenueCat, rcFriendAppUserId } from "@/lib/paywall/friendEntitlement";
 import { supabase } from "@/lib/supabase/client";
 
 // RevenueCat public SDK keys are platform-specific (iOS `appl_…`, Android

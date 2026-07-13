@@ -474,7 +474,7 @@ const ATTRIBUTION_GROUPS: AttributionGroup[] = [
         url: "https://stripe.com",
         licence: "Proprietary (Stripe ToS)",
         description:
-          "Payment processing for Glovebox Untethered web purchases.",
+          "Payment processing for Friend subscriptions purchased on the web.",
       },
       {
         name: "RevenueCat",

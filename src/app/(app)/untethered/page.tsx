@@ -14,42 +14,46 @@ import {
 import { haptic } from "@/lib/native/haptics";
 import {
     isNativePlatform,
-    purchaseUnlimited,
+    purchaseFriend,
     restorePurchases,
     redirectToStripeCheckout,
     isUnlocked,
-} from "@/lib/paywall/tripGate";
+} from "@/lib/paywall/friendEntitlement";
 import { useAuth } from "@/lib/supabase/auth";
 
 /* ── Features ─────────────────────────────────────────────────────────── */
 
 import type { LucideIcon } from "lucide-react";
 
+// Glovebox itself is free: offline maps, routing, turn-by-turn, fuel range,
+// SOS, trip planning, offline packs, as many trips as you want (Tate
+// 2026-07-13). So this page sells exactly one thing, the co-pilot, and the
+// co-pilot is Friend.
 const FEATURES: { Icon: LucideIcon; title: string; body: string }[] = [
   {
-    Icon: Infinity,
-    title: "Unlimited trips",
-    body: "No caps, no countdowns. Plan as many adventures as the road allows.",
-  },
-  {
-    Icon: Download,
-    title: "Full offline maps",
-    body: "Download once, navigate forever. Your maps work without a single bar of signal.",
-  },
-  {
     Icon: Sparkles,
-    title: "AI co-pilot",
-    body: "Smart fuel stops, hazard warnings, and local tips tailored to your exact route.",
-  },
-  {
-    Icon: Users,
-    title: "Trip sharing",
-    body: "Send a 6-character code. Your co-pilot sees the whole plan, live.",
+    title: "A co-pilot who knows the trip",
+    body: "Ask anything from the driver's seat. Friend can see the route you are on and answers against it.",
   },
   {
     Icon: Fuel,
-    title: "Fuel range alerts",
-    body: "Know exactly where the last servo is - before you pass it.",
+    title: "Stops worth pulling over for",
+    body: "Fuel, food, camps and sights on the road ahead, picked for where you actually are.",
+  },
+  {
+    Icon: Infinity,
+    title: "It remembers you",
+    body: "Your Friend carries what it learns from one drive into the next one.",
+  },
+  {
+    Icon: Users,
+    title: "One Friend, everywhere",
+    body: "The same Friend across every Ecodia app you use. One plan covers all of it.",
+  },
+  {
+    Icon: Download,
+    title: "The road stays free",
+    body: "Maps, routing, offline packs and unlimited trips cost nothing, with or without a Friend.",
   },
 ];
 
@@ -216,7 +220,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
                 textTransform: "uppercase",
               }}
             >
-              Active · Glovebox Untethered
+              Active · Friend
             </span>
           </div>
 
@@ -400,7 +404,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
         ))}
       </div>
 
-      {/* One-time payment pill */}
+      {/* One-plan pill */}
       <div
         style={{
           display: "flex",
@@ -439,7 +443,7 @@ function UnlockedPage({ email, entered }: { email: string; entered: boolean }) {
               <path d="M2.5 6L5 8.5L9.5 3.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          One-time payment · yours forever
+          One plan · every Ecodia app
         </div>
       </div>
 
@@ -628,7 +632,7 @@ function PurchasePage({
                 textTransform: "uppercase",
               }}
             >
-              Glovebox Untethered
+              Friend, your co-pilot
             </span>
           </div>
 
@@ -643,9 +647,9 @@ function PurchasePage({
               letterSpacing: "-0.014em",
             }}
           >
-            No signal?
+            Bring a Friend
             <br />
-            No problem.
+            on the drive.
           </h1>
 
           <p
@@ -658,8 +662,9 @@ function PurchasePage({
               maxWidth: 320,
             }}
           >
-            One payment. Yours forever. Full offline maps, unlimited trips, and
-            an AI co-pilot - even when you&apos;re 500km from the nearest tower.
+            The road is free: offline maps, routing and as many trips as you
+            like. Friend is the co-pilot who rides along, and it is the same
+            Friend across everything Ecodia.
           </p>
         </div>
 
@@ -748,7 +753,7 @@ function PurchasePage({
           flexWrap: "wrap",
         }}
       >
-        {["No subscription", "One-time payment", "Yours forever"].map((t) => (
+        {["Cancel anytime", "One plan, every app", "The road stays free"].map((t) => (
           <div
             key={t}
             style={{
@@ -813,13 +818,13 @@ function PurchasePage({
               fontFamily: "var(--ff-display)",
               fontSize: 13, fontWeight: 400, color: "var(--glovebox-text-muted)", lineHeight: 1.3,
             }}>
-              one-time.
+              per month.
             </span>
             <span style={{
               fontFamily: "var(--ff-display)",
               fontSize: 12, fontWeight: 400, color: "var(--glovebox-text-muted)", opacity: 0.7, lineHeight: 1.3,
             }}>
-              yours forever.
+              cancel anytime.
             </span>
           </div>
         </div>
@@ -862,7 +867,7 @@ function PurchasePage({
             }}
           />
           <span style={{ position: "relative" }}>
-            {buying ? (isNative ? "Processing..." : "Redirecting to checkout...") : "Go Untethered · $19.99"}
+            {buying ? (isNative ? "Processing..." : "Redirecting to checkout...") : "Get Friend · $19.99/mo"}
           </span>
         </button>
 
@@ -939,7 +944,7 @@ export default function UntetheredPage() {
     if (isNative) {
       setBuying(true);
       try {
-        const result = await purchaseUnlimited();
+        const result = await purchaseFriend();
         if (result.success) {
           haptic.success();
           setUnlocked(true);

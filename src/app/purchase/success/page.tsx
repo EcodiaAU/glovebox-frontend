@@ -385,7 +385,7 @@ function PurchaseSuccessInner() {
               fontSize: 15, fontWeight: 400,
               color: "rgba(232,223,201,0.78)", lineHeight: 1.5,
             }}>
-              Activating Glovebox Untethered.
+              Activating your Friend.
             </p>
           </div>
 
@@ -485,7 +485,7 @@ function PurchaseSuccessInner() {
               fontSize: 11, fontWeight: 800, letterSpacing: "0.08em",
               color: "rgba(255,255,255,0.95)", textTransform: "uppercase",
             }}>
-              Glovebox Untethered
+              Friend
             </span>
           </div>
 
@@ -496,7 +496,7 @@ function PurchaseSuccessInner() {
             lineHeight: 1.1, letterSpacing: "-0.014em",
             animation: "fade-up 0.5s ease 0.5s both",
           }}>
-            You&apos;re untethered.
+            Friend is here.
           </h1>
 
           <p style={{
@@ -506,7 +506,7 @@ function PurchaseSuccessInner() {
             color: "rgba(232,223,201,0.78)", lineHeight: 1.5, maxWidth: 290,
             animation: "fade-up 0.5s ease 0.65s both",
           }}>
-            The whole Glovebox is yours now.
+            Your co-pilot is riding along, on this trip and every one after it.
           </p>
 
           {/* Feature pills */}

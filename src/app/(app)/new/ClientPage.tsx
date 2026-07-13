@@ -7,7 +7,7 @@ import { navApi } from "@/lib/api/nav";
 import { haptic } from "@/lib/native/haptics";
 import { toErrorMessage } from "@/lib/utils/errors";
 import { useBundleBuilder } from "@/lib/hooks/useBundleBuilder";
-import { checkTripGate, incrementTripsUsed, onAuthReadyForGate } from "@/lib/paywall/tripGate";
+import { isUnlocked, onAuthReadyForGate } from "@/lib/paywall/friendEntitlement";
 import { saveMinimalPlan } from "@/lib/offline/plansStore";
 import type { StopSuggestionItem } from "@/lib/types/places";
 
@@ -25,6 +25,10 @@ import { AiTripModal, type AiTripSeed } from "@/components/trip/AiTripModal";
 import { PlanDrawer } from "@/components/trip/PlanDrawer";
 import { WelcomeModal } from "@/components/paywall/WelcomeModal";
 import { PaywallModal } from "@/components/paywall/PaywallModal";
+
+/** First-launch greeting flag. Trip planning is free and uncounted, so the
+ *  welcome sheet needs its own "seen it" marker. */
+const KEY_WELCOMED = "glovebox_welcomed";
 
 function genPlanId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -53,12 +57,13 @@ export default function NewTripClientPage() {
   // Plans drawer
   const [drawOpen, setDrawOpen] = useState(false);
 
-  // ── Paywall gate ────────────────────────────────────────────────────
+  // ── Friend entitlement ──────────────────────────────────────────────
+  // Planning a trip is FREE and unlimited (Tate 2026-07-13). Nothing on this
+  // page is gated. `unlocked` only drives the voluntary "upgrade to Friend"
+  // affordance in the stops editor, and the welcome sheet is a first-launch
+  // greeting rather than a trip-count warning.
   const [welcomeOpen, setWelcomeOpen] = useState(false);
-  const [isLastFreeTrip, setIsLastFreeTrip] = useState(false);
-  const [_gateChecked, setGateChecked] = useState(false);
   const [paywallOpen, setPaywallOpen] = useState(false);
-  const [paywallVariant, setPaywallVariant] = useState<"gate" | "upgrade">("gate");
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
 
   // ── Desktop panel open/closed (≥900px only) ──────────────────────
@@ -75,42 +80,29 @@ export default function NewTripClientPage() {
   }, [desktopPanelOpen]);
 
 
+  // First-ever launch: greet, once. Previously keyed off the trip counter
+  // (tripsUsed === 0); the counter is gone, so this is its own local flag.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(KEY_WELCOMED) !== "1") {
+        setWelcomeOpen(true);
+        localStorage.setItem(KEY_WELCOMED, "1");
+      }
+    } catch { /* private mode - just skip the greeting */ }
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     const run = () => {
-      checkTripGate().then((gate) => {
+      isUnlocked().then((u) => {
         if (cancelled) return;
-        setUnlocked(gate.unlocked);
-        if (gate.allowed) {
-          // A prior run (pre-session-hydration) may have opened the paywall
-          // based on a stale local trip count - close it now that we know
-          // the real server-side state.
-          setPaywallOpen(false);
-          // Trip 2 (tripsUsed === 1): show "last free trip" warning
-          // But skip this for unlocked (Untethered) users - they have unlimited trips.
-          if (gate.tripsUsed === 1 && !gate.unlocked) {
-            setIsLastFreeTrip(true);
-            setWelcomeOpen(true);
-          }
-          setGateChecked(true);
-        } else if (gate.reason === "paywall") {
-          // Show paywall modal right here instead of redirecting to /trip.
-          // Redirecting caused an infinite loop when the user had no plans left.
-          // But if we got here because the session hadn't hydrated yet, an
-          // auth-state re-run below will flip unlocked=true and close it.
-          setPaywallOpen(true);
-          setGateChecked(true);
-        } else {
-          // "welcome" - first ever launch
-          setWelcomeOpen(true);
-          setGateChecked(true);
-        }
+        setUnlocked(u);
       });
     };
     run();
     // Re-check once the Supabase session is actually available. On a fresh
     // login this effect fires before the session is hydrated, so the first
-    // check sees no user and the gate falls through to tripCount/localStorage.
+    // check sees no user and falls back to the local cache.
     const unsub = onAuthReadyForGate(run);
     return () => { cancelled = true; unsub(); };
   }, []);
@@ -247,10 +239,8 @@ export default function NewTripClientPage() {
         tripPrefs: draft.tripPrefs,
       });
 
-      // Step 3: Navigate immediately (optimistic). The trip-counter increment
-      // is a fire-and-forget side-effect - it must never block or fail the
-      // navigation (it no longer throws either, see tripGate).
-      void incrementTripsUsed();
+      // Step 3: Navigate immediately. Trips are free and uncounted, so there is
+      // no longer a counter to increment here.
       router(`/trip?plan_id=${encodeURIComponent(plan_id)}`, { replace: true });
     } catch (e: unknown) {
       setRouteError(toErrorMessage(e, "Failed to save trip"));
@@ -370,7 +360,7 @@ export default function NewTripClientPage() {
           clearRouteState();
         }}
         unlocked={unlocked}
-        onUpgrade={() => { setPaywallVariant("upgrade"); setPaywallOpen(true); }}
+        onUpgrade={() => { setPaywallOpen(true); }}
         desktopOpen={desktopPanelOpen}
       />
 
@@ -421,17 +411,15 @@ export default function NewTripClientPage() {
         onConfirm={handleAiConfirm}
       />
 
-      {/* ── Welcome / last-free-trip modal ───────────────────────────── */}
+      {/* ── First-launch welcome ─────────────────────────────────────── */}
       <WelcomeModal
         open={welcomeOpen}
-        lastFreeTrip={isLastFreeTrip}
         onClose={() => setWelcomeOpen(false)}
       />
 
-      {/* ── Paywall modal (shown when user has used all free trips) ── */}
+      {/* ── Friend upsell (voluntary - never gates trip creation) ────── */}
       <PaywallModal
         open={paywallOpen}
-        variant={paywallVariant}
         onClose={() => setPaywallOpen(false)}
         onUnlocked={() => { setPaywallOpen(false); setUnlocked(true); }}
       />

@@ -51,7 +51,7 @@ export function AppLayout() {
         {/* Global place detail sheet - opened via usePlaceDetail().openPlace() from anywhere */}
         <PlaceDetailSheet />
         {/* The co-pilot. Friend replaced the in-app Guide, and it is gated on the
-            pass (see lib/paywall/tripGate). Floating, so it is reachable from the
+            Friend entitlement (see lib/paywall/friendEntitlement). Floating, so it is reachable from the
             single page without costing a tab. */}
         <FloatingGuideChat />
       </div>

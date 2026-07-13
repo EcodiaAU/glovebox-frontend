@@ -22,7 +22,7 @@ import "@ecodia/friend-chat/styles.css";
 import { haptic } from "@/lib/native/haptics";
 import { useAuth } from "@/lib/supabase/auth";
 import { useGloveboxFriend } from "@/lib/guide/useFriendChat";
-import { isUnlocked, onAuthReadyForGate } from "@/lib/paywall/tripGate";
+import { isUnlocked, onAuthReadyForGate } from "@/lib/paywall/friendEntitlement";
 import { PaywallModal } from "@/components/paywall/PaywallModal";
 import type { GuideAction } from "@/lib/types/guide";
 
@@ -136,7 +136,6 @@ export function FloatingGuideChat() {
       />
       <PaywallModal
         open={paywallOpen}
-        variant="upgrade"
         onClose={() => setPaywallOpen(false)}
         onUnlocked={() => { setEntitled(true); setPaywallOpen(false); }}
       />
