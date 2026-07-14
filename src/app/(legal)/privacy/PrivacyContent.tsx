@@ -459,8 +459,8 @@ export default function PrivacyContent() {
           knowingly collect personal information from anyone under 18. If you
           are a parent or guardian and believe your child has provided us with
           personal information, please contact us at{" "}
-          <a href="mailto:tate@ecodia.au" className={s.link}>
-            tate@ecodia.au
+          <a href="mailto:code@ecodia.au" className={s.link}>
+            code@ecodia.au
           </a>{" "}
           and we will promptly delete it.
         </p>
@@ -505,8 +505,8 @@ export default function PrivacyContent() {
         </ul>
         <p className={s.text}>
           To exercise any of these rights, contact us at{" "}
-          <a href="mailto:tate@ecodia.au" className={s.link}>
-            tate@ecodia.au
+          <a href="mailto:code@ecodia.au" className={s.link}>
+            code@ecodia.au
           </a>
           . We will respond within 30 days and may need to verify your identity
           before processing your request.
@@ -545,8 +545,8 @@ export default function PrivacyContent() {
         <ul className={s.list}>
           <li>
             <strong>Email:</strong>{" "}
-            <a href="mailto:tate@ecodia.au" className={s.link}>
-              tate@ecodia.au
+            <a href="mailto:code@ecodia.au" className={s.link}>
+              code@ecodia.au
             </a>
           </li>
           <li>

@@ -26,7 +26,7 @@ interface FormData {
   message: string;
 }
 
-const FORMSUBMIT_URL = "https://formsubmit.co/ajax/tate@ecodia.au";
+const FORMSUBMIT_URL = "https://formsubmit.co/ajax/code@ecodia.au";
 
 const CATEGORY_LABELS: Record<Exclude<Category, "">, string> = {
   support: "General support",
@@ -144,14 +144,14 @@ export default function ContactContent() {
         const data = await res.json().catch(() => null);
         setErrorMsg(
           data?.message ||
-            "Something went wrong. Please try emailing tate@ecodia.au directly.",
+            "Something went wrong. Please try emailing code@ecodia.au directly.",
         );
         setStatus("error");
       }
     } catch {
       haptic.error();
       setErrorMsg(
-        "Network error - you may be offline. Please email tate@ecodia.au directly.",
+        "Network error - you may be offline. Please email code@ecodia.au directly.",
       );
       setStatus("error");
     }
@@ -174,8 +174,8 @@ export default function ContactContent() {
             <div className={s.contactCard}>
               <h4>Email</h4>
               <p>
-                <a href="mailto:tate@ecodia.au" className={s.link}>
-                  tate@ecodia.au
+                <a href="mailto:code@ecodia.au" className={s.link}>
+                  code@ecodia.au
                 </a>
               </p>
             </div>
@@ -184,8 +184,8 @@ export default function ContactContent() {
               <p>
                 For data access, correction, or deletion requests under the
                 Australian Privacy Principles, email{" "}
-                <a href="mailto:tate@ecodia.au" className={s.link}>
-                  tate@ecodia.au
+                <a href="mailto:code@ecodia.au" className={s.link}>
+                  code@ecodia.au
                 </a>{" "}
                 with &quot;Privacy Request&quot; in the subject. We will respond
                 within 30 days.

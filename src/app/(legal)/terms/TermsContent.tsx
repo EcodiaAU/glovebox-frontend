@@ -459,8 +459,8 @@ export default function TermsContent() {
         <p className={s.text}>
           Before commencing any formal legal proceedings, you agree to attempt
           to resolve any dispute with us in good faith by contacting us at{" "}
-          <a href="mailto:tate@ecodia.au" className={s.link}>
-            tate@ecodia.au
+          <a href="mailto:code@ecodia.au" className={s.link}>
+            code@ecodia.au
           </a>
           .
         </p>
@@ -528,8 +528,8 @@ export default function TermsContent() {
         <ul className={s.list}>
           <li>
             <strong>Email:</strong>{" "}
-            <a href="mailto:tate@ecodia.au" className={s.link}>
-              tate@ecodia.au
+            <a href="mailto:code@ecodia.au" className={s.link}>
+              code@ecodia.au
             </a>
           </li>
           <li>
