@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import { Settings } from "lucide-react";
+import { Settings, MapPin } from "lucide-react";
 import { haptic } from "@/lib/native/haptics";
 
 /**
@@ -38,6 +38,29 @@ export function ShellControls() {
         gap: 8,
       }}
     >
+      {/* Places: standalone place discovery, one tap from anywhere in the app,
+          no trip required. Hidden on /places itself. */}
+      {pathname !== "/places" && (
+        <button
+          onClick={() => { haptic.selection(); navigate("/places"); }}
+          aria-label="Places"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            color: "var(--c-text, #1a1a1a)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "var(--shadow-heavy)",
+          }}
+        >
+          <MapPin size={18} strokeWidth={2} />
+        </button>
+      )}
       <button
         onClick={() => { haptic.medium(); navigate("/sos"); }}
         aria-label="SOS"

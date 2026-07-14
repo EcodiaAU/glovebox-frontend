@@ -4,7 +4,7 @@
 export type IDBValue = unknown;
 
 const DB_NAME = "glovebox_offline";
-const DB_VERSION = 5; // baseline version
+const DB_VERSION = 6; // baseline version (bumped v5 -> v6 to add poi_tiles)
 
 const STORE_PLANS = "plans"; // keyPath: plan_id
 const STORE_META = "meta"; // key: string -> any
@@ -12,8 +12,9 @@ const STORE_EMERGENCY = "emergency_contacts"; // keyPath: id (uuid)
 const STORE_PACKS = "packs"; // keyPath: k (plan_id:kind)
 const STORE_SYNC_QUEUE = "sync_queue"; // keyPath: id (auto-incrementing ops queue)
 const STORE_MEMORIES = "stop_memories"; // keyPath: id (uuid), index on plan_id
+const STORE_POI_TILES = "poi_tiles"; // keyPath: k (region tile grid), index on fetched_at
 
-const REQUIRED_STORES = [STORE_PLANS, STORE_META, STORE_PACKS, STORE_SYNC_QUEUE, STORE_EMERGENCY, STORE_MEMORIES];
+const REQUIRED_STORES = [STORE_PLANS, STORE_META, STORE_PACKS, STORE_SYNC_QUEUE, STORE_EMERGENCY, STORE_MEMORIES, STORE_POI_TILES];
 
 let _dbPromise: Promise<IDBDatabase> | null = null;
 
@@ -45,6 +46,12 @@ function ensureStores(db: IDBDatabase) {
   if (!db.objectStoreNames.contains(STORE_MEMORIES)) {
     const mem = db.createObjectStore(STORE_MEMORIES, { keyPath: "id" });
     mem.createIndex("plan_id", "plan_id", { unique: false });
+  }
+  if (!db.objectStoreNames.contains(STORE_POI_TILES)) {
+    // Region-keyed POI cache: one row per coarse lat/lng grid tile, keyed by
+    // the tile string (NOT by trip). Enables offline near-me + browse anywhere.
+    const poi = db.createObjectStore(STORE_POI_TILES, { keyPath: "k" });
+    poi.createIndex("fetched_at", "fetched_at", { unique: false });
   }
 }
 
@@ -271,4 +278,5 @@ export const idbStores = {
   syncQueue: STORE_SYNC_QUEUE,
   emergency: STORE_EMERGENCY,
   memories: STORE_MEMORIES,
+  poiTiles: STORE_POI_TILES,
 };

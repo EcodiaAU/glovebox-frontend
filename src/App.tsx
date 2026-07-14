@@ -33,6 +33,9 @@ const NewTripPage = lazy(() => import("./app/(app)/new/page"));
 const AccountPage = lazy(() => import("./app/(app)/account/page"));
 const TripClientPage = lazy(() => import("./app/(app)/trip/ClientPage").then((m) => ({ default: m.TripClientPage })));
 const EmergencyClientPage = lazy(() => import("./app/(app)/sos/ClientPage"));
+// Standalone place discovery: near-me by default, no trip required, offline-first
+// from the region-keyed POI cache (see lib/offline/poiTilesStore).
+const PlacesClientPage = lazy(() => import("./app/(app)/places/ClientPage"));
 
 // Legal routes
 const AttributionsPage = lazy(() => import("./app/(legal)/attributions/page"));
@@ -74,6 +77,16 @@ export function App() {
             {/* The single page, plus SOS as a deep-linkable route reached from a button on it. */}
             <Route path="trip" element={<TripClientPage initialPlanId={null} />} />
             <Route path="sos" element={<EmergencyClientPage />} />
+
+            {/* Standalone Places: reachable from the app shell with no trip. */}
+            <Route
+              path="places"
+              element={
+                <Suspense fallback={null}>
+                  <PlacesClientPage />
+                </Suspense>
+              }
+            />
 
             {/* Non-tab app routes */}
             <Route
