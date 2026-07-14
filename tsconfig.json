@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // The node:test suite (src/lib/sentry-noise.test.ts) runs under
+    // `node --experimental-strip-types`, whose ESM resolver requires the
+    // explicit .ts specifier. Safe here because this project never emits.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "bundler",

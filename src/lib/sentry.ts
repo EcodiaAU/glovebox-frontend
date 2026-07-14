@@ -10,6 +10,7 @@
 /* ------------------------------------------------------------------ */
 
 import * as Sentry from '@sentry/react'
+import { isInjectedThirdPartyBridgeError } from './sentry-noise'
 
 // Public Sentry client DSN (send-only key - safe to embed; it ships in the
 // client bundle regardless). Hardcoded fallback so a build lacking
@@ -28,6 +29,14 @@ export function initSentry() {
     environment: import.meta.env.MODE,
     release: 'glovebox-frontend@' + (import.meta.env.VITE_APP_VERSION || '1.0.0'),
     tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
+    beforeSend(event) {
+      // Errors thrown by a script that a third-party in-app browser injected
+      // into our page are not Glovebox defects, and they bury real
+      // regressions in recurring noise. Matched on frame name, so a real
+      // bridge failure carrying the identical message still reports.
+      if (isInjectedThirdPartyBridgeError(event)) return null
+      return event
+    },
   })
 }
 

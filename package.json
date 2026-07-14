@@ -15,7 +15,8 @@
     "lint": "eslint",
     "postinstall": "patch-package",
     "test:cls": "playwright test --config=tests/cls/playwright.config.ts",
-    "test:cls:install": "npx playwright install chromium"
+    "test:cls:install": "npx playwright install chromium",
+    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@aparajita/capacitor-secure-storage": "^8.0.0",
