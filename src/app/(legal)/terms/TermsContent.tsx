@@ -60,10 +60,9 @@ export default function TermsContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>2. Eligibility</h2>
         <p className={s.text}>
-          You must be at least 16 years of age to create an account and use the
+          You must be at least 18 years of age to create an account and use the
           Service. By using Glovebox, you represent that you meet this age
-          requirement. If you are under 18, you represent that you have the
-          consent of a parent or legal guardian.
+          requirement.
         </p>
       </section>
 

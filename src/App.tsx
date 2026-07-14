@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import { AuthProvider } from "@/lib/supabase/auth";
+import { AgeGate, hasConfirmedAdult } from "@/components/AgeGate";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { NativeBootstrap } from "@/components/native/NativeBootstrap";
 import { SyncBootstrap } from "@/components/auth/SyncBootstrap";
@@ -8,7 +9,7 @@ import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { EnterTransition } from "@/components/brand/EnterTransition";
 import { AppLayout } from "./app/(app)/layout";
 import { LegalLayout } from "./app/(legal)/layout";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState } from "react";
 import GlobalError from "./app/error";
 import AppError from "./app/(app)/error";
 
@@ -53,6 +54,11 @@ const NotFoundClient = lazy(() =>
 );
 
 export function App() {
+  // Whole-app 18+ gate (Tate 2026-07-14). The gate is a sibling ABOVE <Routes>
+  // so it covers every entry - web landing, native redirect, and deep-links -
+  // and <Routes> stays unmounted until the visitor confirms they are an adult.
+  const [confirmedAdult, setConfirmedAdult] = useState(hasConfirmedAdult);
+
   return (
     <BrowserRouter>
       <ErrorBoundary fallback={(props) => <GlobalError {...props} />}>
@@ -61,6 +67,9 @@ export function App() {
           <NativeBootstrap />
           <SyncBootstrap />
           <BasemapBootstrap />
+          {!confirmedAdult && <AgeGate onConfirm={() => setConfirmedAdult(true)} />}
+          {confirmedAdult && (
+          <>
           <Routes>
             {/* Landing */}
             <Route
@@ -188,6 +197,8 @@ export function App() {
           />
           </Routes>
           <EnterTransition />
+          </>
+          )}
         </AuthProvider>
       </ErrorBoundary>
     </BrowserRouter>

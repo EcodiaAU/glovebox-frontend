@@ -30,14 +30,11 @@ import {
     WifiOff,
     GripVertical,
     Shuffle,
-    Shuffle as ShuffleIcon,
     CheckCheck,
     Clock,
     MoreHorizontal,
     Trash2,
     Edit3,
-    Fuel,
-    Navigation as NavigationIcon,
 } from "lucide-react";
 
 import {
@@ -1277,24 +1274,6 @@ function StopActionsSheet({
                 onClick={() => { onMove(stopIndex, 1); onClose(); }}
               />
             )}
-            <ActionRow
-              icon={<Fuel size={16} strokeWidth={2} />}
-              label="Fuel stop"
-              sub="Coming soon"
-              disabled
-            />
-            <ActionRow
-              icon={<ShuffleIcon size={16} strokeWidth={2} />}
-              label="Replace with nearby"
-              sub="Coming soon"
-              disabled
-            />
-            <ActionRow
-              icon={<NavigationIcon size={16} strokeWidth={2} />}
-              label="Re-route via this stop"
-              sub="Coming soon"
-              disabled
-            />
           </div>
 
           <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>

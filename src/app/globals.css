@@ -1359,6 +1359,27 @@ body[data-trip-sheet="full"] .glovebox-tabs-wrap {
   box-shadow: var(--shadow-medium);
 }
 
+/* Shell controls (Places + account glass buttons in ShellControls).
+   These float over the map like .map-fab-btn, so they follow the SAME
+   theme-aware glass: light glass + ink icon by day, dark glass + light icon
+   at night. Previously the background was hardcoded white with the icon on
+   var(--c-text); in tactical-night --c-text is light, so the icon was
+   white-on-white and vanished. SOS keeps its own red fill and is not a
+   .glovebox-shell-btn. */
+.glovebox-shell-btn {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(244, 239, 230, 0.96) 100%);
+  color: var(--glovebox-text);
+  border: 1px solid var(--glovebox-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+[data-theme="tactical-night"] .glovebox-shell-btn {
+  background: rgba(26, 26, 26, 0.72);
+  color: var(--on-color);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+}
+
 /* ── Map blue dot pulse ───────────────────────────────────── */
 @keyframes glovebox-blue-dot-pulse {
   0%  { box-shadow: 0 0 0 0 var(--info-pulse-active); }

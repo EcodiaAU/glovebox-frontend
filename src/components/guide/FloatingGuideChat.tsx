@@ -24,7 +24,10 @@ import { useAuth } from "@/lib/supabase/auth";
 import { useGloveboxFriend } from "@/lib/guide/useFriendChat";
 import { isUnlocked, onAuthReadyForGate } from "@/lib/paywall/friendEntitlement";
 import { PaywallModal } from "@/components/paywall/PaywallModal";
+import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
+import { useSavedPlaces } from "@/lib/hooks/useSavedPlaces";
 import type { GuideAction } from "@/lib/types/guide";
+import type { PlaceItem, PlaceCategory } from "@/lib/types/places";
 
 const EXAMPLES = [
   "Where should I stop for lunch?",
@@ -32,12 +35,29 @@ const EXAMPLES = [
   "What is worth seeing near my next stop?",
 ];
 
+/* Build a PlaceItem from a map/save action. The backend guarantees id + coords
+   for those action types; if any are missing we bail so the pill degrades to
+   plain text rather than acting on a half-place. */
+function placeFromAction(action: GuideAction): PlaceItem | null {
+  if (!action.place_id || action.lat == null || action.lng == null) return null;
+  return {
+    id: action.place_id,
+    name: action.place_name ?? action.label,
+    lat: action.lat,
+    lng: action.lng,
+    category: (action.category ?? "camp") as PlaceCategory,
+  };
+}
+
 /* Web/call/map/save pills under a Friend reply. Kept app-side (haptics, tel:,
-   and routing the rich place flow to /guide) and fed to the shared component via
-   its renderExtra render-prop, so the shared chat design never needs to know
-   about Glovebox's actions. Never a dead placeholder: map/save open the full
-   guide where add-to-trip and show-on-map belong. */
+   and the in-app place flow) and fed to the shared component via its renderExtra
+   render-prop, so the shared chat design never needs to know about Glovebox's
+   actions. The old /guide page is gone (the co-pilot IS this chat), so map/save
+   are consolidated inline: "map" opens the global place-detail sheet (show on
+   map + add to trip live there), "save" bookmarks the place. Never a dead link. */
 function ActionPill({ action }: { action: GuideAction }) {
+  const { openPlace } = usePlaceDetail();
+  const { toggleSave } = useSavedPlaces();
   const base: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
@@ -66,11 +86,24 @@ function ActionPill({ action }: { action: GuideAction }) {
       </a>
     );
   }
-  return (
-    <a href="/guide" style={base} onClick={() => haptic.light()}>
-      {action.label}
-    </a>
-  );
+  const place = placeFromAction(action);
+  if (action.type === "map" && place) {
+    return (
+      <button type="button" style={base} onClick={() => { haptic.light(); openPlace({ ...place, guide_description: action.description ?? null }); }}>
+        {action.label}
+      </button>
+    );
+  }
+  if (action.type === "save" && place) {
+    return (
+      <button type="button" style={base} onClick={() => { haptic.light(); void toggleSave(place); }}>
+        {action.label}
+      </button>
+    );
+  }
+  // No url/coords to act on: render plain, non-interactive text - never a dead
+  // link. Rare, since the backend guarantees the fields for each action type.
+  return <span style={{ ...base, cursor: "default", opacity: 0.7 }}>{action.label}</span>;
 }
 
 function ActionPills({ actions }: { actions: GuideAction[] }) {

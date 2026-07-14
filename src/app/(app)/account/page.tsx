@@ -147,7 +147,7 @@ function AccountPageInner() {
         WebkitOverflowScrolling: "touch" as const,
       }}
     >
-      <div className="ed-column" style={{ paddingTop: "clamp(20px, 4vh, 40px)" }}>
+      <div className="ed-column ed-column-settings" style={{ paddingTop: "clamp(20px, 4vh, 40px)" }}>
         {/* Back + heading */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button

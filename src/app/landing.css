@@ -218,6 +218,15 @@
   gap: 18px;
 }
 
+/* Settings/account variant: the login column is deliberately narrow (a single
+   form), but a settings LIST at 26rem strands itself in a thin ribbon on a
+   laptop. Grow the cap to ~44rem on wider screens; width:100% keeps it fluid
+   and full-bleed on mobile. Applied alongside .ed-column, so this wins on
+   max-width by source order. */
+.ed-column-settings {
+  max-width: 44rem;
+}
+
 /* The editorial markup wraps every string in <em> as a styling tic, not as
    emphasis, and the UA default (em { font-style: italic }) then re-italicises
    text whose own rule says normal. Inherit instead, so each element's declared

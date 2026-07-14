@@ -44,14 +44,11 @@ export function ShellControls() {
         <button
           onClick={() => { haptic.selection(); navigate("/places"); }}
           aria-label="Places"
+          className="glovebox-shell-btn"
           style={{
             width: 40,
             height: 40,
             borderRadius: 999,
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            color: "var(--c-text, #1a1a1a)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -84,14 +81,11 @@ export function ShellControls() {
       <button
         onClick={() => { haptic.selection(); navigate("/account"); }}
         aria-label="Account"
+        className="glovebox-shell-btn"
         style={{
           width: 40,
           height: 40,
           borderRadius: 999,
-          background: "rgba(255,255,255,0.92)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-          color: "var(--c-text, #1a1a1a)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

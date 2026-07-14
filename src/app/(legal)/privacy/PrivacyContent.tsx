@@ -455,8 +455,8 @@ export default function PrivacyContent() {
       <section className={s.section}>
         <h2 className={s.sectionTitle}>10. Children&apos;s Privacy</h2>
         <p className={s.text}>
-          Glovebox is not directed at children under the age of 16. We do not
-          knowingly collect personal information from children under 16. If you
+          Glovebox is not directed at anyone under the age of 18. We do not
+          knowingly collect personal information from anyone under 18. If you
           are a parent or guardian and believe your child has provided us with
           personal information, please contact us at{" "}
           <a href="mailto:tate@ecodia.au" className={s.link}>

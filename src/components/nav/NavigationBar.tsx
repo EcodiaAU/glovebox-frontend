@@ -182,7 +182,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
               letterSpacing: "-0.4px",
               fontVariantNumeric: "tabular-nums",
             }}>
-              {speedKmh ?? "—"}
+              {speedKmh ?? "–"}
             </div>
             <div className="t-mono" style={{
               fontSize: 10, fontWeight: 700,
