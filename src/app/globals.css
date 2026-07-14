@@ -187,12 +187,6 @@
   --spinner-track: rgba(19, 19, 19, 0.10);
   --spinner-head: var(--brand-ochre);
 
-  --tab-bar-bg: #FFFFFF;
-  --tab-active-color: var(--brand-ochre);
-  --tab-inactive-color: #555D68;  /* 6.0:1 on #FFF — AA large+, near AAA */
-  --tab-center-bg: var(--brand-ochre);
-  --tab-center-icon: var(--on-color);
-  --tab-center-glow: 0 0 0 var(--border-thin) rgba(19, 19, 19, 0.10);
 
   /* Separation comes from hairlines, not from stacked drop shadows. The old
      brutalist offsets (0 3px 0 / 0 8px 0) fought the serif; edges hold the
@@ -291,13 +285,6 @@
   --spinner-track: rgba(255, 255, 255, 0.08);
   --spinner-head: var(--brand-ochre);
 
-  --tab-bar-bg: rgba(18, 18, 22, 0.97);
-  --tab-active-color: var(--brand-ochre);
-  --tab-inactive-color: #B0A89F;  /* Muted stone — 7.1:1 on dark AAA */
-  --tab-center-bg: #A0522D;    /* Darker ochre for on-color contrast (5.8:1 AAA lg) */
-  --tab-center-icon: var(--on-color);
-  /* Night: hairlines are light-on-dark. No ochre glow behind the centre tab. */
-  --tab-center-glow: 0 0 0 1px rgba(255, 255, 255, 0.10);
 
   --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.07);
   --shadow-medium: 0 0 0 1px rgba(255, 255, 255, 0.09);
@@ -370,11 +357,6 @@
   --c-sev-major: var(--severity-major);
   --c-sev-moderate: var(--severity-moderate);
   --c-sev-minor: var(--severity-minor);
-  --c-tabbar-bg: var(--tab-bar-bg);
-  --c-tab-active: var(--tab-active-color);
-  --c-tab-inactive: var(--tab-inactive-color);
-  --c-tab-centre-bg: var(--tab-center-bg);
-  --c-tab-centre-icon: var(--tab-center-icon);
   --grad-cta: var(--cta-gradient);
   --sh-card: var(--shadow-soft);
   --sh-floating: var(--shadow-medium);
@@ -518,135 +500,6 @@ input, textarea, [contenteditable] {
   min-width: 44px;
 }
 
-/* ── Individual tab items ─────────────────────────────────── */
-.glovebox-tab, .glovebox-tab-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  flex: 1;
-  height: 100%;
-  color: var(--tab-inactive-color);
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  user-select: none;
-  transition: color var(--dur-normal) ease;
-  padding: 4px 0 0;
-  gap: 3px;
-  /* Minimum tap target — 44px per Apple HIG */
-  min-height: 44px;
-  /* Sit above the grain ::before layer */
-  position: relative;
-  z-index: 1;
-}
-
-.glovebox-tab:active,
-.glovebox-tab-item:active {
-  transform: scale(0.90);
-  transition: transform 60ms ease-out;
-}
-
-.glovebox-tab[data-active="true"],
-.glovebox-tab-active {
-  color: var(--tab-active-color);
-}
-
-.glovebox-tab-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  transition: transform var(--dur-normal) var(--ease-spring);
-}
-.glovebox-tab-icon svg { width: 100%; height: 100%; }
-
-.glovebox-tab[data-active="true"] .glovebox-tab-icon,
-.glovebox-tab-active .glovebox-tab-icon {
-  transform: translateY(-1px) scale(1.05);
-}
-
-.glovebox-tab-label {
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.3px;
-}
-
-/* ── Center "Trip" raised button ──────────────────────────── */
-.glovebox-tab.glovebox-tab-center {
-  position: relative;
-  /* Pull the raised pill up above the bar top edge */
-  margin-top: -14px;
-  padding-top: 0;
-  justify-content: flex-start;
-  z-index: 2;
-}
-.glovebox-tab.glovebox-tab-center:active .glovebox-tab-inner {
-  transform: scale(0.90);
-  transition: transform 60ms ease-out;
-}
-
-.glovebox-tab-bump {
-  display: none;
-}
-
-.glovebox-tab-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px; height: 48px;
-  border-radius: var(--radius-md);
-  background-color: var(--tab-center-bg);
-  color: var(--tab-center-icon);
-  box-shadow: var(--tab-center-glow);
-  transition: transform var(--dur-normal) var(--ease-spring),
-              box-shadow var(--dur-normal) ease;
-}
-/* Night mode: gradient active tab (metallic ochre per Stitch spec) */
-[data-theme="tactical-night"] .glovebox-tab-inner {
-  background: var(--cta-gradient);
-}
-
-.glovebox-tab.glovebox-tab-center .glovebox-tab-icon {
-  color: var(--tab-center-icon);
-  width: 24px; height: 24px;
-}
-.glovebox-tab.glovebox-tab-center .glovebox-tab-label {
-  color: var(--tab-inactive-color);
-}
-.glovebox-tab.glovebox-tab-center[data-active="true"] .glovebox-tab-label {
-  color: var(--tab-active-color);
-}
-
-/* ── SOS tab emphasis ─────────────────────────────────────── */
-.glovebox-tab-sos { color: var(--glovebox-danger); }
-.glovebox-tab-sos.glovebox-tab-active { color: var(--glovebox-danger); }
-.glovebox-tab-sos .glovebox-tab-icon {
-  background: var(--danger-tint);
-  border-radius: var(--r-card);
-  padding: 2px;
-}
-
-/* ── Simple mode: bigger tab labels + icons ───────────────── */
-.glovebox-tabs-wrap[data-simple="true"] .glovebox-tab-label {
-  font-size: 12px;
-  font-weight: 800;
-}
-.glovebox-tabs-wrap[data-simple="true"] .glovebox-tab-icon {
-  width: 28px;
-  height: 28px;
-}
-
-/* ── Keyboard open: hide tab bar ──────────────────────────── */
-.keyboard-open .glovebox-tab-bar,
-.keyboard-open .glovebox-tabs-wrap {
-  transform: translateY(100%);
-  pointer-events: none;
-  opacity: 0;
-  transition: transform var(--dur-normal) ease, opacity var(--dur-fast) ease;
-}
 .keyboard-open .glovebox-main {
   padding-bottom: 0 !important;
   /* Collapse tab-bar offset so pages using bottom: var(--bottom-nav-height)
@@ -2251,7 +2104,9 @@ input[type="range"]::-moz-range-thumb {
   background: var(--glovebox-accent);
   color: var(--on-color);
   border-color: var(--glovebox-accent);
-  box-shadow: var(--tab-center-glow);
+  /* Subtle 10% ring, theme-aware. Was var(--tab-center-glow), a tab-era token
+     retired with the tab bar; inlined here since SOS was its only live user. */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--glovebox-text) 10%, transparent);
 }
 
 .sos-action-grid {
