@@ -2641,7 +2641,14 @@ input[type="range"]::-moz-range-thumb {
 
 @media (min-width: 900px) {
   :root {
-    --desktop-rail-w: 72px;
+    /* The bottom tab bar (and its desktop left-rail form) was removed when
+       Glovebox became one page: no element renders the rail any more. Held at
+       0 so the map-chrome offset calcs below stay valid without rewriting 17
+       sites; the old 72px reservation was showing through as a dead black
+       strip down the left of laptop screens, and it pushed the trip side
+       panel in by the same amount. Zeroing it removes the strip AND drops the
+       side panel flush to the left edge. */
+    --desktop-rail-w: 0px;
     --desktop-panel-w: 420px;
     /* When the side panel is open, map chrome on the left edge shifts
        right by this amount so nothing sits under the panel. When the
@@ -2660,65 +2667,13 @@ input[type="range"]::-moz-range-thumb {
     --desktop-panel-visible: 0px;
   }
 
-  /* ── Left nav rail (was: bottom tab bar) ─────────────────── */
-  /* Tabs are vertically centred so the rail reads as a balanced
-     side-nav instead of a top-stacked list. Opaque background so the
-     rail and the side sheet read as a single continuous surface (no
-     visible page-bg gap between rail right-edge and sheet left-edge). */
-  .glovebox-tabs-wrap {
-    top: 0 !important;
-    bottom: 0 !important;
-    right: auto !important;
-    left: 0 !important;
-    width: var(--desktop-rail-w);
-    height: 100vh;
-    flex-direction: column;
-    z-index: 120 !important;
-    background: var(--glovebox-surface) !important;
-    border-right: 1px solid var(--glovebox-border);
-  }
-  .glovebox-tabs {
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-    height: 100%;
-    width: 100%;
-    padding: 12px 0;
-    gap: 12px;
-  }
-  .glovebox-tabs > * {
-    width: 100%;
-  }
-  .glovebox-tab-label { display: none !important; }
-  .glovebox-tab-center .glovebox-tab-bump { display: none; }
-  .glovebox-tab-center { transform: none !important; }
-  /* Base .glovebox-tab uses `flex: 1; height: 100%` for the mobile bottom
-     bar, where each tab fills its share of the row. On the desktop
-     column-flex rail that expansion makes every tab a ~290px-tall
-     block spread across the viewport. Reset to intrinsic sizing so
-     `justify-content: center` on `.glovebox-tabs` actually centres a
-     tight stack of icon-sized tap targets. */
-  .glovebox-tab,
-  .glovebox-tab-item {
-    flex: 0 0 auto !important;
-    height: auto !important;
-    padding: 14px 0 !important;
-    min-height: 56px;
-  }
-
-  /* Shell content clears the left nav rail so scrollable pages like
-     /guide and /sos don't render under it. The trip/new/live pages use
-     `.trip-app-container` which is position:fixed and escapes this
-     offset, so the map still runs edge-to-edge under the rail. */
+  /* The left nav rail is gone (Glovebox is one page; the tab bar was
+     removed and no element renders `.glovebox-tabs*` any more). Its desktop
+     styling was deleted with it. --desktop-rail-w is held at 0 above so the
+     content simply starts at the true left edge. */
   .glovebox-main {
     left: var(--desktop-rail-w) !important;
     --bottom-nav-height: 0px;
-  }
-  /* Nav rail is fully opaque on desktop: there's no content behind it
-     to blend into, so a translucent fill would just read as a smudge. */
-  .glovebox-tabs {
-    background-color: var(--glovebox-bg) !important;
-    border-right: 1px solid color-mix(in srgb, var(--glovebox-text) 8%, transparent);
   }
 
   /* PersistentTabs wrap clips content with overflow:hidden, which would
