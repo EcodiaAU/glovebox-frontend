@@ -541,23 +541,6 @@ input, textarea, [contenteditable] {
   justify-content: flex-start !important;
 }
 
-/* ── Trip sheet expanded: slide the bottom tab bar out of the way ─
-   The trip/new sheet's expanded snap fills the visible content area
-   (top:80 → bottom of viewport) but the bottom tab bar (z=100) was
-   overlaying the lowest 80px, hiding the destination input on /new
-   and the route summary / first stop on /trip. The sheet provides
-   its own action surface when expanded, so the tab bar is redundant.
-   Mirror the keyboard-open easing so the transitions feel identical. */
-body[data-trip-sheet="expanded"] .glovebox-tab-bar,
-body[data-trip-sheet="expanded"] .glovebox-tabs-wrap,
-body[data-trip-sheet="full"] .glovebox-tab-bar,
-body[data-trip-sheet="full"] .glovebox-tabs-wrap {
-  transform: translateY(100%);
-  pointer-events: none;
-  opacity: 0;
-  transition: transform var(--dur-normal) ease, opacity var(--dur-fast) ease;
-}
-
 
 /* ==========================================================================
    4. APP LAYOUT PRIMITIVES
@@ -1849,39 +1832,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 
-/* ── Fixed tab bar (glass morphism, pins to viewport bottom) ────────── */
-.glovebox-tabs-wrap {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background-color: transparent;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.glovebox-tabs {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-evenly;
-  pointer-events: auto;
-  height: var(--glovebox-tab-h);
-  padding-top: 8px;
-  padding-bottom: 0;
-  border-radius: 0;
-  isolation: isolate;
-}
-
-/* Main content area - flex-fills shell above the fixed tab bar.
+/* Main content area - fills the shell. Glovebox is one page; the tab bar
+   was removed, so nothing renders `.glovebox-tabs*` any more and its rules
+   were deleted with it. `--glovebox-tab-h` survives as the bottom-chrome
+   offset that NavigationBar and FuelPressureIndicator anchor against.
    Individual pages add their own padding-bottom: var(--bottom-nav-height)
    as needed. Trip page uses position:fixed to escape this entirely (map). */
 .glovebox-main {
-  /* Fill the entire shell including the area behind the fixed tab bar,
-     so backdrop-filter on .glovebox-tabs has actual page pixels to blur.
-     Pages that need scroll clearance use padding-bottom: var(--bottom-nav-height). */
   position: absolute;
   inset: 0;
   overflow: hidden;

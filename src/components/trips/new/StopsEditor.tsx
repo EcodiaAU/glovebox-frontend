@@ -430,14 +430,6 @@ export function StopsEditor(props: {
 }) {
   // --- Smooth Drag Controller ---
   const [snapState, setSnapState] = useState<"peek" | "expanded">("peek");
-  // Reflect snap to <body> so the bottom tab bar can slide out of the way
-  // when the sheet covers the whole content area. Without this the tab
-  // bar overlays the bottom ~80px of the expanded sheet (Save & Go,
-  // Add Stop, suggestions list).
-  useEffect(() => {
-    document.body.setAttribute("data-trip-sheet", snapState);
-    return () => { document.body.removeAttribute("data-trip-sheet"); };
-  }, [snapState]);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDraggingState, setIsDraggingState] = useState(false);
   const isDragging = useRef(false);
