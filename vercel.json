@@ -1,6 +1,9 @@
 {
   "outputDirectory": "out",
   "rewrites": [
+    { "source": "/auth/v1/:path*",
+      "has": [{ "type": "host", "value": "auth.glovebox.ecodia.au" }],
+      "destination": "https://vzauarlfmkjfkcphojbd.supabase.co/auth/v1/:path*" },
     { "source": "/((?!_next|assets|api|robots\\.txt|sitemap\\.xml|llms\\.txt|manifest\\.webmanifest|favicon|og\\.png|icon|\\.well-known).*)", "destination": "/index.html" }
   ],
   "headers": [
