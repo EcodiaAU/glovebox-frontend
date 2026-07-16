@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "au.ecodia.glovebox",
+      "sha256_cert_fingerprints": [
+        "CB:BD:77:FB:15:9C:28:B8:64:27:F1:05:62:7C:9A:8D:81:8D:F4:6B:4E:75:1B:E0:84:D2:BC:79:E3:3E:01:0E"
+      ]
+    }
+  }
+]
