@@ -204,7 +204,7 @@ export function MapStyleSwitcher(props: {
                       strokeLinecap="round"
                     />
                     <circle cx="8" cy="78" r="3" fill={t.theme === "dark" ? "#4DB8F0" : "#1a6fa6"} />
-                    <circle cx="92" cy="22" r="3" fill="var(--brand-ochre, #b5452e)" />
+                    <circle cx="92" cy="22" r="3" fill="var(--brand-ochre)" />
                   </svg>
                   <div
                     style={{

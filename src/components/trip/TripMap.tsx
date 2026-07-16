@@ -2160,7 +2160,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           minzoom: 3,
           paint: {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 6, 6, 8, 10, 12, 14, 16, 17, 22],
-            "circle-color": ["match", ["get", "type"], "start", "#2d6e40", "end", "#b5452e", "via", "#7a3d99", "#1a6fa6"],
+            // MapLibre paint expressions take literal colours, not CSS vars.
+            // The destination pin carries the canonical brand accent (#A8431F).
+            "circle-color": ["match", ["get", "type"], "start", "#2d6e40", "end", "#A8431F", "via", "#7a3d99", "#1a6fa6"],
             "circle-stroke-color": "#ffffff",
             "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1.5, 10, 2.5, 14, 3],
             "circle-stroke-opacity": 1,

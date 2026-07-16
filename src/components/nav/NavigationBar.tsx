@@ -109,7 +109,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
           justifyContent: "space-between",
           gap: 8,
         }}>
-          {/* ETA — accented success color, like the prototype's green ETA */}
+          {/* ETA - accented success color, like the prototype's green ETA */}
           <div>
             <div className="t-display t-num" style={{
               fontSize: simple ? 26 : 24,
@@ -172,7 +172,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
             }}>DURATION</div>
           </div>
 
-          {/* SPEED — shown when moving; falls back to a placeholder dash */}
+          {/* SPEED - shown when moving; falls back to a placeholder dash */}
           <div style={{ textAlign: "right" }}>
             <div className="t-display t-num" style={{
               fontSize: simple ? 26 : 24,
@@ -194,7 +194,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
           </div>
         </div>
 
-        {/* Fuel pill row — prototype's "To next fuel · 184 km" pill (accent-tint).
+        {/* Fuel pill row - prototype's "To next fuel · 184 km" pill (accent-tint).
              Only rendered when we have a fuel-tracking distance. */}
         {fuelText && (
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
@@ -214,7 +214,7 @@ export const NavigationBar = memo(function NavigationBar({ nav, fuelTracking, vi
                   ? "var(--c-error-bg, rgba(181,69,46,0.18))"
                   : "var(--c-accent-tint, rgba(26,111,166,0.10))",
                 color: fuelUrgent
-                  ? "var(--c-error-text, var(--brand-ochre, #b5452e))"
+                  ? "var(--c-error-text, var(--brand-ochre))"
                   : "var(--c-accent, var(--brand-sky, #1a6fa6))",
                 border: 0,
                 fontSize: simple ? 13 : 12,

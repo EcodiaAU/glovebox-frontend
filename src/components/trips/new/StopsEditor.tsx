@@ -601,7 +601,7 @@ export function StopsEditor(props: {
             {/* Secondary action cluster: Plans + AI grouped in one capsule
                 with consistent visual weight. Plans was previously dark-on-dark
                 (invisible). Upgrade stays outside the cluster as a different intent
-                — it's a commercial CTA, not a routine action. */}
+                - it's a commercial CTA, not a routine action. */}
             <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
               <div
                 className="glovebox-action-cluster"
@@ -774,7 +774,7 @@ export function StopsEditor(props: {
                     padding: "13px 24px",
                     borderRadius: "var(--r-card)",
                     border: "1px solid var(--glovebox-border-strong)",
-                    background: "var(--brand-ochre, #b5452e)",
+                    background: "var(--brand-ochre)",
                     color: "var(--on-color)",
                     fontSize: 15,
                     fontWeight: 900,

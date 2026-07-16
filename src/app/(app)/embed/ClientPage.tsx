@@ -37,7 +37,11 @@ import type { NavPack } from "@/lib/types/navigation";
 import type { GloveboxPosition } from "@/lib/native/geolocation";
 
 const CATEGORY_CHIPS = ["", "cafe", "food", "fuel", "camp", "lookout", "toilets", "shop"];
-const GB_ORANGE = "#b3541e";
+// Brand accent = the design-system named token (--brand-ochre, theme-aware).
+// The canonical brand-ground literal is the fallback so this public, iframed
+// surface never renders an unthemed (empty-var) button in the first frame
+// before ThemeProvider stamps data-theme onto <html>.
+const GB_ACCENT = "var(--brand-ochre, #A8431F)";
 
 function num(v: string | null, fallback: number): number {
   const n = Number(v);
@@ -94,7 +98,7 @@ function OpenInGlovebox({ href }: { href: string }) {
         gap: 6,
         padding: "9px 14px",
         borderRadius: 999,
-        background: GB_ORANGE,
+        background: GB_ACCENT,
         color: "#fff",
         font: "600 13px var(--ff-body)",
         textDecoration: "none",
@@ -182,7 +186,7 @@ function MapEmbed({ params }: { params: URLSearchParams }) {
             placeholder="Search this area"
             style={{ flex: 1, padding: "10px 14px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.12)", background: "rgba(255,255,255,0.96)", boxShadow: "0 2px 10px rgba(0,0,0,0.10)", font: "500 14px var(--ff-body)", outline: "none" }}
           />
-          <button type="submit" style={{ padding: "10px 16px", borderRadius: 999, border: "none", background: GB_ORANGE, color: "#fff", font: "600 14px var(--ff-body)", boxShadow: "0 2px 10px rgba(0,0,0,0.12)" }}>
+          <button type="submit" style={{ padding: "10px 16px", borderRadius: 999, border: "none", background: GB_ACCENT, color: "#fff", font: "600 14px var(--ff-body)", boxShadow: "0 2px 10px rgba(0,0,0,0.12)" }}>
             Search
           </button>
         </form>
@@ -192,7 +196,7 @@ function MapEmbed({ params }: { params: URLSearchParams }) {
               key={c || "all"}
               type="button"
               onClick={() => { setQuery(c); void runSearch(c); }}
-              style={{ padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.10)", background: query === c ? GB_ORANGE : "rgba(255,255,255,0.92)", color: query === c ? "#fff" : "#333", font: "500 12px var(--ff-body)", cursor: "pointer" }}
+              style={{ padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.10)", background: query === c ? GB_ACCENT : "rgba(255,255,255,0.92)", color: query === c ? "#fff" : "#333", font: "500 12px var(--ff-body)", cursor: "pointer" }}
             >
               {c || "All"}
             </button>

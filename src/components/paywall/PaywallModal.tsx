@@ -116,8 +116,9 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
       // per Tate's 2026-05-28 device-driven entitlement reframe: StoreKit
       // owns the Apple-ID purchase, the device unlocks regardless of which
       // (or no) Supabase user is signed in, and the upsert in friendEntitlement
-      // will write the account backup if a session exists. Web still
-      // gates because Stripe Checkout needs a Supabase user to attach to.
+      // will write the account backup if a session exists. Web sells nothing
+      // here: it links out to friend.ecodia.au, and the entitlement returns
+      // via the Friend perk push (see the WEB branch below).
       setBuying(true);
       try {
         const result = await purchaseFriend();
@@ -358,7 +359,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
               size={18}
               strokeWidth={2.5}
               style={{
-                color: "var(--brand-ochre, #b5452e)",
+                color: "var(--brand-ochre)",
                 opacity: 0.55,
                 animation: "glovebox-bounce-hint 1.4s ease-in-out infinite",
               }}
@@ -427,8 +428,8 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
           </button>
 
           {/* Auto-renewal disclosure (App Store / Play Billing requirement for
-              auto-renewable subscriptions). Shown on native only; web bills via
-              Stripe. */}
+              auto-renewable subscriptions). Shown on native only; web bills
+              nothing itself and sends people to friend.ecodia.au. */}
           {isNative && (
             <p style={{
               margin: "10px 2px 0",

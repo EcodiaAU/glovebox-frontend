@@ -71,7 +71,7 @@ function Spinner({ size = 16 }: { size?: number }) {
         height: size,
         borderRadius: "50%",
         border: `2px solid rgba(181,69,46,0.18)`,
-        borderTopColor: "var(--brand-ochre, #b5452e)",
+        borderTopColor: "var(--brand-ochre)",
         animation: "aitm-spin 0.75s linear infinite",
         flexShrink: 0,
       }}
@@ -230,12 +230,12 @@ function GeneratingView({ quip }: { quip: string }) {
             inset: -2,
             borderRadius: "50%",
             border: "2px solid transparent",
-            borderTopColor: "var(--brand-ochre, #b5452e)",
+            borderTopColor: "var(--brand-ochre)",
             borderRightColor: "var(--brand-sky, #38bdf8)",
             animation: "aitm-spin 2s linear infinite",
           }}
         />
-        <Sparkles size={24} style={{ color: "var(--brand-ochre, #b5452e)" }} />
+        <Sparkles size={24} style={{ color: "var(--brand-ochre)" }} />
       </div>
 
       <div style={{ textAlign: "center" }}>

@@ -386,7 +386,8 @@ function ensureDataSources(map: MLMap) {
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 4, 10, 7, 14, 9],
         "circle-opacity": 1,
-        "circle-color": "#b5452e",
+        // MapLibre paint takes a literal colour, not a CSS var: canonical brand accent.
+        "circle-color": "#A8431F",
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 1,
         "circle-stroke-color": "#ffffff",

@@ -154,7 +154,7 @@ function Spinner() {
         height: 16,
         borderRadius: "50%",
         border: "2px solid rgba(181,69,46,0.20)",
-        borderTopColor: "var(--brand-ochre, #b5452e)",
+        borderTopColor: "var(--brand-ochre)",
         animation: "glovebox-po-spin 0.75s linear infinite",
         flexShrink: 0,
       }}
@@ -228,7 +228,7 @@ export function PlanningOverlay({ phase, error, visible }: PlanningOverlayProps)
                 ? "var(--glovebox-danger, #7a1800)"
                 : isReady
                 ? "var(--brand-eucalypt, #2d6e40)"
-                : "var(--brand-ochre, #b5452e)",
+                : "var(--brand-ochre)",
               padding: "20px 20px 16px",
               position: "relative",
               overflow: "hidden",

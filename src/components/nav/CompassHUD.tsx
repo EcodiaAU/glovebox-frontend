@@ -83,7 +83,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
               y={ly}
               textAnchor="middle"
               dominantBaseline="central"
-              fill={primary ? "var(--glovebox-accent, #B3541E)" : "var(--glovebox-text-muted, #999)"}
+              fill={primary ? "var(--glovebox-accent)" : "var(--glovebox-text-muted, #999)"}
               fontSize={cardinalFontSize}
               fontWeight={primary ? 700 : 500}
               style={{ userSelect: "none" }}
@@ -112,7 +112,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
             top: cx - needleLen,
             width: 1,
             height: needleLen,
-            background: "linear-gradient(to top, transparent, var(--glovebox-accent, #B3541E))",
+            background: "linear-gradient(to top, transparent, var(--glovebox-accent))",
             filter: "drop-shadow(0 0 8px rgba(179,84,30,0.4))",
           }}
         />
@@ -124,7 +124,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
             top: cx - needleLen - diamondSize / 2,
             width: diamondSize,
             height: diamondSize,
-            background: "var(--glovebox-accent, #B3541E)",
+            background: "var(--glovebox-accent)",
             transform: "rotate(45deg)",
             filter: "drop-shadow(0 0 8px rgba(179,84,30,0.4))",
           }}
@@ -158,7 +158,7 @@ export const CompassHUD = memo(function CompassHUD({ heading, size = "sm" }: Pro
           style={{
             fontSize: cardFontSize,
             fontWeight: 700,
-            color: "var(--glovebox-accent, #B3541E)",
+            color: "var(--glovebox-accent)",
             lineHeight: 1,
             letterSpacing: "0.1em",
             marginTop: 1,
