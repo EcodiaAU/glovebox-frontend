@@ -29,6 +29,11 @@ const LandingPage = lazy(() => import("./app/ClientPage"));
 // floating Friend chat mounted in AppLayout.
 const LoginPage = lazy(() => import("./app/(app)/login/page"));
 const AuthCallbackPage = lazy(() => import("./app/(app)/auth/callback/page"));
+// Force-federation entry: "Open Glovebox" from Friend lands on /auth/enter,
+// which unconditionally restarts the connect-with-Friend OIDC flow so the app
+// re-authenticates as the CURRENT Friend identity, replacing any stale local
+// session (see the page for the full why).
+const AuthEnterPage = lazy(() => import("./app/(app)/auth/enter/page"));
 const LiveTripClientPage = lazy(() => import("./app/(app)/live/ClientPage"));
 const NewTripPage = lazy(() => import("./app/(app)/new/page"));
 const AccountPage = lazy(() => import("./app/(app)/account/page"));
@@ -67,8 +72,16 @@ export function App() {
   // applies on first entry. Boot-time pathname is safe: /embed is a standalone
   // surface that never client-navigates to other routes.
   const isEmbedSurface = window.location.pathname.startsWith("/embed");
+  // AND EXCEPT /auth/enter: the force-federation trampoline renders no app
+  // content - it immediately leaves for the Friend IdP - and gating it would
+  // strand "Open Glovebox" visitors (fresh browser context, nothing confirmed
+  // yet) on a modal instead of re-authenticating them. The gate still applies
+  // on return: /auth/callback and every content route boot under it. Boot-time
+  // pathname is safe here for the same reason as /embed: the trampoline never
+  // client-navigates to other routes, it full-page navigates away.
+  const isAuthEnterSurface = window.location.pathname.startsWith("/auth/enter");
   const [confirmedAdult, setConfirmedAdult] = useState(hasConfirmedAdult);
-  const gateSatisfied = confirmedAdult || isEmbedSurface;
+  const gateSatisfied = confirmedAdult || isEmbedSurface || isAuthEnterSurface;
 
   return (
     <BrowserRouter>
@@ -193,6 +206,20 @@ export function App() {
             element={
               <Suspense fallback={null}>
                 <EmbedPage />
+              </Suspense>
+            }
+          />
+
+          {/* Force-federation entry. Standalone like /embed, NOT under
+              AppLayout: mounting the whole shell (Friend chat, saved-places
+              sync, offline indicator) for a page whose only job is to leave
+              for the IdP would fire network calls under the very stale
+              session this route exists to replace. */}
+          <Route
+            path="auth/enter"
+            element={
+              <Suspense fallback={null}>
+                <AuthEnterPage />
               </Suspense>
             }
           />
