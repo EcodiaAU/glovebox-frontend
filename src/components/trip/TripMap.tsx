@@ -3431,7 +3431,14 @@ export const TripMap = React.memo(function TripMap(props: Props) {
     s2?.setData(trafficLineFC);
     const s3 = map.getSource(TRAFFIC_POLY_SRC) as GeoJSONSource | undefined;
     s3?.setData(trafficPolyFC);
-  }, [trafficPtFC, trafficLineFC, trafficPolyFC]);
+    // styleReady in the deps so this re-runs once style.load has created the
+    // sources. Without it, on an offline cold start where the overlay packs load
+    // from IndexedDB BEFORE the basemap style finishes, this effect fires once
+    // with the sources still absent, the getSource calls no-op, and the data
+    // never lands - the sources sit empty for the whole session. Every other
+    // overlay effect below already gates on styleReady; these two did not, which
+    // is what left the fire + hazard layers blank when packs won the race.
+  }, [trafficPtFC, trafficLineFC, trafficPolyFC, styleReady]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -3442,7 +3449,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
     s2?.setData(hazardPolyFC);
     const s3 = map.getSource(FIRE_SRC) as GeoJSONSource | undefined;
     s3?.setData(fireFC);
-  }, [hazardPtFC, hazardPolyFC, fireFC]);
+  }, [hazardPtFC, hazardPolyFC, fireFC, styleReady]);
 
   useEffect(() => {
     (mapRef.current?.getSource(WILDLIFE_SRC) as GeoJSONSource | undefined)?.setData(wildlifeFC);
