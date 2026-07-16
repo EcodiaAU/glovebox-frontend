@@ -142,32 +142,34 @@ function localSet(key: string, value: string): void {
   localStorage.setItem(key, value);
 }
 
-/* ── Supabase: entitlement status ────────────────────────────────── */
+/* ── Server: entitlement status ──────────────────────────────────── */
 
-/** Returns true if the authenticated user has an entitlement row in Supabase.
- *  Returns null when we can't determine (no session yet, query error) so the
- *  caller can fall back to localStorage instead of treating "unknown" as "no".
+/** Returns true when the backend's canonical entitlement resolver says the
+ *  user holds a non-free tier. Returns null when we can't determine (no
+ *  session yet, network error) so the caller can fall back to localStorage
+ *  instead of treating "unknown" as "no".
  *
- *  IMPORTANT: Uses getSession() (reads from localStorage cache), not getUser()
- *  (network round-trip). Right after login the session is hydrated into the
- *  client before getUser() can validate with the server, so getUser() races
- *  and transiently returns null - which would make an entitled user look
- *  unentitled for the first few seconds. */
-async function fetchUnlockFromSupabase(): Promise<boolean | null> {
+ *  WHY GET /entitlement and not a direct table read: this used to select
+ *  from `user_entitlements` (the v1 binary unlock table) - but the Friend
+ *  perk push (pushGloveboxPerk -> /friend/entitlement) grants a MONTH-tier
+ *  row in the v2 `entitlements` table, which that read never saw, so a
+ *  Friend bought at friend.ecodia.au unlocked nothing on web. The backend's
+ *  GET /entitlement resolves the whole ladder in one place: v2 lifetime ->
+ *  unexpired v2 pass (the Friend perk lands here) -> v1 legacy grandfather
+ *  -> free. The `api` client attaches the Supabase JWT automatically.
+ *
+ *  Session check still uses getSession() (localStorage cache), not getUser()
+ *  (network round-trip), because right after login getUser() races session
+ *  hydration and transiently returns null - which would make an entitled
+ *  user look unentitled for the first few seconds. */
+async function fetchUnlockFromServer(): Promise<boolean | null> {
   try {
     const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
-    if (!userId) return null; // not logged in / session not hydrated yet
+    if (!session?.user?.id) return null; // not logged in / session not hydrated yet
 
-    const { data, error } = await supabase
-      .from("user_entitlements")
-      .select("id")
-      .eq("user_id", userId)
-      .limit(1)
-      .maybeSingle();
-
-    if (error) return null;
-    return data !== null;
+    const ent = await api.get<{ tier?: string }>("/entitlement", { timeoutMs: 15_000 });
+    if (!ent || typeof ent.tier !== "string") return null;
+    return ent.tier.toLowerCase() !== "free";
   } catch {
     return null;
   }
@@ -241,7 +243,7 @@ async function markEntitlementInSupabase(source: "revenuecat" | "stripe" | "manu
     // syncUnlockFromRC fires immediately after sign-in and getUser races
     // against the session-hydration window, transiently returning null. The
     // upsert then silently no-ops, no row is ever written, and subsequent
-    // fetchUnlockFromSupabase reads return false even though RC said yes.
+    // fetchUnlockFromServer reads return false even though RC said yes.
     // (Tate 2026-05-28 on TestFlight 1.1.1(1): logout-then-Apple-SSO cycle.)
     const { data: { session } } = await supabase.auth.getSession();
     const userId = session?.user?.id;
@@ -423,7 +425,7 @@ export async function isUnlocked(): Promise<boolean> {
   // Native: ask RevenueCat directly. The purchase may have happened on another
   // device under the same store account, or in another Ecodia app.
   if (isNativePlatform() && (await syncUnlockFromRC())) return true;
-  const server = await fetchUnlockFromSupabase();
+  const server = await fetchUnlockFromServer();
   return server === true;
 }
 
