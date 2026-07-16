@@ -95,6 +95,9 @@ import { isUnlocked as checkIsUnlocked, onAuthReadyForGate } from "@/lib/paywall
 import { PaywallModal } from "@/components/paywall/PaywallModal";
 import { NativeShareRenderer } from "@/components/share/NativeShareRenderer";
 import { usePlaceDetail } from "@/lib/context/PlaceDetailContext";
+import { useNavStatus } from "@/lib/context/NavStatusContext";
+import { RailSlot } from "@/components/ui/RailSlot";
+import { RAIL } from "@/lib/ui/layers";
 import type { ShareCardData } from "@/components/share/TripShareCard";
 import { captureMapSnapshot } from "@/lib/share/captureMapSnapshot";
 
@@ -782,6 +785,16 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
   useEffect(() => {
     presenceBeacon.setNavigating(activeNav.isActive);
   }, [activeNav.isActive]);
+
+  /* Publish nav state up to the shell.
+     The rail and the Friend drawer are mounted in AppLayout, above this page, so
+     this is the only way they can know the driver is moving. Reset on unmount:
+     leaving /trip mid-navigation must not leave the shell stuck in drive mode. */
+  const { setNavActive } = useNavStatus();
+  useEffect(() => {
+    setNavActive(activeNav.isActive);
+    return () => setNavActive(false);
+  }, [activeNav.isActive, setNavActive]);
 
   // ── User observations (crowd-sourced road intel) ──
   const observations = useObservations({
@@ -2204,29 +2217,28 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
         onClose={() => setMapQuickMenu(null)}
       />
 
-      {/* ── Report FAB ── only shown at peek. Docked to the top-right map
-           control rail directly beneath the layer-menu button (MapStyleSwitcher
-           at safe-top+12 h44, overlay-layer toggle at safe-top+64 h44), so it
-           reads as part of the rail rather than floating mid-map. Hidden at
-           expanded/full where the sheet covers the map. */}
+      {/* ── Report FAB ── only shown at peek; hidden at expanded/full where the
+           sheet covers the map, and in nav where the report tray lives in
+           NavigationControls instead.
+
+           Docked into the shared rail (RailSlot) rather than positioned here.
+           The comment this replaces described a rail that did not exist - it had
+           the layer menu at safe-top+64 when TripMap actually put it at 108 -
+           and the 116px below it was measured against that wrong number, which
+           is how the report FAB ended up drawn across the layer button. Nothing
+           in this file gets to have an opinion about where the rail is now. */}
       {!activeNav.isActive && sheetSnap === "peek" && (
-        <div className="trip-report-fab" style={{
-          position: "absolute",
-          top: "calc(env(safe-area-inset-top, 0px) + 116px)",
-          right: 10,
-          zIndex: 18,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          alignItems: "flex-end",
-        }}>
+        <RailSlot>
           <button
             type="button"
             className="map-fab-btn"
             onClick={() => { haptic.selection(); setReportPhase("picking"); }}
             aria-label="Report road condition"
             style={{
-              width: 46, height: 46,
+              // Matches the layer button so the rail reads as one column of
+              // equal-weight controls rather than two components that happen to
+              // be near each other. Was 46 against the layer button's 44.
+              width: RAIL.MAP_BTN, height: RAIL.MAP_BTN,
               borderRadius: "var(--r-card)",
               display: "grid",
               placeItems: "center",
@@ -2241,7 +2253,7 @@ export function TripClientPage(props: { initialPlanId: string | null }) {
           >
             <Megaphone size={19} strokeWidth={2.5} />
           </button>
-        </div>
+        </RailSlot>
       )}
 
       {/* ── Report Phase 1: Type Picker Overlay ── */}

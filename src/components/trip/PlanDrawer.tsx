@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFLIP } from "@/lib/hooks/useFLIP";
 import { useNavigate } from "react-router";
+import { Z } from "@/lib/ui/layers";
 import {
     Check,
     Clock,
@@ -703,7 +704,11 @@ export function PlanDrawer({
             position: "fixed",
             inset: 0,
             background: "var(--overlay-bg, rgba(0,0,0,0.3))",
-            zIndex: 39,
+            // Was 39, which sits BELOW the control rail - the same bug Tate
+            // caught between the rail and the Friend drawer, one drawer over.
+            // Desktop masked it with `.plan-drawer { z-index: 60 !important }`
+            // in globals.css, so it only ever showed on mobile.
+            zIndex: Z.DRAWER_SCRIM,
             animation: "glovebox-fadeIn 0.2s ease",
             WebkitTapHighlightColor: "transparent",
           }}
@@ -721,7 +726,7 @@ export function PlanDrawer({
           bottom: 0,
           width: "min(100%, 360px)",
           background: "var(--glovebox-surface)",
-          zIndex: 40,
+          zIndex: Z.DRAWER,
           boxShadow: open ? "-4px 0 16px rgba(0,0,0,0.2)" : "none",
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",

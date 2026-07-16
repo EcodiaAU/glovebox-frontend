@@ -6,6 +6,28 @@ import { SavedPlacesSync } from "@/components/places/SavedPlacesSync";
 import { OfflineStatusIndicator } from "@/components/ui/OfflineStatusIndicator";
 import { FloatingGuideChat } from "@/components/guide/FloatingGuideChat";
 import { ShellControls } from "@/components/ui/ShellControls";
+import { NavStatusProvider, useNavStatus } from "@/lib/context/NavStatusContext";
+import { Z } from "@/lib/ui/layers";
+
+/**
+ * The co-pilot, minus the driving.
+ *
+ * Friend is unmounted in turn-by-turn (Tate 2026-07-16: "the friend drawer
+ * shouldn't be visible in turn by turn since its a distraction and dangerous").
+ * A chat drawer that slides over the maneuver card while someone is driving a
+ * remote highway is the exact opposite of what this app is for.
+ *
+ * Unmounted, not hidden: a display:none drawer keeps its focusable children and
+ * its open state, so it stays one tab-key or one stale ref from reappearing
+ * mid-drive. Remounting when navigation ends is cheap; the conversation lives in
+ * the Friend service, not in this component.
+ */
+function CoPilot() {
+  const { navActive } = useNavStatus();
+  if (navActive) return null;
+  return <FloatingGuideChat />;
+}
+
 export function AppLayout() {
   useEffect(() => {
     document.documentElement.classList.add("glovebox-shell");
@@ -14,6 +36,7 @@ export function AppLayout() {
 
   return (
     <PlaceDetailProvider>
+    <NavStatusProvider>
       {/* Wires useSavedPlaces into PlaceDetailContext so the sheet can toggle bookmarks */}
       <SavedPlacesSync />
       <div className="glovebox-shell">
@@ -25,7 +48,7 @@ export function AppLayout() {
           top: "calc(env(safe-area-inset-top, 0px) + 6px)",
           left: "50%",
           transform: "translateX(-50%)",
-          zIndex: 100,
+          zIndex: Z.STATUS,
           pointerEvents: "none",
           display: "flex",
           justifyContent: "center",
@@ -52,9 +75,10 @@ export function AppLayout() {
         <PlaceDetailSheet />
         {/* The co-pilot. Friend replaced the in-app Guide, and it is gated on the
             Friend entitlement (see lib/paywall/friendEntitlement). Floating, so it is reachable from the
-            single page without costing a tab. */}
-        <FloatingGuideChat />
+            single page without costing a tab - and gone while driving (see CoPilot). */}
+        <CoPilot />
       </div>
+    </NavStatusProvider>
     </PlaceDetailProvider>
   );
 }

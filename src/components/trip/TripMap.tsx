@@ -8,6 +8,8 @@ import type { StyleSpecification, SourceSpecification, GeoJSONSourceSpecificatio
 import { Protocol } from "pmtiles";
 
 import { decodePolyline6AsLngLat } from "@/lib/nav/polyline6";
+import { RailSlot } from "@/components/ui/RailSlot";
+import { Z } from "@/lib/ui/layers";
 import { useMapViewport, useCulledFC, cullFeatures } from "@/lib/hooks/useViewportCull";
 import type { ViewportBounds } from "@/lib/hooks/useViewportCull";
 import type { BBox4 } from "@/lib/types/geo";
@@ -172,6 +174,39 @@ const HAZARD_POLY_LAYER = "glovebox-hazard-poly";
 const HAZARD_POLY_OUTLINE = "glovebox-hazard-poly-outline";
 const HAZARD_ICON_LAYER = "glovebox-hazard-icon";
 
+/* ── Fire hotspots ────────────────────────────────────────────────────────
+   Split out of the generic hazard icon layer (Tate 2026-07-16: "theres a fuck
+   ton of htem which probably isnt the best ux").
+
+   Fire is not shaped like the other hazards. A closure or a flood is a discrete
+   thing you route around; a DEA satellite hotspot is one pixel of a thermal
+   scan, and the backend hands us every one of them within 72 hours and 50%
+   confidence across the whole route bbox with no cap (hazards.py:1196). Drawing
+   each as its own pin was answering "where is fire" with a list when the honest
+   answer is a shape.
+
+   Two things made that worse than it had to be. The pins were black, because
+   their colour came through a var() that cannot survive rasterisation (see
+   resolveColor). And the hazard symbol layer sets icon-allow-overlap with
+   icon-ignore-placement, which switches OFF MapLibre's collision handling - so
+   every one of a few hundred detections drew, stacked, fusing into the blobs in
+   the screenshot rather than dropping out.
+
+   So fire now reads at the altitude you are looking from:
+     z < 9    heatmap. Density is the truth at continental zoom.
+     z 9-11   clustered counts. "23 detections here", one legible badge.
+     z >= 11  the individual detection, in the marker language.  */
+const FIRE_SRC = "glovebox-fire-src";
+const FIRE_HEAT_LAYER = "glovebox-fire-heat";
+const FIRE_CLUSTER_LAYER = "glovebox-fire-cluster";
+const FIRE_CLUSTER_COUNT_LAYER = "glovebox-fire-cluster-count";
+const FIRE_POINT_LAYER = "glovebox-fire-pt";
+
+/** The one hue fire is allowed. Ring colour on badges, ramp anchor on the heat. */
+const FIRE_ACCENT = "#c62828";
+/** Zoom at which clustering stops and individual detections take over. */
+const FIRE_CLUSTER_MAX_ZOOM = 10;
+
 const ALERT_HIGHLIGHT_SRC = "glovebox-alert-highlight-src";
 const ALERT_HIGHLIGHT_RING = "glovebox-alert-highlight-ring";
 const ALERT_HIGHLIGHT_PING = "glovebox-alert-highlight-ping";
@@ -259,7 +294,13 @@ const LAYER_GROUPS = {
   places: [SUG_CLUSTER_CIRCLE, SUG_CLUSTER_COUNT, SUG_UNCLUSTERED, SUG_ICON_LAYER, SUG_LABEL_LAYER, SUG_FOCUS_RING, SUG_FOCUS_PING, SUG_FOCUS_DOT],
   fuel: [FUEL_CLUSTER_CIRCLE, FUEL_CLUSTER_COUNT, FUEL_ICON_LAYER, FUEL_LABEL_LAYER, EV_CLUSTER_CIRCLE, EV_CLUSTER_COUNT, EV_ICON_LAYER, EV_LABEL_LAYER],
   traffic: [TRAFFIC_POLY_LAYER, TRAFFIC_LINE_CASING, TRAFFIC_LINE_LAYER, TRAFFIC_PULSE_LAYER, TRAFFIC_POINT_LAYER],
-  hazards: [HAZARD_POLY_LAYER, HAZARD_POLY_OUTLINE, HAZARD_ICON_LAYER, ALERT_HIGHLIGHT_RING, ALERT_HIGHLIGHT_PING],
+  // Fire's four layers ride with `hazards`: it is the same overlay toggle to the
+  // user, just rendered at three altitudes instead of one.
+  hazards: [
+    HAZARD_POLY_LAYER, HAZARD_POLY_OUTLINE, HAZARD_ICON_LAYER,
+    FIRE_HEAT_LAYER, FIRE_CLUSTER_LAYER, FIRE_CLUSTER_COUNT_LAYER, FIRE_POINT_LAYER,
+    ALERT_HIGHLIGHT_RING, ALERT_HIGHLIGHT_PING,
+  ],
   wildlife: [WILDLIFE_FILL_LAYER, WILDLIFE_LABEL_LAYER],
   coverage: [COVERAGE_LINE_LAYER],
   flood: [FLOOD_CATCH_FILL, FLOOD_CATCH_LINE, FLOOD_CIRCLE_LAYER, FLOOD_LABEL_LAYER],
@@ -325,29 +366,22 @@ const EMPTY_FC: GeoJSON.FeatureCollection = { type: "FeatureCollection", feature
 
 /* ── Static style objects (hoisted to avoid re-allocation per render) ── */
 
-/* The map's control rail starts BELOW the shell controls (SOS + account), which
-   are pinned top-right on every route since the tab bar was removed. Those are a
-   40px row at safe-top + 8px, so the rail clears them at safe-top + 56px.
-   Without this the SOS button lands on top of the layer switcher: the safety
-   control wins the z-fight (as it should) and the map control is unreachable. */
-const SHELL_CONTROLS_CLEARANCE = 56;
+/* The layer control docks into the shared rail (see RailSlot / ShellControls), so
+   it no longer positions itself and no longer has to guess where the shell
+   buttons end. The old SHELL_CONTROLS_CLEARANCE = 56 lived here and was the
+   cause of the overlap Tate reported: this file cleared the SOS row correctly,
+   but ClientPage put the report FAB at a flat 116px with no knowledge of either
+   number, and 108 vs 116 collide. Deleted rather than corrected - a constant
+   describing another component's geometry will drift again. */
 
+/* Nav mode keeps its own absolute rail: while navigating, the shell rail
+   collapses to SOS and the layer dropdown belongs to NavigationControls, which
+   sits lower down the right edge on its own. */
 const LAYER_CONTROLS_STYLE_NAV: React.CSSProperties = {
   position: "absolute",
-  top: `calc(env(safe-area-inset-top, 0px) + ${SHELL_CONTROLS_CLEARANCE}px)`,
+  top: "calc(env(safe-area-inset-top, 0px) + 56px)",
   right: 12,
-  zIndex: 50,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-end",
-  gap: 8,
-};
-const LAYER_CONTROLS_STYLE: React.CSSProperties = {
-  // Sits directly below the MapStyleSwitcher launcher (its top + height 44 + 8 gap).
-  position: "absolute",
-  top: `calc(env(safe-area-inset-top, 0px) + ${SHELL_CONTROLS_CLEARANCE + 52}px)`,
-  right: 10,
-  zIndex: 25,
+  zIndex: Z.NAV_RAIL,
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-end",
@@ -374,20 +408,135 @@ function svgToDataUrl(svg: string): string {
 }
 
 /**
- * Creates a clean, professional map marker SVG with a vector icon path.
- * All icons are drawn inside a filled circle with a subtle border.
+ * Resolve a colour to a literal that survives rasterisation.
+ *
+ * Every marker below is rasterised by assigning the SVG to `img.src` as a data
+ * URL (see loadSVGImage). That image is a SEPARATE, DETACHED document: it can
+ * see no ancestor, no stylesheet, and none of the page's custom properties. So
+ * `fill="var(--glovebox-danger)"` is unresolvable inside it, and SVG's default
+ * fill takes over - black.
+ *
+ * That is the whole story behind the black circles on the map. The token was
+ * never broken: `--glovebox-danger` resolves to #c62828 in the DOM, and the same
+ * SVG inlined into the DOM paints red. It only died crossing the raster
+ * boundary, silently, on ten markers (fire, storm, closure, incident, rest_area,
+ * grocery, golf, fuel-critical, flood-major, rest-area).
+ *
+ * So: read the var from the live DOM, hand the SVG a literal. Same class of bug
+ * as `undefined-design-token-references-render-silent-zero-not-error`.
  */
-function makeIconSVG(pathD: string, bgColor: string, sizePx: number, iconColor: string = "#fff"): string {
+function resolveColor(color: string, fallback = "#64748b"): string {
+  if (!color.startsWith("var(")) return color;
+  if (typeof window === "undefined") return fallback;
+  const name = color.slice(4, color.indexOf(")", 4)).split(",")[0].trim();
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  // A var can resolve to another var; walk the chain rather than emit black.
+  if (v.startsWith("var(")) return resolveColor(v, fallback);
+  return v || fallback;
+}
+
+/** True when the tactical-night palette is active. Set by ThemeContext.applyMode. */
+function isNightTheme(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.getAttribute("data-theme") === "tactical-night";
+}
+
+/**
+ * Markers bake the palette into their raster, so the "already loaded" guard has
+ * to know WHICH theme it loaded for. Without this, `map.hasImage(id)` reports a
+ * day-palette marker as present and every loader skips it, leaving the whole map
+ * in the old palette after a night flip.
+ */
+let ICONS_BUILT_FOR: "day" | "night" | null = null;
+const themeKey = (): "day" | "night" => (isNightTheme() ? "night" : "day");
+
+/** hasImage(), but a marker rasterised for the other theme counts as absent. */
+function iconCached(map: MLMap, id: string): boolean {
+  if (ICONS_BUILT_FOR !== themeKey()) return false;
+  return map.hasImage(id);
+}
+
+/**
+ * The marker language, in one place (Tate 2026-07-16).
+ *
+ * Every marker is a white disc with a black glyph and a thin ring in the
+ * category's colour. In tactical-night the disc and glyph invert; the ring does
+ * not, because the ring is the only thing carrying meaning and it has to stay
+ * the same colour in both themes for the map to stay learnable.
+ *
+ * This replaces the old language (saturated colour disc, white glyph, 1.75px
+ * white ring). Two reasons it had to go. It read as heavy and, at the densities
+ * this map actually hits, as noise: hundreds of high-chroma discs with thick
+ * white rims fusing into blobs. And the colour was carried by the FILL, which is
+ * exactly the property that fell back to black when a var() failed to resolve -
+ * so a token miss cost the whole marker. Now colour lives on the ring, the fill
+ * is a constant, and a marker can never silently become a black dot again.
+ */
+const MARKER_PAPER_DAY = "#ffffff";
+const MARKER_PAPER_NIGHT = "#15120e";
+const MARKER_INK_DAY = "#12100d";
+const MARKER_INK_NIGHT = "#f7f3ec";
+
+/** Disc fill for the current theme. A literal - MapLibre paint cannot take a var. */
+const MARKER_PAPER = (): string => (isNightTheme() ? MARKER_PAPER_NIGHT : MARKER_PAPER_DAY);
+/** Glyph / label fill for the current theme. */
+const MARKER_INK = (): string => (isNightTheme() ? MARKER_INK_NIGHT : MARKER_INK_DAY);
+/** Neutral lift under a marker. Warm-dark by day, black by night. */
+const STOP_SHADOW_COLOR = (): string =>
+  isNightTheme() ? "rgba(0,0,0,0.55)" : "rgba(28,22,16,0.28)";
+
+/**
+ * The stop palette. These four are the only hues on the stop markers now that
+ * the disc is a constant, so they carry the whole type distinction and are
+ * tuned for contrast against a paper disc rather than against the terrain.
+ */
+const STOP_COLORS = {
+  start: "#2d6e40",
+  end: "#A8431F",
+  via: "#7a3d99",
+  poi: "#1a6fa6",
+} as const;
+
+/** Ring colour by stop type. Theme-invariant: the ring is the meaning. */
+const STOP_RING_COLOR: maplibregl.ExpressionSpecification = [
+  "match",
+  ["get", "type"],
+  "start", STOP_COLORS.start,
+  "end", STOP_COLORS.end,
+  "via", STOP_COLORS.via,
+  STOP_COLORS.poi,
+];
+
+function makeIconSVG(
+  pathD: string,
+  accentColor: string,
+  sizePx: number,
+  /** Kept for call-site compatibility; the glyph now tracks the theme, not the caller. */
+  _legacyIconColor?: string,
+): string {
+  const night = isNightTheme();
+  const paper = night ? MARKER_PAPER_NIGHT : MARKER_PAPER_DAY;
+  const ink = night ? MARKER_INK_NIGHT : MARKER_INK_DAY;
+  const accent = resolveColor(accentColor);
+
+  // Ring scales with the marker so a 24px POI and a 40px stop read as one family.
+  // ~6% of diameter: present enough to carry the category, thin enough that a
+  // cluster of them stays legible. The old white rim was 1.75px flat.
+  const ring = Math.max(1.5, Math.round(sizePx * 0.0625 * 10) / 10);
   const r = sizePx / 2;
-  // Icon is drawn in a 24x24 viewbox, scaled and centered within the circle
-  const iconScale = (sizePx * 0.38) / 24;
+  const iconScale = (sizePx * 0.42) / 24;
   const iconOff = (sizePx - 24 * iconScale) / 2;
-  // Crisp markers: solid fill, opaque, single thin white ring (restored
-  // Tate 2026-05-28), no drop-shadow or gaussian blur. Pixel-sharp.
+
+  // Hairline under the ring: a white disc on pale terrain (and a near-black one
+  // on a dark basemap) needs one low-alpha edge or it dissolves into the map.
+  // Pixel-sharp still - no drop-shadow, no gaussian blur.
+  const hairline = night ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)";
+
   return `<svg width="${sizePx}" height="${sizePx}" viewBox="0 0 ${sizePx} ${sizePx}" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="${r}" cy="${r}" r="${r - 1.5}" fill="${bgColor}" stroke="#ffffff" stroke-width="1.75"/>
+    <circle cx="${r}" cy="${r}" r="${r - 0.5}" fill="none" stroke="${hairline}" stroke-width="1"/>
+    <circle cx="${r}" cy="${r}" r="${r - 1 - ring / 2}" fill="${paper}" stroke="${accent}" stroke-width="${ring}"/>
     <g transform="translate(${iconOff},${iconOff}) scale(${iconScale.toFixed(3)})">
-      <path d="${pathD}" fill="${iconColor}" fill-rule="evenodd"/>
+      <path d="${pathD}" fill="${ink}" fill-rule="evenodd"/>
     </g>
   </svg>`;
 }
@@ -575,14 +724,14 @@ function loadCategoryIcons(map: MLMap): Promise<void> {
   const promises: Promise<void>[] = [];
   for (const [cat, cfg] of Object.entries(CATEGORY_CONFIG)) {
     const imgId = `glovebox-cat-${cat}`;
-    if (map.hasImage(imgId)) continue;
+    if (iconCached(map, imgId)) continue;
     const px = SIZE_PX[cfg.size];
     const pathD = ICON_PATHS[cfg.icon] ?? ICON_PATHS.pin;
     const svg = makeIconSVG(pathD, cfg.color, px);
     promises.push(loadSVGImage(map, imgId, svg, px));
   }
   // Default
-  if (!map.hasImage("glovebox-cat-default")) {
+  if (!iconCached(map, "glovebox-cat-default")) {
     const svg = makeIconSVG(ICON_PATHS.pin, "#64748b", 24);
     promises.push(loadSVGImage(map, "glovebox-cat-default", svg, 24));
   }
@@ -593,13 +742,13 @@ function loadOverlayIcons(map: MLMap): Promise<void> {
   const promises: Promise<void>[] = [];
   for (const [k, v] of Object.entries(TRAFFIC_ICON_CFG)) {
     const id = `glovebox-traffic-${k}`;
-    if (map.hasImage(id)) continue;
+    if (iconCached(map, id)) continue;
     const pathD = ICON_PATHS[v.icon] ?? ICON_PATHS.triangle_alert;
     promises.push(loadSVGImage(map, id, makeIconSVG(pathD, v.color, 32), 32));
   }
   for (const [k, v] of Object.entries(HAZARD_ICON_CFG)) {
     const id = `glovebox-hazard-${k}`;
-    if (map.hasImage(id)) continue;
+    if (iconCached(map, id)) continue;
     const pathD = ICON_PATHS[v.icon] ?? ICON_PATHS.triangle_alert;
     promises.push(loadSVGImage(map, id, makeIconSVG(pathD, v.color, 32), 32));
   }
@@ -615,11 +764,50 @@ function loadStopIcons(map: MLMap): Promise<void> {
   ];
   const promises: Promise<void>[] = [];
   for (const d of defs) {
-    if (map.hasImage(d.id)) continue;
+    if (iconCached(map, d.id)) continue;
     const pathD = ICON_PATHS[d.icon];
     promises.push(loadSVGImage(map, d.id, makeIconSVG(pathD, d.color, d.px), d.px));
   }
   return Promise.all(promises).then(() => {});
+}
+
+/**
+ * Every rasterised marker on the map, in one call. Also stamps which theme they
+ * were built for, so a later flip invalidates the cache rather than silently
+ * keeping the old palette (see iconCached).
+ */
+/**
+ * Repaint the theme-dependent parts of the vector marker layers.
+ *
+ * The rasterised markers are handled by re-registering their images, but the
+ * stop orb is a real MapLibre circle layer whose paint was resolved to a literal
+ * when the layer was added. Nothing re-evaluates that on its own, so a night
+ * flip would leave white discs sitting on a dark basemap.
+ *
+ * Only the theme-dependent properties are touched. The ring colour is
+ * deliberately absent: it is the same hue in both themes.
+ */
+function applyStopPaintForTheme(map: MLMap): void {
+  const set = (layer: string, prop: string, value: unknown) => {
+    if (map.getLayer(layer)) map.setPaintProperty(layer, prop, value as never);
+  };
+  set(STOPS_OUTER, "circle-color", MARKER_PAPER());
+  set(STOPS_SHADOW, "circle-color", STOP_SHADOW_COLOR());
+  set(FIRE_CLUSTER_LAYER, "circle-color", MARKER_PAPER());
+  set(FIRE_CLUSTER_COUNT_LAYER, "text-color", MARKER_INK());
+}
+
+async function loadAllMarkerIcons(map: MLMap): Promise<void> {
+  await Promise.all([
+    loadHeadingArrow(map),
+    loadCategoryIcons(map),
+    loadOverlayIcons(map),
+    loadStopIcons(map),
+    loadFuelIcons(map),
+    loadEvChargerIcons(map),
+    loadNewOverlayIcons(map),
+  ]);
+  ICONS_BUILT_FOR = themeKey();
 }
 
 function loadSVGImage(map: MLMap, id: string, svg: string, px: number): Promise<void> {
@@ -633,7 +821,11 @@ function loadSVGImage(map: MLMap, id: string, svg: string, px: number): Promise<
     const renderPx = Math.round(px * dpr);
     const img = new Image(renderPx, renderPx);
     img.onload = () => {
-      if (!map.hasImage(id)) map.addImage(id, img, { sdf: false, pixelRatio: dpr });
+      // Replace, don't skip. Markers bake the theme's paper/ink into the raster,
+      // so a day->night flip has to re-register or every marker stays in the old
+      // palette forever. addImage throws on a duplicate id, hence the remove.
+      if (map.hasImage(id)) map.removeImage(id);
+      map.addImage(id, img, { sdf: false, pixelRatio: dpr });
       resolve();
     };
     img.onerror = () => resolve();
@@ -664,7 +856,7 @@ function loadFuelIcons(map: MLMap): Promise<void> {
   ];
   const promises: Promise<void>[] = [];
   for (const d of defs) {
-    if (map.hasImage(d.id)) continue;
+    if (iconCached(map, d.id)) continue;
     const svg = makeIconSVG(ICON_PATHS.fuel, d.color, 38, "#fff");
     promises.push(loadSVGImage(map, d.id, svg, 38));
   }
@@ -673,7 +865,7 @@ function loadFuelIcons(map: MLMap): Promise<void> {
 
 function loadEvChargerIcons(map: MLMap): Promise<void> {
   const id = "glovebox-ev-charger";
-  if (map.hasImage(id)) return Promise.resolve();
+  if (iconCached(map, id)) return Promise.resolve();
   const svg = makeIconSVG(ICON_PATHS.lightning, "#2563eb", 38, "#fff");
   return loadSVGImage(map, id, svg, 38);
 }
@@ -687,7 +879,7 @@ function loadNewOverlayIcons(map: MLMap): Promise<void> {
   ];
   const promises: Promise<void>[] = [];
   for (const d of defs) {
-    if (map.hasImage(d.id)) continue;
+    if (iconCached(map, d.id)) continue;
     const svg = makeIconSVG(d.id.startsWith("glovebox-flood") ? ICON_PATHS.flood_wave : ICON_PATHS.car, d.color, 32, "#fff");
     promises.push(loadSVGImage(map, d.id, svg, 32));
   }
@@ -1215,6 +1407,23 @@ export const TripMap = React.memo(function TripMap(props: Props) {
   const vpBoundsRef = useRef<ViewportBounds | null>(null);
   vpBoundsRef.current = vpBounds;
 
+  /* Re-rasterise every marker when the palette flips.
+     Markers are bitmaps: the theme's paper/ink is baked in at addImage time, so
+     unlike the rest of the app they cannot follow a CSS var. ThemeContext writes
+     data-theme on <html>, so watch that attribute rather than plumb the context
+     down into a component that is otherwise theme-agnostic. */
+  useEffect(() => {
+    const obs = new MutationObserver(() => {
+      const map = mapRef.current;
+      if (!map || !map.isStyleLoaded()) return;
+      if (ICONS_BUILT_FOR === themeKey()) return;
+      applyStopPaintForTheme(map);
+      void loadAllMarkerIcons(map);
+    });
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => obs.disconnect();
+  }, []);
+
   // Decode polyline once - shared by routeFC, coverageFC, and routeCumKm
   const routeCoords = useMemo<Array<[number, number]>>(() => {
     try { return decodePolyline6AsLngLat(props.geometry); } catch { return []; }
@@ -1267,8 +1476,26 @@ export const TripMap = React.memo(function TripMap(props: Props) {
   const trafficPtFCFull = useMemo(() => trafficPointsGeoJSON(props.traffic ?? null), [props.traffic]);
   const trafficLineFCFull = useMemo(() => trafficLinesGeoJSON(props.traffic ?? null), [props.traffic]);
   const trafficPolyFCFull = useMemo(() => trafficPolygonsGeoJSON(props.traffic ?? null), [props.traffic]);
-  const hazardPtFCFull = useMemo(() => hazardPointsGeoJSON(props.hazards ?? null), [props.hazards]);
+  const hazardPtFCAll = useMemo(() => hazardPointsGeoJSON(props.hazards ?? null), [props.hazards]);
   const hazardPolyFCFull = useMemo(() => hazardPolygonsGeoJSON(props.hazards ?? null), [props.hazards]);
+
+  /* Fire leaves the hazard pin layer and gets its own clustered source. Every
+     other hazard kind is a discrete thing worth its own pin; fire arrives in the
+     hundreds and is a density, so it renders as one (see FIRE_SRC). */
+  const fireFCFull = useMemo<GeoJSON.FeatureCollection>(
+    () => ({
+      type: "FeatureCollection",
+      features: hazardPtFCAll.features.filter((f) => f.properties?.kind === "fire"),
+    }),
+    [hazardPtFCAll],
+  );
+  const hazardPtFCFull = useMemo<GeoJSON.FeatureCollection>(
+    () => ({
+      type: "FeatureCollection",
+      features: hazardPtFCAll.features.filter((f) => f.properties?.kind !== "fire"),
+    }),
+    [hazardPtFCAll],
+  );
 
   // Viewport-culled versions - only features near the visible area
   const trafficPtFC = useCulledFC(trafficPtFCFull, vpBounds);
@@ -1276,6 +1503,11 @@ export const TripMap = React.memo(function TripMap(props: Props) {
   const trafficPolyFC = useCulledFC(trafficPolyFCFull, vpBounds);
   const hazardPtFC = useCulledFC(hazardPtFCFull, vpBounds);
   const hazardPolyFC = useCulledFC(hazardPolyFCFull, vpBounds);
+  /* NOT culled to the viewport, unlike its siblings. Culling a clustered source
+     recomputes clusters from only what is on screen, so a cluster's count would
+     change as you pan - the badge would say 23, then 11, for the same fires.
+     Supercluster indexes the whole set once and is built for this. */
+  const fireFC = fireFCFull;
 
   const userLocFC = useMemo(() => userLocGeoJSON(props.userPosition), [props.userPosition]);
   const headingFC = useMemo(() => headingConeGeoJSON(props.userPosition), [props.userPosition]);
@@ -1523,6 +1755,16 @@ export const TripMap = React.memo(function TripMap(props: Props) {
     });
     mapRef.current = map;
     if (props.mapInstanceRef) props.mapInstanceRef.current = map;
+    // Test seam: a stable handle for CDP visual-verify (own-your-simulator).
+    // Off in production - a debug global has no business in a customer's browser -
+    // but on localhost or with ?e2e=1 it lets an out-of-page driver inspect
+    // layers, query rendered features, and inject a basemap when the offline
+    // tiles are unreachable from a throwaway origin.
+    try {
+      if (location.hostname === "localhost" || location.search.includes("e2e")) {
+        (window as unknown as { __gbMap?: MLMap }).__gbMap = map;
+      }
+    } catch { /* SSR / no window */ }
     // Load style
     (async () => {
       try {
@@ -1595,7 +1837,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
     });
 
     map.on("style.load", async () => {
-      await Promise.all([loadHeadingArrow(map), loadCategoryIcons(map), loadOverlayIcons(map), loadStopIcons(map), loadFuelIcons(map), loadEvChargerIcons(map), loadNewOverlayIcons(map)]);
+      await loadAllMarkerIcons(map);
 
       /* ════════════════════════════════════════════════════════════════
          LAYER ORDER (bottom → top):
@@ -1870,12 +2112,129 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           layout: {
             "icon-image": ["get", "iconId"],
             "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.7, 12, 0.9, 16, 1.1],
+            // Kept: the remaining hazard kinds are discrete and sparse, and for
+            // those "always draw" is right - a closure you cannot see is worse
+            // than a crowded map. Fire is the one that abused this, and fire is
+            // no longer in this source.
             "icon-allow-overlap": true,
             "icon-ignore-placement": true,
           },
           paint: { "icon-opacity": 1 },
         });
       }
+
+      /* ── Fire hotspots: heat → clusters → detections ─────────────────── */
+      if (!map.getSource(FIRE_SRC)) {
+        map.addSource(FIRE_SRC, {
+          type: "geojson",
+          data: fireFC,
+          cluster: true,
+          clusterMaxZoom: FIRE_CLUSTER_MAX_ZOOM,
+          clusterRadius: 55,
+        } as GeoJSONSourceSpecification);
+      }
+
+      // Density, at the zooms where individual detections are meaningless.
+      // Weighted by point_count because the source is clustered: past
+      // clusterMaxZoom each feature is one detection, below it each is a cluster
+      // standing for many, and an unweighted ramp would read a 40-fire cluster
+      // as one fire.
+      if (!map.getLayer(FIRE_HEAT_LAYER)) {
+        map.addLayer({
+          id: FIRE_HEAT_LAYER,
+          type: "heatmap",
+          source: FIRE_SRC,
+          maxzoom: 9.5,
+          paint: {
+            "heatmap-weight": ["interpolate", ["linear"], ["coalesce", ["get", "point_count"], 1], 1, 0.35, 25, 1],
+            "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 3, 0.8, 9, 1.6],
+            "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 3, 14, 9, 34],
+            // Transparent through amber to the fire accent. Starts fully
+            // transparent so empty country stays empty rather than washing warm.
+            "heatmap-color": [
+              "interpolate", ["linear"], ["heatmap-density"],
+              0, "rgba(198,40,40,0)",
+              0.2, "rgba(224,161,0,0.35)",
+              0.45, "rgba(224,120,20,0.55)",
+              0.7, "rgba(214,74,32,0.72)",
+              1, "rgba(198,40,40,0.85)",
+            ],
+            // Hand over to the badges rather than stacking heat under them.
+            "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 7.5, 0.9, 9.5, 0],
+          },
+        });
+      }
+
+      // Cluster badge, in the marker language: paper disc, fire ring, ink count.
+      if (!map.getLayer(FIRE_CLUSTER_LAYER)) {
+        map.addLayer({
+          id: FIRE_CLUSTER_LAYER,
+          type: "circle",
+          source: FIRE_SRC,
+          minzoom: 7.5,
+          filter: ["has", "point_count"],
+          paint: {
+            "circle-color": MARKER_PAPER(),
+            "circle-stroke-color": FIRE_ACCENT,
+            // Ring thickens a little with the count: the cheapest way to encode
+            // magnitude without another colour or another legend to learn.
+            "circle-stroke-width": ["step", ["get", "point_count"], 1.5, 10, 2, 50, 2.5],
+            "circle-radius": ["step", ["get", "point_count"], 12, 10, 15, 50, 19],
+            "circle-opacity": 1,
+          },
+        });
+      }
+
+      if (!map.getLayer(FIRE_CLUSTER_COUNT_LAYER)) {
+        map.addLayer({
+          id: FIRE_CLUSTER_COUNT_LAYER,
+          type: "symbol",
+          source: FIRE_SRC,
+          minzoom: 7.5,
+          filter: ["has", "point_count"],
+          layout: {
+            "text-field": ["get", "point_count_abbreviated"],
+            "text-font": ["Open Sans Bold"],
+            "text-size": ["step", ["get", "point_count"], 11, 10, 12, 50, 13],
+            "text-allow-overlap": true,
+          },
+          paint: { "text-color": MARKER_INK() },
+        });
+      }
+
+      // The individual detection. No allow-overlap: past clusterMaxZoom these
+      // are sparse, and letting MapLibre drop a colliding pin is the whole point
+      // of the fix.
+      if (!map.getLayer(FIRE_POINT_LAYER)) {
+        map.addLayer({
+          id: FIRE_POINT_LAYER,
+          type: "symbol",
+          source: FIRE_SRC,
+          minzoom: 8,
+          filter: ["!", ["has", "point_count"]],
+          layout: {
+            "icon-image": "glovebox-hazard-fire",
+            "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.55, 12, 0.8, 16, 1.0],
+            "icon-allow-overlap": false,
+            "icon-ignore-placement": false,
+          },
+          paint: { "icon-opacity": 1 },
+        });
+      }
+
+      // Tapping a cluster zooms into it rather than opening a modal about 23
+      // things at once.
+      map.on("click", FIRE_CLUSTER_LAYER, (e: MapLayerMouseEvent) => {
+        const f = e?.features?.[0];
+        const cid = f?.properties?.cluster_id;
+        if (cid == null) return;
+        const src = map.getSource(FIRE_SRC) as GeoJSONSource | undefined;
+        void src?.getClusterExpansionZoom(Number(cid)).then((z) => {
+          map.easeTo({ center: (f!.geometry as GeoJSON.Point).coordinates as [number, number], zoom: z });
+        }).catch(() => {});
+      });
+      map.on("mouseenter", FIRE_CLUSTER_LAYER, () => (map.getCanvas().style.cursor = "pointer"));
+      map.on("mouseleave", FIRE_CLUSTER_LAYER, () => (map.getCanvas().style.cursor = ""));
 
       // Hazard click → modal
       map.on("click", HAZARD_ICON_LAYER, (e: MapLayerMouseEvent) => {
@@ -2133,7 +2492,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
       /* ── 5. Stop layers - glassmorphic frosted markers ────────────────── */
       addOrUpdateGeoJsonSource(map, STOPS_SRC, stopsFC);
 
-      // Drop shadow - warm diffused glow
+      // Lift shadow. Neutral, not a coloured glow: the orb is now a white disc,
+      // and a coloured halo under a white disc reads as a smudge rather than
+      // depth. This only has to separate the marker from the basemap.
       if (!map.getLayer(STOPS_SHADOW)) {
         map.addLayer({
           id: STOPS_SHADOW,
@@ -2141,17 +2502,22 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: STOPS_SRC,
           minzoom: 5,
           paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 10, 10, 16, 14, 22, 17, 28],
-            "circle-color": ["match", ["get", "type"], "start", "rgba(45,110,64,0.25)", "end", "rgba(181,69,46,0.25)", "via", "rgba(122,61,153,0.25)", "rgba(26,111,166,0.25)"],
-            "circle-blur": 0.7,
-            "circle-translate": [0, 2],
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 9, 10, 14, 14, 19, 17, 24],
+            "circle-color": STOP_SHADOW_COLOR(),
+            "circle-blur": 0.6,
+            "circle-translate": [0, 1],
           },
         });
       }
 
-      // Stop orb - solid full-opacity colour with a white border (Tate
-      // 2026-05-28: white rim restored). The OUTER layer is the orb body +
-      // the white ring; full opacity, no translucency.
+      // Stop orb - the marker language (Tate 2026-07-16): paper disc, thin ring
+      // in the stop's colour, black glyph. Inverts in tactical-night.
+      //
+      // Was: a saturated colour disc under a white rim that grew to 3px at z14.
+      // At that width the rim stopped reading as an outline and started reading
+      // as the marker, which is what made a row of stops look like a row of
+      // white blobs. Colour now lives on the ring only, so it stays the same
+      // hue in both themes and the map stays learnable.
       if (!map.getLayer(STOPS_OUTER)) {
         map.addLayer({
           id: STOPS_OUTER,
@@ -2159,20 +2525,21 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: STOPS_SRC,
           minzoom: 3,
           paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 6, 6, 8, 10, 12, 14, 16, 17, 22],
-            // MapLibre paint expressions take literal colours, not CSS vars.
-            // The destination pin carries the canonical brand accent (#A8431F).
-            "circle-color": ["match", ["get", "type"], "start", "#2d6e40", "end", "#A8431F", "via", "#7a3d99", "#1a6fa6"],
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1.5, 10, 2.5, 14, 3],
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 6, 6, 8, 10, 11, 14, 14, 17, 19],
+            // MapLibre paint takes literal colours, never CSS vars - a var here
+            // resolves to nothing and the circle renders black. See resolveColor.
+            "circle-color": MARKER_PAPER(),
+            "circle-stroke-color": STOP_RING_COLOR,
+            "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1.25, 10, 1.75, 14, 2],
             "circle-stroke-opacity": 1,
             "circle-opacity": 1,
           },
         });
       }
 
-      // Inner core - a slightly deeper concentric for depth, full opacity,
-      // no stroke (the white border lives on the outer ring).
+      // Centre dot - carries the stop's colour at the zooms where the glyph
+      // layer (minzoom 11) has not kicked in yet, so a far-out stop still reads
+      // as a typed marker and not an empty ring. Fades out as the glyph fades in.
       if (!map.getLayer(STOPS_INNER)) {
         map.addLayer({
           id: STOPS_INNER,
@@ -2180,10 +2547,10 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           source: STOPS_SRC,
           minzoom: 3,
           paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 6, 5.5, 10, 8.5, 14, 12, 17, 16],
-            "circle-color": ["match", ["get", "type"], "start", "#235730", "end", "#933722", "via", "#612f7a", "#155884"],
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 2, 6, 3, 10, 4],
+            "circle-color": STOP_RING_COLOR,
             "circle-stroke-width": 0,
-            "circle-opacity": 1,
+            "circle-opacity": ["interpolate", ["linear"], ["zoom"], 10, 1, 11.5, 0],
           },
         });
       }
@@ -2199,9 +2566,13 @@ export const TripMap = React.memo(function TripMap(props: Props) {
           paint: {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 20, 14, 30],
             "circle-color": "transparent",
-            "circle-stroke-color": ["match", ["get", "type"], "start", "rgba(45,110,64,0.18)", "end", "rgba(181,69,46,0.18)", "transparent"],
-            "circle-stroke-width": 2.5,
+            "circle-stroke-color": STOP_RING_COLOR,
+            "circle-stroke-width": 1.5,
             "circle-opacity": 0.7,
+            // The halo is the same hue as the ring, held back to a whisper.
+            // Baking the alpha into the colour (as before) meant two more
+            // literals to keep in sync with the palette every time it moved.
+            "circle-stroke-opacity": 0.22,
           },
         });
       }
@@ -2240,6 +2611,10 @@ export const TripMap = React.memo(function TripMap(props: Props) {
             "text-optional": true,
             "text-allow-overlap": false,
           },
+          // Left alone deliberately: warm white on a dark halo already reads on
+          // satellite AND on both vector themes, because it tracks the BASEMAP
+          // rather than the app palette. The marker disc had to invert; a label
+          // floating over imagery does not.
           paint: { "text-color": "rgba(250,246,239,0.95)", "text-halo-color": "rgba(15,12,8,0.65)", "text-halo-width": 1.8, "text-halo-blur": 0.5 },
         });
       }
@@ -3065,7 +3440,9 @@ export const TripMap = React.memo(function TripMap(props: Props) {
     s1?.setData(hazardPtFC);
     const s2 = map.getSource(HAZARD_POLY_SRC) as GeoJSONSource | undefined;
     s2?.setData(hazardPolyFC);
-  }, [hazardPtFC, hazardPolyFC]);
+    const s3 = map.getSource(FIRE_SRC) as GeoJSONSource | undefined;
+    s3?.setData(fireFC);
+  }, [hazardPtFC, hazardPolyFC, fireFC]);
 
   useEffect(() => {
     (mapRef.current?.getSource(WILDLIFE_SRC) as GeoJSONSource | undefined)?.setData(wildlifeFC);
@@ -3865,8 +4242,14 @@ export const TripMap = React.memo(function TripMap(props: Props) {
         const allOn = ALL_OVERLAY_KEYS.every((k) => overlayVis[k]);
         const anyOff = ALL_OVERLAY_KEYS.some((k) => !overlayVis[k]);
         const isNav = !!props.navigationMode;
+        // Planning: dock into the shared rail, under the shell buttons, so the
+        // column lays itself out. Nav: keep the absolute rail, because the shell
+        // rail has collapsed to SOS and this belongs with NavigationControls.
+        const Frame = isNav
+          ? ({ children }: { children: React.ReactNode }) => <div style={LAYER_CONTROLS_STYLE_NAV}>{children}</div>
+          : RailSlot;
         return (
-          <div style={isNav ? LAYER_CONTROLS_STYLE_NAV : LAYER_CONTROLS_STYLE}>
+          <Frame>
             {/* Layer button + dropdown wrapper */}
             <div style={RELATIVE_STYLE}>
             {/* In nav mode the toggle lives in NavigationControls - hide button here */}
@@ -4004,7 +4387,7 @@ export const TripMap = React.memo(function TripMap(props: Props) {
               </div>
             )}
             </div>
-          </div>
+          </Frame>
         );
       })()}
 

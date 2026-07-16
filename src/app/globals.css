@@ -2734,10 +2734,17 @@ input[type="range"]::-moz-range-thumb {
     bottom: 18px !important;
   }
 
-  .trip-report-fab {
-    bottom: 18px !important;
-    right: 18px !important;
-  }
+  /* .trip-report-fab is deliberately gone. The report button docks into the
+     shared rail (RailSlot) and the rail's flex column lays it out at every
+     width, so there is nothing left here to reposition.
+
+     Worth keeping the story: this rule set bottom+right but never cleared the
+     `top` the component applied inline. With position:absolute and BOTH top and
+     bottom resolved, the box stretched to the full height of the map - a 46px
+     button inside a 46x766 invisible column that ate pointer events down the
+     entire right edge of the map. Every other override in this block neutralises
+     the axis it moves (.trip-top-toast clears transform, and so on). This one
+     never did. */
 
   .trip-report-placement {
     left: calc(var(--desktop-rail-w) + var(--desktop-panel-visible) + 12px) !important;
