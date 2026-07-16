@@ -18,8 +18,12 @@
 //
 // SOURCE OF TRUTH:
 //   - Native (iOS/Android Capacitor) -> RevenueCat, entitlement `friend`
-//   - Web browser                    -> Stripe Checkout, mirrored into the
-//                                       Supabase `user_entitlements` row
+//   - Web browser                    -> the Supabase `user_entitlements` row.
+//                                       Glovebox web sells nothing: Friend is
+//                                       bought at friend.ecodia.au and the
+//                                       subscription arrives via the Friend perk
+//                                       push (pushGloveboxPerk -> /friend/entitlement),
+//                                       which writes that row. There is no web checkout.
 //   - localStorage is a device-bound cache, never the primary source.
 //
 // GRANDFATHERING: `roam_unlimited` (the v1 lifetime non-consumable, iOS only)
@@ -259,7 +263,7 @@ async function markEntitlementInSupabase(source: "revenuecat" | "stripe" | "manu
 /** Buy the Friend plan through the native store sheet. */
 export async function purchaseFriend(): Promise<{ success: boolean; error?: string }> {
   if (!isNativePlatform()) {
-    return { success: false, error: "Use Stripe on web." };
+    return { success: false, error: "Friend is bought at friend.ecodia.au on the web." };
   }
 
   const ready = await ensureRCReady();
