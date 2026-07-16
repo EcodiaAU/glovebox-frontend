@@ -1,6 +1,6 @@
 // src/app/(app)/embed/ClientPage.tsx
 //
-// PUBLIC, login-free, embeddable Glovebox surface (iframed by the Ecosphere
+// PUBLIC, login-free, embeddable Glovebox surface (iframed by the Studio
 // connector / a business's own site). It is the REAL app: the actual TripMap,
 // the glovebox basemap, live /places/search POIs, and keyless /nav/route.
 //

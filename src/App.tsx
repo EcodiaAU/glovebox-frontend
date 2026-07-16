@@ -50,7 +50,7 @@ const PrivacyPage = lazy(() => import("./app/(legal)/privacy/page"));
 const TermsPage = lazy(() => import("./app/(legal)/terms/page"));
 
 // Standalone routes
-// Public, login-free map embed iframed by the Ecosphere connector.
+// Public, login-free map embed iframed by the Studio connector.
 const EmbedPage = lazy(() => import("./app/(app)/embed/ClientPage"));
 
 // Catch-all
