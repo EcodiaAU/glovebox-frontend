@@ -57,7 +57,18 @@ export function App() {
   // Whole-app 18+ gate (Tate 2026-07-14). The gate is a sibling ABOVE <Routes>
   // so it covers every entry - web landing, native redirect, and deep-links -
   // and <Routes> stays unmounted until the visitor confirms they are an adult.
+  //
+  // EXCEPT /embed (Tate 2026-07-16): the public, login-free iframe map that host
+  // apps (Locals, Adventure, Co-Exist) render inline. Age-gating a headless map
+  // inside ANOTHER product is wrong UX, and iframe storage partitioning means
+  // even a confirmed adult re-sees the modal in every host. The gate belongs to
+  // the Glovebox site/app itself; the embed's "Open in Glovebox" opens a NEW
+  // top-level context (target=_blank / universal link) where the gate still
+  // applies on first entry. Boot-time pathname is safe: /embed is a standalone
+  // surface that never client-navigates to other routes.
+  const isEmbedSurface = window.location.pathname.startsWith("/embed");
   const [confirmedAdult, setConfirmedAdult] = useState(hasConfirmedAdult);
+  const gateSatisfied = confirmedAdult || isEmbedSurface;
 
   return (
     <BrowserRouter>
@@ -67,8 +78,8 @@ export function App() {
           <NativeBootstrap />
           <SyncBootstrap />
           <BasemapBootstrap />
-          {!confirmedAdult && <AgeGate onConfirm={() => setConfirmedAdult(true)} />}
-          {confirmedAdult && (
+          {!gateSatisfied && <AgeGate onConfirm={() => setConfirmedAdult(true)} />}
+          {gateSatisfied && (
           <>
           <Routes>
             {/* Landing */}
