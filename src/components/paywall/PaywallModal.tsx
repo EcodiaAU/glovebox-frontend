@@ -384,7 +384,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
               lineHeight: 1,
               letterSpacing: "-0.01em",
             }}>
-              $19.99
+              $29.99
             </span>
             <span style={{
               fontFamily: "var(--ff-display)",
@@ -423,7 +423,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
             {buying && isNative
               ? "Processing…"
               : isNative
-                ? "Get Friend · $19.99/mo"
+                ? "Get Friend · $29.99/mo"
                 : "Get Friend →"}
           </button>
 
@@ -439,7 +439,7 @@ export function PaywallModal({ open, onClose, onUnlocked }: Props) {
               textAlign: "center",
               opacity: 0.85,
             }}>
-              Friend is a $19.99/month auto-renewing subscription.
+              Friend is a $29.99/month auto-renewing subscription.
               Payment is charged to your store account and renews monthly until cancelled at least
               24 hours before the end of the period. Manage or cancel in your store account settings.
             </p>

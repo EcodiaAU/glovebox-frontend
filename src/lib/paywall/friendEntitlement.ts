@@ -51,7 +51,7 @@ const KEY_UNLOCKED = "roam_unlimited_unlocked";
 // that lets the purchase flow be exercised end-to-end on a real device.
 export const KEY_TEST_BLOCK_RC = "glovebox_test_block_rc";
 
-// Friend IAP: native Glovebox sells the Friend "A little" plan (A$19.99/mo
+// Friend IAP: native Glovebox sells the Friend "A little" plan (A$29.99/mo
 // auto-renewable subscription) via Apple IAP / Play Billing through RevenueCat.
 // Entitlement `friend`, offering `default`, product `friend_a_little_monthly`.
 // The `roam_unlimited` lifetime non-consumable is GRANDFATHERED, so the check
