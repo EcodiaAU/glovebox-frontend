@@ -6,8 +6,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#A8431F",
-  "theme_color": "#A8431F",
+  "background_color": "#AD502D",
+  "theme_color": "#AD502D",
   "lang": "en-AU",
   "dir": "ltr",
   "icons": [
@@ -22,12 +22,6 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-maskable-192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-maskable-512.png",
