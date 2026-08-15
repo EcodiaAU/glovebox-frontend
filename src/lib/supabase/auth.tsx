@@ -22,8 +22,6 @@ export type AuthState = {
   /** True when signed in via the App Review demo account - no real Supabase session. */
   isDemoMode: boolean;
 
-  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
-  signInWithAppleNative: () => Promise<{ error: AuthError | null }>;
   /** "Connect your Friend" - federate into the shared Ecodia consumer identity (Friend IdP). */
   signInWithFriend: () => Promise<{ error: AuthError | null }>;
 
@@ -39,26 +37,6 @@ const DEMO_EMAIL = "apple@ecodia.au";
 const DEMO_PASSWORD = "appleecodia";
 
 const AuthContext = createContext<AuthState | null>(null);
-
-function randomNonce(len = 32): string {
-  const bytes = new Uint8Array(len);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-async function sha256Hex(input: string): Promise<string> {
-  const enc = new TextEncoder().encode(input);
-  const buf = await crypto.subtle.digest("SHA-256", enc);
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function asAuthError(message: string): AuthError {
-  return { name: "AuthError", message } as AuthError;
-}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -107,78 +85,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       planSync.stop();
     };
   }, [session?.user?.id]);
-
-  const signInWithGoogle = useCallback(async () => {
-    // On web, derive the callback URL from the current origin so localhost dev
-    // redirects back to localhost instead of the live domain.
-    // `flow=native` tells the callback page it is running inside the native
-    // in-app browser (which also reports !isNativePlatform()) so it bounces to
-    // the au.ecodia.roam:// scheme; a real web browser omits it and exchanges
-    // the code in-page.
-    const redirectTo = Capacitor.isNativePlatform()
-      ? "https://glovebox.ecodia.au/auth/callback?flow=native"
-      : `${window.location.origin}/auth/callback`;
-
-    if (Capacitor.isNativePlatform()) {
-      // skipBrowserRedirect prevents Supabase from calling window.location.href,
-      // which would navigate the WebView off glovebox.ecodia.au into Safari.
-      // Instead we open the OAuth URL in SFSafariViewController / Chrome Custom Tab.
-      // After Google auth, Supabase redirects to /auth/callback which detects the
-      // in-app browser context, redirects to au.ecodia.roam:// custom scheme,
-      // and the OS intercepts it → closes the browser → fires appUrlOpen.
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo, skipBrowserRedirect: true },
-      });
-      if (error) return { error };
-      if (data?.url) {
-        const { Browser } = await import("@capacitor/browser");
-
-        // Safety timeout: if the browser never closes (user gets stuck,
-        // deep-link fails, etc.) close it after 120s so the app isn't hung.
-        let settled = false;
-        const timeout = setTimeout(async () => {
-          if (!settled) {
-            settled = true;
-            Browser.close().catch(() => {});
-          }
-        }, 120_000);
-
-        const closeHandler = await Browser.addListener("browserFinished", async () => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timeout);
-          closeHandler.remove();
-          // Give the deep-link handler a moment to route to /auth/callback
-          // which triggers the Supabase code exchange via detectSessionInUrl.
-          setTimeout(async () => {
-            const { data: sess } = await supabase.auth.getSession();
-            if (!sess.session) {
-              await supabase.auth.getSession();
-            }
-          }, 1000);
-        });
-        // On iPad, "fullscreen" stretches a phone-sized OAuth page over the entire
-        // iPad screen and fails Apple's "screen was not optimized" review criterion.
-        // "popover" presents a proper sheet/popover on iPad while remaining
-        // full-screen on iPhone.
-        const isIpad =
-          /iPad/.test(navigator.userAgent) ||
-          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-        await Browser.open({
-          url: data.url,
-          presentationStyle: isIpad ? "popover" : "fullscreen",
-        });
-      }
-      return { error: null };
-    }
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo },
-    });
-    return { error };
-  }, []);
 
   /**
    * "Connect your Friend" - sign in via the shared Ecodia consumer identity.
@@ -249,82 +155,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   }, []);
 
-  /**
-   * Native (in-app) Apple Sign-In
-   * Uses @capacitor-community/apple-sign-in -> SignInWithApple.authorize()
-   * Then exchanges the returned identityToken with Supabase via signInWithIdToken.
-   */
-  const signInWithAppleNative = useCallback(async () => {
-    try {
-      if (!Capacitor.isNativePlatform()) {
-        return { error: asAuthError("Apple Sign-In is only available in the installed app.") };
-      }
-
-      // Raw nonce for Supabase, hashed nonce for Apple request
-      const nonce = randomNonce(32);
-      const nonceHash = await sha256Hex(nonce);
-
-      // clientId is ignored by the native iOS plugin (ASAuthorizationAppleIDProvider
-      // has no client ID concept) - Apple always sets aud = Bundle ID in the JWT.
-      // Supabase must have au.ecodia.roam listed under Apple provider → Authorized Client IDs.
-      const { SignInWithApple } = await import("@capacitor-community/apple-sign-in");
-      const result = await SignInWithApple.authorize({
-        clientId: "au.ecodia.roam",
-        redirectURI: "https://glovebox.ecodia.au/auth/callback", // unused on native, required by plugin types
-        scopes: "email name",
-        state: `glovebox-${Date.now()}`,
-        nonce: nonceHash,
-      });
-
-      const identityToken = (result as { response?: { identityToken?: string }; identityToken?: string })?.response?.identityToken ?? (result as { identityToken?: string })?.identityToken;
-      if (!identityToken) {
-        return { error: asAuthError("Apple Sign-In failed: missing identity token.") };
-      }
-
-      const { error } = await supabase.auth.signInWithIdToken({
-        provider: "apple",
-        token: identityToken,
-        nonce, // raw nonce
-      });
-
-      if (error) {
-        console.error("[Apple SSO] signInWithIdToken error:", error.message);
-      }
-      return { error };
-    } catch (e: unknown) {
-      // 1001 = ASAuthorizationErrorCanceled - user dismissed the sheet, not an error
-      // 1000 = ASAuthorizationError.unknown - often a provisioning / capability issue
-      // 1004 = ASAuthorizationErrorNotHandled - system could not handle the request
-      const msg: string = e instanceof Error ? e.message : String(e);
-      const code: string = typeof (e as { code?: unknown })?.code === "string"
-        ? (e as { code: string }).code
-        : typeof (e as { code?: unknown })?.code === "number"
-          ? String((e as { code: number }).code)
-          : "";
-      console.error("[Apple SSO] authorize error:", JSON.stringify(e), msg, "code:", code);
-
-      if (code === "1001" || msg.includes("1001") || msg.toLowerCase().includes("cancel")) {
-        return { error: null };
-      }
-      if (code === "1000" || msg.includes("1000")) {
-        console.error("[Apple SSO] Error 1000 - check: (1) Sign in with Apple capability in Xcode, (2) Supabase Apple provider has au.ecodia.roam in Authorized Client IDs, (3) Apple Services ID config");
-        return {
-          error: asAuthError(
-            "Apple Sign-In is temporarily unavailable. Please try again, or use another sign-in method.",
-          ),
-        };
-      }
-      if (code === "1004" || msg.includes("1004") || msg.toLowerCase().includes("not handled")) {
-        return {
-          error: asAuthError(
-            "Apple Sign-In could not be completed. Please try again.",
-          ),
-        };
-      }
-      return { error: asAuthError(msg || "Apple Sign-In failed. Please try again or use another sign-in method.") };
-    }
-  }, []);
-
   const signInWithEmail = useCallback(async (email: string, password: string) => {
     // App Review demo account: bypass Supabase and enter demo mode so the
     // reviewer can access all features without a real account.
@@ -387,8 +217,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user,
       isDemoMode,
-      signInWithGoogle,
-      signInWithAppleNative,
       signInWithFriend,
       signInWithEmail,
       signUpWithEmail,
@@ -400,8 +228,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user,
       isDemoMode,
-      signInWithGoogle,
-      signInWithAppleNative,
       signInWithFriend,
       signInWithEmail,
       signUpWithEmail,
